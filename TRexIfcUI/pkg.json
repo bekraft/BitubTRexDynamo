@@ -1,0 +1,21 @@
+{
+  "license": "MIT",
+  "file_hash": null,
+  "name": "TRexIfc",
+  "version": "0.1.0",
+  "description": "TRex IFC Dynamo Tool Chains",
+  "group": "IFC",
+  "keywords": [ "TRex", "dynamo", "IFC" ],
+  "dependencies": [],
+  "contents": "TRex custom nodes for IFC handling",
+  "engine_version": "1.0.0",
+  "engine": "dynamo",
+  "engine_metadata": "",
+  "site_url": "",
+  "repository_url": "",
+  "contains_binaries": true,
+  "node_libraries": [
+    "TRexIfc, Version=0.1.0, Culture=neutral, PublicKeyToken=null",
+    "TRexIfcUI, Version=0.1.0, Culture=neutral, PublicKeyToken=null"
+  ]
+}
