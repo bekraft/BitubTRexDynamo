@@ -24,9 +24,23 @@ namespace TRexIfc
         #region Internals
 
         internal IModel XbimModel { get; set; }
+        internal ReportProgressDelegate ProgressDelegate { get; set; }
 
         internal IfcRepository()
         {
+        }
+
+        /// <summary>
+        /// Reads and replaces the current internal model.
+        /// </summary>
+        /// <param name="fileName">File name to load</param>
+        /// <returns>This instance</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public IfcRepository ReadFile(string fileName)
+        {
+            IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
+            XbimModel = IfcStore.Open(fileName, null, null, ProgressDelegate);
+            return this;
         }
 
         #endregion
@@ -82,5 +96,16 @@ namespace TRexIfc
             .Distinct()
             .ToArray();
 
+
+        /// <summary>
+        /// Creates a new repository using a progress feedback.
+        /// </summary>
+        /// <param name="progressReporter">The progress feedback</param>
+        /// <returns>An opened IFC repository</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcRepository WithProgressReporter(IProgress<int> progressReporter)
+        {
+            return new IfcRepository { ProgressDelegate = (p, s) => progressReporter.Report(p) };
+        }
     }
 }

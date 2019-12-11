@@ -3,7 +3,10 @@ using Dynamo.Wpf;
 
 namespace TRexIfc.UI
 {
-    public class MetaDataCustomization : INodeViewCustomization<IfcMetadataNodeModel>
+    /// <summary>
+    /// Customization of <c>IfcMetadata</c> wrapper.
+    /// </summary>
+    public class IfcMetadataCustomization : INodeViewCustomization<IfcMetadataNodeModel>
     {
         public void CustomizeView(IfcMetadataNodeModel model, NodeView nodeView)
         {

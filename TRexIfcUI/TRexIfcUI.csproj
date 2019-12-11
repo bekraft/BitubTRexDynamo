@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}</ProjectGuid>
+    <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
+    <TargetFrameworks>net47</TargetFrameworks>      
+    <Title>TRexIfc Dynamo</Title>
+    <Description></Description>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TRexIfc</RootNamespace>
-    <AssemblyName>TRexIfcUI</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <StartupObject />
+
+    <Version>0.1.0.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -22,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -30,6 +33,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -44,26 +52,18 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="IfcMetadataNodeModel.cs" />
-    <Compile Include="IfcRepositoryNodeModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\CancelableCommandControl.xaml.cs">
-      <DependentUpon>CancelableCommandControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\MetaDataControl.xaml.cs">
-      <DependentUpon>MetaDataControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\MetaDataCustomization.cs" />
-  </ItemGroup>
-  <ItemGroup>
+    <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <Compile Update="**\*.xaml.cs" SubType="Designer" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.19337</Version>
+      <Version>0.1.0.0</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.3.0.5885</Version>
@@ -77,29 +77,18 @@
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.3.0.5885</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop">
-      <Version>5.1.0</Version>
-    </PackageReference>
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\CancelableCommandControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\MetaDataControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj">
       <Project>{2bc161c5-e9f1-4b41-ba92-6dc3d502b00c}</Project>
       <Name>TRexIfc</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  
   <!-- After build -->
-  <Target Name="AfterBuild">
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <PropertyGroup>
       <!--Copy to Dynamo sandbox for testing -->
       <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\2.3\packages\$(ProjectName)</DeployFolder>

@@ -5,30 +5,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRexIfc.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="200">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+             d:DesignHeight="25" d:DesignWidth="150">
+    <Grid MinHeight="25" MinWidth="100">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-
+        
         <ProgressBar x:Name="Progress"
-                     Height="30"
-                     Margin="5,5,5,5"
-                     Grid.Row="1"
-                     Grid.Column="0"/>
+                     Grid.Column="0"
+                     MinWidth="100" Height="15" Margin="5,5,2,5"
+                     Minimum="0" Maximum="100"
+                     Value="{Binding Path=Progress}"/>
         
         <Button x:Name="Cancel"
+                Grid.Column="1"
+                FontSize="6"
                 Content="Cancel"
-                Width="Auto"
-                Margin="5,5,5,5"
-                Height="Auto"
-                Grid.Row="1"
+                Width="Auto" Margin="2,5,5,5" Height="Auto"                
                 HorizontalContentAlignment="Center"
-                Grid.Column="1"/>
+                VerticalContentAlignment="Center"/>
     </Grid>
 </UserControl>
