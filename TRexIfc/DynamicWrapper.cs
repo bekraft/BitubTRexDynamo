@@ -76,10 +76,21 @@ namespace TRexIfc
             return InternallyCall<double>(key, arg1);
         }
 
+        /// <summary>
+        /// Clears given keys
+        /// </summary>
+        /// <param name="keys"></param>
+        public static void Clear(params string[] keys)
+        {
+            object f;
+            foreach (var key in keys)
+                Registry.TryRemove(key, out f);            
+        }
+
         internal static object InternallyCall<T1>(string key, T1 arg1)
         {
             object f;
-            if (!Registry.TryRemove(key, out f))
+            if (!Registry.TryGetValue(key, out f))
                 throw new NotImplementedException();
 
             var r = (f as Func<T1, object>)?.Invoke(arg1);            

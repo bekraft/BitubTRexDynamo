@@ -40,7 +40,7 @@ namespace TRexIfc
             foreach (var fileName in fileNames)
             {
                 ISet<string> psetNames = new HashSet<string>();
-                using (var model = IfcStore.Open(fileName))
+                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
                 {
                     foreach (string name in model.Instances
                         .OfType<IIfcPropertySetDefinition>()
@@ -104,7 +104,7 @@ namespace TRexIfc
             List<string> outFileNames = new List<string>();
             foreach (var fileName in fileNames)
             {
-                using (var model = IfcStore.Open(fileName))
+                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
                 {
                     removalRequest.EditorCredentials = editorCredentials;
                     var task = removalRequest.Run(model, null);
@@ -150,7 +150,7 @@ namespace TRexIfc
             };
             foreach (var fileName in fileNames)
             {                
-                using (var model = IfcStore.Open(fileName))
+                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
                 {
                     var task = exporter.Run(model);
                     task.Wait();

@@ -9,61 +9,53 @@ using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
 
 using Xbim.Ifc;
+using System.Windows;
 
 namespace TRexIfc
 {
     /// <summary>
-    /// IFC repository node model.
+    /// IFC store node model.
     /// </summary>
-    [NodeName("IFC Repository")]
+    [NodeName("IFC Load")]
     [NodeCategory("TRexIfc")]
     [InPortTypes(typeof(string))]
-    [OutPortTypes(typeof(IfcRepository))]
+    [OutPortTypes(typeof(IfcStore))]
     [IsDesignScriptCompatible]
-    public class IfcRepositoryNodeModel : NodeModel, IProgress<int>
+    public class IfcStoreLoadNodeModel : CancelableCommandNode
     {
         #region Internals
-        private int _progress = 0;
+        private string _ref;
         #endregion
 
         /// <summary>
         /// New IFC repository node model.
         /// </summary>
-        public IfcRepositoryNodeModel()
+        public IfcStoreLoadNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcRepo", "IFC repository")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcStore", "IFC store")));
             RegisterAllPorts();
         }
 
+        internal string CreateFunctionReference
+        {
+            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<string>(CreateIfcStore);
+        }
+
         [JsonConstructor]
-        IfcRepositoryNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        IfcStoreLoadNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
 
         /// <summary>
-        /// Reports the progress.
+        /// A delegate for creating new Ifc stores.
         /// </summary>
-        /// <param name="progressValue"></param>
-        [IsVisibleInDynamoLibrary(false)]
-        public void Report(int progressValue)
+        /// <param name="fileName">The ifc filename</param>
+        /// <returns>A new IFC store</returns>
+        public IfcStore CreateIfcStore(string fileName)
         {
-            Progress = progressValue;
-        }
-
-        /// <summary>
-        /// The progress value as percentage
-        /// </summary>
-        [JsonIgnore]
-        public int Progress
-        {
-            get {
-                return _progress;
-            }
-            set {
-                _progress = value;
-                RaisePropertyChanged(nameof(Progress));                
-            }
+            TaskName = fileName.Substring(fileName.LastIndexOf('\\') + 1);
+            return IfcStore.Load(fileName, (p, s) => ProgressPercentage = p);
         }
 
         /// <summary>
@@ -82,11 +74,9 @@ namespace TRexIfc
                 };
             }
 
-            var key = DynamicWrapper.Register<string>(IfcRepository.WithProgressReporter(this).ReadFile);
-
             var funcNode = AstFactory.BuildFunctionCall(
                 new Func<string, string, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(key), inputAstNodes[0] });
+                new List<AssociativeNode>() { AstFactory.BuildStringNode(CreateFunctionReference), inputAstNodes[0] });
 
             return new[]
             {

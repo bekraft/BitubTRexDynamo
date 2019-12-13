@@ -1,12 +1,14 @@
 ﻿using Dynamo.Wpf;
 using Dynamo.Controls;
-using TRexIfc;
+
+// Disable comment warning
+#pragma warning disable CS1591
 
 namespace TRexIfc.UI
 {
-    public class IfcRepositoryControlCustomization : INodeViewCustomization<IfcRepositoryNodeModel>
+    public class CancelableCommandNodeCustomization : INodeViewCustomization<CancelableCommandNode>
     {
-        public void CustomizeView(IfcRepositoryNodeModel model, NodeView nodeView)
+        public void CustomizeView(CancelableCommandNode model, NodeView nodeView)
         {
             var cancelableControl = new CancelableCommandControl();
             nodeView.inputGrid.Children.Add(cancelableControl);
@@ -18,3 +20,5 @@ namespace TRexIfc.UI
         }
     }
 }
+
+#pragma warning restore CS1591

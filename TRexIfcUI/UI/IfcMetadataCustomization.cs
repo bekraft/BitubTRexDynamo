@@ -1,11 +1,11 @@
 ﻿using Dynamo.Controls;
 using Dynamo.Wpf;
 
+// Disable comment warning
+#pragma warning disable CS1591
+
 namespace TRexIfc.UI
 {
-    /// <summary>
-    /// Customization of <c>IfcMetadata</c> wrapper.
-    /// </summary>
     public class IfcMetadataCustomization : INodeViewCustomization<IfcMetadataNodeModel>
     {
         public void CustomizeView(IfcMetadataNodeModel model, NodeView nodeView)
@@ -20,3 +20,6 @@ namespace TRexIfc.UI
         }
     }
 }
+
+#pragma warning restore CS1591
+

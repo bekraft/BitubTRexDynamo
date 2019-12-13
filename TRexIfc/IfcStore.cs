@@ -1,32 +1,24 @@
 ﻿using Autodesk.DesignScript.Runtime;
 
-using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 
 using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
-
-using Bitub.Ifc.Transform.Requests;
 
 namespace TRexIfc
 {
     /// <summary>
     /// An IFC repository.
     /// </summary>    
-    public class IfcRepository
+    public class IfcStore
     {
         #region Internals
 
         internal IModel XbimModel { get; set; }
-        internal ReportProgressDelegate ProgressDelegate { get; set; }
 
-        internal IfcRepository()
+        internal IfcStore()
         {
         }
 
@@ -34,42 +26,35 @@ namespace TRexIfc
         /// Reads and replaces the current internal model.
         /// </summary>
         /// <param name="fileName">File name to load</param>
+        /// <param name="progressDelegate">The progress delegate</param>
         /// <returns>This instance</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public IfcRepository ReadFile(string fileName)
+        public static IfcStore Load(string fileName, ReportProgressDelegate progressDelegate)
         {
-            IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
-            XbimModel = IfcStore.Open(fileName, null, null, ProgressDelegate);
-            return this;
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Load an IFC model from file.
-        /// </summary>
-        /// <param name="fileName">IFC file (ifc, ifcxml, ifczip)</param>
-        /// <returns>An element collection</returns>        
-        public static IfcRepository ByFileName(string fileName)
-        {
-            IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
-            IModel model = IfcStore.Open(fileName);
-            return new IfcRepository { XbimModel = model };
+            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
+            return new IfcStore
+            {
+                XbimModel = Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate)
+            };
         }
 
         /// <summary>
         /// Save an IFC model to file.
         /// </summary>
         /// <param name="fileName">The filename</param>
-        /// <param name="collection">The IFC element collection to be saved</param>
-        public static void Save(string fileName, IfcRepository collection)
+        /// <param name="store">The IFC store to be saved</param>
+        /// <param name="progressDelegate">The progress delegate</param>
+        [IsVisibleInDynamoLibrary(false)]
+        public static void Save(string fileName, IfcStore store, ReportProgressDelegate progressDelegate)
         {
             using (var fileStream = File.Create(fileName))
             {
-                collection.XbimModel.SaveAsIfc(fileStream);
+                store.XbimModel.SaveAsIfc(fileStream, progressDelegate);
                 fileStream.Close();
             }
         }
+
+        #endregion
 
         /// <summary>
         /// The current IFC schema version of the element collection.
@@ -97,15 +82,5 @@ namespace TRexIfc
             .ToArray();
 
 
-        /// <summary>
-        /// Creates a new repository using a progress feedback.
-        /// </summary>
-        /// <param name="progressReporter">The progress feedback</param>
-        /// <returns>An opened IFC repository</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcRepository WithProgressReporter(IProgress<int> progressReporter)
-        {
-            return new IfcRepository { ProgressDelegate = (p, s) => progressReporter.Report(p) };
-        }
     }
 }

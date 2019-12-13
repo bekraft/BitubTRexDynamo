@@ -7,23 +7,52 @@
              mc:Ignorable="d" 
              d:DesignHeight="25" d:DesignWidth="150">
     <Grid MinHeight="25" MinWidth="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" MinHeight="25"/>
+            <RowDefinition Height="Auto" MinHeight="20"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         
-        <ProgressBar x:Name="Progress"
+        <ProgressBar x:Name="Progress"                     
                      Grid.Column="0"
+                     Grid.Row="0"
                      MinWidth="100" Height="15" Margin="5,5,2,5"
                      Minimum="0" Maximum="100"
-                     Value="{Binding Path=Progress}"/>
+                     Value="{Binding Path=ProgressPercentage}"/>
         
         <Button x:Name="Cancel"
+                IsEnabled="{Binding Path=IsCancelable}"
+                Visibility="{Binding Path=CancellationVisibility}"
                 Grid.Column="1"
+                Grid.Row="0"
                 FontSize="6"
                 Content="Cancel"
-                Width="Auto" Margin="2,5,5,5" Height="Auto"                
+                Width="Auto" MinWidth="40" Margin="2,5,5,5" Height="Auto"                
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"/>
+
+        <Label x:Name="ProgressState"
+               Grid.Column="0"
+               Grid.Row="0"
+               FontSize="8"
+               MinWidth="100" Height="25" Margin="2,0,0,2"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               VerticalAlignment="Top"
+               Content="{Binding Path=ProgressState}"/>
+
+        <Label x:Name="TaskName"
+               Grid.ColumnSpan="2"
+               Grid.Row="1"
+               FontSize="10"
+               Height="20" Margin="2,0,0,2"
+               HorizontalContentAlignment="Center"
+               VerticalContentAlignment="Center"
+               VerticalAlignment="Top"               
+               Content="{Binding Path=TaskName}"/>
+
     </Grid>
 </UserControl>

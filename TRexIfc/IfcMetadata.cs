@@ -30,7 +30,7 @@ namespace TRexIfc
         /// </summary>
         /// <param name="ifcRepository">The repository</param>
         /// <returns>A sorted list with most recent at top</returns>
-        public static IfcMetadata[] ByIfcHistory(IfcRepository ifcRepository)
+        public static IfcMetadata[] ByIfcHistory(IfcStore ifcRepository)
         {
             return new IfcMetadata[0];
         }
