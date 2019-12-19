@@ -13,6 +13,7 @@ using Bitub.Ifc.Scene;
 using Bitub.Ifc.Transform.Requests;
 
 using Google.Protobuf;
+using Autodesk.DesignScript.Runtime;
 
 namespace TRexIfc
 {
@@ -139,9 +140,11 @@ namespace TRexIfc
         /// </summary>
         /// <param name="fileNames"></param>
         /// <returns>Exported model file names</returns>
-        public static string[] ExportBinSceneModel(string[] fileNames)
+        [MultiReturn(new[] { "sceneFiles", "failures" })]
+        public static Dictionary<string, string[]> ExportBinSceneModel(string[] fileNames)
         {
             List<string> outFileNames = new List<string>();
+            List<string> failures = new List<string>();
             var exporter = new IfcSceneExporter(new XbimTesselationContext());
             exporter.Settings = new IfcSceneExportSettings
             {
@@ -152,19 +155,31 @@ namespace TRexIfc
             {                
                 using (var model = Xbim.Ifc.IfcStore.Open(fileName))
                 {
-                    var task = exporter.Run(model);
-                    task.Wait();
-
-                    var sceneFileName = $@"{Path.GetDirectoryName(fileName)}\{Path.GetFileNameWithoutExtension(fileName)}.scene";
-                    outFileNames.Add(sceneFileName);
-                    using (var binStream = File.Create(sceneFileName))
+                    try
                     {
-                        var binScene = task.Result.Scene.ToByteArray();
-                        binStream.Write(binScene, 0, binScene.Length);
+                        var sceneTask = exporter.Run(model);
+                        sceneTask.Wait();
+
+                        var sceneFileName = $@"{Path.GetDirectoryName(fileName)}\{Path.GetFileNameWithoutExtension(fileName)}.scene";
+                        outFileNames.Add(sceneFileName);
+                        using (var binStream = File.Create(sceneFileName))
+                        {
+                            var binScene = sceneTask.Result.Scene.ToByteArray();
+                            binStream.Write(binScene, 0, binScene.Length);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        failures.Add($"Failure on '{fileName}': {e.Message}");
                     }
                 }
             }
-            return outFileNames.ToArray();
+
+            return new Dictionary<string, string[]>
+            {
+                { "sceneFiles", outFileNames.ToArray() },
+                { "failures", failures.ToArray() }
+            };
         }
     }
 }

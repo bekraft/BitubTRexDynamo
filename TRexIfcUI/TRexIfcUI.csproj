@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <TargetFrameworks>net47</TargetFrameworks>      
@@ -88,15 +90,14 @@
   </ItemGroup>
   
   <!-- After build -->
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles"> <!-- PostBuildEvent -->
     <PropertyGroup>
       <!--Copy to Dynamo sandbox for testing -->
       <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\2.3\packages\$(ProjectName)</DeployFolder>
       <!--Copy to Dynamo revit for publishing -->
       <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\2.3\packages\$(ProjectName)</DeployFolder>
     </PropertyGroup>
-    <Message Importance="High" Text="++++++++++++++++++++++++++++++++++++++" />
-    <Message Importance="High" Text="Started building the Dynamo extension" />
+    <Message Importance="High" Text="==> Started deploying the Dynamo extension" />
     <!--Defining folders to copy-->
     <ItemGroup>
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll" />
@@ -106,6 +107,7 @@
       <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
     </ItemGroup>
     <!-- Remove before copying -->
+    <Message Importance="High" Text="==> Will remove $(DeployFolder)" />
     <RemoveDir Directories="$(DeployFolder)" />
     <!--Copying to Build Folder-->
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
@@ -113,12 +115,11 @@
     <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployFolder)" />
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
     <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
-    <Message Importance="High" Text="++++++++++++++++++++++++++++++++++++++" />
-    <Message Importance="High" Text="Built to $(TargetDir)\$(ProjectName)" />
+    <Message Importance="High" Text="==> Will copy @(SourceDlls)" />
+    <Message Importance="High" Text="==> Built to $(TargetDir)$(ProjectName)" />
     <ItemGroup>
       <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
     </ItemGroup>
-    <Message Importance="High" Text="++++++++++++++++++++++++++++++++++++++" />
-    <Message Importance="High" Text="Deployed to $(DeployFolder)" />
+    <Message Importance="High" Text="==> Deployed to $(DeployFolder)" />
   </Target>
 </Project>
