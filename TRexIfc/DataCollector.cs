@@ -20,52 +20,42 @@ namespace TRexIfc
     /// <summary>
     /// IFC aggregated helper utilities.
     /// </summary>
-    public class IfcUtils
+    public class DataCollector
     {
         #region Internal
 
-        internal IfcUtils()
+        internal DataCollector()
         {
         }
 
         #endregion
 
+        internal static string[] CollectPropertySets(IfcStore ifcStore)
+        {
+            return ifcStore.XbimModel.Instances
+                        .OfType<IIfcPropertySetDefinition>()
+                        .Select(s => s.Name?.ToString())
+                        .Distinct()
+                        .ToArray();
+        }
+
         /// <summary>
         /// Gets all property set names in distinct order.
         /// </summary>
-        /// <param name="fileNames">IFC model files</param>
+        /// <param name="storeProducer">IFC model producer</param>
         /// <returns>A unique sequence of property set names</returns>
-        public static string[][] ListPropertySetNames(string[] fileNames)
+        public static string[][] CollectPropertySetNames(IfcStoreProducer storeProducer)
         {
-            Dictionary<string, string[]> psetNamesPerFile = new Dictionary<string, string[]>();
-            foreach (var fileName in fileNames)
+            List<string[]> namesPerModel = new List<string[]>();
+            using (storeProducer)
             {
-                ISet<string> psetNames = new HashSet<string>();
-                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
+                while (storeProducer?.MoveNext() ?? false)
                 {
-                    foreach (string name in model.Instances
-                        .OfType<IIfcPropertySetDefinition>()
-                        .Select(s => s.Name))
-                    {
-                        psetNames.Add(name);
-                    }
+                    namesPerModel.Add(CollectPropertySets(storeProducer.Current));
                 }
-                psetNamesPerFile.Add(Path.GetFileName(fileName), psetNames.ToArray());
             }
 
-            return psetNamesPerFile.Select(e => e.Value).ToArray();
-        }
-
-        public static string[] RenamePropertySets(
-            string[] fileNames,
-            string targetDirectory,
-            string[] propertySetNames,
-            string[] replaceByNames,
-            string replaceFileNamePattern,
-            string replaceWith)
-        {
-            List<string> reports = new List<string>();
-            return reports.ToArray();
+            return namesPerModel.ToArray();
         }
 
         /// <summary>

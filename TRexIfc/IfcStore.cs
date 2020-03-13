@@ -59,7 +59,7 @@ namespace TRexIfc
         /// <summary>
         /// The current IFC schema version of the element collection.
         /// </summary>
-        public string Schema() => XbimModel.SchemaVersion.ToString();
+        public string Schema { get => XbimModel.SchemaVersion.ToString(); }
 
         /// <summary>
         /// Lists all product types which are present in the model

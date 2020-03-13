@@ -80,6 +80,7 @@ namespace TRexIfc
         /// Clears given keys
         /// </summary>
         /// <param name="keys"></param>
+        [IsVisibleInDynamoLibrary(false)]
         public static void Clear(params string[] keys)
         {
             object f;

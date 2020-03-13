@@ -12,7 +12,7 @@ using Xbim.Ifc;
 namespace TRexIfc
 {
     /// <summary>
-    /// IFC Metadata representation
+    /// IFC model metadata properties.
     /// </summary>
     [NodeName("IFC Metadata")]
     [NodeCategory("TRexIfc")]

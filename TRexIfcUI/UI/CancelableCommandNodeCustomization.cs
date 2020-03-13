@@ -13,6 +13,8 @@ namespace TRexIfc.UI
             var cancelableControl = new CancelableCommandControl();
             nodeView.inputGrid.Children.Add(cancelableControl);
             cancelableControl.DataContext = model;
+            model.TaskName = "(Initiated)";
+            cancelableControl.Cancel.Click += (s, e) => model.IsCanceled = true;
         }
 
         public void Dispose()

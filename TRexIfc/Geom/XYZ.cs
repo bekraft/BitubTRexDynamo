@@ -9,16 +9,20 @@ using Xbim.Common.Geometry;
 namespace TRexIfc.Geom
 {
     /// <summary>
-    /// IFC cartesian point.
+    /// A 3D point.
     /// </summary>
-    public class IfcCartesianPoint
+    public class XYZ
     {
-        internal XbimPoint3D XYZ { get; set; }
+        #region Internals
 
-        internal IfcCartesianPoint(double x, double y, double z)
+        internal XbimPoint3D XbimPoint { get; set; }
+
+        internal XYZ(double x, double y, double z)
         {
-            XYZ = new XbimPoint3D(x, y, z);
+            XbimPoint = new XbimPoint3D(x, y, z);
         }
+
+        #endregion
 
         /// <summary>
         /// A new IFC cartesian point by given coordinates.
@@ -27,9 +31,9 @@ namespace TRexIfc.Geom
         /// <param name="y">Y</param>
         /// <param name="z">Z</param>
         /// <returns>A 3D point</returns>
-        public static IfcCartesianPoint ByXYZ(double x, double y, double z)
+        public static XYZ ByXYZ(double x, double y, double z)
         {
-            return new IfcCartesianPoint(x, y, z);
+            return new XYZ(x, y, z);
         }
     }
 }

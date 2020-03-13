@@ -8,9 +8,6 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Xbim.Ifc;
-using System.Windows;
-
 namespace TRexIfc
 {
     /// <summary>
@@ -18,23 +15,27 @@ namespace TRexIfc
     /// </summary>
     [NodeName("IFC Load")]
     [NodeCategory("TRexIfc")]
-    [InPortTypes(typeof(string))]
-    [OutPortTypes(typeof(IfcStore))]
+    [InPortTypes(typeof(string[]))]
+    [OutPortTypes(typeof(IfcStoreProducer))]
     [IsDesignScriptCompatible]
     public class IfcStoreLoadNodeModel : CancelableCommandNode
     {
         #region Internals
+        // The dynamic delegate signature
         private string _ref;
+        private IfcStoreProducer _storeProducer;
         #endregion
 
         /// <summary>
         /// New IFC repository node model.
         /// </summary>
         public IfcStoreLoadNodeModel()
-        {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcStore", "IFC store")));
+        {            
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileNames", "IFC file name and path")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("storeProducer", "IFC store producer")));
             RegisterAllPorts();
+
+            IsCancelable = true;            
         }
 
         internal string CreateFunctionReference
@@ -50,12 +51,17 @@ namespace TRexIfc
         /// <summary>
         /// A delegate for creating new Ifc stores.
         /// </summary>
-        /// <param name="fileName">The ifc filename</param>
-        /// <returns>A new IFC store</returns>
-        public IfcStore CreateIfcStore(string fileName)
+        /// <param name="fileName">The IFC model file names to be loaded</param>
+        /// <returns>A new IFC producer</returns>
+        public IfcStoreProducer CreateIfcStore(string fileName)
         {
-            TaskName = fileName.Substring(fileName.LastIndexOf('\\') + 1);
-            return IfcStore.Load(fileName, (p, s) => ProgressPercentage = p);
+            if (null == _storeProducer)
+            {
+                _storeProducer = IfcStoreProducer.ByTaskNode(this);
+                _storeProducer.FileNameCollector = new List<string>();
+            }
+            _storeProducer.FileNameCollector.Add(fileName);
+            return _storeProducer;
         }
 
         /// <summary>

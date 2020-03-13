@@ -13,10 +13,11 @@ using Autodesk.DesignScript.Runtime;
 
 namespace TRexIfc
 {
-    public abstract class CancelableCommandNode : NodeModel, IProgress<ICancelableProgressState>
+    public abstract class CancelableCommandNode : NodeModel, ICancelableTaskNode, IProgress<ICancelableProgressState>
     {
         #region Internals
         private bool _isCancelable;
+        private bool _isCanceled;
         private int _progressPercentage;
         private string _progressState;
         private string _taskName;
@@ -41,13 +42,22 @@ namespace TRexIfc
             }
         }
 
-        [JsonIgnore]
         public bool IsCancelable
         {
             get => _isCancelable;
             set {
                 _isCancelable = value;
                 RaisePropertyChanged(nameof(IsCancelable));
+            }
+        }
+
+        [JsonIgnore]
+        public bool IsCanceled
+        {
+            get => _isCanceled;
+            set {
+                _isCanceled = value;
+                RaisePropertyChanged(nameof(IsCanceled));
             }
         }
 

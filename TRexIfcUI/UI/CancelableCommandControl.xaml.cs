@@ -2,9 +2,8 @@
 
 namespace TRexIfc.UI
 {
-    /// <summary>
-    /// Interaktionslogik für CancelableCommandControl.xaml
-    /// </summary>
+#pragma warning disable CS1591
+
     public partial class CancelableCommandControl : UserControl
     {
         public CancelableCommandControl()
@@ -12,4 +11,6 @@ namespace TRexIfc.UI
             InitializeComponent();
         }
     }
+
+#pragma warning restore CS1591
 }

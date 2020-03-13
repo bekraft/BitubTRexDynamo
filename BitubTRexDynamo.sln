@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29409.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRexIfc", "TRexIfc\TRexIfc.csproj", "{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRexIfc", "TRexIfc\TRexIfc.csproj", "{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRexIfcUI", "TRexIfcUI\TRexIfcUI.csproj", "{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TRexIfcUI", "TRexIfcUI\TRexIfcUI.csproj", "{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TRexIfc.Tests", "TRexIfc.Tests\TRexIfc.Tests.csproj", "{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
