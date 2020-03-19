@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 
 using Xbim.Common;
+using Bitub.Ifc;
+
+using TRexIfc.Logging;
 
 namespace TRexIfc
 {
     /// <summary>
     /// An IFC model producer nodes loading via enumerable model access.
     /// </summary>
-    public class IfcStoreProducer : IEnumerator<IfcStore>
+    public class IfcStoreProducer : IIfcStoreProducer
     {
         #region Internals
         internal IEnumerator FileNames { get; private set; }
@@ -77,6 +80,16 @@ namespace TRexIfc
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public IfcStore Current { get; private set; }
+
+        /// <summary>
+        /// The project's meta data.
+        /// </summary>
+        public IfcProjectMetadata ProjectMetadata { get; internal set; }
+
+        /// <summary>
+        /// The logger instance.
+        /// </summary>
+        public Logger Logger { get; internal set; }
 
 #pragma warning disable CS1591
 
