@@ -13,8 +13,8 @@ namespace TRexIfc
     /// <summary>
     /// IFC store node model.
     /// </summary>
-    [NodeName("IFC Load")]
-    [NodeCategory("TRexIfc")]
+    [NodeName("IFC Procedural Load")]
+    [NodeCategory("TRexIfc.Load")]
     [InPortTypes(typeof(string[]))]
     [OutPortTypes(typeof(IfcStoreProducer))]
     [IsDesignScriptCompatible]

@@ -21,18 +21,18 @@ namespace TRexIfc
         {
         }
 
-        internal IfcProjectMetadata MetaData { get; set; }
+        internal IfcAuthoringMetadata MetaData { get; set; }
 
         #endregion
 
         /// <summary>
         /// Extracts the <c>IfcMetadata</c> by repositories change history.
         /// </summary>
-        /// <param name="ifcRepository">The repository</param>
+        /// <param name="ifcStore">The repository</param>
         /// <returns>A sorted list with most recent at top</returns>
-        public static IfcMetadata[] ByIfcHistory(IfcStore ifcRepository)
+        public static IfcAuthoringMetadata[] ListOwnerHistory(IfcStore ifcStore)
         {
-            return new IfcMetadata[0];
+            return new IfcMetadataHistory(ifcStore.XbimModel).Chronically.ToArray();
         }
 
         /// <summary>
@@ -40,28 +40,40 @@ namespace TRexIfc
         /// </summary>
         /// <param name="name">The owners name</param>
         /// <param name="givenName">The given name</param>
-        /// <param name="applicationName">The authoring application name</param>
-        /// <param name="applicationID">The authoring application ID</param>
-        /// <returns>New meta data</returns>
-        public static IfcMetadata ByEditorAndApplication(
+        /// <param name="organisationName">The authoring organisation name</param>
+        /// <param name="organisationID">The authoring organisation ID</param>
+        /// <param name="address">The address of the organisation</param>
+        /// <returns>New meta data wrapping author's credentials and organisation details</returns>
+        public static IfcMetadata ByAuthorAndOrganisation(
             string name, 
             string givenName, 
-            string applicationName, 
-            string applicationID)
+            string organisationName, 
+            string organisationID,
+            string address)
         {
+            OrganisationData org = new OrganisationData
+            {
+                Name = organisationName,
+                Id = organisationID,
+                Addresses = new AddressData[] 
+                { 
+                    new AddressData 
+                    { 
+                        Address = address, 
+                        Type = Xbim.Ifc4.Interfaces.IfcAddressTypeEnum.OFFICE 
+                    } 
+                }
+            };
+
             return new IfcMetadata
             {
-                MetaData = new IfcProjectMetadata
-                {
-                    AuthoringApplication = new ApplicationData
-                    {
-                        ApplicationID = applicationID,
-                        ApplicationName = applicationName
-                    },
-                    Owner = new AuthorData
+                MetaData = new IfcAuthoringMetadata
+                {                    
+                    Editor = new AuthorData
                     {
                         Name = name,
-                        GivenName = givenName
+                        GivenName = givenName,
+                        Organisations = new OrganisationData[] { org }
                     }
                 }
             };
@@ -72,12 +84,12 @@ namespace TRexIfc
         /// </summary>
         /// <param name="newEditorName">A name</param>
         /// <param name="newGivenName">A given name</param>
-        /// <returns>A new IfcMetadata</returns>
-        public static IfcMetadata ByNewEditor(string newEditorName, string newGivenName)
+        /// <returns>New metadata wrapping the author's credentials only</returns>
+        public static IfcMetadata ByAuthor(string newEditorName, string newGivenName)
         {
             return new IfcMetadata
             {
-                MetaData = new IfcProjectMetadata
+                MetaData = new IfcAuthoringMetadata
                 {
                     Editor = new AuthorData
                     {
@@ -89,36 +101,22 @@ namespace TRexIfc
         }
 
         /// <summary>
-        /// Changes the editor name.
+        /// Turns the meta data into serialized represential data.
         /// </summary>
-        /// <param name="newEditorName">A new name</param>
-        /// <param name="newGivenName">A new given name</param>
-        /// <returns>Changed meta data</returns>
-        public IfcMetadata NewEditorName(string newEditorName, string newGivenName)
+        /// <returns></returns>
+        [MultiReturn("authorName", "authorGivenName", "ownerName", "ownerGivenName", "organisationName", "organisationID", "organisationAddress")]
+        public Dictionary<string, object> ToData()
         {
-            MetaData.Editor = new AuthorData
-            {
-                Name = newEditorName,
-                GivenName = newGivenName
+            return new Dictionary<string, object>() 
+            {                
+                { "authorName", MetaData?.Editor?.Name },
+                { "authorGivenName", MetaData?.Editor?.GivenName },
+                { "ownerName", MetaData?.Owner?.Name },
+                { "ownerGivenName", MetaData?.Owner?.GivenName },
+                { "organisationName", MetaData?.Editor?.Organisations.Select(o => o.Name).ToArray() },
+                { "organisationID", MetaData?.Editor?.Organisations.Select(o => o.Id).ToArray() },
+                { "organisationAddress", MetaData?.Editor?.Organisations.Select(o => o.Addresses.Select(a => a.Address).ToArray()).ToArray() },
             };
-            return this;
         }
-
-        /// <summary>
-        /// Changes the application credentials.
-        /// </summary>
-        /// <param name="newApplicationName">A new application name</param>
-        /// <param name="newApplicationID">A new application ID</param>
-        /// <returns>Changed meta data</returns>
-        public IfcMetadata NewApplication(string newApplicationName, string newApplicationID)
-        {
-            MetaData.AuthoringApplication = new ApplicationData
-            {
-                ApplicationName = newApplicationName,
-                ApplicationID = newApplicationID
-            };
-            return this;
-        }
-
     }
 }

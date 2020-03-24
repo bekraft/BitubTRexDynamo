@@ -7,77 +7,70 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <Grid Margin="5,5,5,5" MinWidth="200" Height="Auto">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Grid x:Name="MetadataGrid" Margin="5,5,5,5" MinWidth="200" Height="Auto">
 
-        <GroupBox Header="Model metadata" x:Name="MetadataGroup" Grid.Row="0">
-            <Grid x:Name="MetadataGrid">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" 
-                       FontSize="8"
-                       Content="Name"/>
-                <TextBox Grid.Row="1"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=EditorName}"/>
+            <Label Grid.Row="0" 
+                    FontSize="8"
+                    Content="Name (empty for anonymous)"/>
+            <TextBox Grid.Row="1"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Height="23" 
+                        Margin="2,2,2,2" 
+                        TextWrapping="Wrap"                           
+                        Width="Auto"
+                        FontSize="10"
+                        Text="{Binding Path=EditorName}"/>
 
-                <Label Grid.Row="2"
-                       FontSize="8"
-                       Content="Given name"/>
-                <TextBox Grid.Row="3"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=EditorGivenName}"/>
+            <Label Grid.Row="2"
+                    FontSize="8"
+                    Content="Given name (empty for anonymous)"/>
+            <TextBox Grid.Row="3"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Height="23" 
+                        Margin="2,2,2,2" 
+                        TextWrapping="Wrap"                           
+                        Width="Auto"
+                        FontSize="10"
+                        Text="{Binding Path=EditorGivenName}"/>
 
-                <Label Grid.Row="4" 
-                       FontSize="8"
-                       Content="Application ID"/>
-                <TextBox Grid.Row="5"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=ApplicationID}"/>
+            <Label Grid.Row="4" 
+                    FontSize="8"
+                    Content="Organisation / Company name"/>
+            <TextBox Grid.Row="5"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Height="23" 
+                        Margin="2,2,2,2" 
+                        TextWrapping="Wrap"                           
+                        Width="Auto"
+                        FontSize="10"
+                        Text="{Binding Path=OrganisationName}"/>
 
-                <Label Grid.Row="6"
-                       FontSize="8"
-                       Content="Application name"/>
-                <TextBox Grid.Row="7"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=ApplicationName}"/>
-            </Grid>
-        </GroupBox>
+            <Label Grid.Row="6"
+                    FontSize="8"
+                    Content="Address"/>
+            <TextBox Grid.Row="7"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Height="23" 
+                        Margin="2,2,2,2" 
+                        TextWrapping="Wrap"                           
+                        Width="Auto"
+                        FontSize="10"
+                        Text="{Binding Path=OrganisationAddress}"/>
     </Grid>
 </UserControl>

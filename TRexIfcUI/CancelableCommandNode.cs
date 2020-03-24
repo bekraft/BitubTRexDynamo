@@ -13,7 +13,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace TRexIfc
 {
-    public abstract class CancelableCommandNode : NodeModel, ICancelableTaskNode, IProgress<ICancelableProgressState>
+    public abstract class CancelableCommandNode : NodeModel, ICancelableTaskNode
     {
         #region Internals
         private bool _isCancelable;
@@ -22,6 +22,10 @@ namespace TRexIfc
         private string _progressState;
         private string _taskName;
         private Visibility _visibility;
+
+        private ICancelableProgressState _progressToken;
+
+        private object _monitor = new object();
         #endregion
 
         protected CancelableCommandNode() : base()
@@ -30,7 +34,7 @@ namespace TRexIfc
 
         protected CancelableCommandNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-        }
+        }        
 
         [JsonIgnore]
         public Visibility CancellationVisibility
@@ -92,11 +96,31 @@ namespace TRexIfc
         }
 
         [IsVisibleInDynamoLibrary(false)]
+        public void InitNode(ICancelableProgressState progressToken)
+        {
+            lock (_monitor)
+            {
+                _progressToken = progressToken;
+
+                if (IsCancelable && IsCanceled)
+                    _progressToken.MarkCanceled();
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
         public void Report(ICancelableProgressState value)
         {
-            var percentage = value.Percentage;
-            ProgressPercentage = percentage;            
-            ProgressState = $"{percentage}%";
+            lock (_monitor)
+            {
+                _progressToken = value;
+
+                var percentage = value.Percentage;
+                ProgressPercentage = percentage;
+                ProgressState = $"{percentage}%";
+
+                if (IsCancelable && IsCanceled)
+                    value.MarkCanceled();
+            }
         }        
     }
 }

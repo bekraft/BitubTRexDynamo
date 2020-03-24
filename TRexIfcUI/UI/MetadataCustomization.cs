@@ -6,9 +6,9 @@ using Dynamo.Wpf;
 
 namespace TRexIfc.UI
 {
-    public class IfcMetadataCustomization : INodeViewCustomization<IfcMetadataNodeModel>
+    public class MetadataCustomization : INodeViewCustomization<AuthorDataNodeModel>
     {
-        public void CustomizeView(IfcMetadataNodeModel model, NodeView nodeView)
+        public void CustomizeView(AuthorDataNodeModel model, NodeView nodeView)
         {
             var metaDataControl = new MetaDataControl();
             nodeView.inputGrid.Children.Add(metaDataControl);

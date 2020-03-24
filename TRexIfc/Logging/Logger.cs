@@ -16,19 +16,48 @@ namespace TRexIfc.Logging
     {
         #region Internals
 
+#pragma warning disable CS1591
+
         /// <summary>
         /// Logger factory
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public ILoggerFactory LoggerFactory { get; private set; }
 
+        /// <summary>
+        /// The default log.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public Microsoft.Extensions.Logging.ILogger DefaultLog { get; private set; }
+
         internal string MessageTemplate { get; set; } =         
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId}){NewLine}{Exception}";
 
         internal Logger()
         {
-            LoggerFactory = new LoggerFactory();            
+            LoggerFactory = new LoggerFactory();
+            DefaultLog = LoggerFactory.CreateLogger<Logger>();
         }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogInfo(string message, params object[] args)
+        {
+            DefaultLog.LogInformation(message, args);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogWarning(string message, params object[] args)
+        {
+            DefaultLog.LogWarning(message, args);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogError(string message, params object[] args)
+        {
+            DefaultLog.LogError(message, args);
+        }
+
+#pragma warning restore CS1591
 
         #endregion
 

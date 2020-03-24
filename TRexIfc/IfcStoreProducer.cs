@@ -1,9 +1,6 @@
 ﻿using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -20,18 +17,20 @@ namespace TRexIfc
     public class IfcStoreProducer : IIfcStoreProducer
     {
         #region Internals
+        // IFC files to be loaded
         internal IEnumerator FileNames { get; private set; }
+        // The task node
         internal ICancelableTaskNode TaskNode { get; set; }
 
         internal IfcStoreProducer(ICancelableTaskNode taskNode)
         {
             TaskNode = taskNode;
+            Logger = new Logger();
         }
 
-        internal IfcStoreProducer(string[] fileNames, ICancelableTaskNode taskNode = null)
+        internal IfcStoreProducer(string[] fileNames, ICancelableTaskNode taskNode = null) : this(taskNode)
         {
             FileNames = fileNames.GetEnumerator();
-            TaskNode = taskNode;            
         }
 
         #endregion
@@ -57,10 +56,14 @@ namespace TRexIfc
         /// A new IFC model producer by given filenames.
         /// </summary>
         /// <param name="fileNames">An array of filen ames</param>
+        /// <param name="logger">An optional logger instance</param>
         /// <returns>An iterative producer</returns>
-        public static IfcStoreProducer ByFileNames(string[] fileNames)
+        public static IfcStoreProducer ByFileNames(string[] fileNames, Logger logger)
         {
-            return new IfcStoreProducer(fileNames);
+            return new IfcStoreProducer(fileNames)
+            {
+                Logger = logger
+            };
         }
 
         /// <summary>
@@ -70,9 +73,12 @@ namespace TRexIfc
         /// <param name="taskNode">A task node to report progress</param>
         /// <returns>An iterative producer</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcStoreProducer ByFileNames(string[] fileNames, ICancelableTaskNode taskNode)
+        public static IfcStoreProducer ByFileNames(string[] fileNames, Logger logger, ICancelableTaskNode taskNode)
         {
-            return new IfcStoreProducer(fileNames, taskNode);
+            return new IfcStoreProducer(fileNames, taskNode)
+            {
+                Logger = logger
+            };
         }
 
         /// <summary>
@@ -80,11 +86,6 @@ namespace TRexIfc
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public IfcStore Current { get; private set; }
-
-        /// <summary>
-        /// The project's meta data.
-        /// </summary>
-        public IfcProjectMetadata ProjectMetadata { get; internal set; }
 
         /// <summary>
         /// The logger instance.
@@ -123,7 +124,7 @@ namespace TRexIfc
                         TaskNode.ProgressState = s?.ToString();
                     }
                 };
-                Current = IfcStore.Load(fileName, reportProgress);
+                Current = IfcStore.ByLoad(fileName, Logger, reportProgress);
                 return true;
             }
             else

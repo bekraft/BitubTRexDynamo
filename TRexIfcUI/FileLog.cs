@@ -10,16 +10,15 @@ using Newtonsoft.Json;
 
 using TRexIfc.Logging;
 
-namespace TRexIfcUI
+namespace TRexIfc
 {
     /// <summary>
     /// A file logger capturing the logging output and redirected to file.
     /// </summary>
     [NodeName("FileLog")]
     [NodeCategory("TRexIfc.Log")]
-    [OutPortNames("logger")]
+    [InPortTypes(typeof(string))]
     [OutPortTypes(typeof(Logger))]
-    [OutPortDescriptions("Logging instance")]
     [IsDesignScriptCompatible]
     public class FileLog : NodeModel
     {

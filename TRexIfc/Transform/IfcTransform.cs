@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
+
+using Bitub.Ifc.Transform;
+
+using TRexIfc.Logging;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -16,39 +22,38 @@ namespace TRexIfc.Transform
         {
         }
 
-        internal static IIfcStoreProducer MapTo(IIfcStoreProducer source, Func<IfcStore,IfcStore> delegateFunction, ICancelableTaskNode taskNode)
-        {
-
-        }
-
         #endregion
 
+        /// <summary>
+        /// Removes IFC property sets by their names.
+        /// </summary>
+        /// <param name="pref">The request preferences</param>
+        /// <param name="storeProducer">The IFC store producer</param>
+        /// <param name="taskNode">An optional task node for progress annoucement</param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcStore RemovePropertySets(PSetRemovalRequest pref, IfcStore ifcStore, ICancelableTaskNode taskNode)
+        public static IIfcStoreProducer RemovePropertySets(PSetRemovalRequest pref, IIfcStoreProducer storeProducer, ICancelableTaskNode taskNode)
         {
-            foreach(var ifcStore in new IfcStoreSeq(storeProducer))
+            return new IfcStoreProducerDelegate(storeProducer, (s) =>
             {
-                var task = pref.Request.Run(ifcStore.XbimModel, null);
-                task.Wait();
-
-                switch(task.Result.ResultCode)
+                using (Task<TransformResult> taskResult = pref.Request.Run(s.XbimModel, taskNode))
                 {
-                    case Bitub.Ifc.Transform.TransformResult.Code.Finished:
-                        task.Result.Target
+                    taskResult.Wait();
+
+                    switch (taskResult.Result.ResultCode)
+                    {
+                        case TransformResult.Code.Finished:
+                            return new IfcStore(taskResult.Result.Target, s.FilePathName);
+                        case TransformResult.Code.Canceled:
+                            storeProducer.Logger?.DefaultLog.LogWarning("Canceled by user request ({0}).", s.FilePathName);
+                            break;
+                        case TransformResult.Code.ExitWithError:
+                            storeProducer.Logger?.DefaultLog.LogError("Caught error ({0}): {1}", s.FilePathName, taskResult.Exception);
+                            break;
+                    }
                 }
-
-            if (task.Result.ResultCode == Bitub.Ifc.Transform.TransformResult.Code.Finished)
-                {
-                    var transformedModel = task.Result.Target;
-                }
-
-            }
-
-        }
-
-        public static IIfcStoreProducer RemovePropertySets(PSetRemovalRequest pref, IIfcStoreProducer storeProducer)
-        {
-            return null;
+                return null;
+            });
         }
 
     }

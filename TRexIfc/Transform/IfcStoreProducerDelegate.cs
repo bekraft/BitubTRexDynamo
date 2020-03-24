@@ -6,7 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Runtime;
+
 using Bitub.Ifc;
+
+using TRexIfc.Logging;
 
 #pragma warning disable CS1591 
 
@@ -33,9 +36,9 @@ namespace TRexIfc.Transform
             _function = f;
         }
 
-        public IfcProjectMetadata ProjectMetadata { get => _source.ProjectMetadata; }
-
         public IfcStore Current { get => _cIfcStore; }
+
+        public Logger Logger { get => _source.Logger; }
 
         [IsVisibleInDynamoLibrary(false)]
         object IEnumerator.Current { get => Current; }
@@ -49,6 +52,18 @@ namespace TRexIfc.Transform
 
         [IsVisibleInDynamoLibrary(false)]
         public bool MoveNext()
+        {
+            bool hasNext = false;
+            do
+            {   // Skip over failures
+                if (hasNext)
+                    _source.Logger?.LogInfo("Skipped IFC model '{0}' due to delegate failures.", _source.Current.FilePathName);
+                hasNext = InternallyMoveNext();
+            } while (hasNext && null == _cIfcStore);
+            return hasNext;
+        }
+
+        private bool InternallyMoveNext()
         {
             if (_source?.MoveNext() ?? false)
             {

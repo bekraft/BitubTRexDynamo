@@ -21,7 +21,6 @@ namespace TRexIfc
     [IsVisibleInDynamoLibrary(false)]
     public interface IIfcStoreProducer : IEnumerator<IfcStore>
     {
-        IfcProjectMetadata ProjectMetadata { get; }
         Logger Logger { get; }
     }
 
