@@ -11,7 +11,7 @@ using Autodesk.DesignScript.Runtime;
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace TRexIfc
+namespace Task
 {
     public abstract class CancelableCommandNode : NodeModel, ICancelableTaskNode
     {
@@ -30,10 +30,12 @@ namespace TRexIfc
 
         protected CancelableCommandNode() : base()
         {
+            ResetState();
         }
 
         protected CancelableCommandNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            ResetState();
         }        
 
         [JsonIgnore]
@@ -104,6 +106,38 @@ namespace TRexIfc
 
                 if (IsCancelable && IsCanceled)
                     _progressToken.MarkCanceled();
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void ResetState()
+        {
+            lock (_monitor)
+            {
+                ProgressPercentage = 0;
+                ProgressState = "ready";
+                TaskName = "";
+            }
+        }
+
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void ClearState()
+        {
+            lock (_monitor)
+            {
+                ProgressState = "done";
+                TaskName = "";
+            }    
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public void Report(int percentage, object userState)
+        {
+            lock(_monitor)
+            {
+                ProgressPercentage = percentage;
+                ProgressState = $"{userState?.ToString() ?? "Running"}";
             }
         }
 

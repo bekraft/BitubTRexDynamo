@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Bitub.Ifc.Transform.Requests;
 
-using Bitub.Ifc.Transform.Requests;
-
-namespace TRexIfc.Transform
+namespace Task
 {
     /// <summary>
     /// Property set removal preferences.

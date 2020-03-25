@@ -1,10 +1,12 @@
 ﻿using Dynamo.Wpf;
 using Dynamo.Controls;
 
+using Task;
+
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace TRexIfc.UI
+namespace UI
 {
     public class CancelableCommandNodeCustomization : INodeViewCustomization<CancelableCommandNode>
     {

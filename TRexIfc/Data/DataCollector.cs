@@ -13,9 +13,10 @@ using Bitub.Ifc.Scene;
 using Bitub.Ifc.Transform.Requests;
 
 using Google.Protobuf;
+
 using Autodesk.DesignScript.Runtime;
 
-namespace TRexIfc
+namespace Data
 {
     /// <summary>
     /// IFC aggregated helper utilities.
@@ -30,7 +31,7 @@ namespace TRexIfc
 
         #endregion
 
-        internal static string[] CollectPropertySets(IfcStore ifcStore)
+        internal static string[] CollectPropertySets(Store.IfcStore ifcStore)
         {
             return ifcStore.XbimModel.Instances
                         .OfType<IIfcPropertySetDefinition>()
@@ -44,7 +45,7 @@ namespace TRexIfc
         /// </summary>
         /// <param name="storeProducer">IFC model producer</param>
         /// <returns>A unique sequence of property set names</returns>
-        public static string[][] CollectPropertySetNames(IfcStoreProducer storeProducer)
+        public static string[][] CollectPropertySetNames(Store.IfcStoreProducer storeProducer)
         {
             List<string[]> namesPerModel = new List<string[]>();
             using (storeProducer)
@@ -56,73 +57,6 @@ namespace TRexIfc
             }
 
             return namesPerModel.ToArray();
-        }
-
-        /// <summary>
-        /// Runs the property set removal
-        /// </summary>
-        /// <param name="fileNames">IFC files</param>
-        /// <param name="targetDirectory">Target directory</param>
-        /// <param name="pSetNames">Removal names</param>
-        /// <param name="replacePattern">Regular expression replacement pattern in file name</param>
-        /// <param name="replaceWith">Replacement</param>
-        /// <returns>Result messages</returns>
-        public static string[] RemovePropertySets(
-            string[] fileNames,
-            string targetDirectory,
-            string[] pSetNames,
-            string replacePattern,
-            string replaceWith)
-        {
-            var editorCredentials = new XbimEditorCredentials
-            {
-                EditorsOrganisationName = "INROS LACKNER SE",
-                ApplicationFullName = "ILSE XBIM",
-                ApplicationDevelopersName = "Bernold Kraft",
-                ApplicationVersion = "0.1",
-                ApplicationIdentifier = "ILSE XBIM",
-                EditorsFamilyName = "Kraft",
-                EditorsGivenName = "Bernold"
-            };
-
-            var removalRequest = new IfcPropertySetRemovalRequest
-            {
-                BlackListNames = pSetNames,
-                IsLogEnabled = false,
-                IsNameMatchingCaseSensitive = false
-            };
-
-            List<string> outFileNames = new List<string>();
-            foreach (var fileName in fileNames)
-            {
-                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
-                {
-                    removalRequest.EditorCredentials = editorCredentials;
-                    var task = removalRequest.Run(model, null);
-                    task.Wait();
-
-
-                    if (task.Result.ResultCode == Bitub.Ifc.Transform.TransformResult.Code.Finished)
-                    {
-                        var transformedModel = task.Result.Target;
-                        var outFileName = Regex.Replace(
-                            Path.GetFileNameWithoutExtension(fileName),
-                            replacePattern,
-                            replaceWith).Trim();
-
-                        var pathOutFileName = $@"{targetDirectory}\{outFileName}{Path.GetExtension(fileName)}";
-                        using (var outputFile = File.Create(pathOutFileName))
-                        {
-                            transformedModel.SaveAsIfc(outputFile);
-                            outputFile.Close();
-                        }
-
-                        transformedModel.Dispose();
-                        outFileNames.Add(pathOutFileName);
-                    }
-                }
-            }
-            return outFileNames.ToArray();
         }
 
         /// <summary>

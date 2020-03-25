@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Xbim.Common.Geometry;
 
-using Xbim.Common.Geometry;
+using Autodesk.DesignScript.Runtime;
 
-namespace TRexIfc.Geom
+namespace Geom
 {
     /// <summary>
     /// A 3D point.
@@ -15,7 +11,11 @@ namespace TRexIfc.Geom
     {
         #region Internals
 
-        internal XbimPoint3D XbimPoint { get; set; }
+        /// <summary>
+        /// The internal point reference.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public XbimPoint3D XbimPoint { get; set; }
 
         internal XYZ(double x, double y, double z)
         {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TRexIfc.UI
+namespace UI
 {
     public partial class SceneExportSettingsControl : UserControl
     {

@@ -8,17 +8,21 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-namespace TRexIfc
+using Internal;
+using Task;
+using Log;
+
+namespace Store
 {
     /// <summary>
-    /// IFC store node model.
+    /// IFC store producer node model.
     /// </summary>
-    [NodeName("IFC Procedural Load")]
-    [NodeCategory("TRexIfc.Load")]
-    [InPortTypes(typeof(string[]))]
+    [NodeName("Ifc Sequential Load")]
+    [NodeCategory("TRexIfc.Store")]
+    [InPortTypes(new string[] { nameof(String), nameof(Logger) })]
     [OutPortTypes(typeof(IfcStoreProducer))]
     [IsDesignScriptCompatible]
-    public class IfcStoreLoadNodeModel : CancelableCommandNode
+    public class IfcStoreProducerNodeModel : CancelableCommandNode
     {
         #region Internals
         // The dynamic delegate signature
@@ -29,22 +33,23 @@ namespace TRexIfc
         /// <summary>
         /// New IFC repository node model.
         /// </summary>
-        public IfcStoreLoadNodeModel()
+        public IfcStoreProducerNodeModel()
         {            
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileNames", "IFC file name and path")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logger", "Optional logger instance")));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("storeProducer", "IFC store producer")));
             RegisterAllPorts();
 
-            IsCancelable = true;            
+            IsCancelable = true;
         }
 
-        internal string CreateFunctionReference
+        private string FunctionReference
         {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<string>(CreateIfcStore);
+            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<string, object>(CreateIfcStoreProducer);
         }
 
         [JsonConstructor]
-        IfcStoreLoadNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        IfcStoreProducerNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
 
@@ -52,13 +57,15 @@ namespace TRexIfc
         /// A delegate for creating new Ifc stores.
         /// </summary>
         /// <param name="fileName">The IFC model file names to be loaded</param>
-        /// <returns>A new IFC producer</returns>
-        public IfcStoreProducer CreateIfcStore(string fileName)
+        /// <param name="loggerInstance">The logger instance</param>
+        /// <returns>A new / existing IFC producer</returns>
+        public IfcStoreProducer CreateIfcStoreProducer(string fileName, object loggerInstance)
         {
             if (null == _storeProducer)
             {
                 _storeProducer = IfcStoreProducer.ByTaskNode(this);
                 _storeProducer.FileNameCollector = new List<string>();
+                _storeProducer.Logger = loggerInstance as Logger;
             }
             _storeProducer.FileNameCollector.Add(fileName);
             return _storeProducer;
@@ -82,7 +89,7 @@ namespace TRexIfc
 
             var funcNode = AstFactory.BuildFunctionCall(
                 new Func<string, string, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(CreateFunctionReference), inputAstNodes[0] });
+                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0], inputAstNodes[1] });
 
             return new[]
             {

@@ -1,14 +1,17 @@
-﻿using Autodesk.DesignScript.Runtime;
-using System;
+﻿using System;
+
 using System.Collections.Concurrent;
 
-namespace TRexIfc
+using Autodesk.DesignScript.Runtime;
+
+namespace Internal
 {
     /// <summary>
     /// A dynamic wrapper utility as workaround for calling non-static
     /// method delegates in Dynamo AST
     /// </summary>
-    public class DynamicWrapper
+    [IsVisibleInDynamoLibrary(false)]
+    public sealed class DynamicWrapper
     {
         private static ConcurrentDictionary<string, object> Registry = new ConcurrentDictionary<string, object>(); 
 
@@ -61,7 +64,7 @@ namespace TRexIfc
         [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, string arg1)
         {
-            return InternallyCall<string>(key, arg1);
+            return InternallyCall(key, arg1);
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace TRexIfc
         [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, double arg1)
         {
-            return InternallyCall<double>(key, arg1);
+            return InternallyCall(key, arg1);
         }
 
         /// <summary>
@@ -108,13 +111,26 @@ namespace TRexIfc
         [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, string arg1, string arg2)
         {
-            return InternallyCall<string, string>(key, arg1, arg2);
+            return InternallyCall(key, arg1, arg2);
         }
-        
+
+        /// <summary>
+        /// Calls a non-static delegate 2-argument function.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="arg1">1st string argument</param>
+        /// <param name="arg2">2nd object argument</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, string arg1, object arg2)
+        {
+            return InternallyCall(key, arg1, arg2);
+        }
+
         internal static object InternallyCall<T1,T2>(string key, T1 arg1, T2 arg2)
         {
             object f;
-            if (!Registry.TryRemove(key, out f))
+            if (!Registry.TryGetValue(key, out f))
                 throw new NotImplementedException();
 
             var r = (f as Func<T1, T2, object>)?.Invoke(arg1, arg2);

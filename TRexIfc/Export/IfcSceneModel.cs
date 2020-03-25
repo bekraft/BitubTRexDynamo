@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRexIfc.Export
+namespace Export
 {
-    public class ModelExport
+    public class IfcSceneModel
     {
     }
 }

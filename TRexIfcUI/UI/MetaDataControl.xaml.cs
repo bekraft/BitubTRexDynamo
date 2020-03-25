@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TRexIfc.UI
+namespace UI
 {
 #pragma warning disable CS1591
 

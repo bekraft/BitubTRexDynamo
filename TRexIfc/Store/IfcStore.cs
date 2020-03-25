@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Runtime;
+using Microsoft.Extensions.Logging;
 
 using System;
 using System.IO;
@@ -8,9 +9,9 @@ using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
-using TRexIfc.Logging;
+using Log;
 
-namespace TRexIfc
+namespace Store
 {
     /// <summary>
     /// An IFC store bound to a physical resource.
@@ -29,7 +30,7 @@ namespace TRexIfc
         public Logger Logger { get; set; }
 
         static IfcStore() {
-            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
+            
         }
 
         internal IfcStore(IModel model, string filePathName = null)
@@ -45,6 +46,32 @@ namespace TRexIfc
         }
 
         /// <summary>
+        /// Initializes the logging instance.
+        /// </summary>
+        /// <param name="logInstance"></param>
+        [IsVisibleInDynamoLibrary(false)]
+        public static void InitLogging(Logger logInstance)
+        {
+            XbimLogging.LoggerFactory = logInstance?.LoggerFactory ?? new LoggerFactory();
+            Xbim.Ifc.IfcStore.ModelProviderFactory = new DefaultModelProviderFactory();
+            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
+        }
+
+        /// <summary>
+        /// Reads and replaces the current internal model. Will also update the logger.
+        /// </summary>
+        /// <param name="fileName">File name to load</param>
+        /// <param name="logInstance">The logger instance</param>
+        /// <param name="progressDelegate">The progress delegate</param>
+        /// <returns>This instance</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcStore ByInitAndLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
+        {
+            InitLogging(logInstance);
+            return ByLoad(fileName, logInstance, progressDelegate);
+        }
+
+        /// <summary>
         /// Reads and replaces the current internal model.
         /// </summary>
         /// <param name="fileName">File name to load</param>
@@ -54,10 +81,20 @@ namespace TRexIfc
         [IsVisibleInDynamoLibrary(false)]
         public static IfcStore ByLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
         {
-            XbimLogging.LoggerFactory = logInstance.LoggerFactory;
-            var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate));
-            return xbimStore;
+            logInstance?.LogInfo("Start loading file '{0}'.", fileName);
+            try
+            {
+                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate));
+                logInstance?.LogInfo("File '{0}' has been loaded successfully.", fileName);
+                return xbimStore;
+            }
+            catch(Exception e)
+            {
+                logInstance?.DefaultLog?.Error(e, "Exception while loading '{0}'.", fileName);
+            }
+            return null;
         }
+
 
         /// <summary>
         /// Wraps a new instance around an exisiting Xbim store.
@@ -110,17 +147,6 @@ namespace TRexIfc
         }
 
         #endregion
-
-        /// <summary>
-        /// Loads an IFC model by given name.
-        /// </summary>
-        /// <param name="fileName">The file name</param>
-        /// <param name="logger">The optional logging instance.</param>
-        /// <returns>An IFC model.</returns>
-        public static IfcStore ByFileName(string fileName, Logger logger = null)
-        {
-            return ByLoad(fileName, logger, null);
-        }
 
         /// <summary>
         /// The current IFC schema version of the element collection.

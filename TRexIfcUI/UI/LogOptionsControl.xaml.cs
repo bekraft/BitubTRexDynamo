@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using Microsoft.Extensions.Logging;
 
-namespace TRexIfc.UI
+namespace UI
 {
 #pragma warning disable CS1591
 

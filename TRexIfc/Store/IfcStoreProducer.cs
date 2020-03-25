@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 
 using Xbim.Common;
-using Bitub.Ifc;
 
-using TRexIfc.Logging;
+using Task;
+using Log;
 
-namespace TRexIfc
+namespace Store
 {
     /// <summary>
     /// An IFC model producer nodes loading via enumerable model access.
@@ -55,15 +55,12 @@ namespace TRexIfc
         /// <summary>
         /// A new IFC model producer by given filenames.
         /// </summary>
-        /// <param name="fileNames">An array of filen ames</param>
-        /// <param name="logger">An optional logger instance</param>
+        /// <param name="fileNames">An array of filen ames</param>        
         /// <returns>An iterative producer</returns>
-        public static IfcStoreProducer ByFileNames(string[] fileNames, Logger logger)
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcStoreProducer ByFileNames(string[] fileNames)
         {
-            return new IfcStoreProducer(fileNames)
-            {
-                Logger = logger
-            };
+            return new IfcStoreProducer(fileNames);
         }
 
         /// <summary>
@@ -73,24 +70,22 @@ namespace TRexIfc
         /// <param name="taskNode">A task node to report progress</param>
         /// <returns>An iterative producer</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcStoreProducer ByFileNames(string[] fileNames, Logger logger, ICancelableTaskNode taskNode)
+        public static IfcStoreProducer ByFileNames(string[] fileNames, ICancelableTaskNode taskNode)
         {
-            return new IfcStoreProducer(fileNames, taskNode)
-            {
-                Logger = logger
-            };
+            return new IfcStoreProducer(fileNames, taskNode);
         }
 
         /// <summary>
         /// The current loaded model.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public IfcStore Current { get; private set; }
+        public IfcStore Current { get; private set; } = null;
 
         /// <summary>
         /// The logger instance.
         /// </summary>
-        public Logger Logger { get; internal set; }
+        [IsVisibleInDynamoLibrary(false)]
+        public Logger Logger { get; set; }
 
 #pragma warning disable CS1591
 
@@ -109,22 +104,29 @@ namespace TRexIfc
             if (null == FileNames && null != FileNameCollector)
                 FileNames = FileNameCollector.GetEnumerator();
 
+            if (null == Current)
+            {
+                Logger?.LogInfo("Start sequentially loading files.");
+                IfcStore.InitLogging(Logger);
+            }
+            else
+            {
+                Current.XbimModel.Dispose();
+                Current = null;
+            }
+
             if ((!TaskNode?.IsCanceled ?? true) && (FileNames?.MoveNext() ?? false))
             {
-                Current?.XbimModel.Dispose();
                 string fileName = FileNames.Current as string;
                 if (null != TaskNode)
-                    TaskNode.TaskName = Path.GetFileName(fileName);
-
-                ReportProgressDelegate reportProgress = (p, s) =>
                 {
-                    if (null != TaskNode)
-                    {
-                        TaskNode.ProgressPercentage = p;
-                        TaskNode.ProgressState = s?.ToString();
-                    }
-                };
-                Current = IfcStore.ByLoad(fileName, Logger, reportProgress);
+                    TaskNode.TaskName = Path.GetFileName(fileName);
+                    Current = IfcStore.ByLoad(fileName, Logger, TaskNode.Report);
+                }
+                else
+                {
+                    Current = IfcStore.ByLoad(fileName, Logger, null);
+                }
                 return true;
             }
             else
@@ -133,7 +135,9 @@ namespace TRexIfc
                 {
                     TaskNode.TaskName = $"Read all files.";
                     TaskNode.ProgressState = "Done";
-                    FileNames = null;                    
+                    FileNames = null;
+
+                    Logger?.LogInfo("All files have been loaded.");
                 }
             }
             return false;

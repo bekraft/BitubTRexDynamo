@@ -1,12 +1,14 @@
 ﻿using Dynamo.Controls;
 using Dynamo.Wpf;
 
+using Store;
+
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace TRexIfc.UI
+namespace UI
 {
-    public class MetadataCustomization : INodeViewCustomization<AuthorDataNodeModel>
+    public class AuthorMetadataCustomization : INodeViewCustomization<AuthorDataNodeModel>
     {
         public void CustomizeView(AuthorDataNodeModel model, NodeView nodeView)
         {

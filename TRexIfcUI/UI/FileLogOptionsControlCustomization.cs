@@ -1,10 +1,12 @@
 ﻿using Dynamo.Controls;
 using Dynamo.Wpf;
 
+using Log;
+
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace TRexIfc.UI
+namespace UI
 {
     public class FileLogOptionsControlCustomization : INodeViewCustomization<FileLog>
     {

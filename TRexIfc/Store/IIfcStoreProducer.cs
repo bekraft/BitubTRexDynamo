@@ -9,11 +9,11 @@ using Bitub.Ifc;
 
 using Autodesk.DesignScript.Runtime;
 
-using TRexIfc.Logging;
+using Log;
 
 #pragma warning disable CS1591 
 
-namespace TRexIfc
+namespace Store
 {
     /// <summary>
     /// An IFC store producer pattern interface

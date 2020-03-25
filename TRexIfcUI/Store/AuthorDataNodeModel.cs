@@ -9,13 +9,13 @@ using Newtonsoft.Json;
 
 using Xbim.Ifc;
 
-namespace TRexIfc
+namespace Store
 {
     /// <summary>
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.
     /// </summary>
     [NodeName("AuthorMetadata")]
-    [NodeCategory("TRexIfc")]
+    [NodeCategory("TRexIfc.Store")]
     [OutPortTypes(typeof(IfcMetadata))]
     [OutPortDescriptions("Author's metadata")]
     [IsDesignScriptCompatible]

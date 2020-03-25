@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Runtime;
 
-using Bitub.Ifc;
-
-using TRexIfc.Logging;
+using Log;
 
 #pragma warning disable CS1591 
 
-namespace TRexIfc.Transform
+namespace Store
 {
     [IsVisibleInDynamoLibrary(false)]
     public class IfcStoreProducerDelegate : IIfcStoreProducer
@@ -26,7 +20,6 @@ namespace TRexIfc.Transform
 
         #endregion
 
-        [IsVisibleInDynamoLibrary(false)]
         public IfcStoreProducerDelegate(IIfcStoreProducer source, Func<IfcStore, IfcStore> f)
         {
             if (null == source)
