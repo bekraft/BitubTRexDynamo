@@ -8,14 +8,14 @@ using Task;
 
 namespace UI
 {
-    public class CancelableCommandNodeCustomization : INodeViewCustomization<CancelableCommandNode>
+    public class CancelableOptionCommandNodeCustomization : INodeViewCustomization<CancelableOptionCommandNode>
     {
-        public void CustomizeView(CancelableCommandNode model, NodeView nodeView)
+        public void CustomizeView(CancelableOptionCommandNode model, NodeView nodeView)
         {
-            var cancelableControl = new CancelableCommandControl();
+            var cancelableControl = new CancelableOptionCommandControl();
             nodeView.inputGrid.Children.Add(cancelableControl);
             cancelableControl.DataContext = model;            
-            cancelableControl.Cancel.Click += (s, e) => model.IsCanceled = true;
+            cancelableControl.ProgressCommandControl.Cancel.Click += (s, e) => model.IsCanceled = true;
         }
 
         public void Dispose()

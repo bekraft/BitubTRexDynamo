@@ -73,7 +73,7 @@ namespace Task
             get => _progressState;
             set {
                 _progressState = value;
-                RaisePropertyChanged(nameof(ProgressState));
+                RaisePropertyChanged(nameof(ProgressState));                
             }
         }
 
@@ -83,7 +83,7 @@ namespace Task
             get => _taskName;
             set {
                 _taskName = value;
-                RaisePropertyChanged(nameof(TaskName));
+                RaisePropertyChanged(nameof(TaskName));                
             }
         }
 

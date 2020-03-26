@@ -56,6 +56,42 @@ namespace Internal
         }
 
         /// <summary>
+        /// Registers a 2-argument function
+        /// </summary>
+        /// <param name="f2">Function reference</param>
+        /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Register<T1, T2, T3>(Func<T1, T2, T3, object> f2)
+        {
+            bool hasAdded;
+            string key;
+            do
+            {
+                key = Guid.NewGuid().ToString();
+                hasAdded = Registry.TryAdd(key, f2);
+            } while (!hasAdded);
+            return key;
+        }
+
+        /// <summary>
+        /// Registers a 2-argument function
+        /// </summary>
+        /// <param name="f2">Function reference</param>
+        /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Register<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f2)
+        {
+            bool hasAdded;
+            string key;
+            do
+            {
+                key = Guid.NewGuid().ToString();
+                hasAdded = Registry.TryAdd(key, f2);
+            } while (!hasAdded);
+            return key;
+        }
+
+        /// <summary>
         /// Calls a non-static delegate 1-argument function.
         /// </summary>
         /// <param name="key">The function key</param>
@@ -75,6 +111,18 @@ namespace Internal
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, double arg1)
+        {
+            return InternallyCall(key, arg1);
+        }
+
+        /// <summary>
+        /// Calls a non-static delegate 1-argument function.
+        /// </summary>
+        /// <param name="key">The function key</param>
+        /// <param name="arg1">1st argument</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, object arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -127,6 +175,12 @@ namespace Internal
             return InternallyCall(key, arg1, arg2);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static object CallGeneric<T1, T2, T3, T4>(string key, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        {
+            return InternallyCall(key, arg1, arg2, arg3, arg4);
+        }
+
         internal static object InternallyCall<T1,T2>(string key, T1 arg1, T2 arg2)
         {
             object f;
@@ -137,5 +191,24 @@ namespace Internal
             return r;
         }
 
+        internal static object InternallyCall<T1, T2, T3>(string key, T1 arg1, T2 arg2, T3 arg3)
+        {
+            object f;
+            if (!Registry.TryGetValue(key, out f))
+                throw new NotImplementedException();
+
+            var r = (f as Func<T1, T2, T3, object>)?.Invoke(arg1, arg2, arg3);
+            return r;
+        }
+
+        internal static object InternallyCall<T1, T2, T3, T4>(string key, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        {
+            object f;
+            if (!Registry.TryGetValue(key, out f))
+                throw new NotImplementedException();
+
+            var r = (f as Func<T1, T2, T3, T4, object>)?.Invoke(arg1, arg2, arg3, arg4);
+            return r;
+        }
     }
 }

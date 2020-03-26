@@ -17,8 +17,9 @@ namespace Store
     {
         #region Internals
 
-        internal IfcMetadata()
+        internal IfcMetadata(IfcAuthoringMetadata authoringMetadata = null)
         {
+            MetaData = authoringMetadata;
         }
 
         internal IfcAuthoringMetadata MetaData { get; set; }
@@ -30,9 +31,9 @@ namespace Store
         /// </summary>
         /// <param name="ifcStore">The repository</param>
         /// <returns>A sorted list with most recent at top</returns>
-        public static IfcAuthoringMetadata[] ListOwnerHistory(IfcStore ifcStore)
+        public static IfcMetadata[] ListOwnerHistory(IfcStore ifcStore)
         {
-            return new IfcMetadataHistory(ifcStore.XbimModel).Chronically.ToArray();
+            return new IfcMetadataHistory(ifcStore.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
         }
 
         /// <summary>

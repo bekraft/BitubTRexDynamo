@@ -44,7 +44,7 @@ namespace Task
                     switch (taskResult.Result.ResultCode)
                     {
                         case TransformResult.Code.Finished:
-                            return new IfcStore(taskResult.Result.Target, s.FilePathName);
+                            return new IfcStore(taskResult.Result.Target, storeProducer.Logger, s.FilePathName);
                         case TransformResult.Code.Canceled:
                             storeProducer.Logger?.LogWarning("Canceled by user request ({0}).", s.FilePathName);
                             break;

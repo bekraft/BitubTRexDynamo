@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\TRexDynamo.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -52,7 +52,7 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20084-Beta.477</Version>
+      <Version>0.1.20086-Beta.477</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">
       <Version>2.5.0.7432</Version>
@@ -74,5 +74,39 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20049.18428" />
-  </ItemGroup>    
+  </ItemGroup>
+
+  <!-- After build -->
+  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
+    <!-- PostBuildEvent -->
+    <PropertyGroup>
+      <!--Copy to Dynamo sandbox for testing -->
+      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\2.5\packages\$(ProjectName)</DeployFolder>
+      <!--Copy to Dynamo revit for publishing -->
+      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\2.5\packages\$(ProjectName)</DeployFolder>
+    </PropertyGroup>
+    <Message Importance="High" Text="==&gt; Started deploying the Dynamo extension" />
+    <!--Defining folders to copy-->
+    <ItemGroup>
+      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
+      <SourcePdbs Include="$(TargetDir)*.pdb" />
+      <SourceXmls Include="$(TargetDir)*.xml" />
+      <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
+    </ItemGroup>
+    <!-- Remove before copying -->
+    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
+    <RemoveDir Directories="$(DeployFolder)" />
+    <!--Copying to Build Folder-->
+    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
+    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />
+    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
+    <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
+    <Message Importance="High" Text="==&gt; Will copy @(SourceDlls)" />
+    <Message Importance="High" Text="==&gt; Built to $(TargetDir)$(ProjectName)" />
+    <ItemGroup>
+      <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
+    </ItemGroup>
+    <Message Importance="High" Text="==&gt; Deployed to $(DeployFolder)" />
+  </Target>
+
 </Project>

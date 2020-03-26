@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using Xbim.Common;
 using Xbim.Ifc;
@@ -33,16 +34,17 @@ namespace Store
             
         }
 
-        internal IfcStore(IModel model, string filePathName = null)
+        internal IfcStore(IModel model, Logger logInstance, string filePathName = null)
         {
             XbimModel = model;
             FilePathName = filePathName;
         }
 
-        internal IfcStore(Xbim.Ifc.IfcStore ifcStore)
+        internal IfcStore(Xbim.Ifc.IfcStore ifcStore, Logger logInstance)
         {
             XbimModel = ifcStore;
             FilePathName = ifcStore.FileName;
+            Logger = logInstance;
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace Store
         {
             XbimLogging.LoggerFactory = logInstance?.LoggerFactory ?? new LoggerFactory();
             Xbim.Ifc.IfcStore.ModelProviderFactory = new DefaultModelProviderFactory();
-            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
+            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();            
         }
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public static IfcStore ByInitAndLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
         {
-            InitLogging(logInstance);
+            InitLogging(logInstance);            
             return ByLoad(fileName, logInstance, progressDelegate);
         }
 
@@ -84,13 +86,13 @@ namespace Store
             logInstance?.LogInfo("Start loading file '{0}'.", fileName);
             try
             {
-                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate));
-                logInstance?.LogInfo("File '{0}' has been loaded successfully.", fileName);
+                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate), logInstance);
+                logInstance?.LogInfo("File '{0}' has been loaded successfully.", fileName);                
                 return xbimStore;
             }
             catch(Exception e)
             {
-                logInstance?.DefaultLog?.Error(e, "Exception while loading '{0}'.", fileName);
+                logInstance?.LogError(e, "Exception while loading '{0}'.", fileName);
             }
             return null;
         }
@@ -100,24 +102,27 @@ namespace Store
         /// Wraps a new instance around an exisiting Xbim store.
         /// </summary>
         /// <param name="ifcStore">The Xbim IFC store</param>
+        /// <param name="logInstance">The logging instance</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcStore ByXbimIfcStore(Xbim.Ifc.IfcStore ifcStore)
+        public static IfcStore ByXbimIfcStore(Xbim.Ifc.IfcStore ifcStore, Logger logInstance)
         {
-            return new IfcStore(ifcStore);
+            return new IfcStore(ifcStore, logInstance);
         }
 
         /// <summary>
         /// Save an IFC model to file.
         /// </summary>
         /// <param name="fileName">The filename</param>
+        /// <param name="newFileExtension">Change format and extension to given extension (or leave it if <c>null</c>)</param>
         /// <param name="store">The IFC store to be saved</param>
         /// <param name="progressDelegate">The progress delegate</param>
         [IsVisibleInDynamoLibrary(false)]
-        public static void Save(string fileName, IfcStore store, ReportProgressDelegate progressDelegate)
+        public static string Save(string fileName, string newFileExtension, IfcStore store, ReportProgressDelegate progressDelegate)
         {
             try
             {
+                fileName = ChangeExtension(fileName, newFileExtension);
                 using (var fileStream = File.Create(fileName))
                 {
                     switch (Path.GetExtension(fileName).ToLower())
@@ -139,11 +144,53 @@ namespace Store
                     fileStream.Close();
                 }
                 store.Logger?.LogInfo("Saving '{0}' done.", fileName);
+                return fileName;
             }
             catch(Exception e)
             {
-                store.Logger?.LogError("Caught exception: {0}", e.Message);
+                store.Logger?.LogError(e, "Caught exception: {0}", e.Message);
+                throw e;
+            }            
+        }
+
+        /// <summary>
+        /// Saves the current store by current file name.
+        /// </summary>
+        /// <param name="store">The IFC store</param>
+        /// <param name="newFileExtension">An optionally given new extension</param>
+        /// <param name="progressDelegate">The progress delegate</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Save(IfcStore store, string newFileExtension, ReportProgressDelegate progressDelegate)
+        {
+            return Save(store.FilePathName, newFileExtension, store, progressDelegate);
+        }
+
+        /// <summary>
+        /// Changes the current file name extension.
+        /// </summary>
+        /// <param name="filePathName">The current file path name</param>
+        /// <param name="newExtension">The new extension (using a dot as first character)</param>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string ChangeExtension(string filePathName, string newExtension)
+        {
+            if (!string.IsNullOrWhiteSpace(newExtension))
+            {
+                string ext = !newExtension.Trim().StartsWith(".") ? $".{newExtension.Trim()}" : newExtension.Trim();
+                filePathName = $"{Path.GetDirectoryName(filePathName)}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(filePathName)}{ext}";
             }
+            return filePathName;
+        }
+
+        /// <summary>
+        /// Changes the format extension identifier.
+        /// </summary>
+        /// <param name="newExtension">Either .ifc, .ifcxml or .ifczip</param>
+        /// <returns>This store with a new physical format extension</returns>
+        public IfcStore ChangeExtension(string newExtension)
+        {
+            FilePathName = ChangeExtension(FilePathName, newExtension);
+            return this;
         }
 
         #endregion
@@ -172,8 +219,37 @@ namespace Store
         public IfcStore Rename(string fileNameWithExt)
         {
             string path = Path.GetDirectoryName(FilePathName);
-            FilePathName = $"{path}{Path.DirectorySeparatorChar}{fileNameWithExt}";
+            Logger?.LogInfo("Renamed '{0}' to '{1}'.", Path.GetFileName(FilePathName), fileNameWithExt);
+            FilePathName = $"{path}{Path.DirectorySeparatorChar}{fileNameWithExt}";            
             return this;
+        }
+
+        /// <summary>
+        /// Relocates the file to another folder / directory.
+        /// </summary>
+        /// <param name="pathName">The absolute path name</param>
+        /// <returns>This store having a relocated file name</returns>
+        public IfcStore Relocate(string pathName)
+        {            
+            string fileName = Path.GetFileName(FilePathName);
+            FilePathName = $"{pathName}{Path.DirectorySeparatorChar}{fileName}";
+            Logger?.LogInfo("Relocated '{0}' to '{1}'.", fileName, FilePathName);
+            return this;
+        }
+
+        /// <summary>
+        /// Replaces fragments of the file name (without extension) by given fragments
+        /// </summary>
+        /// <param name="replacePattern">Regular expression identifiying the replacement</param>
+        /// <param name="replaceWith">Fragments to insert</param>
+        /// <returns>A store with modified filename</returns>
+        public IfcStore RenameWithReplacePattern(string replacePattern, string replaceWith)
+        {
+            var modifiedName = Regex.Replace(
+                    Path.GetFileNameWithoutExtension(FilePathName),
+                    replacePattern,
+                    replaceWith).Trim();            
+            return Rename($"{modifiedName}{Path.GetExtension(FilePathName)}");
         }
 
         /// <summary>
@@ -187,6 +263,16 @@ namespace Store
         }
 
         /// <summary>
+        /// Saves the current model to file.
+        /// </summary>
+        /// <returns>The full path name of saved file.</returns>
+        public string Save()
+        {
+            Save(FilePathName, null, this, null);
+            return FilePathName;
+        }
+
+        /// <summary>
         /// Saves the current store to a physical resource.
         /// </summary>
         /// <param name="fileNameWithExt">The file name with extension ("ifc", "ifcxml" or "ifczip")</param>
@@ -194,7 +280,7 @@ namespace Store
         public string SaveAs(string fileNameWithExt)
         {
             Rename(fileNameWithExt);
-            Save(FilePathName, this, null);
+            Save(FilePathName, null, this, null);
             return FilePathName;
         }
 
