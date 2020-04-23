@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 using Autodesk.DesignScript.Runtime;
 
-using Xbim.Common;
-
 using Task;
 using Log;
 
@@ -17,29 +15,91 @@ namespace Store
     public class IfcStoreProducer : IIfcStoreProducer
     {
         #region Internals
-        // IFC files to be loaded
-        internal IEnumerator FileNames { get; private set; }
+
         // The task node
-        internal ICancelableTaskNode TaskNode { get; set; }
+        private ICancelableTaskNode _taskNode;
+        // The collector list
+        private List<string> _filePathNames = new List<string>();
 
         internal IfcStoreProducer(ICancelableTaskNode taskNode)
         {
-            TaskNode = taskNode;
+            _taskNode = taskNode;
             Logger = new Logger();
         }
 
-        internal IfcStoreProducer(string[] fileNames, ICancelableTaskNode taskNode = null) : this(taskNode)
+        internal class IfcStoreEnumerator : IEnumerator<IfcStore>
         {
-            FileNames = fileNames.GetEnumerator();
+            private readonly IEnumerator _filePathNames;
+            private readonly Logger _logger;
+            private readonly ICancelableTaskNode _taskNode;
+
+            internal IfcStoreEnumerator(IEnumerator enumerator, ICancelableTaskNode taskNode, Logger logger)
+            {
+                _filePathNames = enumerator;
+                _logger = logger;
+                _taskNode = taskNode;
+            }
+
+            public IfcStore Current { get; private set; }
+
+            object IEnumerator.Current { get => Current; }
+
+            public void Dispose()
+            {
+                Current?.Dispose();
+                Current = null;
+            }
+
+            public bool MoveNext()
+            {
+                if (null == Current)
+                {
+                    _logger?.LogInfo("Start sequentially loading files.");
+                    IfcStore.InitLogging(_logger);
+                }
+                else
+                {
+                    Current.Dispose();
+                    Current = null;
+                }
+
+                if ((!_taskNode?.IsCanceled ?? true) && (_filePathNames?.MoveNext() ?? false))
+                {
+                    string fileName = _filePathNames.Current as string;
+                    if (null != _taskNode)
+                    {
+                        _taskNode.TaskName = Path.GetFileName(fileName);
+                        Current = IfcStore.ByLoad(fileName, _logger, _taskNode.Report);
+                    }
+                    else
+                    {
+                        Current = IfcStore.ByLoad(fileName, _logger, null);
+                    }
+                    return true;
+                }
+                else
+                {
+                    if (null != _taskNode)
+                    {
+                        _taskNode.TaskName = $"Read all files.";
+                        _taskNode.ProgressState = "Done";
+
+                        _logger?.LogInfo("All files have been loaded.");
+                    }
+                }
+                return false;
+
+            }
+
+            public void Reset()
+            {
+                Current?.Dispose();
+                Current = null;
+                _filePathNames.Reset();
+            }
         }
 
         #endregion
-
-        /// <summary>
-        /// A list collection file names until first call.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public List<string> FileNameCollector { get; set; } = null;
 
         /// <summary>
         /// A new IFC store producer with reference to tasknode.
@@ -53,109 +113,46 @@ namespace Store
         }
 
         /// <summary>
-        /// A new IFC model producer by given filenames.
-        /// </summary>
-        /// <param name="fileNames">An array of filen ames</param>        
-        /// <returns>An iterative producer</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcStoreProducer ByFileNames(string[] fileNames)
-        {
-            return new IfcStoreProducer(fileNames);
-        }
-
-        /// <summary>
-        /// A new producer by given filenames.
-        /// </summary>
-        /// <param name="fileNames">An array of file names</param>
-        /// <param name="taskNode">A task node to report progress</param>
-        /// <returns>An iterative producer</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcStoreProducer ByFileNames(string[] fileNames, ICancelableTaskNode taskNode)
-        {
-            return new IfcStoreProducer(fileNames, taskNode);
-        }
-
-        /// <summary>
-        /// The current loaded model.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public IfcStore Current { get; private set; } = null;
-
-        /// <summary>
         /// The logger instance.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public Logger Logger { get; set; }
 
+        /// <summary>
+        /// Enqueues a file name to sequential IFC store producer.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public IfcStoreProducer EnqueueFileName(string fileName)
+        {
+            lock (_filePathNames)
+                _filePathNames.Add(fileName);
+            return this;
+        }
+
+
 #pragma warning disable CS1591
-
-        object IEnumerator.Current { get => Current; }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Dispose()
-        {
-            Current?.XbimModel.Dispose();
-            FileNames = null;
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public bool MoveNext()
-        {
-            if (null == FileNames && null != FileNameCollector)
-                FileNames = FileNameCollector.GetEnumerator();
-
-            if (null == Current)
-            {
-                Logger?.LogInfo("Start sequentially loading files.");
-                IfcStore.InitLogging(Logger);
-            }
-            else
-            {
-                Current.XbimModel.Dispose();
-                Current = null;
-            }
-
-            if ((!TaskNode?.IsCanceled ?? true) && (FileNames?.MoveNext() ?? false))
-            {
-                string fileName = FileNames.Current as string;
-                if (null != TaskNode)
-                {
-                    TaskNode.TaskName = Path.GetFileName(fileName);
-                    Current = IfcStore.ByLoad(fileName, Logger, TaskNode.Report);
-                }
-                else
-                {
-                    Current = IfcStore.ByLoad(fileName, Logger, null);
-                }
-                return true;
-            }
-            else
-            {
-                if (null != TaskNode)
-                {
-                    TaskNode.TaskName = $"Read all files.";
-                    TaskNode.ProgressState = "Done";
-                    FileNames = null;
-
-                    Logger?.LogInfo("All files have been loaded.");
-                }
-            }
-            return false;
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Reset()
-        {
-            FileNames?.Reset();
-        }
 
         public override string ToString()
         {
-            var status = null == FileNames ? "initiated" : "running";
-            var name = Path.GetFileName(FileNames?.Current as string);
-            return $"{GetType().Name}({status}) ({name})";
+            return $"{GetType().Name} (";
         }
 
-#pragma warning restore CS1591 
+        public IEnumerator<IfcStore> GetEnumerator()
+        {
+            string[] filePathNames;
+            lock (_filePathNames)
+                filePathNames = _filePathNames.ToArray();
+
+            return new IfcStoreEnumerator(filePathNames.GetEnumerator(), _taskNode, Logger);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+#pragma warning restore CS1591
     }
 }

@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using System.Threading;
+using System.Collections.Concurrent;
+
 using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
@@ -17,21 +20,39 @@ namespace Store
     /// <summary>
     /// An IFC store bound to a physical resource.
     /// </summary>    
-    public class IfcStore
+    public class IfcStore : IDisposable
     {
         #region Internals
 
-        internal IModel XbimModel { get; private set; }
-        internal string FilePathName { get; private set; }
-
+        // Global registry
+        private static ConcurrentDictionary<string, IfcStore> IfcStoreRegistry;
+        
         /// <summary>
-        /// The logger.
+        /// The logger instance (or null if there is no).
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public Logger Logger { get; set; }
 
+        /// <summary>
+        /// The wrapped internal IFC model.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public IModel XbimModel { get; private set; }
+
+        /// <summary>
+        /// The full path file name.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public string FilePathName { get; private set; }
+
+        /// <summary>
+        /// Send if the store is finally about to be disposed.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public event EventHandler OnDisposed;
+
         static IfcStore() {
-            
+            IfcStoreRegistry = new ConcurrentDictionary<string, IfcStore>();
         }
 
         internal IfcStore(IModel model, Logger logInstance, string filePathName = null)
@@ -83,10 +104,17 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public static IfcStore ByLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
         {
+            // Load or return existing
+            return IfcStoreRegistry.AddOrUpdate(fileName, (f) => ByPhysicallyLoad(f, logInstance, progressDelegate), (f,s) => s);
+        }
+
+        // Really loads store
+        private static IfcStore ByPhysicallyLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
+        {
             logInstance?.LogInfo("Start loading file '{0}'.", fileName);
             try
             {
-                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate), logInstance);
+                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate, Xbim.IO.XbimDBAccess.Read), logInstance);
                 logInstance?.LogInfo("File '{0}' has been loaded successfully.", fileName);                
                 return xbimStore;
             }
@@ -316,6 +344,26 @@ namespace Store
             .Distinct()
             .ToArray();
 
-
+        /// <summary>
+        /// Disposes the store object and the model internally.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public void Dispose()
+        {
+            IfcStore store;
+            if (IfcStoreRegistry.TryRemove(FilePathName, out store))
+            {
+                if (store == this)
+                {
+                    XbimModel?.Dispose();
+                    XbimModel = null;
+                    OnDisposed?.Invoke(this, new EventArgs());
+                }
+                else
+                {
+                    throw new NotSupportedException($"Invalid state in global store registry: Duplicate '{FilePathName}'");
+                }
+            }
+        }
     }
 }

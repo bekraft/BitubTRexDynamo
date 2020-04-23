@@ -8,9 +8,9 @@ using Task;
 
 namespace UI
 {
-    public class CancelableCommandNodeCustomization : INodeViewCustomization<CancelableCommandNode>
+    public class CancelableCommandNodeCustomization : INodeViewCustomization<CancelableCommandNodeModel>
     {
-        public void CustomizeView(CancelableCommandNode model, NodeView nodeView)
+        public void CustomizeView(CancelableCommandNodeModel model, NodeView nodeView)
         {
             var cancelableControl = new CancelableCommandControl();
             nodeView.inputGrid.Children.Add(cancelableControl);

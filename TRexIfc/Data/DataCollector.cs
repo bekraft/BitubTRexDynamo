@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,17 +49,14 @@ namespace Data
         public static string[][] CollectPropertySetNames(Store.IfcStoreProducer storeProducer)
         {
             List<string[]> namesPerModel = new List<string[]>();
-            using (storeProducer)
+            foreach(var store in storeProducer)
             {
-                while (storeProducer?.MoveNext() ?? false)
-                {
-                    namesPerModel.Add(CollectPropertySets(storeProducer.Current));
-                }
+                namesPerModel.Add(CollectPropertySets(store));
             }
 
             return namesPerModel.ToArray();
         }
-
+        
         /// <summary>
         /// Exports an IFC model as binary Scene model.
         /// </summary>

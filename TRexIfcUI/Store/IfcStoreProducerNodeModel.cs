@@ -22,7 +22,7 @@ namespace Store
     [InPortTypes(new string[] { nameof(String), nameof(Logger) })]
     [OutPortTypes(typeof(IfcStoreProducer))]
     [IsDesignScriptCompatible]
-    public class IfcStoreProducerNodeModel : CancelableCommandNode
+    public class IfcStoreProducerNodeModel : CancelableCommandNodeModel
     {
         #region Internals
         // The dynamic delegate signature
@@ -64,10 +64,9 @@ namespace Store
             if (null == _storeProducer)
             {
                 _storeProducer = IfcStoreProducer.ByTaskNode(this);
-                _storeProducer.FileNameCollector = new List<string>();
                 _storeProducer.Logger = loggerInstance as Logger;
             }
-            _storeProducer.FileNameCollector.Add(fileName);
+            _storeProducer.EnqueueFileName(fileName);
             return _storeProducer;
         }
 

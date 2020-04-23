@@ -13,7 +13,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Task
 {
-    public abstract class CancelableCommandNode : NodeModel, ICancelableTaskNode
+    public abstract class CancelableCommandNodeModel : NodeModel, ICancelableTaskNode
     {
         #region Internals
         private bool _isCancelable;
@@ -28,12 +28,12 @@ namespace Task
         private object _monitor = new object();
         #endregion
 
-        protected CancelableCommandNode() : base()
+        protected CancelableCommandNodeModel() : base()
         {
             ResetState();
         }
 
-        protected CancelableCommandNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected CancelableCommandNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
         }        

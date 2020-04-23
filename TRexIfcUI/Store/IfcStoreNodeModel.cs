@@ -23,7 +23,7 @@ namespace Store
     [InPortTypes(new string[] { nameof(String), nameof(Logger) })]
     [OutPortTypes(typeof(IfcStore))]
     [IsDesignScriptCompatible]
-    public class IfcStoreNodeModel : CancelableCommandNode
+    public class IfcStoreNodeModel : CancelableCommandNodeModel
     {
         #region Internals
         // The dynamic delegate signature

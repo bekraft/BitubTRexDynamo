@@ -24,7 +24,7 @@ namespace Store
     [OutPortNames("fileNames")]
     [OutPortTypes(typeof(string[]))]
     [IsDesignScriptCompatible]
-    public class IfcSaveStoreProceduralNodeModel : CancelableCommandNode
+    public class IfcSaveStoreProceduralNodeModel : CancelableCommandNodeModel
     {
         #region Internal
         private string _ref;

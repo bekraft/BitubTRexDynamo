@@ -4,9 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UI"
+             xmlns:bitubifcscene="clr-namespace:Bitub.Ifc.Scene;assembly=Bitub.Ifc"
+             xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
+
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="ScenePositioningStrategy"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitubifcscene:ScenePositioningStrategy"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="SceneTransformationStrategy"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitubifcscene:SceneTransformationStrategy"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <local:SceneExportSettingsControl x:Key="ProvidedGraphicalContext"/>
+    </UserControl.Resources>
+
     <Grid Margin="5,5,5,5" MinWidth="200" Height="Auto">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,57 +47,30 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" 
-                       FontSize="8"
-                       Content="Name"/>
-                <TextBox Grid.Row="1"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=EditorName}"/>
+                <Label Grid.Row="0" FontSize="8" Content="Position strategy"/>
 
-                <Label Grid.Row="2"
-                       FontSize="8"
-                       Content="Given name"/>
-                <TextBox Grid.Row="3"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=EditorGivenName}"/>
+                <ComboBox x:Name="PositioningStrategyComboBox"
+                          VerticalAlignment="Center"
+                          Grid.Row="1"
+                          ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
+                          SelectedItem="{Binding PositioningStrategy}"/>
 
-                <Label Grid.Row="4" 
-                       FontSize="8"
-                       Content="Application ID"/>
-                <TextBox Grid.Row="5"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=ApplicationID}"/>
+                <Label Grid.Row="2" FontSize="8" Content="Transformation strategy"/>
 
-                <Label Grid.Row="6"
-                       FontSize="8"
-                       Content="Application name"/>
-                <TextBox Grid.Row="7"
-                         VerticalAlignment="Center"
-                         VerticalContentAlignment="Center"
-                         Height="23" 
-                         Margin="2,2,2,2" 
-                         TextWrapping="Wrap"                           
-                         Width="Auto"
-                         FontSize="10"
-                         Text="{Binding Path=ApplicationName}"/>
+                <ComboBox x:Name="TransformationStrategyComboBox"
+                          VerticalAlignment="Center"
+                          Grid.Row="3"
+                          ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
+                          SelectedItem="{Binding TransformationStrategy}"/>
+
+                <Label Grid.Row="4" FontSize="8" Content="Scene context selection"/>
+
+                <ListBox x:Name="SceneContextListBox"
+                         Grid.Row="5"                         
+                         ItemsSource="{Binding Source={StaticResource ProvidedGraphicalContext}}"
+                         SelectionMode="Multiple"
+                         SelectedItem="{Binding Path=SelectedGraphicalContext}"/>
+
             </Grid>
         </GroupBox>
     </Grid>

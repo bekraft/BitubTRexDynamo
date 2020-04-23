@@ -24,7 +24,7 @@ namespace Store
     [OutPortNames("fileName")]
     [OutPortTypes(typeof(string))]
     [IsDesignScriptCompatible]
-    public class IfcSaveStoreNodeModel : CancelableOptionCommandNode
+    public class IfcSaveStoreNodeModel : CancelableOptionCommandNodeModel
     {
         #region Internal
         private string _ref;
@@ -83,10 +83,10 @@ namespace Store
         }
 
         /// <summary>
-        /// Run the AST.
+        /// Builds the AST
         /// </summary>
         /// <param name="inputAstNodes">Input nodes</param>
-        /// <returns>Loading AST node</returns>
+        /// <returns>Embedded AST nodes associated with this node model</returns>
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {

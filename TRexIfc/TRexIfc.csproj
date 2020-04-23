@@ -2,6 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
+    <DeployDynamoVersion>2.5</DeployDynamoVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <TargetFrameworks>net47</TargetFrameworks>      
     <Title>TRexIfc Dynamo</Title>
@@ -54,6 +59,7 @@
     <PackageReference Include="Bitub.Ifc">
       <Version>0.1.20086-Beta.477</Version>
     </PackageReference>
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.5.0.7432" />
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">
       <Version>2.5.0.7432</Version>
     </PackageReference>
@@ -81,9 +87,9 @@
     <!-- PostBuildEvent -->
     <PropertyGroup>
       <!--Copy to Dynamo sandbox for testing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\2.5\packages\$(ProjectName)</DeployFolder>
+      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
       <!--Copy to Dynamo revit for publishing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\2.5\packages\$(ProjectName)</DeployFolder>
+      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
     </PropertyGroup>
     <Message Importance="High" Text="==&gt; Started deploying the Dynamo extension" />
     <!--Defining folders to copy-->
