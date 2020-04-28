@@ -25,8 +25,6 @@ namespace Store
     public class IfcStoreProducerNodeModel : CancelableCommandNodeModel
     {
         #region Internals
-        // The dynamic delegate signature
-        private string _ref;
         private IfcStoreProducer _storeProducer;
         #endregion
 
@@ -43,11 +41,6 @@ namespace Store
             IsCancelable = true;
         }
 
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<string, object>(CreateIfcStoreProducer);
-        }
-
         [JsonConstructor]
         IfcStoreProducerNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
@@ -59,14 +52,14 @@ namespace Store
         /// <param name="fileName">The IFC model file names to be loaded</param>
         /// <param name="loggerInstance">The logger instance</param>
         /// <returns>A new / existing IFC producer</returns>
-        public IfcStoreProducer CreateIfcStoreProducer(string fileName, object loggerInstance)
+        public IfcStoreProducer CreateIfcStoreProducer(object fileName, object loggerInstance)
         {
             if (null == _storeProducer)
             {
                 _storeProducer = IfcStoreProducer.ByTaskNode(this);
                 _storeProducer.Logger = loggerInstance as Logger;
             }
-            _storeProducer.EnqueueFileName(fileName);
+            _storeProducer.EnqueueFileName(fileName as string);
             return _storeProducer;
         }
 
@@ -86,9 +79,11 @@ namespace Store
                 };
             }
 
+            var delegateNode = AstFactory.BuildStringNode(GlobalDelegationService.Put<object, object>(CreateIfcStoreProducer));
+
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, string, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0], inputAstNodes[1] });
+                new Func<string, object, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>() { delegateNode, inputAstNodes[0], inputAstNodes[1] });
 
             return new[]
             {

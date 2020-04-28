@@ -22,10 +22,19 @@ namespace Export
 
         #endregion
 
+        /// <summary>
+        /// The full file name including path.
+        /// </summary>
         public string FilePathName { get; protected set; }
 
+        /// <summary>
+        /// The file name.
+        /// </summary>
         public string FileName { get => Path.GetFileName(FilePathName); }
 
+        /// <summary>
+        /// Any log messages
+        /// </summary>
         public LogMessage[] Log { get; protected set; }
 
 #pragma warning disable CS1591 
@@ -37,7 +46,7 @@ namespace Export
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public SceneExportSummary ByResults(string filePathName, LogMessage[] messages)
+        public static SceneExportSummary ByResults(string filePathName, params LogMessage[] messages)
         {
             return new SceneExportSummary
             {

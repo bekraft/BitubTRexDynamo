@@ -55,53 +55,6 @@ namespace Data
             }
 
             return namesPerModel.ToArray();
-        }
-        
-        /// <summary>
-        /// Exports an IFC model as binary Scene model.
-        /// </summary>
-        /// <param name="fileNames"></param>
-        /// <returns>Exported model file names</returns>
-        [MultiReturn(new[] { "sceneFiles", "failures" })]
-        public static Dictionary<string, string[]> ExportBinSceneModel(string[] fileNames)
-        {
-            List<string> outFileNames = new List<string>();
-            List<string> failures = new List<string>();
-            var exporter = new IfcSceneExporter(new XbimTesselationContext());
-            exporter.Settings = new IfcSceneExportSettings
-            {
-                Positioning = ScenePositioningStrategy.NoCorrection,
-                Transforming = SceneTransformationStrategy.Quaternion                
-            };
-            foreach (var fileName in fileNames)
-            {                
-                using (var model = Xbim.Ifc.IfcStore.Open(fileName))
-                {
-                    try
-                    {
-                        var sceneTask = exporter.Run(model);
-                        sceneTask.Wait();
-
-                        var sceneFileName = $@"{Path.GetDirectoryName(fileName)}\{Path.GetFileNameWithoutExtension(fileName)}.scene";
-                        outFileNames.Add(sceneFileName);
-                        using (var binStream = File.Create(sceneFileName))
-                        {
-                            var binScene = sceneTask.Result.Scene.ToByteArray();
-                            binStream.Write(binScene, 0, binScene.Length);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        failures.Add($"Failure on '{fileName}': {e.Message}");
-                    }
-                }
-            }
-
-            return new Dictionary<string, string[]>
-            {
-                { "sceneFiles", outFileNames.ToArray() },
-                { "failures", failures.ToArray() }
-            };
-        }
+        }        
     }
 }

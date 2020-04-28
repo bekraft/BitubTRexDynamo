@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Bitub.Ifc.Scene;
-using Bitub.Transfer.Spatial;
+using Bitub.Transfer.Scene;
 
 using Autodesk.DesignScript.Runtime;
-using Bitub.Transfer.Scene;
+
+using Geom;
 
 namespace Export
 {
@@ -25,31 +23,40 @@ namespace Export
         { }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSettings BySettings(SceneTransformationStrategy transformationStrategy,
-            ScenePositioningStrategy positioningStrategy,
-            XYZ offset, 
-            double unitPerMeter, 
+        public IfcSceneExportSettings Settings { get; private set; }
+
+        #endregion
+
+#pragma warning restore CS1591
+
+        /// <summary>
+        /// Creates settings by given arguments.
+        /// </summary>
+        /// <param name="transformationStrategy">See <see cref="SceneTransformationStrategy"/></param>
+        /// <param name="positioningStrategy">See <see cref="PositioningStrategy"/></param>
+        /// <param name="offset">The offset coordinates</param>
+        /// <param name="unitPerMeter">The units per meter</param>
+        /// <param name="sceneContexts">The scene context(s) to be exported</param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(true)]
+        public static SceneExportSettings BySettings(string transformationStrategy,
+            string positioningStrategy,
+            XYZ offset,
+            double unitPerMeter,
             string[] sceneContexts)
         {
             return new SceneExportSettings
             {
                 Settings = new IfcSceneExportSettings
                 {
-                    Transforming = transformationStrategy,
-                    Positioning = positioningStrategy,
-                    UserModelCenter = offset,
+                    Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
+                    Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
+                    UserModelCenter = offset.TheXYZ,
                     UnitsPerMeter = unitPerMeter,
-                    UserRepresentationContext = sceneContexts.Select(c => new SceneContext { Name = c }).ToArray()
+                    UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] {}
                 }
             };
         }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public IfcSceneExportSettings Settings { get; private set; }
-
-        #endregion
-
-#pragma warning restore CS1591
 
         /// <summary>
         /// Reads settings from persitent configuration file.
@@ -67,12 +74,12 @@ namespace Export
         /// <summary>
         /// The transformation strategy.
         /// </summary>
-        public SceneTransformationStrategy TransformationStrategy { get => Settings.Transforming; }
+        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), Settings.Transforming); }
 
         /// <summary>
         /// The positioning strategy.
         /// </summary>
-        public ScenePositioningStrategy PositioningStrategy { get => Settings.Positioning; }
+        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), Settings.Positioning); }
 
         /// <summary>
         /// The scaling as units per meter.
@@ -82,7 +89,7 @@ namespace Export
         /// <summary>
         /// The offset shift
         /// </summary>
-        public XYZ Offset { get => Settings.UserModelCenter; }
+        public XYZ Offset { get => new XYZ { TheXYZ = Settings.UserModelCenter }; }
 
         /// <summary>
         /// Names of model contexts to be exported.

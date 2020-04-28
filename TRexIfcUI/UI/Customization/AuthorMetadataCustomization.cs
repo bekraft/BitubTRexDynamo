@@ -3,11 +3,10 @@ using Dynamo.Wpf;
 
 using Store;
 
-// Disable comment warning
-#pragma warning disable CS1591
-
 namespace UI
 {
+#pragma warning disable CS1591
+
     public class AuthorMetadataCustomization : INodeViewCustomization<AuthorDataNodeModel>
     {
         public void CustomizeView(AuthorDataNodeModel model, NodeView nodeView)
@@ -21,7 +20,7 @@ namespace UI
         {            
         }
     }
-}
 
 #pragma warning restore CS1591
+}
 

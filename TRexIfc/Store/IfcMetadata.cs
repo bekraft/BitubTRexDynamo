@@ -33,7 +33,7 @@ namespace Store
         /// <returns>A sorted list with most recent at top</returns>
         public static IfcMetadata[] ListOwnerHistory(IfcStore ifcStore)
         {
-            return new IfcMetadataHistory(ifcStore.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
+            return new IfcMetadataHistory(ifcStore?.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
         }
 
         /// <summary>

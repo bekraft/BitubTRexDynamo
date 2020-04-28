@@ -22,16 +22,12 @@ namespace Export
     /// </summary>
     [NodeName("Scene Export")]
     [NodeCategory("TRexIfc.Export.SceneExport")]
-    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IIfcStoreProducer)})]
-    [OutPortTypes(typeof(string))]
+    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IIfcStoreProducer), nameof(String)})]
+    [OutPortTypes(typeof(SceneExportSummary))]
     [IsDesignScriptCompatible]
     public class SceneExporterNodeModel : CancelableOptionCommandNodeModel
     {
         private static string[] FileExtensions = new string[] { ".json", ".scene" };
-
-        #region Internal
-        private string _ref;
-        #endregion
 
         /// <summary>
         /// New scene exporter node model
@@ -40,6 +36,8 @@ namespace Export
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("setting", "Exporter setting")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("storeProducer", "Store producer")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("pathName", "Export path name")));
+
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("exportSummary", "Export summaries")));
 
             RegisterAllPorts();
@@ -61,16 +59,6 @@ namespace Export
                 AvailableOptions.Add(ext);
         }
 
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<SceneExportSettings, IIfcStoreProducer>(SaveSceneExports);
-        }
-
-        public SceneExportSummary[] SaveSceneExports(SceneExportSettings settings, IIfcStoreProducer storeProducer)
-        {
-
-        }
-
         /// <summary>
         /// Builds the AST
         /// </summary>
@@ -78,7 +66,30 @@ namespace Export
         /// <returns>Embedded AST nodes associated with this node model</returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            return base.BuildOutputAst(inputAstNodes);
+            if (IsPartiallyApplied)
+            {
+                return new[]
+                {
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
+                };
+            }
+
+            var delegateNode = AstFactory.BuildFunctionCall(
+                new Func<SceneExportSettings, string, IIfcStoreProducer, string, ICancelableTaskNode, SceneExportSummary[]>(SceneExport.RunSceneExport),
+                new List<AssociativeNode>() {
+                    inputAstNodes[0],
+                    inputAstNodes[2],
+                    inputAstNodes[1],
+                    AstFactory.BuildStringNode(SelectedOption.ToString()),
+                    AstFactory.BuildFunctionCall(
+                        new Func<string, object>(GlobalArgumentService.GetArg), 
+                        new List<AssociativeNode>(){ AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(this)) })
+                });
+
+            return new[]
+            {
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), delegateNode)
+            };
         }
     }
 }

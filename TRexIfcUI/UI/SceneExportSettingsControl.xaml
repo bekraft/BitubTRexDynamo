@@ -24,8 +24,6 @@
                 <x:Type TypeName="bitubifcscene:SceneTransformationStrategy"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-
-        <local:SceneExportSettingsControl x:Key="ProvidedGraphicalContext"/>
     </UserControl.Resources>
 
     <Grid Margin="5,5,5,5" MinWidth="200" Height="Auto">
@@ -34,7 +32,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Header="Model metadata" x:Name="MetadataGroup" Grid.Row="0">
+        <GroupBox Header="Additional settings" x:Name="MetadataGroup" Grid.Row="0" BorderBrush="Black">
             <Grid x:Name="MetadataGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -43,8 +41,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" FontSize="8" Content="Position strategy"/>
@@ -66,10 +63,27 @@
                 <Label Grid.Row="4" FontSize="8" Content="Scene context selection"/>
 
                 <ListBox x:Name="SceneContextListBox"
-                         Grid.Row="5"                         
-                         ItemsSource="{Binding Source={StaticResource ProvidedGraphicalContext}}"
+                         VerticalAlignment="Top"
+                         Margin="0,0,0,0"
+                         MinHeight="50"
+                         Grid.Row="5"                                                  
                          SelectionMode="Multiple"
-                         SelectedItem="{Binding Path=SelectedGraphicalContext}"/>
+                         ItemsSource="{Binding ProvidedGraphicalContext, Mode=OneWay}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True" >
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="Background" Value="Azure" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
+                            </Style.Triggers>
+                            <Style.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                            </Style.Resources>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
 
             </Grid>
         </GroupBox>

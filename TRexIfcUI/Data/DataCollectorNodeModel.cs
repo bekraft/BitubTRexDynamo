@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 
 using Internal;
 using Task;
+using Store;
 
 namespace Data
 {
@@ -18,10 +19,6 @@ namespace Data
     [IsDesignScriptCompatible]
     public class DataCollectorNodeModel : CancelableCommandNodeModel
     {
-        #region Internals
-        private string _ref;
-        #endregion
-
         public DataCollectorNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("stores", "Store producer or stores")));
@@ -36,13 +33,9 @@ namespace Data
         {
         }
 
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<object>(InvokeCollector);
-        }
-
         public object[][] InvokeCollector(object storesOrProducer)
         {
+            //if (storesOrProducer is IIfcStoreProducer isp)
             return null;
         }
 
@@ -60,8 +53,8 @@ namespace Data
             }
 
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, object, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0] } );
+                new Func<string, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>() { AstFactory.BuildStringNode(GlobalDelegationService.Put<object>(InvokeCollector)), inputAstNodes[0] } );
 
             return new[]
             {

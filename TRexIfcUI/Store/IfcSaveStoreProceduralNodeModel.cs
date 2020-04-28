@@ -26,10 +26,6 @@ namespace Store
     [IsDesignScriptCompatible]
     public class IfcSaveStoreProceduralNodeModel : CancelableCommandNodeModel
     {
-        #region Internal
-        private string _ref;
-        #endregion
-
         /// <summary>
         /// New sequential model save.
         /// </summary>
@@ -51,18 +47,13 @@ namespace Store
         {
         }
 
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<object, string, string, string>(SaveIfcStoreProducer);
-        }
-
         /// <summary>
         /// Saving store producer callback
         /// </summary>
         /// <param name="storeProducer">The store producer</param>
         /// <returns>The full path name</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public object SaveIfcStoreProducer(object storeProducer, string suffix, string replacePattern, string replaceWith)
+        public object SaveIfcStoreProducer(object storeProducer, object suffix, object replacePattern, object replaceWith)
         {
             List<string> fileNames = new List<string>();
             var ifcStoreProducer = storeProducer as IIfcStoreProducer;
@@ -91,9 +82,11 @@ namespace Store
                 };
             }
 
+            var delegateNode = AstFactory.BuildStringNode(GlobalDelegationService.Put<object, object, object, object>(SaveIfcStoreProducer));
+
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, object, string, string, string, object>(DynamicWrapper.CallGeneric),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0], inputAstNodes[1], inputAstNodes[2], inputAstNodes[3] });
+                new Func<string, object, object, object, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>() { delegateNode, inputAstNodes[0], inputAstNodes[1], inputAstNodes[2], inputAstNodes[3] });
 
             return new[]
             {

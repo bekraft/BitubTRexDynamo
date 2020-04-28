@@ -26,10 +26,6 @@ namespace Store
     [IsDesignScriptCompatible]
     public class IfcSaveStoreNodeModel : CancelableOptionCommandNodeModel
     {
-        #region Internal
-        private string _ref;
-        #endregion
-
         private static string[] FileExtensions = new string[] { ".ifc", ".ifcxml", ".ifczip" };
 
         /// <summary>
@@ -59,11 +55,6 @@ namespace Store
                 AvailableOptions.Add(ext);
         }
 
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<object>(SaveIfcStore);
-        }
-
         /// <summary>
         /// Saving store callback
         /// </summary>
@@ -90,7 +81,7 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (InPorts.Any(p => !p.IsConnected))
+            if (IsPartiallyApplied)
             {
                 return new[]
                 {
@@ -98,9 +89,11 @@ namespace Store
                 };
             }
 
+            var delegateNode = AstFactory.BuildStringNode(GlobalDelegationService.Put<object>(SaveIfcStore));
+
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, object, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0] });
+                new Func<string, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>() { delegateNode, inputAstNodes[0] });
 
             return new[]
             {

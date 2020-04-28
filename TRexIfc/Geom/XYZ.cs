@@ -18,26 +18,32 @@ namespace Geom
         /// The internal point reference.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public Bitub.Transfer.Spatial.XYZ Point { get; set; }
+        public Bitub.Transfer.Spatial.XYZ TheXYZ { get; set; }
 
         internal XYZ() : this(0, 0, 0)
         { }
 
         internal XYZ(double x, double y, double z)
         {
-            Point = new Bitub.Transfer.Spatial.XYZ { X = x, Y = y, Z = z };
+            TheXYZ = new Bitub.Transfer.Spatial.XYZ { X = x, Y = y, Z = z };
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public XbimPoint3D ToXbimPoint3D()
         {
-            return new XbimPoint3D(Point.X, Point.Y, Point.Z);
+            return new XbimPoint3D(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public XbimVector3D ToXbimVector3D()
         {
-            return new XbimVector3D(Point.X, Point.Y, Point.Z);
+            return new XbimVector3D(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public override string ToString()
+        {
+            return $"{GetType().FullName} ({TheXYZ.X}; {TheXYZ.Y}; {TheXYZ.Z})";
         }
 
 #pragma warning restore CS1591
@@ -51,7 +57,7 @@ namespace Geom
         /// <param name="y">Y</param>
         /// <param name="z">Z</param>
         /// <returns>A 3D point</returns>
-        public static XYZ ByXYZ(double x, double y, double z)
+        public static XYZ ByCoordinates(double x, double y, double z)
         {
             return new XYZ(x, y, z);
         }
@@ -64,7 +70,7 @@ namespace Geom
         /// <returns>A XYZ object as vector</returns>
         public static XYZ ByVector(XYZ origin, XYZ target)
         {
-            return new XYZ(target.Point.X - origin.Point.X, target.Point.Y - origin.Point.Y, target.Point.Z - origin.Point.Z);
+            return new XYZ(target.TheXYZ.X - origin.TheXYZ.X, target.TheXYZ.Y - origin.TheXYZ.Y, target.TheXYZ.Z - origin.TheXYZ.Z);
         }
 
         /// <summary>
@@ -73,7 +79,7 @@ namespace Geom
         /// <returns>An AutoDesk design script point structure</returns>
         public ADPoint ToPoint()
         {
-            return ADPoint.ByCoordinates(Point.X, Point.Y, Point.Z);
+            return ADPoint.ByCoordinates(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
         }
     }
 }

@@ -1,0 +1,816 @@
+{
+  "Uuid": "c2cc4f58-27c4-40f5-8846-9e17d0e4a5a5",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcLoad-And-SceneExport",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1.0;",
+      "Id": "dbeb5aef23c547eca352a43bc3591a6e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2840d51d136c405da7f310e8ddb6673e",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;\n2;\n4;",
+      "Id": "78271fa71ee742b78a340b17251a6997",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eb482b0778f1440894bfe42886e8dba1",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a65098c96a3340b7817be78f4d671e01",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "94e93a4de1f742fcaa03e38696b72ad5",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"Body\",\n\"Model\",\"e\"];",
+      "Id": "bf46c48e0253406ebe349e0a0c79663f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cc9c558a1e0049fda627e86d92540f10",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.Offset",
+      "Id": "39445e8c65ce4e0a903f2e84e0e7cbdf",
+      "Inputs": [
+        {
+          "Id": "7a470957796b45d6a544dd2137123b29",
+          "Name": "sceneExportSettings",
+          "Description": "Export.SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4c2b2c6d4b334e558cca8b462d014bcd",
+          "Name": "XYZ",
+          "Description": "XYZ",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The offset shift\n\nSceneExportSettings.Offset: XYZ"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.PositioningStrategy",
+      "Id": "b07cbd0ba9db4986951316d06a3955e4",
+      "Inputs": [
+        {
+          "Id": "624990fb91674303a6bb0d9495630a00",
+          "Name": "sceneExportSettings",
+          "Description": "Export.SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "89e2d8c84d2b49ccb983229ff2ffbbbf",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The positioning strategy.\n\nSceneExportSettings.PositioningStrategy: string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.TransformationStrategy",
+      "Id": "a8a49d5c3fad4255b6983732bd277e8a",
+      "Inputs": [
+        {
+          "Id": "49d08a83263b490fa25e4a2fe5a54b0b",
+          "Name": "sceneExportSettings",
+          "Description": "Export.SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2c2364f060034810b88c7559d97de900",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The transformation strategy.\n\nSceneExportSettings.TransformationStrategy: string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.UnitsPerMeter",
+      "Id": "629c4cf5322047ac815f984ad392e1d8",
+      "Inputs": [
+        {
+          "Id": "5f9a8c5996884b0eaa6c90513b1c915e",
+          "Name": "sceneExportSettings",
+          "Description": "Export.SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ac4c7162193e436a8ec41dd15c69b772",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The scaling as units per meter.\n\nSceneExportSettings.UnitsPerMeter: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.SceneContexts",
+      "Id": "5d43388361604643bf79c193430ba40c",
+      "Inputs": [
+        {
+          "Id": "5e614c3085f34aa294f73f3712a30f05",
+          "Name": "sceneExportSettings",
+          "Description": "Export.SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0da64510672d459fae0cd3a0e6622865",
+          "Name": "string[]",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Names of model contexts to be exported.\n\nSceneExportSettings.SceneContexts: string[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "Id": "a69dd7346afe4cd59a0f2c85dee5d193",
+      "Inputs": [
+        {
+          "Id": "af006ac2ff0547bd89962f70eb571d2a",
+          "Name": "x",
+          "Description": "X\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6557dc987733425884e3abb70e9c4729",
+          "Name": "y",
+          "Description": "Y\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "10179de28cda4165a81a89a524366c29",
+          "Name": "z",
+          "Description": "Z\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "84a02dd3fa594dbcb899880dfc534ab8",
+          "Name": "XYZ",
+          "Description": "A 3D point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "ec97af8ef0d043d29a7b702d79d38c31",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "27ae03434fce46949336201bce004788",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Single-IFC-Load.log",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Single-IFC-Load.log",
+      "NodeType": "ExtensionNode",
+      "Id": "d8cc485e345f4999a6c414a329be447a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d3fa75c4be44b9a83c312d4ac802415",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "c8c7c8c3f35945778c54c01998152f99",
+      "Inputs": [
+        {
+          "Id": "01661864eec342069a24b6f194241ad5",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db8b88f2c5a045c0980c1295a755c347",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Store.IfcStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "4fec9d1da5f44af9b998019066cb074f",
+      "Inputs": [
+        {
+          "Id": "373470218cd84d9780982556de246a52",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aaa53cf6affb498f9750e30cc0ec4c1c",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0c01aa2ab1eb4848a32789cd7d6dbd15",
+          "Name": "store",
+          "Description": "IFC store",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Export.SceneExporterNodeModel, TRexIfcUI",
+      "SelectedOption": ".json",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "9972abaee3fe40579385ce0e25ec8ef9",
+      "Inputs": [
+        {
+          "Id": "23685c546dcf462491a66ca5be910942",
+          "Name": "setting",
+          "Description": "Exporter setting",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d0470c4db36d4786947a05e27d53ef05",
+          "Name": "storeProducer",
+          "Description": "Store producer",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4abe8ed5e42f445889bdd74afd1e639d",
+          "Name": "pathName",
+          "Description": "Export path name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d586d997b66a45baa824809e70172e42",
+          "Name": "exportSummary",
+          "Description": "Export summaries",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
+      "NodeType": "ExtensionNode",
+      "Id": "ddf283503e7f42d287e49064e785b2bf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6e60b6ba89e348968d56d8efcca00a2b",
+          "Name": "",
+          "Description": "Directory",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einen Verzeichnisses auf dem System, um seinen Pfad abzurufen."
+    },
+    {
+      "ConcreteType": "Export.SceneExportSettingsNodeModel, TRexIfcUI",
+      "ProvidedGraphicalContext": [
+        "Body",
+        "Model",
+        "e"
+      ],
+      "SelectedGraphicalContext": [],
+      "TransformationStrategy": 0,
+      "PositioningStrategy": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "2e3c4ac1a8574377ad3cc8ab2a5f787f",
+      "Inputs": [
+        {
+          "Id": "6fd6cdce277c4ff684fcf4ddf20b0217",
+          "Name": "offset",
+          "Description": "Model offset as XYZ",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8899730b82b0497faedd614d2ef37a1f",
+          "Name": "unitsPerMeter",
+          "Description": "Scaling units per Meter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18fd6fe69eed48cb9b5a5f0e639d5dea",
+          "Name": "providedContexts",
+          "Description": "Provided representation model contexts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f4729be1034745929717d6841c39c208",
+          "Name": "settings",
+          "Description": "Scene export settings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2840d51d136c405da7f310e8ddb6673e",
+      "End": "8899730b82b0497faedd614d2ef37a1f",
+      "Id": "5a7d680e5a224d6496c9c70077d2ecea"
+    },
+    {
+      "Start": "eb482b0778f1440894bfe42886e8dba1",
+      "End": "af006ac2ff0547bd89962f70eb571d2a",
+      "Id": "678107a9351e405d85b83ed285617a42"
+    },
+    {
+      "Start": "a65098c96a3340b7817be78f4d671e01",
+      "End": "6557dc987733425884e3abb70e9c4729",
+      "Id": "9ef1ffc6ce1745ab8a7ae5b77030886a"
+    },
+    {
+      "Start": "94e93a4de1f742fcaa03e38696b72ad5",
+      "End": "10179de28cda4165a81a89a524366c29",
+      "Id": "62d12a1cf55445e2b593c20d0cd56721"
+    },
+    {
+      "Start": "cc9c558a1e0049fda627e86d92540f10",
+      "End": "18fd6fe69eed48cb9b5a5f0e639d5dea",
+      "Id": "42cba0c7d5194765a2a28ad2602b3b69"
+    },
+    {
+      "Start": "84a02dd3fa594dbcb899880dfc534ab8",
+      "End": "6fd6cdce277c4ff684fcf4ddf20b0217",
+      "Id": "8e7b19cc57f24648bea76852b7e86e05"
+    },
+    {
+      "Start": "27ae03434fce46949336201bce004788",
+      "End": "373470218cd84d9780982556de246a52",
+      "Id": "90819ff2d332493ab86f2441aae5dd66"
+    },
+    {
+      "Start": "2d3fa75c4be44b9a83c312d4ac802415",
+      "End": "01661864eec342069a24b6f194241ad5",
+      "Id": "444fac4c58ba4359977e4cf4481a82e5"
+    },
+    {
+      "Start": "db8b88f2c5a045c0980c1295a755c347",
+      "End": "aaa53cf6affb498f9750e30cc0ec4c1c",
+      "Id": "0a6b9f16cbac45f5a7a10945107ce276"
+    },
+    {
+      "Start": "0c01aa2ab1eb4848a32789cd7d6dbd15",
+      "End": "d0470c4db36d4786947a05e27d53ef05",
+      "Id": "b17e25698ed149948ec18fed337cfe4b"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "5e614c3085f34aa294f73f3712a30f05",
+      "Id": "cf85c9a2e4474ca2b546681769274272"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "624990fb91674303a6bb0d9495630a00",
+      "Id": "bf47d3f596fa4b10ae197ffe0eeb0e7c"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "49d08a83263b490fa25e4a2fe5a54b0b",
+      "Id": "8c33b3b3eec24f188115b0d70dabf1de"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "5f9a8c5996884b0eaa6c90513b1c915e",
+      "Id": "ceface8457d54702a99adfe5b8644ae8"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "23685c546dcf462491a66ca5be910942",
+      "Id": "0c82d9d7cc4246af87546a60922b93e9"
+    },
+    {
+      "Start": "f4729be1034745929717d6841c39c208",
+      "End": "7a470957796b45d6a544dd2137123b29",
+      "Id": "79ceccc4cbcc4f7c9d994230eba6bcc0"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRexIFC",
+      "Version": "0.1.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "39445e8c65ce4e0a903f2e84e0e7cbdf",
+        "b07cbd0ba9db4986951316d06a3955e4",
+        "a8a49d5c3fad4255b6983732bd277e8a",
+        "629c4cf5322047ac815f984ad392e1d8",
+        "5d43388361604643bf79c193430ba40c",
+        "a69dd7346afe4cd59a0f2c85dee5d193",
+        "c8c7c8c3f35945778c54c01998152f99",
+        "4fec9d1da5f44af9b998019066cb074f",
+        "9972abaee3fe40579385ce0e25ec8ef9",
+        "2e3c4ac1a8574377ad3cc8ab2a5f787f"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.7186",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "dbeb5aef23c547eca352a43bc3591a6e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 201.45439987174979,
+        "Y": 355.80751779840642
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "78271fa71ee742b78a340b17251a6997",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 75.542743234803538,
+        "Y": 132.47514934235664
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "bf46c48e0253406ebe349e0a0c79663f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 202.17908815653112,
+        "Y": 460.63900708911115
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.Offset",
+        "Id": "39445e8c65ce4e0a903f2e84e0e7cbdf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 945.06095596467094,
+        "Y": 206.60623545353013
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.PositioningStrategy",
+        "Id": "b07cbd0ba9db4986951316d06a3955e4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 899.204315884834,
+        "Y": 310.89185261245814
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.TransformationStrategy",
+        "Id": "a8a49d5c3fad4255b6983732bd277e8a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 879.64485903604066,
+        "Y": 412.65947611183924
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.UnitsPerMeter",
+        "Id": "629c4cf5322047ac815f984ad392e1d8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 886.05491101279074,
+        "Y": 507.13019834137231
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.SceneContexts",
+        "Id": "5d43388361604643bf79c193430ba40c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 822.42961439020962,
+        "Y": 627.89973031499153
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "XYZ.ByCoordinates",
+        "Id": "a69dd7346afe4cd59a0f2c85dee5d193",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 213.0593649153536,
+        "Y": 133.27482829342122
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "ec97af8ef0d043d29a7b702d79d38c31",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 77.873118047112484,
+        "Y": -104.87160841333251
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "d8cc485e345f4999a6c414a329be447a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 74.8610157147175,
+        "Y": 7.2886146776422862
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "FileLog",
+        "Id": "c8c7c8c3f35945778c54c01998152f99",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 415.317603870069,
+        "Y": 5.7420223746342884
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "4fec9d1da5f44af9b998019066cb074f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 712.395712185679,
+        "Y": -52.99585455468771
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Scene Export",
+        "Id": "9972abaee3fe40579385ce0e25ec8ef9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1186.129330455989,
+        "Y": 7.54911715222778
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Directory Path",
+        "Id": "ddf283503e7f42d287e49064e785b2bf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 819.95925601583,
+        "Y": 93.248496276520484
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Scene Export Settings",
+        "Id": "2e3c4ac1a8574377ad3cc8ab2a5f787f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 413.53644289607746,
+        "Y": 272.43810717276904
+      }
+    ],
+    "Annotations": [],
+    "X": 127.22200216746666,
+    "Y": -37.283870995446577,
+    "Zoom": 0.69990909121838829
+  }
+}

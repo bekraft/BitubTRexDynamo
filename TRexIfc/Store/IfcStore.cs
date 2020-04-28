@@ -14,13 +14,15 @@ using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
 using Log;
+using Bitub.Transfer;
+using Internal;
 
 namespace Store
 {
     /// <summary>
     /// An IFC store bound to a physical resource.
     /// </summary>    
-    public class IfcStore : IDisposable
+    public class IfcStore : IDisposable, INodeProgressing
     {
         #region Internals
 
@@ -50,6 +52,12 @@ namespace Store
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public event EventHandler OnDisposed;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public event EventHandler<NodeProgressingEventArgs> OnProgressChange;
+
+        [IsVisibleInDynamoLibrary(false)]
+        public event EventHandler<NodeFinishedEventArgs> OnFinish;
 
         static IfcStore() {
             IfcStoreRegistry = new ConcurrentDictionary<string, IfcStore>();
@@ -364,6 +372,11 @@ namespace Store
                     throw new NotSupportedException($"Invalid state in global store registry: Duplicate '{FilePathName}'");
                 }
             }
+        }
+
+        public void MarkAllCanceled()
+        {
+            throw new NotImplementedException();
         }
     }
 }

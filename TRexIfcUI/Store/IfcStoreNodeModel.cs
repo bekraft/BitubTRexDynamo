@@ -25,11 +25,6 @@ namespace Store
     [IsDesignScriptCompatible]
     public class IfcStoreNodeModel : CancelableCommandNodeModel
     {
-        #region Internals
-        // The dynamic delegate signature
-        private string _ref;
-        #endregion
-
         /// <summary>
         /// New IFC store node model.
         /// </summary>
@@ -41,16 +36,18 @@ namespace Store
             RegisterAllPorts();
 
             IsCancelable = true;
-        }
-
-        private string FunctionReference
-        {
-            get => null != _ref ? _ref : _ref = DynamicWrapper.Register<string, object>(CreateIfcStore);
+            Init();
         }
 
         [JsonConstructor]
         IfcStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            Init();
+        }
+
+        private void Init()
+        {
+            
         }
 
         /// <summary>
@@ -59,11 +56,11 @@ namespace Store
         /// <param name="fileName">The IFC model file names to be loaded</param>
         /// <param name="loggerInstance">The optional logger instance</param>
         /// <returns>A new IFC producer</returns>
-        public IfcStore CreateIfcStore(string fileName, object loggerInstance)
+        public IfcStore CreateIfcStore(object fileName, object loggerInstance)
         {
-            TaskName = Path.GetFileName(fileName);
+            TaskName = Path.GetFileName(fileName as string);
             IsCanceled = false;
-            return IfcStore.ByInitAndLoad(fileName, loggerInstance as Logger, Report);
+            return IfcStore.ByInitAndLoad(fileName as string, loggerInstance as Logger, Report);
         }
 
         /// <summary>
@@ -74,7 +71,7 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            if (InPorts.Any(p => !p.IsConnected))
+            if (IsPartiallyApplied)
             {
                 return new[]
                 {
@@ -82,9 +79,11 @@ namespace Store
                 };
             }
 
+            var delegateNode = AstFactory.BuildStringNode(GlobalDelegationService.Put<object, object>(CreateIfcStore));
+
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, string, object, object>(DynamicWrapper.Call),
-                new List<AssociativeNode>() { AstFactory.BuildStringNode(FunctionReference), inputAstNodes[0], inputAstNodes[1] });
+                new Func<string, object, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>() { delegateNode, inputAstNodes[0], inputAstNodes[1] });
 
             return new[]
             {

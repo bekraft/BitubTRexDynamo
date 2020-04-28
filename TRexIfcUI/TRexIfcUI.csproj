@@ -82,7 +82,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20086-Beta.477</Version>
+      <Version>0.1.20115-Beta.290</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.5.0.7432</Version>
