@@ -42,34 +42,43 @@ namespace Task
         /// <summary>
         /// Removes IFC property sets by their names.
         /// </summary>
-        /// <param name="pref">The request preferences</param>
-        /// <param name="storeProducer">The IFC store producer</param>
-        /// <param name="taskNode">An optional task node for progress annoucement</param>
-        /// <returns></returns>  
+        /// <param name="prefs">The request preferences</param>
+        /// <param name="ifcModel">The IFC model producer</param>        
+        /// <returns>New IFC model</returns>  
         [IsVisibleInDynamoLibrary(false)]
-        public IIfcStoreProducer RemovePropertySets(PSetRemovalRequest pref, IIfcStoreProducer storeProducer, ICancelableTaskNode taskNode)
+        public IfcModel RemovePropertySets(PSetRemovalRequest prefs, IfcModel ifcModel)
         {
-            return new IfcStoreProducerDelegate(storeProducer, (s) =>
+            return IfcStore.CreateFromTransform(ifcModel, (model, node) =>
             {
-                var task = pref.Request.Run(s.XbimModel, taskNode);
+                var task = prefs.Request.Run(model, node);
                 task.Wait(TimeOut);
 
-                using(var result = task.Result)
+                if (task.IsCompleted)
                 {
-                    switch (result.ResultCode)
+                    using (var result = task.Result)
                     {
-                        case TransformResult.Code.Finished:
-                            return new IfcStore(result.Target, storeProducer.Logger, s.FilePathName);
-                        case TransformResult.Code.Canceled:
-                            storeProducer.Logger?.LogWarning("Canceled by user request ({0}).", s.FilePathName);
-                            break;
-                        case TransformResult.Code.ExitWithError:
-                            storeProducer.Logger?.LogError("Caught error ({0}): {1}", s.FilePathName, result.Cause);
-                            break;
+                        switch (result.ResultCode)
+                        {
+                            case TransformResult.Code.Finished:
+                                return result.Target;
+                            case TransformResult.Code.Canceled:
+                                node.LogMessages.Add(LogMessage.BySeverityAndMessage(
+                                    Severity.Error, ActionType.Any, "Canceled by user request ({0}).", ifcModel.Name));
+                                break;
+                            case TransformResult.Code.ExitWithError:
+                                node.LogMessages.Add(LogMessage.BySeverityAndMessage(
+                                    Severity.Error, ActionType.Any, "Caught error ({0}): {1}", ifcModel.Name, result.Cause));                                
+                                break;
+                        }
                     }
                 }
+                else
+                {                   
+                    node.LogMessages.Add(LogMessage.BySeverityAndMessage(
+                        Severity.Error, ActionType.Change, $"Task incompletely terminated (Status {task.Status})."));
+                }
                 return null;
-            });
+            }, prefs.NameSuffix);
         }
 
     }

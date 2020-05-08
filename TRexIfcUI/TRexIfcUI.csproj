@@ -73,6 +73,7 @@
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <None Remove="UI\CancelableOptionCommandControl.xaml" />
+    <None Remove="UI\IfcModelLoadControl.xaml" />
     <None Remove="UI\LogOptionsControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
@@ -82,7 +83,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20115-Beta.290</Version>
+      <Version>0.1.20129-Beta.442</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.5.0.7432</Version>

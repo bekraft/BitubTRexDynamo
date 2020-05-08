@@ -1,0 +1,378 @@
+{
+  "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcLoad",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "dd916e2863e54995b204e9437e1000be",
+      "Inputs": [
+        {
+          "Id": "bdb0b11fe68b4480aa3fed5007627aea",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e11cb20b18c741029706e0f80f3116a8",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "c74b9643923945e0b6c6dfda574d2019",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a919f71e82df4facbd07d6569428837e",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "NodeType": "ExtensionNode",
+      "Id": "daed6c03916046138fa732ea55c25b2d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2e233e6fdc864ae5b58b03b808e1b217",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcTessellationPrefs.ByModelDefaults@Store.IfcModel",
+      "Id": "5bfaacb42bd74fc8a812e328f3244319",
+      "Inputs": [
+        {
+          "Id": "77d6960b1be84ae9a653bc1c0b8d24da",
+          "Name": "ifcModel",
+          "Description": "The IFC model\n\nIfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c8743641906f4b97ba7bbcff50d9b915",
+          "Name": "IfcTessellationPrefs",
+          "Description": "Current tesselation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the model internal defaults.\n\nIfcTessellationPrefs.ByModelDefaults (ifcModel: IfcModel): IfcTessellationPrefs"
+    },
+    {
+      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "df4087d7f09c49e0baae87f6697500e1",
+      "Inputs": [
+        {
+          "Id": "983f4d6833534ecd9ad11a96cadff3da",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c24f92aa87414e8881f669f84554cdb9",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "37f1cacb99bd4eb6b73c086e84793ae3",
+          "Name": "prefs",
+          "Description": "Tessellation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1f0848eed1694c299fe9f02727897a31",
+          "Name": "ifcModel",
+          "Description": "IFC model instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcTessellationPrefs.ToValues",
+      "Id": "3620f106d0934a0b96a950f80d83b309",
+      "Inputs": [
+        {
+          "Id": "35a3737579744d31a3a2c8bc6cfe9d69",
+          "Name": "ifcTessellationPrefs",
+          "Description": "Store.IfcTessellationPrefs",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3fba4e6428b54c4e974107b6c7a2824e",
+          "Name": "var[]..[]",
+          "Description": "The settings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a separate values of preferences.\n\nIfcTessellationPrefs.ToValues ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcModel.CanonicalName@string",
+      "Id": "e5e8884e770d414b8005d15918abc15d",
+      "Inputs": [
+        {
+          "Id": "a8f9beea8702412fb68d44615bfd2140",
+          "Name": "ifcModel",
+          "Description": "Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3790dfc582024ce5ae816977f8f9be7c",
+          "Name": "seperator",
+          "Description": "The separator between name fragments\n\nstring\nVorgabewert : \"-\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "00739ef0db98482bb01eadea4162ade6",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets the canoncial model name (depending on preceeding transformations).\n\nIfcModel.CanonicalName (seperator: string = \"-\"): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e11cb20b18c741029706e0f80f3116a8",
+      "End": "c24f92aa87414e8881f669f84554cdb9",
+      "Id": "27fef55ae8bf478e8767d86a86d09245"
+    },
+    {
+      "Start": "a919f71e82df4facbd07d6569428837e",
+      "End": "983f4d6833534ecd9ad11a96cadff3da",
+      "Id": "6b42a1ad89ec4d7ca1e2c93b6d6ed34b"
+    },
+    {
+      "Start": "2e233e6fdc864ae5b58b03b808e1b217",
+      "End": "bdb0b11fe68b4480aa3fed5007627aea",
+      "Id": "98a45fd538ae449990a5f9669aca4859"
+    },
+    {
+      "Start": "c8743641906f4b97ba7bbcff50d9b915",
+      "End": "35a3737579744d31a3a2c8bc6cfe9d69",
+      "Id": "3d2e0c8c6ead41a88b48336603d98af3"
+    },
+    {
+      "Start": "1f0848eed1694c299fe9f02727897a31",
+      "End": "77d6960b1be84ae9a653bc1c0b8d24da",
+      "Id": "815ac9c6d63948ec92195573758d199d"
+    },
+    {
+      "Start": "1f0848eed1694c299fe9f02727897a31",
+      "End": "a8f9beea8702412fb68d44615bfd2140",
+      "Id": "5bf1bdc4809440c5ba264ea5f1b24288"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "BitubIFC",
+      "Version": "0.1.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "dd916e2863e54995b204e9437e1000be",
+        "5bfaacb42bd74fc8a812e328f3244319",
+        "df4087d7f09c49e0baae87f6697500e1",
+        "3620f106d0934a0b96a950f80d83b309",
+        "e5e8884e770d414b8005d15918abc15d"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.7186",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File Logger",
+        "Id": "dd916e2863e54995b204e9437e1000be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 281.6,
+        "Y": 56.399999999999977
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "c74b9643923945e0b6c6dfda574d2019",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 21.471000475569383,
+        "Y": 207.9850807038427
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "daed6c03916046138fa732ea55c25b2d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 25.599999999999909,
+        "Y": 54.799999999999841
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcTessellationPrefs.ByModelDefaults",
+        "Id": "5bfaacb42bd74fc8a812e328f3244319",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 656.529958459155,
+        "Y": 39.495085459536938
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "df4087d7f09c49e0baae87f6697500e1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 346.96797578952157,
+        "Y": 208.69508063219007
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcTessellationPrefs.ToValues",
+        "Id": "3620f106d0934a0b96a950f80d83b309",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 985.72028528894884,
+        "Y": 39.7497234095153
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.CanonicalName",
+        "Id": "e5e8884e770d414b8005d15918abc15d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 724.52580427983,
+        "Y": 273.63130022988122
+      }
+    ],
+    "Annotations": [],
+    "X": -87.874532996558969,
+    "Y": 43.203352947026673,
+    "Zoom": 0.67483165842686466
+  }
+}

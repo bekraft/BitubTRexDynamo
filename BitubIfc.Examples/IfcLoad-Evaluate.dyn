@@ -1,0 +1,314 @@
+{
+  "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcLoad-Evaluate",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "cd47730b2010415b811e95fa14e55289",
+      "Inputs": [
+        {
+          "Id": "2bf19c9c2a044e82821cb9d875c6ce56",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b2e8323dd1d646baa8c63e1594508537",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b4db55a5da3a4926b48570b4ddd76664",
+          "Name": "model",
+          "Description": "IFC model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "dd916e2863e54995b204e9437e1000be",
+      "Inputs": [
+        {
+          "Id": "bdb0b11fe68b4480aa3fed5007627aea",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e11cb20b18c741029706e0f80f3116a8",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "c74b9643923945e0b6c6dfda574d2019",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a919f71e82df4facbd07d6569428837e",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "NodeType": "ExtensionNode",
+      "Id": "daed6c03916046138fa732ea55c25b2d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2e233e6fdc864ae5b58b03b808e1b217",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcModel.Schema",
+      "Id": "98e643991e8e4eb6b5bf9907b226576b",
+      "Inputs": [
+        {
+          "Id": "5bf3d4c17b5c4dccab5e32c28a6446ea",
+          "Name": "ifcModel",
+          "Description": "Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4af5878b259a437c8739410dd731f4aa",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The current IFC schema version of the element collection.\n\nIfcModel.Schema: string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcModel.Name",
+      "Id": "e03c2900537542a6b1fd7643e67ab69b",
+      "Inputs": [
+        {
+          "Id": "50d54b5bdc9c4663b79a074966f6aedf",
+          "Name": "ifcModel",
+          "Description": "Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "01600e1d334446e882bebbba79a0ba5a",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the physical file name of the IFC model (present or not).\n\nIfcModel.Name: string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b4db55a5da3a4926b48570b4ddd76664",
+      "End": "5bf3d4c17b5c4dccab5e32c28a6446ea",
+      "Id": "5b698ef242f44ed7abb244a9c68e7df4"
+    },
+    {
+      "Start": "b4db55a5da3a4926b48570b4ddd76664",
+      "End": "50d54b5bdc9c4663b79a074966f6aedf",
+      "Id": "47bab684d8244039b04c697903aa40db"
+    },
+    {
+      "Start": "e11cb20b18c741029706e0f80f3116a8",
+      "End": "b2e8323dd1d646baa8c63e1594508537",
+      "Id": "2b55d8e6365649d594e096b103a54253"
+    },
+    {
+      "Start": "a919f71e82df4facbd07d6569428837e",
+      "End": "2bf19c9c2a044e82821cb9d875c6ce56",
+      "Id": "9beaf0af118149308348489a60c4dbc5"
+    },
+    {
+      "Start": "2e233e6fdc864ae5b58b03b808e1b217",
+      "End": "bdb0b11fe68b4480aa3fed5007627aea",
+      "Id": "98a45fd538ae449990a5f9669aca4859"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "BitubIFC",
+      "Version": "0.1.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "cd47730b2010415b811e95fa14e55289",
+        "dd916e2863e54995b204e9437e1000be",
+        "98e643991e8e4eb6b5bf9907b226576b",
+        "e03c2900537542a6b1fd7643e67ab69b"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.7186",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "cd47730b2010415b811e95fa14e55289",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 474.39999999999964,
+        "Y": 249.19999999999996
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Logger",
+        "Id": "dd916e2863e54995b204e9437e1000be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 281.6,
+        "Y": 56.399999999999977
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "c74b9643923945e0b6c6dfda574d2019",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 50.39999999999992,
+        "Y": 250.7999999999999
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "daed6c03916046138fa732ea55c25b2d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 25.599999999999909,
+        "Y": 54.799999999999841
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.Schema",
+        "Id": "98e643991e8e4eb6b5bf9907b226576b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 556.0,
+        "Y": 115.6
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.Name",
+        "Id": "e03c2900537542a6b1fd7643e67ab69b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 434.40000000000003,
+        "Y": 375.6
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

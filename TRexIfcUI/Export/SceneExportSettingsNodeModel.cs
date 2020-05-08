@@ -39,7 +39,6 @@ namespace Export
     {
         private SceneTransformationStrategy _transformationStrategy = SceneTransformationStrategy.Quaternion;
         private ScenePositioningStrategy _positioningStrategy = ScenePositioningStrategy.NoCorrection;
-        private double _unitsPerMeter = 1.0;
 
         /// <summary>
         /// New Scene Exporting Settings model.
@@ -177,11 +176,6 @@ namespace Export
                 .ToArray());
         }
 
-        /// <summary>
-        /// Builds the AST
-        /// </summary>
-        /// <param name="inputAstNodes">Input nodes</param>
-        /// <returns>Embedded AST nodes associated with this node model</returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode[] inputs = inputAstNodes.ToArray();
@@ -219,8 +213,8 @@ namespace Export
             var delegateNode = AstFactory.BuildFunctionCall(
                 new Func<string, string, XYZ, double, string[], SceneExportSettings>(SceneExportSettings.BySettings),                
                 new List<AssociativeNode>() {
-                    WrapName(TransformationStrategy),
-                    WrapName(PositioningStrategy),
+                    BuildEnumNameNode(TransformationStrategy),
+                    BuildEnumNameNode(PositioningStrategy),
                     inputs[0],
                     inputs[1],
                     sceneContexts

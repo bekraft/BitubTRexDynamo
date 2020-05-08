@@ -14,12 +14,12 @@ namespace Store
     /// <summary>
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.
     /// </summary>
-    [NodeName("AuthorMetadata")]
+    [NodeName("IfcAuthorMetadata")]
     [NodeCategory("TRexIfc.Store")]
     [OutPortTypes(typeof(IfcMetadata))]
     [OutPortDescriptions("Author's metadata")]
     [IsDesignScriptCompatible]
-    public class AuthorDataNodeModel : NodeModel
+    public class IfcAuthorMetadataNodeModel : NodeModel
     {
         #region Internals
         private string _organisationId = "";
@@ -32,14 +32,14 @@ namespace Store
         /// <summary>
         /// New authors data model.
         /// </summary>
-        public AuthorDataNodeModel()
+        public IfcAuthorMetadataNodeModel()
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("authorData", "Author's metadata")));
             RegisterAllPorts();
         }
 
         [JsonConstructor]
-        AuthorDataNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        IfcAuthorMetadataNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
 
@@ -108,6 +108,8 @@ namespace Store
             }
         }
 
+#pragma warning disable CS1591
+
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -126,5 +128,7 @@ namespace Store
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), funcNode)
             };
         }
+
+#pragma warning restore CS1591
     }
 }

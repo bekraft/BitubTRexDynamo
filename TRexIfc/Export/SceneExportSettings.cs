@@ -38,7 +38,7 @@ namespace Export
         /// <param name="unitPerMeter">The units per meter</param>
         /// <param name="sceneContexts">The scene context(s) to be exported</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(true)]
+        [IsVisibleInDynamoLibrary(false)]
         public static SceneExportSettings BySettings(string transformationStrategy,
             string positioningStrategy,
             XYZ offset,

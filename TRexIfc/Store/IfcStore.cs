@@ -9,268 +9,446 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Collections.Concurrent;
 
+using Bitub.Transfer;
+
 using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 using Log;
-using Bitub.Transfer;
 using Internal;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Store
 {
     /// <summary>
-    /// An IFC store bound to a physical resource.
-    /// </summary>    
-    public class IfcStore : IDisposable, INodeProgressing
+    /// Simple IFC model producer.
+    /// </summary>
+    /// <returns></returns>
+    [IsVisibleInDynamoLibrary(false)]
+    public delegate IModel ProducerDelegate();
+
+    /// <summary>
+    /// Delegating model production.
+    /// </summary>
+    /// <param name="node">The log and progress receiver</param>
+    /// <returns></returns>
+    [IsVisibleInDynamoLibrary(false)]
+    public delegate IModel ProducerProgressDelegate(INodeProgressing node);
+
+    /// <summary>
+    /// Delgating model transformation.
+    /// </summary>
+    /// <param name="sourceModel">The source model</param>
+    /// <param name="node">The log and progress receiver</param>
+    /// <returns></returns>
+    [IsVisibleInDynamoLibrary(false)]
+    public delegate IModel TransformerProgressDelegate(IModel sourceModel, INodeProgressing node);
+
+    /// <summary>
+    /// Background IFC storage handling.
+    /// </summary> 
+    [IsVisibleInDynamoLibrary(false)]
+    public class IfcStore
     {
+        /// <summary>
+        /// Available IFC physical file format extensions.
+        /// </summary>
+        public static string[] Extensions = new string[] { "ifc", "ifczip", "ifcxml" };
+
+        // Disable comment warning
+#pragma warning disable CS1591
+
         #region Internals
 
-        // Global registry
-        private static ConcurrentDictionary<string, IfcStore> IfcStoreRegistry;
-        
-        /// <summary>
-        /// The logger instance (or null if there is no).
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public Logger Logger { get; set; }
+        // The internal weak reference
+        private WeakReference<IModel> _model;
+        // The model producer hook 
+        private ProducerDelegate _producer;
 
-        /// <summary>
-        /// The wrapped internal IFC model.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public IModel XbimModel { get; private set; }
-
-        /// <summary>
-        /// The full path file name.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public string FilePathName { get; private set; }
-
-        /// <summary>
-        /// Send if the store is finally about to be disposed.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public event EventHandler OnDisposed;
-
-        [IsVisibleInDynamoLibrary(false)]
-        public event EventHandler<NodeProgressingEventArgs> OnProgressChange;
-
-        [IsVisibleInDynamoLibrary(false)]
-        public event EventHandler<NodeFinishedEventArgs> OnFinish;
-
-        static IfcStore() {
-            IfcStoreRegistry = new ConcurrentDictionary<string, IfcStore>();
+        static IfcStore()
+        {
+            Xbim.Ifc.IfcStore.ModelProviderFactory = new DefaultModelProviderFactory();
+            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
         }
 
-        internal IfcStore(IModel model, Logger logInstance, string filePathName = null)
+        private IfcStore(Qualifier qualifier)
+        {
+            if (null == qualifier)
+                Qualifier = new Qualifier
+                {
+                    Anonymous = new GlobalUniqueId
+                    {
+                        Guid = new Bitub.Transfer.Guid { Raw = System.Guid.NewGuid().ToByteArray().ToByteString() }
+                    }
+                };
+            else
+                Qualifier = qualifier;
+        }
+
+        private IfcStore(IModel model, Qualifier qualifier = null) 
+            : this(qualifier)
         {
             XbimModel = model;
-            FilePathName = filePathName;
         }
 
-        internal IfcStore(Xbim.Ifc.IfcStore ifcStore, Logger logInstance)
+        private IfcStore(IModel model, string canonicalName, Qualifier sourceQualifier = null) 
+            : this(BuildQualifier(sourceQualifier, canonicalName))
         {
-            XbimModel = ifcStore;
-            FilePathName = ifcStore.FileName;
-            Logger = logInstance;
+            XbimModel = model;
         }
 
-        /// <summary>
-        /// Initializes the logging instance.
-        /// </summary>
-        /// <param name="logInstance"></param>
-        [IsVisibleInDynamoLibrary(false)]
-        public static void InitLogging(Logger logInstance)
+        private IfcStore(ProducerDelegate producerDelegate, string canonicalName, Qualifier sourceQualifier = null)
+            : this(BuildQualifier(sourceQualifier, canonicalName))
         {
-            XbimLogging.LoggerFactory = logInstance?.LoggerFactory ?? new LoggerFactory();
-            Xbim.Ifc.IfcStore.ModelProviderFactory = new DefaultModelProviderFactory();
-            Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();            
+            _producer = producerDelegate;
         }
 
-        /// <summary>
-        /// Reads and replaces the current internal model. Will also update the logger.
-        /// </summary>
-        /// <param name="fileName">File name to load</param>
-        /// <param name="logInstance">The logger instance</param>
-        /// <param name="progressDelegate">The progress delegate</param>
-        /// <returns>This instance</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcStore ByInitAndLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
+        internal static Qualifier BuildQualifier(string pathName, string fileName, string format)
         {
-            InitLogging(logInstance);            
-            return ByLoad(fileName, logInstance, progressDelegate);
+            var name = new Name();
+            var ext = Extensions.First(e => e.Equals(format.ToLower(), StringComparison.OrdinalIgnoreCase));
+
+            name.Frags.AddRange(new string[] { pathName, fileName, ext });
+            return new Qualifier
+            {
+                Named = name
+            };
         }
 
-        /// <summary>
-        /// Reads and replaces the current internal model.
-        /// </summary>
-        /// <param name="fileName">File name to load</param>
-        /// <param name="logInstance">The logger instance</param>
-        /// <param name="progressDelegate">The progress delegate</param>
-        /// <returns>This instance</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcStore ByLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
+        internal static Qualifier BuildQualifier(string filePathName)
         {
-            // Load or return existing
-            return IfcStoreRegistry.AddOrUpdate(fileName, (f) => ByPhysicallyLoad(f, logInstance, progressDelegate), (f,s) => s);
+            return BuildQualifier(
+                Path.GetDirectoryName(filePathName),
+                Path.GetFileNameWithoutExtension(filePathName),
+                Path.GetExtension(filePathName).Substring(1));
         }
 
-        // Really loads store
-        private static IfcStore ByPhysicallyLoad(string fileName, Logger logInstance, ReportProgressDelegate progressDelegate)
+        internal static Qualifier BuildQualifier(Qualifier sourceQualifier, string canonicalName)
         {
-            logInstance?.LogInfo("Start loading file '{0}'.", fileName);
+            if (null == sourceQualifier)
+                return BuildQualifier(canonicalName);
+
+            Qualifier newQualifier;
+            switch (sourceQualifier.GuidOrNameCase)
+            {
+                case Qualifier.GuidOrNameOneofCase.Anonymous:
+                    throw new ArgumentException($"Source is temporary model qualifier");
+                case Qualifier.GuidOrNameOneofCase.None:
+                    newQualifier = BuildQualifier(canonicalName);
+                    break;
+                case Qualifier.GuidOrNameOneofCase.Named:
+                    newQualifier = new Qualifier(sourceQualifier);
+                    newQualifier.Named.Frags.Insert(newQualifier.Named.Frags.Count - 1, canonicalName);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+            return newQualifier;
+        }
+
+        internal protected IModel TryGetXbimModel
+        {
+            get {
+                lock (this)
+                {
+                    IModel model = null;
+                    if (_model?.TryGetTarget(out model) ?? false)
+                        return model;
+                    else
+                        return null;
+                }
+            }
+        }
+
+        internal protected IModel XbimModel
+        {
+            get {
+                lock (this)
+                {
+                    IModel model = null;
+                    if (_model?.TryGetTarget(out model) ?? false)
+                        return model;
+
+                    model = _producer.Invoke();
+                    _model = new WeakReference<IModel>(model);
+                    return model;
+                }
+            }
+            private set {
+                lock (this)
+                {
+                    if (null != value)
+                    {
+                        _model = new WeakReference<IModel>(value);
+                        _producer = () => value;
+                    }
+                    else
+                    {
+                        _model = null;
+                        _producer = () => null;
+                    }
+                }
+            }
+        }
+
+        internal protected bool IsTemporaryStore
+        {
+            get => Qualifier.GuidOrNameCase != Qualifier.GuidOrNameOneofCase.Named;
+        }
+
+        private static IModel LoadFromFile(IfcModel theModel, ICollection<LogMessage> log)
+        {
+            var filePathName = theModel.Store.GetFilePathName(false);
+            var logger = theModel.Store.Logger;
+            logger?.LogInfo("Start loading file '{0}'.", filePathName);
             try
             {
-                var xbimStore = new IfcStore(Xbim.Ifc.IfcStore.Open(fileName, null, null, progressDelegate, Xbim.IO.XbimDBAccess.Read), logInstance);
-                logInstance?.LogInfo("File '{0}' has been loaded successfully.", fileName);                
-                return xbimStore;
+                var model = Xbim.Ifc.IfcStore.Open(filePathName, null, null, theModel.NotifyLoadProgressChanged, Xbim.IO.XbimDBAccess.Read);
+                theModel.NotifyOnFinished(ActionType.Load, false, false);
+                logger?.LogInfo("File '{0}' has been loaded successfully.", filePathName);
+                return model;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                logInstance?.LogError(e, "Exception while loading '{0}'.", fileName);
+                logger?.LogError(e, "Exception while loading '{0}'.", filePathName);
+                theModel.NotifyOnFinished(ActionType.Load, false, true);                            
             }
             return null;
         }
 
-
-        /// <summary>
-        /// Wraps a new instance around an exisiting Xbim store.
-        /// </summary>
-        /// <param name="ifcStore">The Xbim IFC store</param>
-        /// <param name="logInstance">The logging instance</param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static IfcStore ByXbimIfcStore(Xbim.Ifc.IfcStore ifcStore, Logger logInstance)
+        private static WeakReference<IfcStore> RefreshReference(Qualifier q, WeakReference<IfcStore> rs)
         {
-            return new IfcStore(ifcStore, logInstance);
+            IfcStore s;
+            if (rs.TryGetTarget(out s))
+            {   // If reference is valid
+                if (!s.Qualifier.Equals(q))
+                    throw new ArgumentException($"Qualifier of store is different ({s.Qualifier.ToLabel()}");
+                return rs;
+            }
+            else
+            {   // If not, recreate store
+                return new WeakReference<IfcStore>(new IfcStore(q));
+            }
         }
 
-        /// <summary>
-        /// Save an IFC model to file.
-        /// </summary>
-        /// <param name="fileName">The filename</param>
-        /// <param name="newFileExtension">Change format and extension to given extension (or leave it if <c>null</c>)</param>
-        /// <param name="store">The IFC store to be saved</param>
-        /// <param name="progressDelegate">The progress delegate</param>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Save(string fileName, string newFileExtension, IfcStore store, ReportProgressDelegate progressDelegate)
+        private static void InitLogging(Logger logInstance)
         {
-            try
-            {
-                fileName = ChangeExtension(fileName, newFileExtension);
-                using (var fileStream = File.Create(fileName))
+            XbimLogging.LoggerFactory = logInstance?.LoggerFactory ?? new LoggerFactory();
+        }
+
+        #endregion
+
+#pragma warning restore CS1591
+
+        /// <summary>
+        /// The logger instance (or null if there is no).
+        /// </summary>
+        public Logger Logger { get; set; }
+
+        /// <summary>
+        /// The source store name.
+        /// </summary>
+        public string Name
+        {
+            get {
+                switch(Qualifier.GuidOrNameCase)
                 {
-                    switch (Path.GetExtension(fileName).ToLower())
-                    {
-                        case ".ifc":
-                            store.XbimModel.SaveAsIfc(fileStream, progressDelegate);
-                            break;
-                        case ".ifcxml":
-                            store.XbimModel.SaveAsIfcXml(fileStream, progressDelegate);
-                            break;
-                        case ".ifczip":
-                            store.XbimModel.SaveAsIfcZip(fileStream, Path.GetFileName(fileName), Xbim.IO.StorageType.Ifc, progressDelegate);
-                            break;
-                        default:
-                            store.Logger?.LogWarning("File extension not known: '{0}'. Use (IFC, IFCXML or IFCZIP)", Path.GetExtension(fileName));
-                            break;
-                    }
-
-                    fileStream.Close();
+                    case Qualifier.GuidOrNameOneofCase.Anonymous:
+                        return Qualifier.Anonymous.ToBase64String();
+                    case Qualifier.GuidOrNameOneofCase.Named:
+                        return Qualifier.Named.Frags[1];
+                    default:
+                        throw new NotSupportedException($"Missing qualifier");
                 }
-                store.Logger?.LogInfo("Saving '{0}' done.", fileName);
-                return fileName;
             }
-            catch(Exception e)
-            {
-                store.Logger?.LogError(e, "Caught exception: {0}", e.Message);
-                throw e;
-            }            
         }
 
         /// <summary>
-        /// Saves the current store by current file name.
+        /// The assembled file name.
         /// </summary>
-        /// <param name="store">The IFC store</param>
-        /// <param name="newFileExtension">An optionally given new extension</param>
-        /// <param name="progressDelegate">The progress delegate</param>
+        public string FileName
+        {
+            get {
+                switch (Qualifier.GuidOrNameCase)
+                {
+                    case Qualifier.GuidOrNameOneofCase.Anonymous:
+                        return $"{Qualifier.Anonymous.ToBase64String()}.ifc";
+                    case Qualifier.GuidOrNameOneofCase.Named:
+                        return $"{Qualifier.Named.Frags[1]}.{Qualifier.Named.Frags.Last()}";
+                    default:
+                        throw new NotSupportedException($"Missing qualifier");
+                }
+            }
+        }
+
+        /// <summary>
+        /// The format extension ("ifc", "ifcxml" or "ifczip")
+        /// </summary>
+        public string FormatExtension
+        {
+            get {
+                switch (Qualifier.GuidOrNameCase)
+                {
+                    case Qualifier.GuidOrNameOneofCase.Anonymous:
+                        return "ifc";
+                    case Qualifier.GuidOrNameOneofCase.Named:
+                        return Qualifier.Named.Frags.Last();
+                    default:
+                        throw new NotSupportedException($"Missing qualifier");
+                }
+            }
+        }
+
+        /// <summary>
+        /// The resource path name of physical store.
+        /// </summary>
+        public string ResourcePathName
+        {
+            get {
+                switch (Qualifier.GuidOrNameCase)
+                {
+                    case Qualifier.GuidOrNameOneofCase.Anonymous:
+                        return Path.GetTempPath();
+                    case Qualifier.GuidOrNameOneofCase.Named:
+                        return Qualifier.Named.Frags[0];
+                    default:
+                        throw new NotSupportedException($"Missing qualifier");
+                }
+            }
+        }
+
+        /// <summary>
+        /// The full path file name.
+        /// </summary>
+        public string GetFilePathName(bool withCanonicalAddons = true, string canonicalSep = "_")
+        {
+            switch (Qualifier.GuidOrNameCase)
+            {
+                case Qualifier.GuidOrNameOneofCase.Anonymous:
+                    return $"{Path.GetTempPath()}{Path.DirectorySeparatorChar}{Qualifier.Anonymous.ToBase64String()}.ifc";
+                case Qualifier.GuidOrNameOneofCase.Named:
+                    var fileName = withCanonicalAddons ? Qualifier.Named.ToLabel(canonicalSep, 1, 1) : Name;
+                    return $"{Qualifier.Named.Frags[0]}{Path.DirectorySeparatorChar}{fileName}.{Qualifier.Named.Frags.Last()}";
+                default:
+                    throw new NotSupportedException($"Missing qualifier");
+            }
+        }
+
+        /// <summary>
+        /// The qualifier.
+        /// </summary>        
+        public Qualifier Qualifier { get; private set; }
+
+        /// <summary>
+        /// Get or creates a new model store from file and logger instance.
+        /// </summary>
+        /// <param name="fileName">File name to load</param>
+        /// <param name="logInstance">The logger instance</param>   
+        /// <param name="tessellationPrefs">Tessellation preferences</param>
+        /// <returns>This instance</returns>
+        public static IfcModel GetOrCreateModelStore(string fileName, Logger logInstance, IfcTessellationPrefs tessellationPrefs)
+        {
+            InitLogging(logInstance);
+            var store = new IfcStore(BuildQualifier(fileName));
+            var model = new IfcModel(store);
+            store.Logger = logInstance;
+            store._producer = () => LoadFromFile(model, model.LogMessages);
+
+            tessellationPrefs?.ApplyTo(model);
+
+            return model;
+        }
+
+        /// <summary>
+        /// A new IFC model from existing internal model.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="logInstance"></param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Save(IfcStore store, string newFileExtension, ReportProgressDelegate progressDelegate)
+        public static IfcModel CreateFromModel(IModel model, Logger logInstance)
         {
-            return Save(store.FilePathName, newFileExtension, store, progressDelegate);
+            var store = new IfcStore(model);
+            store.Logger = logInstance;
+            return new IfcModel(store);
         }
 
         /// <summary>
-        /// Changes the current file name extension.
+        /// A new IFC model generated by a producer delegate.
         /// </summary>
-        /// <param name="filePathName">The current file path name</param>
-        /// <param name="newExtension">The new extension (using a dot as first character)</param>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string ChangeExtension(string filePathName, string newExtension)
+        /// <param name="producerDelegate"></param>
+        /// <param name="ancestor"></param>
+        /// <param name="canonicalAddon"></param>
+        /// <param name="logInstance"></param>
+        /// <returns></returns>
+        public static IfcModel CreateFromProducer(ProducerProgressDelegate producerDelegate, 
+            Qualifier ancestor, string canonicalAddon, Logger logInstance)
         {
-            if (!string.IsNullOrWhiteSpace(newExtension))
+            var store = new IfcStore(BuildQualifier(ancestor, canonicalAddon));
+            store.Logger = logInstance;
+            var ifcModel = new IfcModel(store);
+            store._producer = () => producerDelegate?.Invoke(ifcModel);
+            return ifcModel;
+        }
+
+        public static IfcModel CreateFromTransform(IfcModel source, 
+            TransformerProgressDelegate transformerDelegate, string canoncialName)
+        {
+            var store = new IfcStore(BuildQualifier(source.Store.Qualifier, canoncialName));
+            store.Logger = source.Store.Logger;
+            var ifcModel = new IfcModel(store);
+            store._producer = () => 
             {
-                string ext = !newExtension.Trim().StartsWith(".") ? $".{newExtension.Trim()}" : newExtension.Trim();
-                filePathName = $"{Path.GetDirectoryName(filePathName)}{Path.DirectorySeparatorChar}{Path.GetFileNameWithoutExtension(filePathName)}{ext}";
-            }
-            return filePathName;
+                return transformerDelegate?.Invoke(source.Store.XbimModel, ifcModel);
+            };
+            return ifcModel;
         }
 
         /// <summary>
         /// Changes the format extension identifier.
         /// </summary>
         /// <param name="newExtension">Either .ifc, .ifcxml or .ifczip</param>
-        /// <returns>This store with a new physical format extension</returns>
-        public IfcStore ChangeExtension(string newExtension)
+        public void ChangeFormat(string newExtension)
         {
-            FilePathName = ChangeExtension(FilePathName, newExtension);
-            return this;
+            if (IsTemporaryStore)
+                throw new NotSupportedException("Not allowed for temporary models");
+
+            var ext = Extensions.First(e => e.Equals(newExtension, StringComparison.OrdinalIgnoreCase));
+            Qualifier.Named.Frags[Qualifier.Named.Frags.Count - 1] = ext;
         }
-
-        #endregion
-
-        /// <summary>
-        /// The current IFC schema version of the element collection.
-        /// </summary>
-        public string Schema { get => XbimModel.SchemaVersion.ToString(); }
-
-        /// <summary>
-        /// The project name.
-        /// </summary>
-        public string ProjectName { get => XbimModel.Instances.FirstOrDefault<IIfcProject>()?.Name; }
-
-        /// <summary>
-        /// Returns the physical file name of the IFC model (present or not).
-        /// </summary>
-        public string FileName { get => Path.GetFileName(FilePathName); }
 
         /// <summary>
         /// Renames the current model's physical name. Does not rename the original
         /// physical resource. The change will only have effect when saving this store.
         /// </summary>
-        /// <param name="fileNameWithExt">The new file name with extension</param>
-        /// <returns>This store with new name</returns>
-        public IfcStore Rename(string fileNameWithExt)
+        /// <param name="fileNameWithoutExt">The new file name without format extension</param>
+        public void Rename(string fileNameWithoutExt)
         {
-            string path = Path.GetDirectoryName(FilePathName);
-            Logger?.LogInfo("Renamed '{0}' to '{1}'.", Path.GetFileName(FilePathName), fileNameWithExt);
-            FilePathName = $"{path}{Path.DirectorySeparatorChar}{fileNameWithExt}";            
-            return this;
+            if (IsTemporaryStore)
+            {
+                Logger?.LogInfo($"Renaming temporary store '{Qualifier.Anonymous.ToBase64String()}'");
+                Qualifier = BuildQualifier("~", fileNameWithoutExt, "ifc");
+            }
+
+            Qualifier.Named.Frags[1] = fileNameWithoutExt;
         }
 
         /// <summary>
         /// Relocates the file to another folder / directory.
         /// </summary>
         /// <param name="pathName">The absolute path name</param>
-        /// <returns>This store having a relocated file name</returns>
-        public IfcStore Relocate(string pathName)
-        {            
-            string fileName = Path.GetFileName(FilePathName);
-            FilePathName = $"{pathName}{Path.DirectorySeparatorChar}{fileName}";
-            Logger?.LogInfo("Relocated '{0}' to '{1}'.", fileName, FilePathName);
-            return this;
+        public void Relocate(string pathName)
+        {
+            if (IsTemporaryStore)
+            {
+                Logger?.LogInfo($"Relocating temporary store '{Qualifier.Anonymous.ToBase64String()}'");
+                Qualifier = BuildQualifier(pathName, Qualifier.Anonymous.ToBase64String(), "ifc");
+            }
+
+            Qualifier.Named.Frags[0] = Path.GetDirectoryName($"{pathName}{Path.DirectorySeparatorChar}");
         }
 
         /// <summary>
@@ -278,105 +456,26 @@ namespace Store
         /// </summary>
         /// <param name="replacePattern">Regular expression identifiying the replacement</param>
         /// <param name="replaceWith">Fragments to insert</param>
-        /// <returns>A store with modified filename</returns>
-        public IfcStore RenameWithReplacePattern(string replacePattern, string replaceWith)
+        public void RenameWithReplacePattern(string replacePattern, string replaceWith)
         {
+            if (IsTemporaryStore)
+                throw new NotSupportedException("Not allowed for temporary models");
+
             var modifiedName = Regex.Replace(
-                    Path.GetFileNameWithoutExtension(FilePathName),
+                    Qualifier.Named.Frags[1],
                     replacePattern,
-                    replaceWith).Trim();            
-            return Rename($"{modifiedName}{Path.GetExtension(FilePathName)}");
+                    replaceWith).Trim();
+            Rename(modifiedName);
         }
 
         /// <summary>
         /// Renames the current model's physical name append the given suffix.
         /// </summary>
         /// <param name="suffix">A suffix</param>
-        /// <returns>This store with a new name</returns>
-        public IfcStore RenameWithSuffix(string suffix)
+        public void RenameWithSuffix(string suffix)
         {
-            return Rename($"{Path.GetFileNameWithoutExtension(FilePathName)}{suffix}{Path.GetExtension(FilePathName)}");
+            Rename($"{Qualifier.Named.Frags[1]}{suffix}{Qualifier.Named.Frags[2]}");
         }
 
-        /// <summary>
-        /// Saves the current model to file.
-        /// </summary>
-        /// <returns>The full path name of saved file.</returns>
-        public string Save()
-        {
-            Save(FilePathName, null, this, null);
-            return FilePathName;
-        }
-
-        /// <summary>
-        /// Saves the current store to a physical resource.
-        /// </summary>
-        /// <param name="fileNameWithExt">The file name with extension ("ifc", "ifcxml" or "ifczip")</param>
-        /// <returns>The absolute file name including the path</returns>
-        public string SaveAs(string fileNameWithExt)
-        {
-            Rename(fileNameWithExt);
-            Save(FilePathName, null, this, null);
-            return FilePathName;
-        }
-
-        /// <summary>
-        /// Saves the current store to a physical resource by appending a suffix and using the
-        /// given extension.
-        /// </summary>
-        /// <param name="addonSuffix">Some suffix</param>
-        /// <param name="extension">The extension ("ifc", "ifcxml" or "ifczip")</param>
-        /// <returns>The absolute file name including the path</returns>
-        public string SaveAs(string addonSuffix, string extension)
-        {
-            return SaveAs($"{Path.GetFileNameWithoutExtension(FilePathName)}{addonSuffix}{extension}");
-        }
-
-        /// <summary>
-        /// Lists all product types which are present in the model
-        /// </summary>
-        /// <returns>A list of distinct IFC product types held by the collection</returns>
-        public string[] ListProductTypes() => XbimModel.Instances
-            .OfType<IIfcProduct>()
-            .Select(p => p.ExpressType.Name)
-            .Distinct()
-            .ToArray();
-
-        /// <summary>
-        /// Lists all property sets by their name.
-        /// </summary>
-        /// <returns>A list of property set names in use</returns>
-        public string[] ListPropertySetNames() => XbimModel.Instances
-            .OfType<IIfcPropertySet>()
-            .Select(e => (string)e.Name)
-            .Distinct()
-            .ToArray();
-
-        /// <summary>
-        /// Disposes the store object and the model internally.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public void Dispose()
-        {
-            IfcStore store;
-            if (IfcStoreRegistry.TryRemove(FilePathName, out store))
-            {
-                if (store == this)
-                {
-                    XbimModel?.Dispose();
-                    XbimModel = null;
-                    OnDisposed?.Invoke(this, new EventArgs());
-                }
-                else
-                {
-                    throw new NotSupportedException($"Invalid state in global store registry: Duplicate '{FilePathName}'");
-                }
-            }
-        }
-
-        public void MarkAllCanceled()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

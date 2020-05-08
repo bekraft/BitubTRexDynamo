@@ -470,10 +470,11 @@
       "ConcreteType": "Export.SceneExportSettingsNodeModel, TRexIfcUI",
       "ProvidedGraphicalContext": [
         "Body",
-        "Model",
-        "e"
+        "Model"
       ],
-      "SelectedGraphicalContext": [],
+      "SelectedGraphicalContext": [
+        "Body"
+      ],
       "TransformationStrategy": 0,
       "PositioningStrategy": 1,
       "NodeType": "ExtensionNode",
@@ -648,169 +649,169 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "dbeb5aef23c547eca352a43bc3591a6e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 201.45439987174979,
         "Y": 355.80751779840642
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "78271fa71ee742b78a340b17251a6997",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 75.542743234803538,
         "Y": 132.47514934235664
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "bf46c48e0253406ebe349e0a0c79663f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 202.17908815653112,
         "Y": 460.63900708911115
       },
       {
-        "ShowGeometry": true,
-        "Name": "SceneExportSettings.Offset",
         "Id": "39445e8c65ce4e0a903f2e84e0e7cbdf",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "SceneExportSettings.Offset",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 945.06095596467094,
         "Y": 206.60623545353013
       },
       {
-        "ShowGeometry": true,
-        "Name": "SceneExportSettings.PositioningStrategy",
         "Id": "b07cbd0ba9db4986951316d06a3955e4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "SceneExportSettings.PositioningStrategy",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 899.204315884834,
         "Y": 310.89185261245814
       },
       {
-        "ShowGeometry": true,
-        "Name": "SceneExportSettings.TransformationStrategy",
         "Id": "a8a49d5c3fad4255b6983732bd277e8a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "SceneExportSettings.TransformationStrategy",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 879.64485903604066,
         "Y": 412.65947611183924
       },
       {
-        "ShowGeometry": true,
-        "Name": "SceneExportSettings.UnitsPerMeter",
         "Id": "629c4cf5322047ac815f984ad392e1d8",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "SceneExportSettings.UnitsPerMeter",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 886.05491101279074,
         "Y": 507.13019834137231
       },
       {
-        "ShowGeometry": true,
-        "Name": "SceneExportSettings.SceneContexts",
         "Id": "5d43388361604643bf79c193430ba40c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "SceneExportSettings.SceneContexts",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 822.42961439020962,
         "Y": 627.89973031499153
       },
       {
-        "ShowGeometry": true,
-        "Name": "XYZ.ByCoordinates",
         "Id": "a69dd7346afe4cd59a0f2c85dee5d193",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "XYZ.ByCoordinates",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 213.0593649153536,
         "Y": 133.27482829342122
       },
       {
-        "ShowGeometry": true,
-        "Name": "File Path",
         "Id": "ec97af8ef0d043d29a7b702d79d38c31",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 77.873118047112484,
         "Y": -104.87160841333251
       },
       {
-        "ShowGeometry": true,
-        "Name": "File Path",
         "Id": "d8cc485e345f4999a6c414a329be447a",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 74.8610157147175,
         "Y": 7.2886146776422862
       },
       {
-        "ShowGeometry": true,
-        "Name": "FileLog",
         "Id": "c8c7c8c3f35945778c54c01998152f99",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "FileLog",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 415.317603870069,
         "Y": 5.7420223746342884
       },
       {
-        "ShowGeometry": true,
-        "Name": "Ifc Load",
         "Id": "4fec9d1da5f44af9b998019066cb074f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Ifc Load",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 712.395712185679,
         "Y": -52.99585455468771
       },
       {
-        "ShowGeometry": true,
-        "Name": "Scene Export",
         "Id": "9972abaee3fe40579385ce0e25ec8ef9",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Scene Export",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1186.129330455989,
         "Y": 7.54911715222778
       },
       {
-        "ShowGeometry": true,
-        "Name": "Directory Path",
         "Id": "ddf283503e7f42d287e49064e785b2bf",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Directory Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 819.95925601583,
         "Y": 93.248496276520484
       },
       {
-        "ShowGeometry": true,
-        "Name": "Scene Export Settings",
         "Id": "2e3c4ac1a8574377ad3cc8ab2a5f787f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Scene Export Settings",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 413.53644289607746,
         "Y": 272.43810717276904
       }
     ],
     "Annotations": [],
-    "X": 127.22200216746666,
-    "Y": -37.283870995446577,
+    "X": -259.17799783253326,
+    "Y": -63.6838709954466,
     "Zoom": 0.69990909121838829
   }
 }

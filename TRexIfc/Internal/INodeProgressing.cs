@@ -1,16 +1,17 @@
 ﻿using System;
-
-using Bitub.Transfer;
-
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading;
 using Autodesk.DesignScript.Runtime;
+using Bitub.Transfer;
+using Log;
 
 namespace Internal
 {
     /// <summary>
     /// Interface tagging an interactive zero touch node.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public interface INodeProgressing
+    /// </summary>    
+    public interface INodeProgressing : IProgress<ICancelableProgressState>
     {
         /// <summary>
         /// Emitting progress change information
@@ -25,113 +26,115 @@ namespace Internal
         event EventHandler<NodeFinishedEventArgs> OnFinish;
 
         /// <summary>
-        /// Mark all progressing actions to be canceled.
+        /// Log message receiver.
+        /// </summary>
+        ICollection<LogMessage> LogMessages { get; }
+    }
+
+    /// <summary>
+    /// Node progressing event template
+    /// </summary>    
+    public abstract class NodeProgressing : INodeProgressing
+    {
+        #region Internals
+        private EventHandler<NodeProgressingEventArgs> _onProgressChangeEvent;
+        private EventHandler<NodeFinishedEventArgs> _onFinishEvent;
+        private object _monitor = new object();
+        private NodeProgressingEventArgs _recentProgressEventArgs;
+        private NodeFinishedEventArgs _recentFinishEventArgs;
+        #endregion
+
+        /// <summary>
+        /// Logging messages.
+        /// </summary>
+        public ICollection<LogMessage> LogMessages { get; } = new ObservableCollection<LogMessage>();
+
+        /// <summary>
+        /// See <see cref="INodeProgressing.OnProgressChange"/>
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        void MarkAllCanceled();
-    }
-
-    /// <summary>
-    /// Node finish action event arguments.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class NodeFinishedEventArgs : EventArgs
-    {
-        /// <summary>
-        /// The associated task name.
-        /// </summary>
-        public readonly string TaskName;
-
-        /// <summary>
-        /// Whether canceled by user.
-        /// </summary>
-        public readonly bool IsCanceled;
-
-        /// <summary>
-        /// Whether broken by internals.
-        /// </summary>
-        public readonly bool IsBroken;
-
-        /// <summary>
-        /// Reference to internal state.
-        /// </summary>
-        public readonly IProgressState InternalFinalState;
-
-        /// <summary>
-        /// New finish by internal state and task name
-        /// </summary>
-        /// <param name="finalState">The internal state</param>
-        /// <param name="taskName">The task name</param>
-        public NodeFinishedEventArgs(IProgressState finalState, string taskName = null)
+        public event EventHandler<NodeProgressingEventArgs> OnProgressChange
         {
-            TaskName = taskName ?? $"{finalState.StateObject}";
-            IsCanceled = finalState.State == ProgressTokenState.IsCanceled;
+            add {
+                NodeProgressingEventArgs args;
+                lock (_monitor)
+                {
+                    _onProgressChangeEvent += value;
+                    args = _recentProgressEventArgs;
+                }
+
+                if (null != args)
+                    value.Invoke(this, args);
+            }
+            remove {
+                lock (_monitor)
+                    _onProgressChangeEvent -= value;
+            }
         }
 
         /// <summary>
-        /// New finish by giving explicit details
+        /// See <see cref="INodeProgressing.OnFinish"/>
         /// </summary>
-        /// <param name="taskName">Taskname</param>
-        /// <param name="isCanceled">Cancellation flag</param>
-        /// <param name="isBroken">Broken flag</param>
-        public NodeFinishedEventArgs(string taskName, bool isCanceled = false, bool isBroken = false)
+        [IsVisibleInDynamoLibrary(false)]
+        public event EventHandler<NodeFinishedEventArgs> OnFinish
         {
-            TaskName = taskName;
-            IsCanceled = isCanceled;
-            IsBroken = isBroken;
-        }
-    }
+            add {
+                NodeFinishedEventArgs args;
+                lock (_monitor)
+                {
+                    _onFinishEvent += value;
+                    args = _recentFinishEventArgs;
+                }
 
-    /// <summary>
-    /// Node progressing event arguments.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class NodeProgressingEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Internal state object
-        /// </summary>
-        public readonly ICancelableProgressState InternalState;
-
-        /// <summary>
-        /// The state.
-        /// </summary>
-        public readonly object State;
-
-        /// <summary>
-        /// The task name.
-        /// </summary>
-        public readonly string TaskName;
-        
-        /// <summary>
-        /// The percentage (between 0 and 100)
-        /// </summary>
-        public readonly int Percentage;
-
-        /// <summary>
-        /// Wrapping an internal event reference.
-        /// </summary>
-        /// <param name="state"></param>
-        /// <param name="taskName"></param>
-        public NodeProgressingEventArgs(ICancelableProgressState state, string taskName = null)
-        {
-            InternalState = state;
-            TaskName = $"{taskName ?? state.StateObject}";
-            State = state.StateObject;
-            Percentage = state.Percentage;
+                if (null != args)
+                    value.Invoke(this, _recentFinishEventArgs);
+            }
+            remove {
+                lock (_monitor)
+                    _onFinishEvent -= value;
+            }
         }
 
         /// <summary>
-        /// Explicitely instanciation of event argument.
+        /// Emitting progress changes
         /// </summary>
-        /// <param name="percentage">The percetange</param>
-        /// <param name="taskName">The task name</param>
-        /// <param name="state">The state</param>
-        public NodeProgressingEventArgs(int percentage, string taskName = null, string state = null)
+        /// <param name="args">The args</param>
+        protected virtual void OnProgressChanged(NodeProgressingEventArgs args)
         {
-            Percentage = Math.Max(0, Math.Min(100, percentage));
-            TaskName = taskName;
-            State = state;
+            EventHandler<NodeProgressingEventArgs> onProgressEvent;
+            lock (_monitor)
+            {
+                onProgressEvent = _onProgressChangeEvent;
+                _recentProgressEventArgs = args;
+            }
+
+            onProgressEvent?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Emitting finish actions
+        /// </summary>
+        /// <param name="args">The args</param>
+        protected virtual void OnFinished(NodeFinishedEventArgs args)
+        {
+            EventHandler<NodeFinishedEventArgs> onFinishEvent;
+            lock (_monitor)
+            {
+                onFinishEvent = _onFinishEvent;
+                _recentFinishEventArgs = args;
+            }
+
+            onFinishEvent?.Invoke(this, args);
+        }
+
+        /// <summary>
+        /// Reporting progress from outside.
+        /// </summary>
+        /// <param name="value">The progress state</param>
+        [IsVisibleInDynamoLibrary(false)]
+        public void Report(ICancelableProgressState value)
+        {
+            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Change, value));
         }
     }
 }

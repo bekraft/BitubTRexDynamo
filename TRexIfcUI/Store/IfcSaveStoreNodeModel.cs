@@ -15,32 +15,30 @@ using Log;
 namespace Store
 {
     /// <summary>
-    /// Sequential model save model.
+    /// Saves an IFC model instance to physical file.
     /// </summary>
     [NodeName("Ifc Save")]
     [NodeCategory("TRexIfc.Store")]
-    [InPortNames("store")]
-    [InPortTypes(new string[] { nameof(IfcStore) })]
-    [OutPortNames("fileName")]
-    [OutPortTypes(typeof(string))]
+    [InPortTypes(typeof(IfcModel))]
+    [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcSaveStoreNodeModel : CancelableOptionCommandNodeModel
+    public class IfcSaveStoreNodeModel : CancelableProgressingOptionNodeModel
     {
-        private static string[] FileExtensions = new string[] { ".ifc", ".ifcxml", ".ifczip" };
-
         /// <summary>
         /// New save store model.
         /// </summary>
         public IfcSaveStoreNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("store", "Incoming store")));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("fileName", "Written file name.")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "Input model")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
+
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "Saved model")));
 
             RegisterAllPorts();
             IsCancelable = true;
 
             InitOptions();
-            SelectedOption = FileExtensions[0];
+            SelectedOption = IfcStore.Extensions[0];
         }
 
         [JsonConstructor]
@@ -51,54 +49,54 @@ namespace Store
 
         private void InitOptions()
         {
-            foreach (var ext in FileExtensions)
+            foreach (var ext in IfcStore.Extensions)
                 AvailableOptions.Add(ext);
         }
 
-        /// <summary>
-        /// Saving store callback
-        /// </summary>
-        /// <param name="store">The store</param>
-        /// <returns>The full path name</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public string SaveIfcStore(object store)
-        {            
-            var ifcStore = store as IfcStore;
-            if (null != ifcStore)
-            {
-                TaskName = ifcStore.ChangeExtension(SelectedOption as string).FileName;
-                return IfcStore.Save(ifcStore, null, this.Report);
-            }
+#pragma warning disable CS1591
 
-            return null;
-        }
-
-        /// <summary>
-        /// Builds the AST
-        /// </summary>
-        /// <param name="inputAstNodes">Input nodes</param>
-        /// <returns>Embedded AST nodes associated with this node model</returns>
-        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            AssociativeNode[] inputs = inputAstNodes.ToArray();
+            bool isUsingCanonicalNaming = true;
+
             if (IsPartiallyApplied)
             {
-                return new[]
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
                 {
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                };
+                    switch (port.Index)
+                    {
+                        // 0 is mandatory
+                        case 1:
+                            // Default 
+                            isUsingCanonicalNaming = false;
+                            inputs[1] = AstFactory.BuildNullNode();
+                            break;
+                        default:
+                            // No evalable, cancel here
+                            return new[]
+                            {
+                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
+                            };
+                    }
+                }
             }
 
-            var delegateNode = AstFactory.BuildStringNode(GlobalDelegationService.Put<object>(SaveIfcStore));
-
-            var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, object, object>(GlobalDelegationService.Call),
-                new List<AssociativeNode>() { delegateNode, inputAstNodes[0] });
+            var callIfcModelSave = AstFactory.BuildFunctionCall(
+                new Func<IfcModel, string, bool, string, IfcModel>(IfcModel.SaveAs),
+                new List<AssociativeNode>() { 
+                    inputAstNodes[0], 
+                    AstFactory.BuildStringNode(SelectedOption as string),
+                    AstFactory.BuildBooleanNode(isUsingCanonicalNaming),
+                    inputAstNodes[1]
+                });
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), funcNode)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callIfcModelSave)
             };
         }
+
+#pragma warning restore CS1591
     }
 }

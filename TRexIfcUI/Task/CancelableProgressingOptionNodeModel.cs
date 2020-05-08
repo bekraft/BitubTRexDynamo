@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Task
 {
-    public abstract class CancelableOptionCommandNodeModel : CancelableCommandNodeModel
+    public abstract class CancelableProgressingOptionNodeModel : CancelableProgressingNodeModel
     {
         #region Internals
 
@@ -17,12 +17,12 @@ namespace Task
 
         #endregion
 
-        protected CancelableOptionCommandNodeModel() : base()
+        protected CancelableProgressingOptionNodeModel() : base()
         {
             ResetState();
         }
 
-        protected CancelableOptionCommandNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected CancelableProgressingOptionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
         }

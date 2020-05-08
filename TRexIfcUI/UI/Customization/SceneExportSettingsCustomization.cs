@@ -17,7 +17,7 @@ using Dynamo.ViewModels;
 using System.Collections.ObjectModel;
 using Microsoft.Practices.Prism;
 
-namespace UI
+namespace UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -52,22 +52,22 @@ namespace UI
             // Get all selected context identifiers
             var selectedContexts = (sender as ListBox).SelectedItems.Cast<string>().ToArray();
             // And synchronize
-            ScheduleAsync(() => Model.SynchronizeSelectedSceneContexts(selectedContexts, true));
+            ScheduleAsync(() => NodeModel.SynchronizeSelectedSceneContexts(selectedContexts, true));
         }
 
         private void Model_Modified(NodeModel obj)
         {
             ScheduleAsync(() => {
-                var providedContexts = Model.GetProvidedContextInput(ModelEngineController);
-                Model.MergeProvidedSceneContext(providedContexts);
+                var providedContexts = NodeModel.GetProvidedContextInput(ModelEngineController);
+                NodeModel.MergeProvidedSceneContext(providedContexts);
             });            
         }
 
         private void Model_PortConnected(PortModel pm, ConnectorModel cm)
         {            
             ScheduleAsync(() => {
-                var providedContexts = Model.GetProvidedContextInput(ModelEngineController);
-                Model.MergeProvidedSceneContext(providedContexts);
+                var providedContexts = NodeModel.GetProvidedContextInput(ModelEngineController);
+                NodeModel.MergeProvidedSceneContext(providedContexts);
             });
         }
 

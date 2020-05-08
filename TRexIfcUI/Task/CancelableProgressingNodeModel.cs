@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 
 using Bitub.Transfer;
 using Autodesk.DesignScript.Runtime;
+using Internal;
 
 // Disable comment warning
 #pragma warning disable CS1591
 
 namespace Task
 {
-    public abstract class CancelableCommandNodeModel : NodeModel, ICancelableTaskNode
+    public abstract class CancelableProgressingNodeModel : BaseNodeModel, ICancelableTaskNode
     {
         #region Internals
         private bool _isCancelable;
@@ -28,12 +29,12 @@ namespace Task
         private object _monitor = new object();
         #endregion
 
-        protected CancelableCommandNodeModel() : base()
+        protected CancelableProgressingNodeModel() : base()
         {
             ResetState();
         }
 
-        protected CancelableCommandNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        protected CancelableProgressingNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
         }        
@@ -97,7 +98,6 @@ namespace Task
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public void InitNode(ICancelableProgressState progressToken)
         {
             lock (_monitor)
@@ -109,7 +109,6 @@ namespace Task
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public void ResetState()
         {
             lock (_monitor)
@@ -120,8 +119,6 @@ namespace Task
             }
         }
 
-
-        [IsVisibleInDynamoLibrary(false)]
         public void ClearState()
         {
             lock (_monitor)
@@ -131,7 +128,6 @@ namespace Task
             }    
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public void Report(int percentage, object userState)
         {
             lock(_monitor)
@@ -141,7 +137,6 @@ namespace Task
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public void Report(ICancelableProgressState value)
         {
             lock (_monitor)

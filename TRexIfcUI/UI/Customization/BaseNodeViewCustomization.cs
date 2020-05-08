@@ -14,7 +14,7 @@ using Dynamo.ViewModels;
 using Dynamo.Graph.Nodes;
 using System.Windows.Threading;
 
-namespace UI
+namespace UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -23,16 +23,16 @@ namespace UI
     {
         private DynamoViewModel _viewModel;
         private DispatcherSynchronizationContext _syncContext;
-        protected T Model { get; set; }
+        protected T NodeModel { get; set; }
 
         public virtual void CustomizeView(T model, NodeView nodeView)
         {
             _viewModel = nodeView.ViewModel.DynamoViewModel;
             _syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             
-            Model = model;
+            NodeModel = model;
 
-            Model.PropertyChanged += (s, e) =>
+            NodeModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CachedValue")
                     OnCachedValueChange(s);
@@ -41,7 +41,7 @@ namespace UI
 
         public abstract void Dispose();
 
-        protected void OnCachedValueChange(object sender)
+        protected virtual void OnCachedValueChange(object sender)
         {
         }
 

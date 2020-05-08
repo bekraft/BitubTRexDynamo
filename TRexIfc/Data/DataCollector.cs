@@ -16,6 +16,7 @@ using Bitub.Ifc.Transform.Requests;
 using Google.Protobuf;
 
 using Autodesk.DesignScript.Runtime;
+using Store;
 
 namespace Data
 {
@@ -31,30 +32,5 @@ namespace Data
         }
 
         #endregion
-
-        internal static string[] CollectPropertySets(Store.IfcStore ifcStore)
-        {
-            return ifcStore.XbimModel.Instances
-                        .OfType<IIfcPropertySetDefinition>()
-                        .Select(s => s.Name?.ToString())
-                        .Distinct()
-                        .ToArray();
-        }
-
-        /// <summary>
-        /// Gets all property set names in distinct order.
-        /// </summary>
-        /// <param name="storeProducer">IFC model producer</param>
-        /// <returns>A unique sequence of property set names</returns>
-        public static string[][] CollectPropertySetNames(Store.IfcStoreProducer storeProducer)
-        {
-            List<string[]> namesPerModel = new List<string[]>();
-            foreach(var store in storeProducer)
-            {
-                namesPerModel.Add(CollectPropertySets(store));
-            }
-
-            return namesPerModel.ToArray();
-        }        
     }
 }

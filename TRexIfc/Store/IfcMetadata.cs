@@ -29,11 +29,14 @@ namespace Store
         /// <summary>
         /// Extracts the <c>IfcMetadata</c> by repositories change history.
         /// </summary>
-        /// <param name="ifcStore">The repository</param>
+        /// <param name="ifcModel">The repository</param>
         /// <returns>A sorted list with most recent at top</returns>
-        public static IfcMetadata[] ListOwnerHistory(IfcStore ifcStore)
+        public static IfcMetadata[] ListOwnerHistory(IfcModel ifcModel)
         {
-            return new IfcMetadataHistory(ifcStore?.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
+            if (null != ifcModel)
+                return new IfcMetadataHistory(ifcModel.Store.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
+            else
+                return new IfcMetadata[] { };
         }
 
         /// <summary>

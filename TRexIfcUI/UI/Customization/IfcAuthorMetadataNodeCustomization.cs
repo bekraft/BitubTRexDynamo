@@ -3,13 +3,13 @@ using Dynamo.Wpf;
 
 using Store;
 
-namespace UI
+namespace UI.Customization
 {
 #pragma warning disable CS1591
 
-    public class AuthorMetadataCustomization : INodeViewCustomization<AuthorDataNodeModel>
+    public class IfcAuthorMetadataNodeCustomization : INodeViewCustomization<IfcAuthorMetadataNodeModel>
     {
-        public void CustomizeView(AuthorDataNodeModel model, NodeView nodeView)
+        public void CustomizeView(IfcAuthorMetadataNodeModel model, NodeView nodeView)
         {
             var metaDataControl = new MetaDataControl();
             nodeView.inputGrid.Children.Add(metaDataControl);

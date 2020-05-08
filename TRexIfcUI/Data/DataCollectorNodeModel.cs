@@ -17,7 +17,7 @@ namespace Data
     [NodeName("Data Collector")]
     [NodeCategory("TRexIfc.Data")]
     [IsDesignScriptCompatible]
-    public class DataCollectorNodeModel : CancelableCommandNodeModel
+    public class DataCollectorNodeModel : CancelableProgressingNodeModel
     {
         public DataCollectorNodeModel()
         {

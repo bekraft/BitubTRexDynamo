@@ -22,10 +22,10 @@ namespace Export
     /// </summary>
     [NodeName("Scene Export")]
     [NodeCategory("TRexIfc.Export.SceneExport")]
-    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IIfcStoreProducer), nameof(String)})]
+    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel), nameof(String)})]
     [OutPortTypes(typeof(SceneExportSummary))]
     [IsDesignScriptCompatible]
-    public class SceneExporterNodeModel : CancelableOptionCommandNodeModel
+    public class SceneExporterNodeModel : CancelableProgressingOptionNodeModel
     {
         private static string[] FileExtensions = new string[] { ".json", ".scene" };
 
@@ -35,7 +35,7 @@ namespace Export
         public SceneExporterNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("setting", "Exporter setting")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("storeProducer", "Store producer")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("pathName", "Export path name")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("exportSummary", "Export summaries")));
@@ -75,7 +75,7 @@ namespace Export
             }
 
             var delegateNode = AstFactory.BuildFunctionCall(
-                new Func<SceneExportSettings, string, IIfcStoreProducer, string, ICancelableTaskNode, SceneExportSummary[]>(SceneExport.RunSceneExport),
+                new Func<SceneExportSettings, string, IfcModel, string, ICancelableTaskNode, SceneExportSummary>(SceneExport.RunSceneExport),
                 new List<AssociativeNode>() {
                     inputAstNodes[0],
                     inputAstNodes[2],
