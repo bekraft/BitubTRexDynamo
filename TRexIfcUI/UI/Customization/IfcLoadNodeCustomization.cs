@@ -7,12 +7,8 @@ namespace UI.Customization
 
     public class IfcLoadNodeCustomization : CancelableProgressingNodeCustomization<IfcLoadStoreNodeModel>
     {
-        public IfcLoadNodeCustomization() : base(ProgressOnPortType.OutPorts)
+        public IfcLoadNodeCustomization() : base(ProgressOnPortType.OutPorts, Log.ActionType.Loaded)
         { 
-        }
-
-        public override void Dispose()
-        {
         }
     }
 

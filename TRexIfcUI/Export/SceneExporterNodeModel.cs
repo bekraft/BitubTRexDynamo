@@ -21,22 +21,21 @@ namespace Export
     /// Scene exporter node model.
     /// </summary>
     [NodeName("Scene Export")]
-    [NodeCategory("TRexIfc.Export.SceneExport")]
-    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel), nameof(String)})]
-    [OutPortTypes(typeof(SceneExportSummary))]
+    [NodeCategory("TRexIfc.Export")]
+    [InPortTypes(new string[] { nameof(SceneExport), nameof(IfcModel), nameof(String), nameof(String)})]
+    [OutPortTypes(typeof(LogMessage))]
     [IsDesignScriptCompatible]
     public class SceneExporterNodeModel : CancelableProgressingOptionNodeModel
     {
-        private static string[] FileExtensions = new string[] { ".json", ".scene" };
-
         /// <summary>
         /// New scene exporter node model
         /// </summary>
         public SceneExporterNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("setting", "Exporter setting")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("sceneExporter", "Scene exporter")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("pathName", "Export path name")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("exportSummary", "Export summaries")));
 
@@ -44,7 +43,7 @@ namespace Export
             InitOptions();
 
             IsCancelable = true;
-            SelectedOption = FileExtensions[0];
+            SelectedOption = SceneExport.Extensions[0];
         }
 
         [JsonConstructor]
@@ -55,41 +54,50 @@ namespace Export
 
         private void InitOptions()
         {
-            foreach (var ext in FileExtensions)
+            foreach (var ext in SceneExport.Extensions)
                 AvailableOptions.Add(ext);
         }
 
-        /// <summary>
-        /// Builds the AST
-        /// </summary>
-        /// <param name="inputAstNodes">Input nodes</param>
-        /// <returns>Embedded AST nodes associated with this node model</returns>
+#pragma warning disable CS1591
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            AssociativeNode[] inputs = inputAstNodes.ToArray();            
             if (IsPartiallyApplied)
             {
-                return new[]
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
                 {
-                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                };
+                    switch (port.Index)
+                    {
+                        case 3:
+                            // Canonical separator is optional
+                            break;
+                        default:
+                            // No evalable, cancel here
+                            return new[]
+                            {
+                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
+                            };
+                    }
+                }
             }
 
-            var delegateNode = AstFactory.BuildFunctionCall(
-                new Func<SceneExportSettings, string, IfcModel, string, ICancelableTaskNode, SceneExportSummary>(SceneExport.RunSceneExport),
+            var callRunSceneExport = AstFactory.BuildFunctionCall(
+                new Func<SceneExport, IfcModel, string, string, string, LogMessage>(SceneExport.RunSceneExport),
                 new List<AssociativeNode>() {
-                    inputAstNodes[0],
-                    inputAstNodes[2],
-                    inputAstNodes[1],
+                    inputs[0],
+                    inputs[1],
+                    inputs[2],
                     AstFactory.BuildStringNode(SelectedOption.ToString()),
-                    AstFactory.BuildFunctionCall(
-                        new Func<string, object>(GlobalArgumentService.GetArg), 
-                        new List<AssociativeNode>(){ AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(this)) })
-                });
+                    inputs[3] });
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), delegateNode)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callRunSceneExport)
             };
         }
+
+#pragma warning restore CS1591
+
     }
 }

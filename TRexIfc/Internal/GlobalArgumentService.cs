@@ -34,7 +34,7 @@ namespace Internal
             return guid;
         }
 
-        public static object[] GetArguments(string guid)
+        public static object[] GetArgs(string guid)
         {
             if (Guid.Empty.ToString().Equals(guid))
                 return Array.Empty<object>();
@@ -51,13 +51,13 @@ namespace Internal
 
         public static T GetArg<T>(string guid)
         {
-            var args = GetArguments(guid);
+            var args = GetArgs(guid);
             return args.Length > 0 ? (T)args[0] : default(T);
         }
 
         public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
         {
-            var args = GetArguments(guid);
+            var args = GetArgs(guid);
             if (null != args)
                 return new Tuple<T1, T2, T3>((T1)args[0], (T2)args[1], (T3)args[2]);
             return null;

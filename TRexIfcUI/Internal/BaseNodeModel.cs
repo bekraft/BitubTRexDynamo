@@ -24,9 +24,18 @@ namespace Internal
         {
         }
 
-        public Func<T1, R> MapInputs<T1, R>(Func<T1, R> f, params string[] inputNames)
+        protected AssociativeNode MapObjects(params object[] args)
         {
-            return f;
+            return AstFactory.BuildFunctionCall(
+                        new Func<string, object[]>(GlobalArgumentService.GetArgs),
+                        new List<AssociativeNode>() { AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(args)) });
+        }
+
+        protected AssociativeNode MapObject(object arg)
+        {
+            return AstFactory.BuildFunctionCall(
+                        new Func<string, object>(GlobalArgumentService.GetArg),
+                        new List<AssociativeNode>() { AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(arg)) });
         }
 
         /// <summary>

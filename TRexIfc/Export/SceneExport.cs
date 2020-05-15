@@ -1,118 +1,153 @@
-﻿using Autodesk.DesignScript.Runtime;
-using Bitub.Ifc.Scene;
-using Google.Protobuf;
-using Log;
-using Store;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Bitub.Ifc.Scene;
+
+using Autodesk.DesignScript.Runtime;
+using Google.Protobuf;
+
+using Log;
+using Store;
 using Task;
+using Internal;
+using Bitub.Transfer.Scene;
+using Bitub.Transfer;
+using Microsoft.Extensions.Logging;
 
 namespace Export
 {
 #pragma warning disable CS1591
 
+    /// <summary>
+    /// Scene export utility.
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class SceneExport
+    public class SceneExport : NodeProgressing
     {
+        public static string[] Extensions = new string[] { "json", "scene" };
+
         #region Internals
 
-        internal SceneExport()
+        internal readonly IfcSceneExporter InternalSceneExport;
+
+        internal SceneExport(ILoggerFactory loggerFactory)
         {
+            InternalSceneExport = new IfcSceneExporter(new XbimTesselationContext(), loggerFactory);
+            InternalSceneExport.OnProgressChange += SceneExporter_OnProgressChange;
+        }
+
+        private void SceneExporter_OnProgressChange(ICancelableProgressState changedState)
+        {
+            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Saved, changedState, "Exporting" ));
         }
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
+        public override string Name
+        {
+            get => "Scene Export";
+        }
+
         /// <summary>
-        /// Run the scene export as JSON.
+        /// A new scene exporter instance bound to the given settings and logging.
         /// </summary>
-        /// <param name="settings">The settings (as input)</param>
-        /// <param name="filePath">The file path</param>
-        /// <param name="ifcModel">The model producer</param>
-        /// <param name="taskNode">The task node</param>
+        /// <param name="settings">The settings</param>
+        /// <param name="logger">The logging</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSummary RunSceneJsonExport(SceneExportSettings settings,
-            string filePath,
-            IfcModel ifcModel, 
-            ICancelableTaskNode taskNode)
+        public static SceneExport CreateSceneExport(SceneExportSettings settings, Logger logger)
         {
-            return null;
+            if (null == settings)
+                throw new ArgumentNullException("settings");
+
+            var sceneExport = new SceneExport(logger?.LoggerFactory);              
+            sceneExport.InternalSceneExport.Settings = settings.InternalSettings;
+            return sceneExport;
         }
 
         /// <summary>
         /// Run the scene export as binary protobuf.
         /// </summary>
-        /// <param name="settings">The settings (as input)</param>
+        /// <param name="sceneExport">The export</param>
         /// <param name="filePath">The file path</param>
         /// <param name="ifcModel">The model producer</param>
-        /// <param name="taskNode">The task node</param>
+        /// <param name="extension">The format extension</param>
+        /// <param name="canonicalSeparator">If set, canonical names will be used</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSummary RunSceneProtoBExport(SceneExportSettings settings,
-            string filePath,
+        public static LogMessage RunSceneExport(SceneExport sceneExport,            
             IfcModel ifcModel,
-            ICancelableTaskNode taskNode)
+            string filePath,
+            string extension,
+            string canonicalSeparator = null)
         {
-            List<SceneExportSummary> summaries = new List<SceneExportSummary>();
-            var exporter = new IfcSceneExporter(new XbimTesselationContext());
-            exporter.OnProgressChange += (e) => taskNode.Report(e.Percentage, e.StateObject);
+            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(extension))
+                return LogMessage.BySeverityAndMessage(Severity.Warning, ActionType.Saved, "Missing file path or extension");
+            if (null == ifcModel)
+                return LogMessage.BySeverityAndMessage(Severity.Warning, ActionType.Saved, "Missing IFC model as input");
 
-            string sceneFileName = $@"{filePath}{Path.DirectorySeparatorChar}{ifcModel.Name}.scene";
+            string fileName = string.IsNullOrEmpty(canonicalSeparator) ? ifcModel.Name : ifcModel.CanonicalName(canonicalSeparator);
+            string sceneFileName = $@"{filePath}{Path.DirectorySeparatorChar}{fileName}.{extension}";
             try
             {
-                var sceneTask = exporter.Run(ifcModel.Store.XbimModel);
+                var sceneTask = sceneExport.InternalSceneExport.Run(ifcModel.Store.XbimModel);
                 sceneTask.Wait();
                     
-                using (var binStream = File.Create(sceneFileName))
+                switch(extension.ToLower())
                 {
-                    var binScene = sceneTask.Result.Scene.ToByteArray();
-                    binStream.Write(binScene, 0, binScene.Length);
+                    case "scene":
+                        using (var binStream = File.Create(sceneFileName))
+                        {
+                            var binScene = sceneTask.Result.Scene.ToByteArray();
+                            binStream.Write(binScene, 0, binScene.Length);
+                        }
+                        break;
+                    case "json":
+                        using (var textStream = File.CreateText(sceneFileName))
+                        {
+                            var json = new JsonFormatter(new JsonFormatter.Settings(true)).Format(sceneTask.Result.Scene);
+                            textStream.Write(json);
+                        }
+                        break;
+                    default:
+                        throw new NotImplementedException($"Missing implementation for '{extension}'");
                 }
 
-                return SceneExportSummary.ByResults(
-                    sceneFileName,
-                    LogMessage.BySeverityAndMessage(Severity.Info, ActionType.Save, "Wrote binary scene file '{0}'", sceneTask.Result.Scene.Name));
+                return LogMessage.BySeverityAndMessage(
+                    Severity.Info, ActionType.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
             }
             catch (Exception e)
             {
-                return SceneExportSummary.ByResults(
-                    sceneFileName,
-                    LogMessage.BySeverityAndMessage(Severity.Critical, ActionType.Save, "Caught exception '{0}': {1}", e.Message, e));
+                return LogMessage.BySeverityAndMessage(
+                    Severity.Critical, ActionType.Saved, "({0}) '{1}'", e.Message, sceneFileName);
             }
+        }
+
+#pragma warning restore CS1591
+
+        /// <summary>
+        /// Returns the current exporter settings.
+        /// </summary>
+        public SceneExportSettings Settings
+        {
+            get => new SceneExportSettings(InternalSceneExport.Settings);
         }
 
         /// <summary>
-        /// Run the scene export according to selected format option.
+        /// Reads settings from persitent configuration file.
         /// </summary>
-        /// <param name="settings">The settings (as input)</param>
-        /// <param name="filePath">The file path</param>
-        /// <param name="ifcModel">The model producer</param>
-        /// <param name="extension">The extension (either ".json" or ".scene")</param>
-        /// <param name="taskNode">The task node</param>
-        /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSummary RunSceneExport(SceneExportSettings settings,
-            string filePath,
-            IfcModel ifcModel,
-            string extension,
-            ICancelableTaskNode taskNode)
+        /// <param name="fileName">The file name</param>
+        /// <param name="logger">The logger</param>
+        /// <returns>An export setting</returns>
+        public static SceneExport BySavedSettings(string fileName, Logger logger)
         {
-            switch (extension.ToLowerInvariant())
-            {
-                case ".json":
-                    return RunSceneJsonExport(settings, filePath, ifcModel, taskNode);
-                case ".scene":
-                    return RunSceneProtoBExport(settings, filePath, ifcModel, taskNode);
-
-                default:
-                    throw new NotImplementedException($"Missing format option '{extension}");
-            }
+            return SceneExport.CreateSceneExport(
+                new SceneExportSettings(IfcSceneExportSettings.ReadFrom(fileName)), logger);
         }
     }
-
-#pragma warning restore CS1591
 }

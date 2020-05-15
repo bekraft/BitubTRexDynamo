@@ -58,7 +58,6 @@ namespace Store
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode[] inputs = inputAstNodes.ToArray();
-            bool isUsingCanonicalNaming = true;
 
             if (IsPartiallyApplied)
             {
@@ -69,7 +68,6 @@ namespace Store
                         // 0 is mandatory
                         case 1:
                             // Default 
-                            isUsingCanonicalNaming = false;
                             inputs[1] = AstFactory.BuildNullNode();
                             break;
                         default:
@@ -83,11 +81,10 @@ namespace Store
             }
 
             var callIfcModelSave = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, string, bool, string, IfcModel>(IfcModel.SaveAs),
+                new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
                 new List<AssociativeNode>() { 
                     inputAstNodes[0], 
-                    AstFactory.BuildStringNode(SelectedOption as string),
-                    AstFactory.BuildBooleanNode(isUsingCanonicalNaming),
+                    AstFactory.BuildStringNode(SelectedOption as string),                    
                     inputAstNodes[1]
                 });
 

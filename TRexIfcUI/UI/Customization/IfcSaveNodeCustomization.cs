@@ -12,7 +12,7 @@ namespace UI.Customization
 
     public class IfcSaveNodeCustomization : CancelableProgressingOptionNodeCustomization<IfcSaveStoreNodeModel>
     {
-        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
+        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.ActionType.Saved)
         {
         }
 
@@ -24,12 +24,21 @@ namespace UI.Customization
 
         private void Model_PortConnected(PortModel portModel, ConnectorModel connector)
         {
-            var ifcModels = NodeModel.GetCachedInput<IfcModel>(portModel.Index, ModelEngineController);
-            NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.Store.FormatExtension;
+            switch(portModel.PortType)
+            {
+                case PortType.Input:
+                    var ifcModels = NodeModel.GetCachedInput<IfcModel>(portModel.Index, ModelEngineController);
+                    NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.FormatExtension;
+                    break;
+                case PortType.Output:
+                    break;
+            }
         }
 
         public override void Dispose()
         {
+            NodeModel.PortConnected -= Model_PortConnected;
+            base.Dispose();
         }
     }
 

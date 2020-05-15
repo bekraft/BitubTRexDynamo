@@ -31,14 +31,18 @@ namespace Export
     /// UI Node model wrapping scene export settings.
     /// </summary>
     [NodeName("Scene Export Settings")]
-    [NodeCategory("TRexIfc.Export.SceneExportSettings")]
-    [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String) })]
-    [OutPortTypes(typeof(SceneExportSettings))]
+    [NodeCategory("TRexIfc.Export")]
+    [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String), nameof(Logger) })]
+    [OutPortTypes(new string[] { nameof(SceneExport) })]
     [IsDesignScriptCompatible]
     public class SceneExportSettingsNodeModel : BaseNodeModel
     {
+        #region Internals
+
         private SceneTransformationStrategy _transformationStrategy = SceneTransformationStrategy.Quaternion;
         private ScenePositioningStrategy _positioningStrategy = ScenePositioningStrategy.NoCorrection;
+
+        #endregion 
 
         /// <summary>
         /// New Scene Exporting Settings model.
@@ -48,8 +52,9 @@ namespace Export
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitsPerMeter", "Scaling units per Meter"))); // 1
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("providedContexts", "Provided representation model contexts"))); // 2
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logger", "Logger instance"))); // 3
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene export settings")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("sceneExporter", "Scene exporter")));
 
             RegisterAllPorts();
             Init();
@@ -76,26 +81,6 @@ namespace Export
         /// Selected contexts to forward to exporter nodes.
         /// </summary>
         public List<string> SelectedGraphicalContext { get; set; } = new List<string>();
-
-        /// <summary>
-        /// Gets the provided scene contexts from input node(s).
-        /// </summary>
-        /// <param name="engineController">Dynamo engine controller</param>
-        /// <returns></returns>
-        public string[] GetProvidedContextInput(EngineController engineController)
-        {
-            var nodes = InPorts[2].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
-            var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
-            
-            var data = ids.Select(id => engineController.GetMirror(id).GetData());
-            return data.SelectMany(d =>
-            {
-                if (d.IsCollection)
-                    return d.GetElements().Select(e => e.Data?.ToString());
-                else
-                    return new string[] { d.Data?.ToString() };
-            }).ToArray();
-        }
 
         /// <summary>
         /// Transformation strategy property.
@@ -161,20 +146,7 @@ namespace Export
             OnNodeModified(forceUpdate);
         }
 
-        /// <summary>
-        /// Populate scene context identifiers by contexts of model.
-        /// </summary>
-        /// <param name="ifcModel">The IFC model reference</param>
-        /// <returns>An array of new contexts which has been merged</returns>
-        public string[] MergeProvidedSceneContext(IModel ifcModel)
-        {
-            return MergeProvidedSceneContext(ifcModel.Instances
-                .OfType<IIfcGeometricRepresentationContext>()
-                .Where(c => !c.HasSubContexts.Any())
-                .Select(c => c.ContextIdentifier?.ToString())                
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToArray());
-        }
+#pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -210,21 +182,23 @@ namespace Export
             else
                 sceneContexts = AstFactory.BuildNullNode();
 
-            var delegateNode = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, double, string[], SceneExportSettings>(SceneExportSettings.BySettings),                
+            var callCreateSceneExport = AstFactory.BuildFunctionCall(
+                new Func<string, string, XYZ, double, string[], Logger, SceneExport>(SceneExportSettings.BySettings),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
                     inputs[0],
                     inputs[1],
-                    sceneContexts
+                    sceneContexts,
+                    inputs[3]
                 });
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), delegateNode)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateSceneExport)
             };
         }
 
+#pragma warning restore CS1591
     }
 }

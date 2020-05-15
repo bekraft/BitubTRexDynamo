@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -44,6 +41,20 @@ namespace Store
         {            
         }
 
+        internal void ApplyTo(IModel model)
+        {
+            // Rescale to model conversion length unit
+            var mf = model.ModelFactors;
+
+            mf.DeflectionAngle = DeflectionAngle;
+            mf.DeflectionTolerance = DeflectionTolerance * mf.OneMeter;
+            mf.Precision = Precision * mf.OneMeter;
+            mf.PrecisionMax = PrecisionMax * mf.OneMeter;
+            mf.PrecisionBoolean = PrecisionBoolean * mf.OneMeter;
+            mf.PrecisionBooleanMax = PrecisionBooleanMax * mf.OneMeter;
+            model.GeometryStore?.Dispose();
+        }
+
 #pragma warning restore CS1591
 
         #endregion
@@ -58,17 +69,7 @@ namespace Store
             if (null == ifcModel)
                 throw new ArgumentException("No ifcModel");
 
-            // Rescale to model conversion length unit
-            var mf = ifcModel.Store.XbimModel.ModelFactors;
-            var scale = OneMeter / mf.OneMeter;
-
-            mf.DeflectionAngle = DeflectionAngle * mf.AngleToRadiansConversionFactor;
-            mf.DeflectionTolerance = DeflectionTolerance * scale;
-            mf.Precision = Precision * scale;
-            mf.PrecisionMax = PrecisionMax * scale;
-            mf.PrecisionBoolean = PrecisionBoolean * scale;
-            mf.PrecisionBooleanMax = PrecisionBooleanMax * scale;
-            ifcModel.Store.XbimModel.GeometryStore?.Dispose();
+            ApplyTo(ifcModel.Store.XbimModel);
             return ifcModel;
         }
 
@@ -86,12 +87,12 @@ namespace Store
             return new IfcTessellationPrefs
             {
                 OneMeter = mf.OneMeter,
-                Precision = mf.Precision / mf.OneMeter,
-                PrecisionMax = mf.PrecisionMax / mf.OneMeter,
-                PrecisionBoolean = mf.PrecisionBoolean / mf.OneMeter,
-                PrecisionBooleanMax = mf.PrecisionBooleanMax / mf.OneMeter,
-                DeflectionAngle = mf.DeflectionAngle / mf.AngleToRadiansConversionFactor,
-                DeflectionTolerance = mf.DeflectionTolerance / mf.OneMeter
+                Precision = mf.Precision * mf.LengthToMetresConversionFactor,
+                PrecisionMax = mf.PrecisionMax * mf.LengthToMetresConversionFactor,
+                PrecisionBoolean = mf.PrecisionBoolean * mf.LengthToMetresConversionFactor,
+                PrecisionBooleanMax = mf.PrecisionBooleanMax * mf.LengthToMetresConversionFactor,
+                DeflectionAngle = mf.DeflectionAngle,
+                DeflectionTolerance = mf.DeflectionTolerance * mf.LengthToMetresConversionFactor
             };
         }
 
@@ -109,7 +110,7 @@ namespace Store
                 { "PrecisionBooleanPerMeter", PrecisionBoolean },
                 { "PrecisionBooleanMaxPerMeter", PrecisionBooleanMax },
                 { "DeflectionTolerancePerMeter", DeflectionTolerance },
-                { "DeflectionAngleDeg", DeflectionAngle * 180 / Math.PI }
+                { "DeflectionAngleDeg", DeflectionAngle }
             };
         }
 
@@ -139,7 +140,7 @@ namespace Store
                 PrecisionBoolean = precBooleaonPerMeter,
                 PrecisionBooleanMax = precBooleanMaxPerMeter,
                 DeflectionTolerance = deflectionTolPerMeter,
-                DeflectionAngle = deflectionAngleInDeg * Math.PI / 180
+                DeflectionAngle = deflectionAngleInDeg
             };
         }
     }

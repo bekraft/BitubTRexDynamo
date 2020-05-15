@@ -2,6 +2,7 @@
 using Dynamo.Controls;
 
 using Task;
+using Log;
 
 namespace UI.Customization
 {
@@ -11,8 +12,8 @@ namespace UI.Customization
     public abstract class CancelableProgressingOptionNodeCustomization<T>
         : CancelableProgressingNodeCustomization<T> where T : CancelableProgressingOptionNodeModel
     {
-        protected CancelableProgressingOptionNodeCustomization(ProgressOnPortType progressOnPort)
-            : base(progressOnPort)
+        protected CancelableProgressingOptionNodeCustomization(ProgressOnPortType progressOnPort, ActionType actionOnPort)
+            : base(progressOnPort, actionOnPort)
         {
         }
 

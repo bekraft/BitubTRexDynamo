@@ -14,9 +14,9 @@ namespace Store
     /// <summary>
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.
     /// </summary>
-    [NodeName("IfcAuthorMetadata")]
+    [NodeName("Ifc AuthorMetadata")]
     [NodeCategory("TRexIfc.Store")]
-    [OutPortTypes(typeof(IfcMetadata))]
+    [OutPortTypes(typeof(IfcAuthorMetadata))]
     [OutPortDescriptions("Author's metadata")]
     [IsDesignScriptCompatible]
     public class IfcAuthorMetadataNodeModel : NodeModel
@@ -120,7 +120,7 @@ namespace Store
             var orgAddressNode = AstFactory.BuildStringNode(_organisationAddress);
 
             var funcNode = AstFactory.BuildFunctionCall(
-                new Func<string, string, string, string, string, IfcMetadata>( IfcMetadata.ByAuthorAndOrganisation ),
+                new Func<string, string, string, string, string, IfcAuthorMetadata>( IfcAuthorMetadata.ByAuthorAndOrganisation ),
                 new List<AssociativeNode>() { authorNode, authorGivenNode, orgNameNode, orgIdNode, orgAddressNode });
 
             return new[]

@@ -7,6 +7,7 @@ using Bitub.Transfer.Scene;
 using Autodesk.DesignScript.Runtime;
 
 using Geom;
+using Log;
 
 namespace Export
 {
@@ -19,11 +20,16 @@ namespace Export
 
         #region Internals
 
-        internal SceneExportSettings()
+        internal SceneExportSettings() : this(new IfcSceneExportSettings())
         { }
 
+        internal SceneExportSettings(IfcSceneExportSettings settings)
+        {
+            InternalSettings = settings;
+        }
+
         [IsVisibleInDynamoLibrary(false)]
-        public IfcSceneExportSettings Settings { get; private set; }
+        public IfcSceneExportSettings InternalSettings { get; private set; }
 
         #endregion
 
@@ -37,17 +43,22 @@ namespace Export
         /// <param name="offset">The offset coordinates</param>
         /// <param name="unitPerMeter">The units per meter</param>
         /// <param name="sceneContexts">The scene context(s) to be exported</param>
+        /// <param name="logger">The logging instance</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSettings BySettings(string transformationStrategy,
+        public static SceneExport BySettings(string transformationStrategy,
             string positioningStrategy,
             XYZ offset,
             double unitPerMeter,
-            string[] sceneContexts)
+            string[] sceneContexts,
+            Logger logger)
         {
-            return new SceneExportSettings
+            if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
+                throw new ArgumentNullException("transformationStrategy | positioningStrategy");
+
+            var settings = new SceneExportSettings
             {
-                Settings = new IfcSceneExportSettings
+                InternalSettings = new IfcSceneExportSettings
                 {
                     Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
                     Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
@@ -56,44 +67,50 @@ namespace Export
                     UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] {}
                 }
             };
+            return SceneExport.CreateSceneExport(settings, logger);
         }
 
         /// <summary>
-        /// Reads settings from persitent configuration file.
+        /// Saves the settings as a template file.
         /// </summary>
         /// <param name="fileName">The file name</param>
-        /// <returns>An export setting</returns>
-        public static SceneExportSettings ByFileName(string fileName)
+        /// <returns>A log message</returns>
+        public LogMessage SaveAs(string fileName)
         {
-            return new SceneExportSettings
+            try
             {
-                Settings = IfcSceneExportSettings.ReadFrom(fileName)
-            };
+                InternalSettings.SaveTo(fileName);
+                return LogMessage.BySeverityAndMessage(Severity.Info, ActionType.Saved, "Saved {0}", fileName);
+            }
+            catch(Exception e)
+            {
+                return LogMessage.BySeverityAndMessage(Severity.Error, ActionType.Saved, "{0}: {1} ({2})", e, e.Message, fileName);
+            }
         }
 
         /// <summary>
         /// The transformation strategy.
         /// </summary>
-        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), Settings.Transforming); }
+        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), InternalSettings.Transforming); }
 
         /// <summary>
         /// The positioning strategy.
         /// </summary>
-        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), Settings.Positioning); }
+        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), InternalSettings.Positioning); }
 
         /// <summary>
         /// The scaling as units per meter.
         /// </summary>
-        public double UnitsPerMeter { get => Settings.UnitsPerMeter; }
+        public double UnitsPerMeter { get => InternalSettings.UnitsPerMeter; }
 
         /// <summary>
         /// The offset shift
         /// </summary>
-        public XYZ Offset { get => new XYZ { TheXYZ = Settings.UserModelCenter }; }
+        public XYZ Offset { get => new XYZ { TheXYZ = InternalSettings.UserModelCenter }; }
 
         /// <summary>
         /// Names of model contexts to be exported.
         /// </summary>
-        public string[] SceneContexts { get => Settings.UserRepresentationContext.Select(c => c.Name).ToArray(); }
+        public string[] SceneContexts { get => InternalSettings.UserRepresentationContext.Select(c => c.Name).ToArray(); }
     }
 }

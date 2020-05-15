@@ -1,13 +1,9 @@
-﻿using Autodesk.DesignScript.Runtime;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-using System.Threading;
-using System.Collections.Concurrent;
 
 using Bitub.Transfer;
 
@@ -15,12 +11,12 @@ using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
+using Autodesk.DesignScript.Runtime;
+
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 using Log;
 using Internal;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Store
 {
@@ -75,34 +71,17 @@ namespace Store
             Xbim.Ifc.IfcStore.ModelProviderFactory.UseHeuristicModelProvider();
         }
 
-        private IfcStore(Qualifier qualifier)
+        private IfcStore(Logger logger)
         {
-            if (null == qualifier)
-                Qualifier = new Qualifier
-                {
-                    Anonymous = new GlobalUniqueId
-                    {
-                        Guid = new Bitub.Transfer.Guid { Raw = System.Guid.NewGuid().ToByteArray().ToByteString() }
-                    }
-                };
-            else
-                Qualifier = qualifier;
+            Logger = logger;
         }
 
-        private IfcStore(IModel model, Qualifier qualifier = null) 
-            : this(qualifier)
+        private IfcStore(IModel model)
         {
             XbimModel = model;
         }
 
-        private IfcStore(IModel model, string canonicalName, Qualifier sourceQualifier = null) 
-            : this(BuildQualifier(sourceQualifier, canonicalName))
-        {
-            XbimModel = model;
-        }
-
-        private IfcStore(ProducerDelegate producerDelegate, string canonicalName, Qualifier sourceQualifier = null)
-            : this(BuildQualifier(sourceQualifier, canonicalName))
+        private IfcStore(ProducerDelegate producerDelegate)
         {
             _producer = producerDelegate;
         }
@@ -195,44 +174,24 @@ namespace Store
             }
         }
 
-        internal protected bool IsTemporaryStore
+        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName, ICollection<LogMessage> log)
         {
-            get => Qualifier.GuidOrNameCase != Qualifier.GuidOrNameOneofCase.Named;
-        }
-
-        private static IModel LoadFromFile(IfcModel theModel, ICollection<LogMessage> log)
-        {
-            var filePathName = theModel.Store.GetFilePathName(false);
             var logger = theModel.Store.Logger;
             logger?.LogInfo("Start loading file '{0}'.", filePathName);
             try
             {
                 var model = Xbim.Ifc.IfcStore.Open(filePathName, null, null, theModel.NotifyLoadProgressChanged, Xbim.IO.XbimDBAccess.Read);
-                theModel.NotifyOnFinished(ActionType.Load, false, false);
+                prefs?.ApplyTo(model);
+                theModel.NotifyOnFinished(ActionType.Loaded, false, false);
                 logger?.LogInfo("File '{0}' has been loaded successfully.", filePathName);
                 return model;
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception while loading '{0}'.", filePathName);
-                theModel.NotifyOnFinished(ActionType.Load, false, true);                            
+                theModel.NotifyOnFinished(ActionType.Loaded, false, true);                            
             }
             return null;
-        }
-
-        private static WeakReference<IfcStore> RefreshReference(Qualifier q, WeakReference<IfcStore> rs)
-        {
-            IfcStore s;
-            if (rs.TryGetTarget(out s))
-            {   // If reference is valid
-                if (!s.Qualifier.Equals(q))
-                    throw new ArgumentException($"Qualifier of store is different ({s.Qualifier.ToLabel()}");
-                return rs;
-            }
-            else
-            {   // If not, recreate store
-                return new WeakReference<IfcStore>(new IfcStore(q));
-            }
         }
 
         private static void InitLogging(Logger logInstance)
@@ -250,100 +209,6 @@ namespace Store
         public Logger Logger { get; set; }
 
         /// <summary>
-        /// The source store name.
-        /// </summary>
-        public string Name
-        {
-            get {
-                switch(Qualifier.GuidOrNameCase)
-                {
-                    case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return Qualifier.Anonymous.ToBase64String();
-                    case Qualifier.GuidOrNameOneofCase.Named:
-                        return Qualifier.Named.Frags[1];
-                    default:
-                        throw new NotSupportedException($"Missing qualifier");
-                }
-            }
-        }
-
-        /// <summary>
-        /// The assembled file name.
-        /// </summary>
-        public string FileName
-        {
-            get {
-                switch (Qualifier.GuidOrNameCase)
-                {
-                    case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return $"{Qualifier.Anonymous.ToBase64String()}.ifc";
-                    case Qualifier.GuidOrNameOneofCase.Named:
-                        return $"{Qualifier.Named.Frags[1]}.{Qualifier.Named.Frags.Last()}";
-                    default:
-                        throw new NotSupportedException($"Missing qualifier");
-                }
-            }
-        }
-
-        /// <summary>
-        /// The format extension ("ifc", "ifcxml" or "ifczip")
-        /// </summary>
-        public string FormatExtension
-        {
-            get {
-                switch (Qualifier.GuidOrNameCase)
-                {
-                    case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return "ifc";
-                    case Qualifier.GuidOrNameOneofCase.Named:
-                        return Qualifier.Named.Frags.Last();
-                    default:
-                        throw new NotSupportedException($"Missing qualifier");
-                }
-            }
-        }
-
-        /// <summary>
-        /// The resource path name of physical store.
-        /// </summary>
-        public string ResourcePathName
-        {
-            get {
-                switch (Qualifier.GuidOrNameCase)
-                {
-                    case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return Path.GetTempPath();
-                    case Qualifier.GuidOrNameOneofCase.Named:
-                        return Qualifier.Named.Frags[0];
-                    default:
-                        throw new NotSupportedException($"Missing qualifier");
-                }
-            }
-        }
-
-        /// <summary>
-        /// The full path file name.
-        /// </summary>
-        public string GetFilePathName(bool withCanonicalAddons = true, string canonicalSep = "_")
-        {
-            switch (Qualifier.GuidOrNameCase)
-            {
-                case Qualifier.GuidOrNameOneofCase.Anonymous:
-                    return $"{Path.GetTempPath()}{Path.DirectorySeparatorChar}{Qualifier.Anonymous.ToBase64String()}.ifc";
-                case Qualifier.GuidOrNameOneofCase.Named:
-                    var fileName = withCanonicalAddons ? Qualifier.Named.ToLabel(canonicalSep, 1, 1) : Name;
-                    return $"{Qualifier.Named.Frags[0]}{Path.DirectorySeparatorChar}{fileName}.{Qualifier.Named.Frags.Last()}";
-                default:
-                    throw new NotSupportedException($"Missing qualifier");
-            }
-        }
-
-        /// <summary>
-        /// The qualifier.
-        /// </summary>        
-        public Qualifier Qualifier { get; private set; }
-
-        /// <summary>
         /// Get or creates a new model store from file and logger instance.
         /// </summary>
         /// <param name="fileName">File name to load</param>
@@ -353,10 +218,9 @@ namespace Store
         public static IfcModel GetOrCreateModelStore(string fileName, Logger logInstance, IfcTessellationPrefs tessellationPrefs)
         {
             InitLogging(logInstance);
-            var store = new IfcStore(BuildQualifier(fileName));
-            var model = new IfcModel(store);
-            store.Logger = logInstance;
-            store._producer = () => LoadFromFile(model, model.LogMessages);
+            var store = new IfcStore(logInstance);
+            var model = new IfcModel(store, BuildQualifier(fileName));
+            store._producer = () => LoadFromFile(model, tessellationPrefs, fileName, model.ActionLog);
 
             tessellationPrefs?.ApplyTo(model);
 
@@ -366,14 +230,15 @@ namespace Store
         /// <summary>
         /// A new IFC model from existing internal model.
         /// </summary>
-        /// <param name="model"></param>
-        /// <param name="logInstance"></param>
+        /// <param name="model">The model</param>
+        /// <param name="logInstance">The log instance</param>
+        /// <param name="qualifier">The qualifier</param>
         /// <returns></returns>
-        public static IfcModel CreateFromModel(IModel model, Logger logInstance)
+        public static IfcModel CreateFromModel(IModel model, Qualifier qualifier, Logger logInstance)
         {
             var store = new IfcStore(model);
             store.Logger = logInstance;
-            return new IfcModel(store);
+            return new IfcModel(store, qualifier);
         }
 
         /// <summary>
@@ -387,9 +252,8 @@ namespace Store
         public static IfcModel CreateFromProducer(ProducerProgressDelegate producerDelegate, 
             Qualifier ancestor, string canonicalAddon, Logger logInstance)
         {
-            var store = new IfcStore(BuildQualifier(ancestor, canonicalAddon));
-            store.Logger = logInstance;
-            var ifcModel = new IfcModel(store);
+            var store = new IfcStore(logInstance);
+            var ifcModel = new IfcModel(store, BuildQualifier(ancestor, canonicalAddon));
             store._producer = () => producerDelegate?.Invoke(ifcModel);
             return ifcModel;
         }
@@ -397,85 +261,13 @@ namespace Store
         public static IfcModel CreateFromTransform(IfcModel source, 
             TransformerProgressDelegate transformerDelegate, string canoncialName)
         {
-            var store = new IfcStore(BuildQualifier(source.Store.Qualifier, canoncialName));
-            store.Logger = source.Store.Logger;
-            var ifcModel = new IfcModel(store);
+            var store = new IfcStore(source.Store.Logger);            
+            var ifcModel = new IfcModel(store, BuildQualifier(source.Qualifier, canoncialName));
             store._producer = () => 
             {
                 return transformerDelegate?.Invoke(source.Store.XbimModel, ifcModel);
             };
             return ifcModel;
         }
-
-        /// <summary>
-        /// Changes the format extension identifier.
-        /// </summary>
-        /// <param name="newExtension">Either .ifc, .ifcxml or .ifczip</param>
-        public void ChangeFormat(string newExtension)
-        {
-            if (IsTemporaryStore)
-                throw new NotSupportedException("Not allowed for temporary models");
-
-            var ext = Extensions.First(e => e.Equals(newExtension, StringComparison.OrdinalIgnoreCase));
-            Qualifier.Named.Frags[Qualifier.Named.Frags.Count - 1] = ext;
-        }
-
-        /// <summary>
-        /// Renames the current model's physical name. Does not rename the original
-        /// physical resource. The change will only have effect when saving this store.
-        /// </summary>
-        /// <param name="fileNameWithoutExt">The new file name without format extension</param>
-        public void Rename(string fileNameWithoutExt)
-        {
-            if (IsTemporaryStore)
-            {
-                Logger?.LogInfo($"Renaming temporary store '{Qualifier.Anonymous.ToBase64String()}'");
-                Qualifier = BuildQualifier("~", fileNameWithoutExt, "ifc");
-            }
-
-            Qualifier.Named.Frags[1] = fileNameWithoutExt;
-        }
-
-        /// <summary>
-        /// Relocates the file to another folder / directory.
-        /// </summary>
-        /// <param name="pathName">The absolute path name</param>
-        public void Relocate(string pathName)
-        {
-            if (IsTemporaryStore)
-            {
-                Logger?.LogInfo($"Relocating temporary store '{Qualifier.Anonymous.ToBase64String()}'");
-                Qualifier = BuildQualifier(pathName, Qualifier.Anonymous.ToBase64String(), "ifc");
-            }
-
-            Qualifier.Named.Frags[0] = Path.GetDirectoryName($"{pathName}{Path.DirectorySeparatorChar}");
-        }
-
-        /// <summary>
-        /// Replaces fragments of the file name (without extension) by given fragments
-        /// </summary>
-        /// <param name="replacePattern">Regular expression identifiying the replacement</param>
-        /// <param name="replaceWith">Fragments to insert</param>
-        public void RenameWithReplacePattern(string replacePattern, string replaceWith)
-        {
-            if (IsTemporaryStore)
-                throw new NotSupportedException("Not allowed for temporary models");
-
-            var modifiedName = Regex.Replace(
-                    Qualifier.Named.Frags[1],
-                    replacePattern,
-                    replaceWith).Trim();
-            Rename(modifiedName);
-        }
-
-        /// <summary>
-        /// Renames the current model's physical name append the given suffix.
-        /// </summary>
-        /// <param name="suffix">A suffix</param>
-        public void RenameWithSuffix(string suffix)
-        {
-            Rename($"{Qualifier.Named.Frags[1]}{suffix}{Qualifier.Named.Frags[2]}");
-        }
-
     }
 }

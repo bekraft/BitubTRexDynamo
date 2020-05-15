@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Autodesk.DesignScript.Runtime;
 using Bitub.Transfer;
 
 namespace Task
@@ -7,6 +7,7 @@ namespace Task
     /// <summary>
     /// Progressing task node interface.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public interface ICancelableTaskNode : IProgress<ICancelableProgressState>
     {
         /// <summary>

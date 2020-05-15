@@ -11,13 +11,13 @@ using Bitub.Ifc;
 namespace Store
 {
     /// <summary>
-    /// IFC Meta data
+    /// IFC authoring meta data
     /// </summary>
-    public class IfcMetadata
+    public class IfcAuthorMetadata
     {
         #region Internals
 
-        internal IfcMetadata(IfcAuthoringMetadata authoringMetadata = null)
+        internal IfcAuthorMetadata(IfcAuthoringMetadata authoringMetadata = null)
         {
             MetaData = authoringMetadata;
         }
@@ -31,12 +31,12 @@ namespace Store
         /// </summary>
         /// <param name="ifcModel">The repository</param>
         /// <returns>A sorted list with most recent at top</returns>
-        public static IfcMetadata[] ListOwnerHistory(IfcModel ifcModel)
+        public static IfcAuthorMetadata[] OwnerHistory(IfcModel ifcModel)
         {
             if (null != ifcModel)
-                return new IfcMetadataHistory(ifcModel.Store.XbimModel).Chronically.Select(d => new IfcMetadata(d)).ToArray();
+                return new IfcMetadataHistory(ifcModel.Store.XbimModel).Chronically.Select(d => new IfcAuthorMetadata(d)).ToArray();
             else
-                return new IfcMetadata[] { };
+                return new IfcAuthorMetadata[] { };
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Store
         /// <param name="organisationID">The authoring organisation ID</param>
         /// <param name="address">The address of the organisation</param>
         /// <returns>New meta data wrapping author's credentials and organisation details</returns>
-        public static IfcMetadata ByAuthorAndOrganisation(
+        public static IfcAuthorMetadata ByAuthorAndOrganisation(
             string name, 
             string givenName, 
             string organisationName, 
@@ -69,7 +69,7 @@ namespace Store
                 }
             };
 
-            return new IfcMetadata
+            return new IfcAuthorMetadata
             {
                 MetaData = new IfcAuthoringMetadata
                 {                    
@@ -89,9 +89,9 @@ namespace Store
         /// <param name="newEditorName">A name</param>
         /// <param name="newGivenName">A given name</param>
         /// <returns>New metadata wrapping the author's credentials only</returns>
-        public static IfcMetadata ByAuthor(string newEditorName, string newGivenName)
+        public static IfcAuthorMetadata ByAuthor(string newEditorName, string newGivenName)
         {
-            return new IfcMetadata
+            return new IfcAuthorMetadata
             {
                 MetaData = new IfcAuthoringMetadata
                 {

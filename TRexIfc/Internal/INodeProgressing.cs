@@ -11,6 +11,7 @@ namespace Internal
     /// <summary>
     /// Interface tagging an interactive zero touch node.
     /// </summary>    
+    [IsVisibleInDynamoLibrary(false)]
     public interface INodeProgressing : IProgress<ICancelableProgressState>
     {
         /// <summary>
@@ -28,18 +29,24 @@ namespace Internal
         /// <summary>
         /// Log message receiver.
         /// </summary>
-        ICollection<LogMessage> LogMessages { get; }
+        ICollection<LogMessage> ActionLog { get; }
+
+        /// <summary>
+        /// A representative name.
+        /// </summary>
+        string Name { get; }
     }
 
     /// <summary>
     /// Node progressing event template
-    /// </summary>    
+    /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public abstract class NodeProgressing : INodeProgressing
     {
         #region Internals
         private EventHandler<NodeProgressingEventArgs> _onProgressChangeEvent;
         private EventHandler<NodeFinishedEventArgs> _onFinishEvent;
-        private object _monitor = new object();
+        private readonly object _monitor = new object();
         private NodeProgressingEventArgs _recentProgressEventArgs;
         private NodeFinishedEventArgs _recentFinishEventArgs;
         #endregion
@@ -47,7 +54,7 @@ namespace Internal
         /// <summary>
         /// Logging messages.
         /// </summary>
-        public ICollection<LogMessage> LogMessages { get; } = new ObservableCollection<LogMessage>();
+        public ICollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
         /// <summary>
         /// See <see cref="INodeProgressing.OnProgressChange"/>
@@ -96,6 +103,18 @@ namespace Internal
         }
 
         /// <summary>
+        /// Clears the current known state.
+        /// </summary>
+        public virtual void ClearState()
+        {
+            lock (_monitor)
+            {
+                _recentFinishEventArgs = null;
+                _recentProgressEventArgs = null;
+            }
+        }
+
+        /// <summary>
         /// Emitting progress changes
         /// </summary>
         /// <param name="args">The args</param>
@@ -128,13 +147,28 @@ namespace Internal
         }
 
         /// <summary>
+        /// Manually notifying on finish.
+        /// </summary>
+        /// <param name="finishAction">The finishing action.</param>
+        /// <param name="isBroken">Whether the finish is reached by error</param>
+        public void NotifyFinish(ActionType finishAction, bool isBroken)
+        {
+            OnFinished(new NodeFinishedEventArgs(finishAction, Name, false, isBroken));
+        }
+
+        /// <summary>
+        /// The name.
+        /// </summary>
+        public abstract string Name { get; }
+
+        /// <summary>
         /// Reporting progress from outside.
         /// </summary>
         /// <param name="value">The progress state</param>
         [IsVisibleInDynamoLibrary(false)]
         public void Report(ICancelableProgressState value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Change, value));
+            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Changed, value));
         }
     }
 }

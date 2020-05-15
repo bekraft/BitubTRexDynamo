@@ -1,85 +1,134 @@
 ﻿using System;
-using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
+using Bitub.Ifc;
+using Bitub.Ifc.Transform.Requests;
 using Bitub.Ifc.Transform;
 
 using Store;
 using Log;
 
 using Autodesk.DesignScript.Runtime;
+using Internal;
 
 namespace Task
 {
     /// <summary>
     /// Transforming model delegates.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
+    /// </summary>    
     public class IfcTransform
     {
+        // Disable comment warning
+#pragma warning disable CS1591
+
         #region Internals
 
-        internal TimeSpan TimeOut { get; set; } = TimeSpan.MaxValue;
+        private readonly IIfcTransformRequest _ifcTransformRequest;
 
-        internal IfcTransform()
+        internal IfcTransform(IIfcTransformRequest transformRequest)
         {
+            _ifcTransformRequest = transformRequest;
         }
 
-        #endregion
-
-        /// <summary>
-        /// New IFC transform handler with given time out
-        /// </summary>
-        /// <param name="minutes">The maximum minutes</param>
-        /// <param name="seconds">The maximum seconds</param>
-        /// <returns></returns>
-        public static IfcTransform ByTimeOut(int minutes, int seconds)
+        private static ActionType TransformActionToActionType(TransformAction a)
         {
-            return new IfcTransform { TimeOut = TimeSpan.FromSeconds(minutes * 60 + seconds) };
-        }
-
-        /// <summary>
-        /// Removes IFC property sets by their names.
-        /// </summary>
-        /// <param name="prefs">The request preferences</param>
-        /// <param name="ifcModel">The IFC model producer</param>        
-        /// <returns>New IFC model</returns>  
-        [IsVisibleInDynamoLibrary(false)]
-        public IfcModel RemovePropertySets(PSetRemovalRequest prefs, IfcModel ifcModel)
-        {
-            return IfcStore.CreateFromTransform(ifcModel, (model, node) =>
+            switch (a)
             {
-                var task = prefs.Request.Run(model, node);
-                task.Wait(TimeOut);
+                case TransformAction.Added:
+                    return ActionType.Added;
+                case TransformAction.Modified:
+                    return ActionType.Modified;
+                case TransformAction.NotTransferred:
+                    return ActionType.Removed;
+                case TransformAction.Transferred:
+                    return ActionType.Copied;
 
+                default:
+                    return ActionType.Changed;
+            }
+        }
+
+        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries)
+        {
+            foreach (var entry in logEntries)
+            {
+                yield return LogMessage.BySeverityAndMessage(
+                    Severity.Info,
+                    TransformActionToActionType(entry.PerformedAction), "{0}: #{1} {2}",
+                    canonicalFrag,
+                    entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
+                    entry.InstanceHandle?.EntityExpressType.Name ?? "(type unknown)");
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcModel CreateIfcModelTransform(IfcModel source, IfcTransform transform, string canonicalFrag)
+        {
+            return IfcStore.CreateFromTransform(source, (model, node) =>
+            {
+                var task = transform._ifcTransformRequest.Run(model, node);
+                // TODO Timeout
+                task.Wait();
+                
                 if (task.IsCompleted)
                 {
+                    if (node is NodeProgressing np)
+                        np.NotifyFinish(ActionType.Changed, false);
+
                     using (var result = task.Result)
                     {
                         switch (result.ResultCode)
                         {
                             case TransformResult.Code.Finished:
+                                foreach (var logMessage in TransformLogToMessage($"{transform._ifcTransformRequest.Name}({canonicalFrag})", result.Log))
+                                    node.ActionLog.Add(logMessage);
+
                                 return result.Target;
                             case TransformResult.Code.Canceled:
-                                node.LogMessages.Add(LogMessage.BySeverityAndMessage(
-                                    Severity.Error, ActionType.Any, "Canceled by user request ({0}).", ifcModel.Name));
+                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                    Severity.Error, ActionType.Any, "Canceled by user request ({0}).", node.Name));
                                 break;
                             case TransformResult.Code.ExitWithError:
-                                node.LogMessages.Add(LogMessage.BySeverityAndMessage(
-                                    Severity.Error, ActionType.Any, "Caught error ({0}): {1}", ifcModel.Name, result.Cause));                                
+                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                    Severity.Error, ActionType.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
                                 break;
                         }
                     }
                 }
                 else
-                {                   
-                    node.LogMessages.Add(LogMessage.BySeverityAndMessage(
-                        Severity.Error, ActionType.Change, $"Task incompletely terminated (Status {task.Status})."));
+                {
+                    if (node is NodeProgressing np)
+                        np.NotifyFinish(ActionType.Changed, true);
+
+                    node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                        Severity.Error, ActionType.Changed, $"Task incompletely terminated (Status {task.Status})."));
                 }
                 return null;
-            }, prefs.NameSuffix);
+            }, canonicalFrag);
         }
 
+        #endregion
+
+#pragma warning restore CS1591
+
+
+        /// <summary>
+        /// Creates new transform request removing property sets from IFC models.
+        /// </summary>
+        /// <param name="blackListPSets">Blacklist of property set names</param>
+        /// <param name="caseSensitiveMatching">Whether to use case sensitive matching</param>
+        /// <param name="logInstance">The logging instance</param>
+        /// <param name="newMetadata">The new author's meta data</param>
+        /// <returns>A ready transform request</returns> 
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcTransform RemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, string[] blackListPSets, bool caseSensitiveMatching)
+        {
+            return new IfcTransform(new IfcPropertySetRemovalRequest(logInstance.LoggerFactory)
+            {
+                BlackListNames = blackListPSets,
+                IsNameMatchingCaseSensitive = caseSensitiveMatching,
+                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+            });
+        }
     }
 }

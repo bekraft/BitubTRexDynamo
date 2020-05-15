@@ -1,21 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Windows.Controls;
 
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
 using Dynamo.Controls;
-using Dynamo.Engine;
-using Dynamo.Wpf;
-using Dynamo.Scheduler;
 
 using Export;
-using Store;
-
-using System;
-using System.Windows.Controls;
-using Dynamo.ViewModels;
-using System.Collections.ObjectModel;
-using Microsoft.Practices.Prism;
 
 namespace UI.Customization
 {
@@ -24,21 +16,27 @@ namespace UI.Customization
 
     public class SceneExportSettingsCustomization : BaseNodeViewCustomization<SceneExportSettingsNodeModel>
     {
+        #region Internals
+
+        private SceneExportSettingsControl _control;
+
+        #endregion
+
         public override void CustomizeView(SceneExportSettingsNodeModel model, NodeView nodeView)
+
         {
             base.CustomizeView(model, nodeView);
 
-            var sceneExportSettings = new SceneExportSettingsControl();
-            nodeView.inputGrid.Children.Add(sceneExportSettings);
-            sceneExportSettings.DataContext = model;
+            _control = new SceneExportSettingsControl();
+            nodeView.inputGrid.Children.Add(_control);
+            _control.DataContext = model;
 
-            Init(model, sceneExportSettings);
+            Init(model, _control);
 
             model.PortConnected += Model_PortConnected;
             model.Modified += Model_Modified;
-
             
-            sceneExportSettings.SceneContextListBox.SelectionChanged += SceneContextListBox_SelectionChanged;
+            _control.SceneContextListBox.SelectionChanged += SceneContextListBox_SelectionChanged;
         }
 
         private void Init(SceneExportSettingsNodeModel model, SceneExportSettingsControl view)
@@ -58,7 +56,7 @@ namespace UI.Customization
         private void Model_Modified(NodeModel obj)
         {
             ScheduleAsync(() => {
-                var providedContexts = NodeModel.GetProvidedContextInput(ModelEngineController);
+                var providedContexts = NodeModel.GetCachedInput<string>(2, ModelEngineController);
                 NodeModel.MergeProvidedSceneContext(providedContexts);
             });            
         }
@@ -66,13 +64,16 @@ namespace UI.Customization
         private void Model_PortConnected(PortModel pm, ConnectorModel cm)
         {            
             ScheduleAsync(() => {
-                var providedContexts = NodeModel.GetProvidedContextInput(ModelEngineController);
+                var providedContexts = NodeModel.GetCachedInput<string>(2, ModelEngineController);
                 NodeModel.MergeProvidedSceneContext(providedContexts);
             });
         }
 
         public override void Dispose()
-        {
+        {            
+            NodeModel.PortConnected -= Model_PortConnected;
+            NodeModel.Modified -= Model_Modified;
+            _control.SceneContextListBox.SelectionChanged -= SceneContextListBox_SelectionChanged;
         }
     }
 
