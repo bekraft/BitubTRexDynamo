@@ -9,12 +9,8 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
 using Log;
 using Store;
-using Bitub.Transfer;
-using Bitub.Ifc.Transform;
 
 namespace Task
 {
@@ -54,6 +50,7 @@ namespace Task
 
 #pragma warning disable CS1591
 
+        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode[] inputs = inputAstNodes.ToArray();

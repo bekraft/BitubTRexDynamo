@@ -18,7 +18,7 @@ using Bitub.Transfer;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
-using Xbim.IO.Xml.BsConf;
+using Bitub.Ifc;
 
 namespace Store
 {
@@ -107,9 +107,11 @@ namespace Store
             OnProgressChanged(new NodeProgressingEventArgs(ActionType.Changed, value, Name));
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public void Dispose()
         {
-            if (null == Store) throw new ObjectDisposedException(nameof(IfcModel));
+            if (null == Store) 
+                throw new ObjectDisposedException(nameof(IfcModel));
             (ActionLog as ObservableCollection<LogMessage>).CollectionChanged -= ActionLog_CollectionChanged;
             Store = null;
         }
@@ -249,7 +251,7 @@ namespace Store
         /// <summary>
         /// Returns the current log messages.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The log messages</returns>
         public LogMessage[] LogMessages { get => ActionLog.ToArray(); }
 
         /// <summary>
@@ -287,18 +289,22 @@ namespace Store
             logger?.LogInfo("Saving '{0}'.", filePathName);
             try
             {
+                var internalModel = ifcModel.Store.XbimModel;
+                if (null == internalModel)
+                    throw new Exception("No internal model");
+
                 using (var fileStream = File.Create(filePathName))
                 {
                     switch (extension.ToLower())
                     {
                         case "ifc":
-                            ifcModel.Store.XbimModel.SaveAsIfc(fileStream, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfc(fileStream, ifcModel.NotifySaveProgressChanged);
                             break;
                         case "ifcxml":
-                            ifcModel.Store.XbimModel.SaveAsIfcXml(fileStream, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfcXml(fileStream, ifcModel.NotifySaveProgressChanged);
                             break;
                         case "ifczip":
-                            ifcModel.Store.XbimModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.Ifc, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.Ifc, ifcModel.NotifySaveProgressChanged);
                             break;
                         default:
                             logger?.LogWarning("File extension not known: '{0}'. Use (IFC, IFCXML or IFCZIP)", Path.GetExtension(filePathName));
@@ -313,7 +319,7 @@ namespace Store
             }
             catch (Exception e)
             {
-                logger?.LogError(e, "Caught exception: {0}", e.Message);
+                logger?.LogError(e, "Exception: {0}", e.Message);
                 ifcModel.NotifyOnFinished(ActionType.Saved, false, true);
                 aboutToBeSaved.ActionLog.Add(new LogMessage(Severity.Error, ActionType.Loaded, "Failure: '{0}'.", filePathName));
             }
@@ -398,7 +404,7 @@ namespace Store
         /// Lists all product types which are present in the model
         /// </summary>
         /// <returns>A list of distinct IFC product types held by the collection</returns>
-        public string[] ProductTypes() => Store.XbimModel.Instances
+        public string[] ProductTypes() => Store.XbimModel?.Instances
             .OfType<IIfcProduct>()
             .Select(p => p.ExpressType.Name)
             .Distinct()
@@ -408,17 +414,26 @@ namespace Store
         /// Lists all property sets by their name.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
-        public string[] PropertySetNames() => Store.XbimModel.Instances
+        public string[] PropertySetNames() => Store.XbimModel?.Instances
             .OfType<IIfcPropertySet>()
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();
 
         /// <summary>
+        /// Lists all property sets by their name and groups by products.
+        /// </summary>
+        /// <returns>A list of property set names in use</returns>
+        public Dictionary<string, string[]> PropertySetNamesPerProduct() => Store.XbimModel?.Instances
+            .OfType<IIfcProduct>()
+            .Select(p => new KeyValuePair<string, string[]>(p.ExpressType.Name, p.PropertiesSets<IIfcProperty>().Select(s => s.Item1).ToArray()))
+            .ToDictionary(e => e.Key, e => e.Value);
+
+        /// <summary>
         /// Graphical contexts
         /// </summary>
         /// <returns></returns>
-        public string[] GraphicalContexts() => Store.XbimModel.Instances
+        public string[] GraphicalContexts() => Store.XbimModel?.Instances
                 .OfType<IIfcGeometricRepresentationContext>()
                 .Select(c => c.ContextIdentifier?.ToString())
                 .Where(s => !string.IsNullOrWhiteSpace(s))

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UI.MetaDataControl"
+﻿<UserControl x:Class="UI.AuthoringMetaDataControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -18,12 +18,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" 
-                    FontSize="8"
-                    Content="Name (empty for anonymous)"/>
+            <Label Grid.Row="0" FontSize="8" Content="Name (empty for anonymous)"/>
             <TextBox Grid.Row="1"
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
@@ -32,11 +32,9 @@
                         TextWrapping="Wrap"                           
                         Width="Auto"
                         FontSize="10"
-                        Text="{Binding Path=EditorName}"/>
+                        Text="{Binding Path=AuthorName}"/>
 
-            <Label Grid.Row="2"
-                    FontSize="8"
-                    Content="Given name (empty for anonymous)"/>
+            <Label Grid.Row="2" FontSize="8" Content="Given name (empty for anonymous)"/>
             <TextBox Grid.Row="3"
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
@@ -45,12 +43,21 @@
                         TextWrapping="Wrap"                           
                         Width="Auto"
                         FontSize="10"
-                        Text="{Binding Path=EditorGivenName}"/>
+                        Text="{Binding Path=AuthorGivenName}"/>
 
-            <Label Grid.Row="4" 
-                    FontSize="8"
-                    Content="Organisation / Company name"/>
+            <Label Grid.Row="4" FontSize="8" Content="Organisation / Company ID"/>
             <TextBox Grid.Row="5"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Height="23" 
+                        Margin="2,2,2,2" 
+                        TextWrapping="Wrap"                           
+                        Width="Auto"
+                        FontSize="10"
+                        Text="{Binding Path=OrganisationId}"/>
+
+            <Label Grid.Row="6" FontSize="8" Content="Organisation / Company name"/>
+            <TextBox Grid.Row="7"
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
                         Height="23" 
@@ -60,10 +67,8 @@
                         FontSize="10"
                         Text="{Binding Path=OrganisationName}"/>
 
-            <Label Grid.Row="6"
-                    FontSize="8"
-                    Content="Address"/>
-            <TextBox Grid.Row="7"
+            <Label Grid.Row="8" FontSize="8" Content="Address"/>
+            <TextBox Grid.Row="9"
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
                         Height="23" 

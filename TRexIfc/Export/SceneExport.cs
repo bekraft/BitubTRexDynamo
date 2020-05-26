@@ -24,10 +24,9 @@ namespace Export
 
     /// <summary>
     /// Scene export utility.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
+    /// </summary>   
     public class SceneExport : NodeProgressing
-    {
+    {        
         public static string[] Extensions = new string[] { "json", "scene" };
 
         #region Internals
@@ -86,16 +85,21 @@ namespace Export
             string extension,
             string canonicalSeparator = null)
         {
-            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(extension))
-                return LogMessage.BySeverityAndMessage(Severity.Warning, ActionType.Saved, "Missing file path or extension");
-            if (null == ifcModel)
-                return LogMessage.BySeverityAndMessage(Severity.Warning, ActionType.Saved, "Missing IFC model as input");
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentNullException("filePath");
+            if (string.IsNullOrEmpty(extension))
+                throw new ArgumentNullException("extension");
 
             string fileName = string.IsNullOrEmpty(canonicalSeparator) ? ifcModel.Name : ifcModel.CanonicalName(canonicalSeparator);
             string sceneFileName = $@"{filePath}{Path.DirectorySeparatorChar}{fileName}.{extension}";
             try
             {
-                var sceneTask = sceneExport.InternalSceneExport.Run(ifcModel.Store.XbimModel);
+                var internalModel = ifcModel?.Store.XbimModel;
+                if (null == internalModel)
+                    throw new ArgumentNullException("ifcModel");
+
+                var sceneTask = sceneExport.InternalSceneExport.Run(internalModel);
+                // TODO Time out
                 sceneTask.Wait();
                     
                 switch(extension.ToLower())

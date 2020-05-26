@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
-using ProtoCore.AST.AssociativeAST;
-
-using Newtonsoft.Json;
-using Dynamo.Engine;
 using System.Linq;
-using System.Windows.Input;
+
+using Dynamo.Graph.Nodes;
+using Dynamo.Engine;
+
+using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Mirror;
 
 namespace Internal
 {
@@ -43,7 +42,7 @@ namespace Internal
         /// </summary>
         /// <param name="engineController">Dynamo engine controller</param>
         /// <param name="portName">InPort name</param>
-        /// <returns></returns>
+        /// <returns>An array of inputs</returns>
         public T[] GetCachedInput<T>(string portName, EngineController engineController)
         {
             return GetCachedInput<T>(InPorts.First(p => p.Name.Equals(portName)).Index, engineController);
@@ -54,22 +53,47 @@ namespace Internal
         /// </summary>
         /// <param name="engineController">Dynamo engine controller</param>
         /// <param name="inPortNo">InPort number</param>
-        /// <returns></returns>
+        /// <returns>An array of inputs</returns>
         public T[] GetCachedInput<T>(int inPortNo, EngineController engineController)
         {
             var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
             var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
 
             var data = ids.Select(id => engineController.GetMirror(id).GetData());
-            return data.SelectMany(d =>
-            {
-                if (d.IsCollection)
-                    return d.GetElements().Select(e => e.Data).OfType<T>().ToArray();
-                else if (d.Data is T obj)
-                    return new T[] { obj };
-                else
-                    return new T[] { };
-            }).ToArray();
+            return data.SelectMany(Unwrap<T>).ToArray();
+        }
+
+        private static T[] Unwrap<T>(MirrorData data)
+        {
+            if (data.IsCollection)
+                return data.GetElements().Select(e => e.Data).OfType<T>().ToArray();
+            else if (data.Data is T obj)
+                return new T[] { obj };
+            else
+                return new T[] { };
+        }
+
+        /// <summary>
+        /// Gets the provided scene contexts from input node(s).
+        /// </summary>
+        /// <param name="engineController">Dynamo engine controller</param>
+        /// <param name="inPortNo">InPort number</param>
+        /// <returns>An array of inputs with their AST identifier</returns>
+        public AstValue<T>[] GetCachedAstInput<T>(int inPortNo, EngineController engineController)
+        {
+            var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
+            var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
+            return ids.SelectMany(id => UnwrapAstValue<T>(engineController.GetMirror(id).GetData(), id)).ToArray();
+        }
+
+        private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, string astId)
+        {
+            if (data.IsCollection)
+                return data.GetElements().Select(e => e.Data).OfType<T>().Select((d, index) => new AstValue<T>(astId, d, index)).ToArray();
+            else if (data.Data is T obj)
+                return new AstValue<T>[] { new AstValue<T>(astId, obj) };
+            else
+                return new AstValue<T>[] { };
         }
 
         /// <summary>
@@ -93,18 +117,9 @@ namespace Internal
         {
             var data = engineController.GetMirror(GetAstIdentifierForOutputIndex(outPortNo).Name)?.GetData();
             if (null == data)
-            {
                 return new T[] { };
-            }
             else
-            {
-                if (data.IsCollection)
-                    return data.GetElements().Select(e => e.Data).OfType<T>().ToArray();
-                else if (data.Data is T obj)
-                    return new T[] { obj };
-                else
-                    return new T[] { };
-            }
+                return Unwrap<T>(data);
         }
 
         protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum

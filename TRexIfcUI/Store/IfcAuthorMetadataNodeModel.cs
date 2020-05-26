@@ -7,8 +7,6 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Xbim.Ifc;
-
 namespace Store
 {
     /// <summary>

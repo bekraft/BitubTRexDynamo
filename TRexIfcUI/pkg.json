@@ -1,21 +1,21 @@
 {
   "license": "Apache-2.0",
   "file_hash": null,
-  "name": "BitubIFC",
-  "version": "0.1.0",
+  "name": "TRexIfc",
+  "version": "0.1.0.0",
   "description": "Bitub IFC Dynamo Tool Chains",
-  "group": "IFC",
-  "keywords": [ "bitub", "IFC", "transform" ],
+  "group": "TRexIFC",
+  "keywords": [ "bitub", "ifc", "import", "export", "xbim" ],
   "dependencies": [],
-  "contents": "",
-  "engine_version": "2.5.0.7186",
+  "contents": "IFC Xbim Wrapper, Transformation pipelines, Export pipelines",
+  "engine_version": "2.6.0.8481",
   "engine": "dynamo",
   "engine_metadata": "",
-  "site_url": "",
+  "site_url": "https://www.github.com/bekraft/BitubTRexDynamo",
   "repository_url": "",
   "contains_binaries": true,
   "node_libraries": [
-    "TRexIfc, Version=0.1.0, Culture=neutral, PublicKeyToken=null",
-    "TRexIfcUI, Version=0.1.0, Culture=neutral, PublicKeyToken=null"
+    "TRexIfc, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "TRexIfcUI, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null"
   ]
 }

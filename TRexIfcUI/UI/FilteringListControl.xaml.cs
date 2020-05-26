@@ -5,9 +5,9 @@ namespace UI
 {
 #pragma warning disable CS1591
 
-    public partial class IfcModelLoadControl : UserControl
+    public partial class FilteringListControl : UserControl
     {
-        public IfcModelLoadControl()
+        public FilteringListControl()
         {
             InitializeComponent();
         }

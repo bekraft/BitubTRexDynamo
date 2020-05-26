@@ -2,7 +2,7 @@
   "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "IfcLoad",
+  "Name": "IfcLoad-SceneExport",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -41,8 +41,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
       "Inputs": [],
@@ -62,8 +62,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-SceneExport.log",
+      "InputValue": "Out\\IfcLoad-SceneExport.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
       "Inputs": [],
@@ -288,7 +288,7 @@
         {
           "Id": "2768a8599f3949d686e9342b4a11ee71",
           "Name": "LogMessage[]",
-          "Description": "LogMessage[]",
+          "Description": "The log messages",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,8 +339,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
       "NodeType": "ExtensionNode",
       "Id": "20b1ab7fb95647cf8d9c573745345082",
       "Inputs": [],
@@ -598,6 +598,42 @@
       ],
       "Replication": "Disabled",
       "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Task.SelectiveItemListNodeModel, TRexIfcUI",
+      "Selected": [
+        {
+          "ConcreteType": "Internal.AstValue`1[[System.Object, mscorlib]], TRexIfcUI",
+          "AstId": "var_7d09cda4bac54d1398af4a0ed1045c5e",
+          "ArrayIndex": 1
+        }
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "d8c84a56708c43cea770c63f7ccd7a56",
+      "Inputs": [
+        {
+          "Id": "485382cc33684731b1de2fa275936fa8",
+          "Name": "items",
+          "Description": "Provided candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "57edf42a0f134a76915635f9aa1f8243",
+          "Name": "selected",
+          "Description": "Selected candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select multiple items from a list of available items using its string representation."
     }
   ],
   "Connectors": [
@@ -673,8 +709,8 @@
     },
     {
       "Start": "547987ef8fa04a34b4b03ef49f43813d",
-      "End": "7850c29985ee41b282875fcde4259bc9",
-      "Id": "75cfa40287fb4c61b87e98de58022b37"
+      "End": "485382cc33684731b1de2fa275936fa8",
+      "Id": "bcf68888ceea4ebea396b6f3084b8db1"
     },
     {
       "Start": "92fa019a1981447381a2a462fa7c2cef",
@@ -700,13 +736,18 @@
       "Start": "eddbe5bb2a5e4adfba8f3794b1fbe2aa",
       "End": "980c119151b546b6a80848d843c06594",
       "Id": "95271e5e22134fc8a87841b72f93cdda"
+    },
+    {
+      "Start": "57edf42a0f134a76915635f9aa1f8243",
+      "End": "7850c29985ee41b282875fcde4259bc9",
+      "Id": "9638f181a7c1453eac94cd58a9be2454"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
-      "Name": "BitubIFC",
-      "Version": "0.1.0",
+      "Name": "TRexIfc",
+      "Version": "0.1.0.0",
       "ReferenceType": "Package",
       "Nodes": [
         "dd916e2863e54995b204e9437e1000be",
@@ -720,7 +761,8 @@
         "7d09cda4bac54d1398af4a0ed1045c5e",
         "c76e022f24b14a8f9af68db8b523fb47",
         "1182395436584f7fa3e51b6d52058dda",
-        "cd1636e504d54fad84300222dd6a5964"
+        "cd1636e504d54fad84300222dd6a5964",
+        "d8c84a56708c43cea770c63f7ccd7a56"
       ]
     }
   ],
@@ -730,7 +772,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.5.0.7186",
+      "Version": "2.6.0.8481",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -748,169 +790,179 @@
     },
     "NodeViews": [
       {
+        "ShowGeometry": true,
+        "Name": "File Logger",
         "Id": "dd916e2863e54995b204e9437e1000be",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "File Logger",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 281.6,
         "Y": 56.399999999999977
       },
       {
+        "ShowGeometry": true,
+        "Name": "File Path",
         "Id": "c74b9643923945e0b6c6dfda574d2019",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "File Path",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 21.471000475569383,
         "Y": 207.9850807038427
       },
       {
+        "ShowGeometry": true,
+        "Name": "File Path",
         "Id": "daed6c03916046138fa732ea55c25b2d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "File Path",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 25.599999999999909,
+        "X": 23.440413638183145,
         "Y": 54.799999999999841
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcTessellationPrefs.ByModelDefaults",
         "Id": "5bfaacb42bd74fc8a812e328f3244319",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcTessellationPrefs.ByModelDefaults",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 656.529958459155,
         "Y": 39.495085459536938
       },
       {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
         "Id": "df4087d7f09c49e0baae87f6697500e1",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Ifc Load",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 346.96797578952157,
-        "Y": 208.69508063219007
+        "X": 279.43125961350825,
+        "Y": 219.35877265998164
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcTessellationPrefs.ToValues",
         "Id": "3620f106d0934a0b96a950f80d83b309",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcTessellationPrefs.ToValues",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 985.72028528894884,
         "Y": 39.7497234095153
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcModel.CanonicalName",
         "Id": "e5e8884e770d414b8005d15918abc15d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcModel.CanonicalName",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 734.00965098453185,
-        "Y": 255.84908765856557
+        "X": 708.09461464273068,
+        "Y": 383.26468300575397
       },
       {
+        "ShowGeometry": true,
+        "Name": "Ifc Save",
         "Id": "874dbe9d9f8746cd9e2c396aa7765253",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Ifc Save",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 751.79186355584739,
-        "Y": 450.26794510495034
+        "X": 956.95256792843884,
+        "Y": 646.7903040302748
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcModel.LogMessages",
         "Id": "fdc0fe51106c4cefab28113980ae3f1f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcModel.LogMessages",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1017.3395712874947,
-        "Y": 325.79245710574054
+        "X": 1304.5645574091227,
+        "Y": 645.41123865461986
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcModel.RelocatePath",
         "Id": "3152c39a8f6149eaa395c42e6c5fcf82",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcModel.RelocatePath",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 412.744343862762,
-        "Y": 471.60660019052921
+        "X": 622.224220958987,
+        "Y": 646.533095497686
       },
       {
+        "ShowGeometry": true,
+        "Name": "Directory Path",
         "Id": "20b1ab7fb95647cf8d9c573745345082",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Directory Path",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 41.688841541308108,
-        "Y": 469.23563851435381
+        "X": 26.571737008590873,
+        "Y": 467.07605215253682
       },
       {
+        "ShowGeometry": true,
+        "Name": "IfcModel.GraphicalContexts",
         "Id": "7d09cda4bac54d1398af4a0ed1045c5e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "IfcModel.GraphicalContexts",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 744.67897852732131,
-        "Y": 145.59936971640838
+        "X": 714.44476946188706,
+        "Y": 260.0574468926963
       },
       {
+        "ShowGeometry": true,
+        "Name": "Scene Export Settings",
         "Id": "c76e022f24b14a8f9af68db8b523fb47",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Scene Export Settings",
-        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1321.9251326400745,
-        "Y": 120.18315314136942
+        "X": 1422.5606736654083,
+        "Y": 241.11998940310752
       },
       {
+        "ShowGeometry": true,
+        "Name": "XYZ.ByCoordinates",
         "Id": "1182395436584f7fa3e51b6d52058dda",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "XYZ.ByCoordinates",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 1078.4693326399863,
         "Y": -116.28324247565629
       },
       {
+        "ShowGeometry": true,
+        "Name": "Code Block",
         "Id": "3d66c164783948d0957caf923dce2ed4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Code Block",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 900.054822914638,
         "Y": -113.65910994987183
       },
       {
+        "ShowGeometry": true,
+        "Name": "Scene Export",
         "Id": "cd1636e504d54fad84300222dd6a5964",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
-        "Name": "Scene Export",
-        "ShowGeometry": true,
         "Excluded": false,
         "X": 1589.0579621902741,
         "Y": -69.866094334721083
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select items from",
+        "Id": "d8c84a56708c43cea770c63f7ccd7a56",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1033.2748022877479,
+        "Y": 353.24129056844026
       }
     ],
     "Annotations": [],
-    "X": -61.867213783094144,
-    "Y": -49.058812122924337,
-    "Zoom": 0.7568895489133376
+    "X": -393.16286216563662,
+    "Y": 173.43188866447616,
+    "Zoom": 0.54200918734095471
   }
 }

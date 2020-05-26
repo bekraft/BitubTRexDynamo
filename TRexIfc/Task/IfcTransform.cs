@@ -10,6 +10,9 @@ using Log;
 
 using Autodesk.DesignScript.Runtime;
 using Internal;
+using Xbim.Ifc4.UtilityResource;
+
+using Autodesk.DesignScript.Geometry;
 
 namespace Task
 {
@@ -35,31 +38,34 @@ namespace Task
             switch (a)
             {
                 case TransformAction.Added:
-                    return ActionType.Added;
+                    return ActionType.Added | ActionType.Transformed;
                 case TransformAction.Modified:
-                    return ActionType.Modified;
+                    return ActionType.Modified | ActionType.Transformed;
                 case TransformAction.NotTransferred:
-                    return ActionType.Removed;
+                    return ActionType.Removed | ActionType.Transformed;
                 case TransformAction.Transferred:
-                    return ActionType.Copied;
+                    return ActionType.Copied | ActionType.Transformed;
 
                 default:
-                    return ActionType.Changed;
+                    return ActionType.Changed | ActionType.Transformed;
             }
         }
 
-        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries)
+        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries, ActionType filter = ActionType.Any)
         {
             foreach (var entry in logEntries)
             {
-                yield return LogMessage.BySeverityAndMessage(
+                var action = TransformActionToActionType(entry.PerformedAction);
+                if (filter.HasFlag(action)) yield return LogMessage.BySeverityAndMessage(
                     Severity.Info,
-                    TransformActionToActionType(entry.PerformedAction), "{0}: #{1} {2}",
+                    action, "'{0}': #{1} {2}",
                     canonicalFrag,
                     entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
                     entry.InstanceHandle?.EntityExpressType.Name ?? "(type unknown)");
             }
         }
+
+        #endregion
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcModel CreateIfcModelTransform(IfcModel source, IfcTransform transform, string canonicalFrag)
@@ -107,19 +113,12 @@ namespace Task
             }, canonicalFrag);
         }
 
-        #endregion
+        [IsVisibleInDynamoLibrary(false)]
+        public override string ToString()
+        {
+            return _ifcTransformRequest?.Name ?? "Anonymous IfcTransform";
+        }
 
-#pragma warning restore CS1591
-
-
-        /// <summary>
-        /// Creates new transform request removing property sets from IFC models.
-        /// </summary>
-        /// <param name="blackListPSets">Blacklist of property set names</param>
-        /// <param name="caseSensitiveMatching">Whether to use case sensitive matching</param>
-        /// <param name="logInstance">The logging instance</param>
-        /// <param name="newMetadata">The new author's meta data</param>
-        /// <returns>A ready transform request</returns> 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform RemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, string[] blackListPSets, bool caseSensitiveMatching)
         {
@@ -130,5 +129,18 @@ namespace Task
                 EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
             });
         }
+
+#pragma warning restore CS1591
+
+        /// <summary>
+        /// Rewrites the given GUID as IfcGloballyUniqueId (or also known as IfcGuid base64 representation)
+        /// </summary>
+        /// <param name="guid">A GUID (i.e. "B47EF7FE-BDF4-4504-8A67-DB697D04F659")</param>
+        /// <returns>The IFC Base64 representation</returns>
+        public static string GuidToIfcGuid(string guid)
+        {            
+            return IfcGloballyUniqueId.ConvertToBase64(Guid.Parse(guid));
+        }
+
     }
 }

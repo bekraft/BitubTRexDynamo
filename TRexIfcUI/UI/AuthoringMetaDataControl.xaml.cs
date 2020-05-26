@@ -4,9 +4,9 @@ namespace UI
 {
 #pragma warning disable CS1591
 
-    public partial class MetaDataControl : UserControl
+    public partial class AuthoringMetaDataControl : UserControl
     {
-        public MetaDataControl()
+        public AuthoringMetaDataControl()
         {
             InitializeComponent();
         }

@@ -39,8 +39,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -59,31 +57,6 @@
                           Grid.Row="3"
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
                           SelectedItem="{Binding TransformationStrategy}"/>
-
-                <Label Grid.Row="4" FontSize="8" Content="Scene context selection"/>
-
-                <ListBox x:Name="SceneContextListBox"
-                         VerticalAlignment="Top"
-                         Margin="0,0,0,0"
-                         MinHeight="50"
-                         Grid.Row="5"                                                  
-                         SelectionMode="Multiple"
-                         ItemsSource="{Binding ProvidedGraphicalContext, Mode=OneWay}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True" >
-                                    <Setter Property="FontWeight" Value="Bold" />
-                                    <Setter Property="Background" Value="Azure" />
-                                    <Setter Property="Foreground" Value="Black" />
-                                </Trigger>
-                            </Style.Triggers>
-                            <Style.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
-                            </Style.Resources>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
 
             </Grid>
         </GroupBox>

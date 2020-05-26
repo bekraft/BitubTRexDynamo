@@ -13,17 +13,23 @@ namespace Internal
     [IsVisibleInDynamoLibrary(false)]
     public class GlobalArgumentService
     {
+        #region Internals
+
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 
         private GlobalArgumentService()
         {
         }
 
+        #endregion
+
+        [IsVisibleInDynamoLibrary(false)]
         public static string PutArguments()
         {
             return Guid.Empty.ToString();
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static string PutArguments(params object[] args)
         {
             string guid;
@@ -34,6 +40,7 @@ namespace Internal
             return guid;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static object[] GetArgs(string guid)
         {
             if (Guid.Empty.ToString().Equals(guid))
@@ -44,17 +51,20 @@ namespace Internal
             return args;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static object GetArg(string guid)
         {
             return GetArg<object>(guid);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static T GetArg<T>(string guid)
         {
             var args = GetArgs(guid);
             return args.Length > 0 ? (T)args[0] : default(T);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
         {
             var args = GetArgs(guid);

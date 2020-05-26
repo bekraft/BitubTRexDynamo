@@ -60,6 +60,7 @@ namespace Export
 
 #pragma warning disable CS1591
 
+        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode[] inputs = inputAstNodes.ToArray();            

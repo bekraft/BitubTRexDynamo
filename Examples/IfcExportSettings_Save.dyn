@@ -1,0 +1,428 @@
+{
+  "Uuid": "505fd9bb-e124-4c98-aecd-3b86ad047e12",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcExportSettings_Save",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExport.Settings",
+      "Id": "f892c6f5bcfd4e6aab8f38eb7577c7fe",
+      "Inputs": [
+        {
+          "Id": "33f476d11ec74d7ab5863ab9861f41bd",
+          "Name": "sceneExport",
+          "Description": "Export.SceneExport",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dd7adfb0c9304be69ff59b2f1ec9239c",
+          "Name": "SceneExportSettings",
+          "Description": "SceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the current exporter settings.\n\nSceneExport.Settings: SceneExportSettings"
+    },
+    {
+      "ConcreteType": "Export.SceneExportSettingsNodeModel, TRexIfcUI",
+      "ProvidedGraphicalContext": [
+        "Body"
+      ],
+      "SelectedGraphicalContext": [
+        "Body"
+      ],
+      "TransformationStrategy": 0,
+      "PositioningStrategy": 0,
+      "NodeType": "ExtensionNode",
+      "Id": "a3a8b4b324a045d081e6343a65e2ccbb",
+      "Inputs": [
+        {
+          "Id": "e6a069751348449ca90e58f1f90877b7",
+          "Name": "offset",
+          "Description": "Model offset as XYZ",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6b8b5dc876194e958401330e329252c5",
+          "Name": "unitsPerMeter",
+          "Description": "Scaling units per Meter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d0acba590254774820028ade4b43bad",
+          "Name": "providedContexts",
+          "Description": "Provided representation model contexts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "615a4b54c1264f899af1963c6def06c0",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d270b1e2b971488a8919eee69793013d",
+          "Name": "sceneExporter",
+          "Description": "Scene exporter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "Id": "6e920a3baf72471ca22c56748b186a43",
+      "Inputs": [
+        {
+          "Id": "da0c1c699623427a9150ede190a8b51b",
+          "Name": "x",
+          "Description": "X\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "32e5c82a0c5b4033814523ca25ef773e",
+          "Name": "y",
+          "Description": "Y\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b0efcb7c96146f68b1a9c3fcb28f8f0",
+          "Name": "z",
+          "Description": "Z\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0b1d3113778e4a5ca7efb47986688ca6",
+          "Name": "XYZ",
+          "Description": "A 3D point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n0;\n0;",
+      "Id": "a5192823f418433eadc0e4fb6b04fb61",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "211f49f8725249bb868fcd59fcc5460f",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "11e9ce8fdb734007961bd2a33891124f",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df2c81d5ed884300b3056b67d7bffc63",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Body\";",
+      "Id": "90a0da213d524e8ba27a9c130208063d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4fbab65eec334f3ab886a470904771e9",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Export.SceneExportSettings.SaveAs@Export.SceneExportSettings,string",
+      "Id": "81ff38783ef846eda988bc92ff3f7b04",
+      "Inputs": [
+        {
+          "Id": "648454dc54444a7484c8e66dfb3ed534",
+          "Name": "settings",
+          "Description": "The settings\n\nSceneExportSettings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "950a2b315b6c467aab1daedd4c38c852",
+          "Name": "fileName",
+          "Description": "The file name\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5aed2305f464402aaf9ae7e9ead5d3a7",
+          "Name": "LogMessage",
+          "Description": "A log message",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Saves the settings as a template file.\n\nSceneExportSettings.SaveAs (settings: SceneExportSettings, fileName: string): LogMessage"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Example-Settings.xml",
+      "InputValue": "Out\\Example-Settings.xml",
+      "NodeType": "ExtensionNode",
+      "Id": "24ea4a1ba47646fb8a6159b2961456bc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "88d85f0d8a5f494faf4b74779a1530bb",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "dd7adfb0c9304be69ff59b2f1ec9239c",
+      "End": "648454dc54444a7484c8e66dfb3ed534",
+      "Id": "f3a72af72a284434acd51a42afd632ea"
+    },
+    {
+      "Start": "d270b1e2b971488a8919eee69793013d",
+      "End": "33f476d11ec74d7ab5863ab9861f41bd",
+      "Id": "0c1bf9ba50ce4264a9d2bc501cf021b6"
+    },
+    {
+      "Start": "0b1d3113778e4a5ca7efb47986688ca6",
+      "End": "e6a069751348449ca90e58f1f90877b7",
+      "Id": "83f40099fcd4493cbcad71ee9771b2b1"
+    },
+    {
+      "Start": "211f49f8725249bb868fcd59fcc5460f",
+      "End": "da0c1c699623427a9150ede190a8b51b",
+      "Id": "89fb636821d4452db7b869233df67d82"
+    },
+    {
+      "Start": "11e9ce8fdb734007961bd2a33891124f",
+      "End": "32e5c82a0c5b4033814523ca25ef773e",
+      "Id": "390cf5d93db54d968efae8a3e6c979a7"
+    },
+    {
+      "Start": "df2c81d5ed884300b3056b67d7bffc63",
+      "End": "8b0efcb7c96146f68b1a9c3fcb28f8f0",
+      "Id": "94f7d39aa1b74d0fa060758109c5cc11"
+    },
+    {
+      "Start": "4fbab65eec334f3ab886a470904771e9",
+      "End": "8d0acba590254774820028ade4b43bad",
+      "Id": "4415f55e0ceb4bdbbaa85017969d987d"
+    },
+    {
+      "Start": "88d85f0d8a5f494faf4b74779a1530bb",
+      "End": "950a2b315b6c467aab1daedd4c38c852",
+      "Id": "4579f60a11f241fe893113ee7bd80cd4"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRexIfc",
+      "Version": "0.1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "f892c6f5bcfd4e6aab8f38eb7577c7fe",
+        "a3a8b4b324a045d081e6343a65e2ccbb",
+        "6e920a3baf72471ca22c56748b186a43",
+        "81ff38783ef846eda988bc92ff3f7b04"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.8481",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExport.Settings",
+        "Id": "f892c6f5bcfd4e6aab8f38eb7577c7fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 335.99999999999994,
+        "Y": 350.79999999999995
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Scene Export Settings",
+        "Id": "a3a8b4b324a045d081e6343a65e2ccbb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 88.800000000000011,
+        "Y": 21.999999999999972
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "XYZ.ByCoordinates",
+        "Id": "6e920a3baf72471ca22c56748b186a43",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 31.62711684919293,
+        "Y": -81.145766301614145
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a5192823f418433eadc0e4fb6b04fb61",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.780421296010331,
+        "Y": 119.86150356963208
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "90a0da213d524e8ba27a9c130208063d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -96.0,
+        "Y": 349.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SceneExportSettings.SaveAs",
+        "Id": "81ff38783ef846eda988bc92ff3f7b04",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 597.54396957208519,
+        "Y": 186.56340354933502
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "24ea4a1ba47646fb8a6159b2961456bc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 563.65673288209177,
+        "Y": 41.977860338695905
+      }
+    ],
+    "Annotations": [],
+    "X": 64.18912499999999,
+    "Y": 71.658404999999988,
+    "Zoom": 0.70823125000000009
+  }
+}

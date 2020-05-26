@@ -1,0 +1,179 @@
+{
+  "Uuid": "7832423c-29ef-4a87-8b13-ea9d81cef1b1",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Home1",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"Test\",1,\"A\"];",
+      "Id": "537522c563fb4df5baab8c04bd5cb90e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eead62517b464509b829abdc7255405e",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "026eeefccaa5487f93f48e6a4212d2ab",
+      "Inputs": [
+        {
+          "Id": "dca26530b8b64d48857c6130b1acf538",
+          "Name": "",
+          "Description": "Auszuwertender Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2c8f16f22a04295bc6d2072d0e02072",
+          "Name": "",
+          "Description": "Inhalt beobachten",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualisierung der Ausgabe des Blocks"
+    },
+    {
+      "ConcreteType": "Task.SelectiveItemListNodeModel, TRexIfcUI",
+      "Selected": [
+        {
+          "AstId": "t6BBA4B28C5E54CF89F300D510499A00E_0_537522c563fb4df5baab8c04bd5cb90e",
+          "ArrayIndex": 0
+        }
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "e946857aaa5d4fa7a8b35848041d86ec",
+      "Inputs": [
+        {
+          "Id": "63b9cd327722494898e0696faab771b3",
+          "Name": "items",
+          "Description": "Provided candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "76c01b04093448d2ae957a88bcb22ad3",
+          "Name": "selected",
+          "Description": "Selected candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "eead62517b464509b829abdc7255405e",
+      "End": "63b9cd327722494898e0696faab771b3",
+      "Id": "0ac135a989ba420ea39eeed6b8e28b32"
+    },
+    {
+      "Start": "76c01b04093448d2ae957a88bcb22ad3",
+      "End": "dca26530b8b64d48857c6130b1acf538",
+      "Id": "64c1b4fa4c6d4bfb9a9bae22c2b000ec"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRexIfc",
+      "Version": "0.1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "e946857aaa5d4fa7a8b35848041d86ec"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.8481",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "537522c563fb4df5baab8c04bd5cb90e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 26.0,
+        "Y": 183.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "026eeefccaa5487f93f48e6a4212d2ab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 521.41252699784013,
+        "Y": 201.78747300215986
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Select items from",
+        "Id": "e946857aaa5d4fa7a8b35848041d86ec",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 266.38012958963282,
+        "Y": 199.02289416846651
+      }
+    ],
+    "Annotations": [],
+    "X": -17.010000000000005,
+    "Y": -37.044000000000011,
+    "Zoom": 1.1575
+  }
+}

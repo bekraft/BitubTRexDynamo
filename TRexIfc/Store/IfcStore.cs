@@ -222,7 +222,7 @@ namespace Store
             var model = new IfcModel(store, BuildQualifier(fileName));
             store._producer = () => LoadFromFile(model, tessellationPrefs, fileName, model.ActionLog);
 
-            tessellationPrefs?.ApplyTo(model);
+            tessellationPrefs?.ApplyToModel(model);
 
             return model;
         }

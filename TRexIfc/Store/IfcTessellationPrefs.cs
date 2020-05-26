@@ -64,7 +64,7 @@ namespace Store
         /// </summary>
         /// <param name="ifcModel">The IFC model</param>
         /// <returns>Modified IFC model</returns>
-        public IfcModel ApplyTo(IfcModel ifcModel)
+        public IfcModel ApplyToModel(IfcModel ifcModel)
         {
             if (null == ifcModel)
                 throw new ArgumentException("No ifcModel");
@@ -80,10 +80,11 @@ namespace Store
         /// <returns>Current tesselation preferences</returns>
         public static IfcTessellationPrefs ByModelDefaults(IfcModel ifcModel)
         {
-            if (null == ifcModel)
-                throw new ArgumentException("No ifcModel");
+            var internalModel = ifcModel?.Store.XbimModel;
+            if (null == internalModel)
+                throw new ArgumentNullException("ifcModel");
 
-            var mf = ifcModel.Store.XbimModel.ModelFactors;
+            var mf = internalModel.ModelFactors;
             return new IfcTessellationPrefs
             {
                 OneMeter = mf.OneMeter,

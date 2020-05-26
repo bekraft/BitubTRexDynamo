@@ -3,13 +3,13 @@
 
   <PropertyGroup>
     <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.5</DeployDynamoVersion>
+    <DeployDynamoVersion>2.6</DeployDynamoVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
     <TargetFrameworks>net47</TargetFrameworks>      
-    <Title>TRexIfc Dynamo</Title>
+    <Title>TRexIfc</Title>
     <Description />
 
     <Version>0.1.0.0</Version>
@@ -30,6 +30,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DeployDynamoVersion>2.1</DeployDynamoVersion>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -57,14 +58,14 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20136-Beta.511</Version>
+      <Version>0.1.20139-Beta.504</Version>
     </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.5.0.7432" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">
-      <Version>2.5.0.7432</Version>
+      <Version>2.6.0.8481</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.5.0.7432</Version>
+      <Version>2.6.0.8481</Version>
     </PackageReference>
     <PackageReference Include="Google.Protobuf.Tools">
       <Version>3.8.0</Version>
@@ -91,7 +92,7 @@
       <!--Copy to Dynamo revit for publishing -->
       <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
     </PropertyGroup>
-    <Message Importance="High" Text="==&gt; Started deploying the Dynamo extension" />
+    <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfc package ..." />
     <!--Defining folders to copy-->
     <ItemGroup>
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
@@ -99,9 +100,6 @@
       <SourceXmls Include="$(TargetDir)*.xml" />
       <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
     </ItemGroup>
-    <!-- Remove before copying -->
-    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
-    <RemoveDir Directories="$(DeployFolder)" />
     <!--Copying to Build Folder-->
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />

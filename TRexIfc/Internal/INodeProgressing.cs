@@ -11,7 +11,6 @@ namespace Internal
     /// <summary>
     /// Interface tagging an interactive zero touch node.
     /// </summary>    
-    [IsVisibleInDynamoLibrary(false)]
     public interface INodeProgressing : IProgress<ICancelableProgressState>
     {
         /// <summary>
@@ -29,6 +28,7 @@ namespace Internal
         /// <summary>
         /// Log message receiver.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         ICollection<LogMessage> ActionLog { get; }
 
         /// <summary>
@@ -54,6 +54,7 @@ namespace Internal
         /// <summary>
         /// Logging messages.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public ICollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
         /// <summary>
@@ -105,6 +106,7 @@ namespace Internal
         /// <summary>
         /// Clears the current known state.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public virtual void ClearState()
         {
             lock (_monitor)
@@ -151,6 +153,7 @@ namespace Internal
         /// </summary>
         /// <param name="finishAction">The finishing action.</param>
         /// <param name="isBroken">Whether the finish is reached by error</param>
+        [IsVisibleInDynamoLibrary(false)]
         public void NotifyFinish(ActionType finishAction, bool isBroken)
         {
             OnFinished(new NodeFinishedEventArgs(finishAction, Name, false, isBroken));
@@ -159,7 +162,7 @@ namespace Internal
         /// <summary>
         /// The name.
         /// </summary>
-        public abstract string Name { get; }
+        public virtual string Name { get => "Progressing node"; }
 
         /// <summary>
         /// Reporting progress from outside.

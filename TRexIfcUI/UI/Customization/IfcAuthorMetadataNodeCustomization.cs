@@ -11,7 +11,7 @@ namespace UI.Customization
     {
         public void CustomizeView(IfcAuthorMetadataNodeModel model, NodeView nodeView)
         {
-            var metaDataControl = new MetaDataControl();
+            var metaDataControl = new AuthoringMetaDataControl();
             nodeView.inputGrid.Children.Add(metaDataControl);
             metaDataControl.DataContext = model;
         }

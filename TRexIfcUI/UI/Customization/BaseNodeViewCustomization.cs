@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Graph.Nodes;
 using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace UI.Customization
 {
@@ -23,11 +24,13 @@ namespace UI.Customization
     {
         private DynamoViewModel _viewModel;
         private DispatcherSynchronizationContext _syncContext;
+        private NodeView _nodeView;
         protected T NodeModel { get; set; }
 
         public virtual void CustomizeView(T model, NodeView nodeView)
         {
             _viewModel = nodeView.ViewModel.DynamoViewModel;
+            _nodeView = nodeView;
             _syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             
             NodeModel = model;
@@ -50,6 +53,11 @@ namespace UI.Customization
             var chain = new DelegateBasedAsyncTask(_viewModel.Model.Scheduler, modelAction);
             chain.ThenSend((_) => uiAction?.Invoke(), _syncContext);
             _viewModel.Model.Scheduler.ScheduleForExecution(chain);
+        }
+
+        protected void DispatchUI(Action uiAction)
+        {
+            _nodeView?.Dispatcher.Invoke(uiAction);
         }
 
         protected EngineController ModelEngineController { get => _viewModel.Model.EngineController; }

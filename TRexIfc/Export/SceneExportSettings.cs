@@ -74,12 +74,13 @@ namespace Export
         /// Saves the settings as a template file.
         /// </summary>
         /// <param name="fileName">The file name</param>
+        /// <param name="settings">The settings</param>
         /// <returns>A log message</returns>
-        public LogMessage SaveAs(string fileName)
+        public static LogMessage SaveAs(SceneExportSettings settings, string fileName)
         {
             try
             {
-                InternalSettings.SaveTo(fileName);
+                settings.InternalSettings.SaveTo(fileName);
                 return LogMessage.BySeverityAndMessage(Severity.Info, ActionType.Saved, "Saved {0}", fileName);
             }
             catch(Exception e)

@@ -18,6 +18,7 @@ namespace Internal
         /// </summary>
         /// <param name="f1">A function having 1 argument</param>
         /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static string Put<T1>(Func<T1, object> f1)
         {
             bool hasAdded;
@@ -35,6 +36,7 @@ namespace Internal
         /// </summary>
         /// <param name="f2">Function reference</param>
         /// <returns>Function key</returns>       
+        [IsVisibleInDynamoLibrary(false)]
         public static string Put<T1,T2>(Func<T1, T2, object> f2)
         {
             bool hasAdded;
@@ -52,6 +54,7 @@ namespace Internal
         /// </summary>
         /// <param name="f2">Function reference</param>
         /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static string Put<T1, T2, T3>(Func<T1, T2, T3, object> f2)
         {
             bool hasAdded;
@@ -68,7 +71,8 @@ namespace Internal
         /// Registers a 2-argument function
         /// </summary>
         /// <param name="f2">Function reference</param>
-        /// <returns>Function key</returns>        
+        /// <returns>Function key</returns>       
+        [IsVisibleInDynamoLibrary(false)]
         public static string Put<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f2)
         {
             bool hasAdded;
@@ -87,6 +91,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, string arg1)
         {
             return InternallyCall(key, arg1);
@@ -98,6 +103,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, double arg1)
         {
             return InternallyCall(key, arg1);
@@ -109,6 +115,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, object arg1)
         {
             return InternallyCall(key, arg1);
@@ -121,16 +128,19 @@ namespace Internal
         /// <param name="arg1">1st argument</param>
         /// <param name="arg2">2nd argument</param>
         /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, object arg1, object arg2)
         {
             return InternallyCall(key, arg1, arg2);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, object arg1, object arg2, object arg3)
         {
             return InternallyCall(key, arg1, arg2, arg3);
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public static object Call(string key, object arg1, object arg2, object arg3, object arg4)
         {
             return InternallyCall(key, arg1, arg2, arg3, arg4);

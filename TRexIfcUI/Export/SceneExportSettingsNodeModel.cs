@@ -12,17 +12,11 @@ using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
 
 using Internal;
-using Task;
 using Log;
 using Geom;
 
 using Bitub.Ifc.Scene;
 
-using Xbim.Common;
-using Xbim.Ifc4.Interfaces;
-using Dynamo.Engine;
-using System.Security.Policy;
-using System.Collections;
 using Dynamo.Utilities;
 
 namespace Export
@@ -75,16 +69,19 @@ namespace Export
         /// <summary>
         /// Provided grapical model contexts as selectable base set.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public ObservableCollection<string> ProvidedGraphicalContext { get; } = new ObservableCollection<string>();
 
         /// <summary>
         /// Selected contexts to forward to exporter nodes.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public List<string> SelectedGraphicalContext { get; set; } = new List<string>();
 
         /// <summary>
         /// Transformation strategy property.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public SceneTransformationStrategy TransformationStrategy
         {
             get {
@@ -100,6 +97,7 @@ namespace Export
         /// <summary>
         /// Export position strategy property
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public ScenePositioningStrategy PositioningStrategy
         {
             get {
@@ -117,6 +115,7 @@ namespace Export
         /// </summary>
         /// <param name="contexts">The context identifiers to be merged</param>
         /// <returns>An array of new contexts which has been merged</returns>
+        [IsVisibleInDynamoLibrary(false)]
         public string[] MergeProvidedSceneContext(params string[] contexts)
         {
             // Find new by string equality
@@ -138,6 +137,7 @@ namespace Export
         /// </summary>
         /// <param name="contexts">Previous selection / current selection</param>
         /// <param name="forceUpdate">Whether to force a node / AST update</param>
+        [IsVisibleInDynamoLibrary(false)]
         public void SynchronizeSelectedSceneContexts(IEnumerable<string> contexts, bool forceUpdate = false)
         {
             ISet<string> contextSet = new HashSet<string>(contexts ?? Enumerable.Empty<string>());
@@ -148,6 +148,7 @@ namespace Export
 
 #pragma warning disable CS1591
 
+        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             AssociativeNode[] inputs = inputAstNodes.ToArray();
@@ -163,6 +164,7 @@ namespace Export
                             inputs[1] = AstFactory.BuildDoubleNode(1.0);
                             break;
                         case 2:
+                        case 3:
                             // No provided scene contexts
                             break;
                         default:
