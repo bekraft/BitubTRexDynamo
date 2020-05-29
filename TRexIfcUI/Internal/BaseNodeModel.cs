@@ -23,18 +23,35 @@ namespace Internal
         {
         }
 
-        protected AssociativeNode MapObjects(params object[] args)
+        protected AssociativeNode MapEnum(Enum value)
+        {
+            return AstFactory.BuildFunctionCall(
+                new Func<string, string, object>(GlobalArgumentService.DeserializeEnum),
+                new List<AssociativeNode>() 
+                { 
+                    AstFactory.BuildStringNode(value.GetType().FullName), 
+                    AstFactory.BuildStringNode(value.ToString()) 
+                });
+        }
+
+        protected AssociativeNode CacheObjects(params object[] args)
         {
             return AstFactory.BuildFunctionCall(
                         new Func<string, object[]>(GlobalArgumentService.GetArgs),
-                        new List<AssociativeNode>() { AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(args)) });
+                        new List<AssociativeNode>() 
+                        { 
+                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(args)) 
+                        });
         }
 
-        protected AssociativeNode MapObject(object arg)
+        protected AssociativeNode CacheObject(object arg)
         {
             return AstFactory.BuildFunctionCall(
                         new Func<string, object>(GlobalArgumentService.GetArg),
-                        new List<AssociativeNode>() { AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(arg)) });
+                        new List<AssociativeNode>() 
+                        { 
+                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(arg)) 
+                        });
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Runtime;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace Internal
     {
         #region Internals
 
+        private static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<GlobalArgumentService>();
+
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 
         private GlobalArgumentService()
@@ -23,13 +26,25 @@ namespace Internal
 
         #endregion
 
-        [IsVisibleInDynamoLibrary(false)]
+        public static object DeserializeEnum(string typeName, string serializedEnum)
+        {
+            try
+            {
+                var type = Type.GetType(typeName, true, true);
+                return Enum.Parse(type, serializedEnum);
+            } 
+            catch(Exception e)
+            {
+                Log.LogError("While deserilising '{0}' of type '{1}': {2}", serializedEnum, typeName, e);
+                return null;
+            }
+        }
+
         public static string PutArguments()
         {
             return Guid.Empty.ToString();
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static string PutArguments(params object[] args)
         {
             string guid;
@@ -40,31 +55,28 @@ namespace Internal
             return guid;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static object[] GetArgs(string guid)
         {
             if (Guid.Empty.ToString().Equals(guid))
                 return Array.Empty<object>();
 
             object[] args = null;
-            ArgumentCache.TryRemove(guid, out args);
+            if (!ArgumentCache.TryRemove(guid, out args))
+                Log.LogWarning("Argument ID '{0}' not found.", guid);
             return args;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static object GetArg(string guid)
         {
             return GetArg<object>(guid);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static T GetArg<T>(string guid)
         {
             var args = GetArgs(guid);
             return args.Length > 0 ? (T)args[0] : default(T);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
         {
             var args = GetArgs(guid);

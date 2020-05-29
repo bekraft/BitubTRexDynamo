@@ -15,7 +15,7 @@ namespace UI.Customization
     {
         #region Internals
 
-        private FilteringListControl _control;
+        private SelectableListControl _control;
 
         #endregion
 
@@ -23,7 +23,7 @@ namespace UI.Customization
         {
             base.CustomizeView(model, nodeView);
 
-            _control = new FilteringListControl();
+            _control = new SelectableListControl();
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 

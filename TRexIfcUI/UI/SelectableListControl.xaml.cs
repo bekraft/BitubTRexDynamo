@@ -1,13 +1,12 @@
 ﻿using System.Windows.Controls;
-using Microsoft.Extensions.Logging;
 
 namespace UI
 {
 #pragma warning disable CS1591
 
-    public partial class FilteringListControl : UserControl
+    public partial class SelectableListControl : UserControl
     {
-        public FilteringListControl()
+        public SelectableListControl()
         {
             InitializeComponent();
         }
