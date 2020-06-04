@@ -12,7 +12,7 @@ namespace UI.Customization
 
     public class IfcSaveNodeCustomization : CancelableProgressingOptionNodeCustomization<IfcSaveStoreNodeModel>
     {
-        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.ActionType.Saved)
+        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
         {
         }
 

@@ -41,7 +41,7 @@ namespace Export
 
         private void SceneExporter_OnProgressChange(ICancelableProgressState changedState)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Saved, changedState, "Exporting" ));
+            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Saved, changedState, "Exporting" ));
         }
 
         #endregion
@@ -123,12 +123,12 @@ namespace Export
                 }
 
                 return LogMessage.BySeverityAndMessage(
-                    Severity.Info, ActionType.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
+                    LogSeverity.Info, LogReason.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
             }
             catch (Exception e)
             {
                 return LogMessage.BySeverityAndMessage(
-                    Severity.Critical, ActionType.Saved, "({0}) '{1}'", e.Message, sceneFileName);
+                    LogSeverity.Critical, LogReason.Saved, "({0}) '{1}'", e.Message, sceneFileName);
             }
         }
 

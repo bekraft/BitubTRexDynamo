@@ -31,7 +31,7 @@ namespace Internal
         /// <summary>
         /// The action type.
         /// </summary>
-        public readonly ActionType Action;
+        public readonly LogReason Action;
 
         /// <summary>
         /// Reference to internal state.
@@ -44,7 +44,7 @@ namespace Internal
         /// <param name="finalState">The internal state</param>
         /// <param name="taskName">The task name</param>
         /// <param name="action">The action type</param>
-        public NodeFinishedEventArgs(IProgressState finalState, ActionType action, string taskName = null)
+        public NodeFinishedEventArgs(IProgressState finalState, LogReason action, string taskName = null)
         {
             TaskName = taskName ?? $"{finalState.StateObject}";
             IsCanceled = finalState.State == ProgressTokenState.IsCanceled;
@@ -58,7 +58,7 @@ namespace Internal
         /// <param name="isCanceled">Cancellation flag</param>
         /// <param name="isBroken">Broken flag</param>
         /// <param name="action">The action type</param>
-        public NodeFinishedEventArgs(ActionType action, string taskName, bool isCanceled = false, bool isBroken = false)
+        public NodeFinishedEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
         {
             TaskName = taskName;
             IsCanceled = isCanceled;

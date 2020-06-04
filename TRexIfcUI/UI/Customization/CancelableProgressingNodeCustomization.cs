@@ -35,12 +35,12 @@ namespace UI.Customization
         : BaseNodeViewCustomization<T> where T : CancelableProgressingNodeModel
     {
         public ProgressOnPortType ProgressOnPort { get; private set; }
-        public ActionType ActionOnPort { get; private set; }
+        public LogReason ActionOnPort { get; private set; }
 
         private List<ProgressingPort> _nodeProgressingPort = new List<ProgressingPort>();
         private readonly object _monitor = new object();
 
-        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort, ActionType actionOnPort)
+        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
         {
             ProgressOnPort = progressOnPort;
             ActionOnPort = actionOnPort;

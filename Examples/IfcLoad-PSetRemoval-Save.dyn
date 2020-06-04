@@ -2,7 +2,7 @@
   "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "Ifc-PSetRemoval-Save",
+  "Name": "IfcLoad-PSetRemoval-Save",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -13,14 +13,14 @@
       "Name": "IfcModel.LogMessages",
       "Type": "unknown",
       "InitialValue": "",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages: LogMessage[]"
+      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
     },
     {
-      "Id": "de4a4423caae4e60b96a93dac964f9f7",
+      "Id": "156e75de32724734aadb86dda6e0f3e4",
       "Name": "IfcModel.LogMessages",
       "Type": "unknown",
       "InitialValue": "",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages: LogMessage[]"
+      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
     }
   ],
   "Nodes": [
@@ -52,12 +52,12 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Keine Beschreibung verfügbar"
+      "Description": "Creates a new file logger with given template name."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
       "Inputs": [],
@@ -77,8 +77,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-PSetRemoval-Save.log",
+      "InputValue": "Out\\IfcLoad-PSetRemoval-Save.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
       "Inputs": [],
@@ -145,47 +145,8 @@
       "Description": "Keine Beschreibung verfügbar"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.CanonicalName@string",
-      "Id": "e5e8884e770d414b8005d15918abc15d",
-      "Inputs": [
-        {
-          "Id": "a8f9beea8702412fb68d44615bfd2140",
-          "Name": "ifcModel",
-          "Description": "Store.IfcModel",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "3790dfc582024ce5ae816977f8f9be7c",
-          "Name": "seperator",
-          "Description": "The separator between name fragments\n\nstring\nVorgabewert : \"-\"",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "00739ef0db98482bb01eadea4162ade6",
-          "Name": "string",
-          "Description": "string",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Gets the canoncial model name (depending on preceeding transformations).\n\nIfcModel.CanonicalName (seperator: string = \"-\"): string"
-    },
-    {
       "ConcreteType": "Store.IfcSaveStoreNodeModel, TRexIfcUI",
-      "SelectedOption": "ifczip",
+      "SelectedOption": "ifc",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "874dbe9d9f8746cd9e2c396aa7765253",
@@ -264,8 +225,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
       "NodeType": "ExtensionNode",
       "Id": "20b1ab7fb95647cf8d9c573745345082",
       "Inputs": [],
@@ -315,10 +276,10 @@
     },
     {
       "ConcreteType": "Store.IfcAuthorMetadataNodeModel, TRexIfcUI",
-      "OrganisationId": "",
+      "OrganisationId": "Self employed",
       "OrganisationName": "The unknown",
-      "AuthorName": "BlablaBl",
-      "AuthorGivenName": "efdfdf",
+      "AuthorName": "Nobody",
+      "AuthorGivenName": "Mr",
       "OrganisationAddress": "Somewhere",
       "NodeType": "ExtensionNode",
       "Id": "90c56c9404e84ed2a9e5da78030f5ff3",
@@ -336,92 +297,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Keine Beschreibung verfügbar"
-    },
-    {
-      "ConcreteType": "Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
-      "IsCancelable": true,
-      "NodeType": "ExtensionNode",
-      "Id": "0f2d8d047bc54fa2b3249d905a07214a",
-      "Inputs": [
-        {
-          "Id": "c92c515a9b674eea920bf6f4f0e410ac",
-          "Name": "removePSetNames",
-          "Description": "Black list of PSets about to be removed",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "b60904ce65bc42ecbf4547ce12d77111",
-          "Name": "caseSensitiveNames",
-          "Description": "Enable case sensitive matching",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "14beba73ea6048e4bd318807dc0f9b51",
-          "Name": "authorMetadata",
-          "Description": "Credentials of authoring editor",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "6f73ed10cb5b49d39ba9796a79dd3f8a",
-          "Name": "canonicalName",
-          "Description": "Fragment name of canonical full name",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "cc68aba4194d45d3bd2472f03607a0fd",
-          "Name": "ifcModel",
-          "Description": "IFC input model",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "e6b7d5e2ac6b4fd083acf04d26fbcf66",
-          "Name": "ifcModel",
-          "Description": "IFC output model",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Keine Beschreibung verfügbar"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "\"Other\";",
-      "Id": "6f89085571f44b4d9255c0c020b5a3ca",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "e386666ed4064cbc92ebed7e68adf462",
-          "Name": "",
-          "Description": "Wert des Ausdrucks in Zeile 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -442,54 +317,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Log.LogMessage.ToData@Log.LogMessage[]",
-      "Id": "e9940d70015f44b297d03294cd77b70b",
-      "Inputs": [
-        {
-          "Id": "e576f2c4ef1b4b1e803910fcb71994dc",
-          "Name": "logMessages",
-          "Description": "LogMessage[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "4b337a76eae445559b781e4d5eea13c1",
-          "Name": "severity",
-          "Description": "var",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "f23a95fe7d514761ab416205f7920ffe",
-          "Name": "action",
-          "Description": "var",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "07c7ddf8e68f493d82ad200e03795b24",
-          "Name": "message",
-          "Description": "var",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Splits the log message into severity, action and message.\n\nLogMessage.ToData (logMessages: LogMessage[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -519,7 +346,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages: LogMessage[]"
+      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -549,16 +376,157 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages: LogMessage[]"
+      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
+    },
+    {
+      "ConcreteType": "Task.ExcludingItemListNodeModel, TRexIfcUI",
+      "Selected": [
+        {
+          "ConcreteType": "Internal.AstValue`1[[System.Object, mscorlib]], TRexIfcUI",
+          "AstId": "var_f56850ef5df342b7aff03308283424f2",
+          "ArrayIndex": 4
+        },
+        {
+          "ConcreteType": "Internal.AstValue`1[[System.Object, mscorlib]], TRexIfcUI",
+          "AstId": "var_f56850ef5df342b7aff03308283424f2",
+          "ArrayIndex": 7
+        }
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "52def370953b4412af2d3ddc10c1280f",
+      "Inputs": [
+        {
+          "Id": "b38ab8436be64180b259b852bb2e3b27",
+          "Name": "items",
+          "Description": "Provided candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f93da9779744fd982f4fc110e4feee9",
+          "Name": "selected",
+          "Description": "Selected candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Excludes multiple items from a list of available items using its string representation."
+    },
+    {
+      "ConcreteType": "Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "ddb97e749aea42bcbfd278335e956303",
+      "Inputs": [
+        {
+          "Id": "18cdc7e33c2c4539a0706b81b5989836",
+          "Name": "removePSetNames",
+          "Description": "Black list of PSets about to be removed",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "93ebe7f726684e0f87f5cd98bed5b354",
+          "Name": "caseSensitiveNames",
+          "Description": "Enable case sensitive matching",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5e042802faa94862aa5f9032115877ae",
+          "Name": "authorMetadata",
+          "Description": "Credentials of authoring editor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a7d6fa959a744569ab20982db493a0e5",
+          "Name": "canonicalName",
+          "Description": "Fragment name of canonical full name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3039a04f1349410a955a3d8d784a20ab",
+          "Name": "ifcModel",
+          "Description": "IFC input model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3858a0754cad49a59dbe62088805c4fe",
+          "Name": "logReasonFilter",
+          "Description": "Log reason type filtering",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "445f33458e3d4a2daabe665eff8ecad6",
+          "Name": "ifcModel",
+          "Description": "IFC output model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Removal task which drops entire property sets by their name"
+    },
+    {
+      "ConcreteType": "Log.LogReasonComposingNodeModel, TRexIfcUI",
+      "Selected": [
+        240,
+        4,
+        64,
+        16
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "f00e1a6ce0ea46c79369a10e9b5a4135",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ea827723f4c04c2fbaeaad732fe1366d",
+          "Name": "logReasonFlag",
+          "Description": "Log reason flag",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Composing log reasons for filtering logs"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
       "FunctionSignature": "Store.IfcModel.LogMessages",
-      "Id": "de4a4423caae4e60b96a93dac964f9f7",
+      "Id": "156e75de32724734aadb86dda6e0f3e4",
       "Inputs": [
         {
-          "Id": "39813b51c98240c1ac66a31a4e798924",
+          "Id": "98fd31bd508849b196b6502f2cabc3a1",
           "Name": "ifcModel",
           "Description": "Store.IfcModel",
           "UsingDefaultValue": false,
@@ -569,7 +537,7 @@
       ],
       "Outputs": [
         {
-          "Id": "20da036d6a6b480d8d84d1de272d51bc",
+          "Id": "ab25e0cdfdcb4ea5b59dcd98983ea924",
           "Name": "LogMessage[]",
           "Description": "The log messages",
           "UsingDefaultValue": false,
@@ -579,7 +547,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages: LogMessage[]"
+      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
     }
   ],
   "Connectors": [
@@ -605,18 +573,18 @@
     },
     {
       "Start": "1f0848eed1694c299fe9f02727897a31",
-      "End": "cc68aba4194d45d3bd2472f03607a0fd",
-      "Id": "6fad462f57664ada9d5b7e40308edce7"
-    },
-    {
-      "Start": "1f0848eed1694c299fe9f02727897a31",
       "End": "b52b6573459445fdb8503a3b38ec282c",
       "Id": "92603eda6fae4793a973630110a09c8c"
     },
     {
       "Start": "1f0848eed1694c299fe9f02727897a31",
-      "End": "39813b51c98240c1ac66a31a4e798924",
-      "Id": "93470d093b7e433f8e8be7ef33983b8e"
+      "End": "3039a04f1349410a955a3d8d784a20ab",
+      "Id": "61fec6f764ce409bb362612bb5431c97"
+    },
+    {
+      "Start": "795851e95b484ef6a8f3707577d69a1e",
+      "End": "5a30eb1ac15f4bc59855d3b4ea264f0d",
+      "Id": "4bfd45a83c3642679da96c1458c3350a"
     },
     {
       "Start": "3a4882cf4b0a4829bb7bd8f716f78dc2",
@@ -629,39 +597,39 @@
       "Id": "a52d6c481d664745bb21940a791cfd9c"
     },
     {
+      "Start": "1756ab62a91a42e88a627f9e8b9e3aa3",
+      "End": "b38ab8436be64180b259b852bb2e3b27",
+      "Id": "c704e313b3a84c00b9e4952641bfc084"
+    },
+    {
       "Start": "7eb03d62e23341e3bf7527ef3419a5ef",
-      "End": "14beba73ea6048e4bd318807dc0f9b51",
-      "Id": "117375081cca40f48db6353626c23355"
-    },
-    {
-      "Start": "e6b7d5e2ac6b4fd083acf04d26fbcf66",
-      "End": "ba748006b1da4e11a8bcd8ae441846e2",
-      "Id": "c60489de48d144678d30201b8b7a3baf"
-    },
-    {
-      "Start": "e6b7d5e2ac6b4fd083acf04d26fbcf66",
-      "End": "a8f9beea8702412fb68d44615bfd2140",
-      "Id": "ecfd19913e624a3a967503f5d59238f4"
-    },
-    {
-      "Start": "e6b7d5e2ac6b4fd083acf04d26fbcf66",
-      "End": "5a30eb1ac15f4bc59855d3b4ea264f0d",
-      "Id": "607d7b3bd9c94246a7b2228f19dcd6ff"
-    },
-    {
-      "Start": "e386666ed4064cbc92ebed7e68adf462",
-      "End": "c92c515a9b674eea920bf6f4f0e410ac",
-      "Id": "bf9f7f3f1cec473db0a8f121f99939fd"
+      "End": "5e042802faa94862aa5f9032115877ae",
+      "Id": "7fec55fb53aa4aadb114047c7fa13c91"
     },
     {
       "Start": "0e1b19655c0e42b694cc8da3e9969cf9",
-      "End": "6f73ed10cb5b49d39ba9796a79dd3f8a",
-      "Id": "877572e84bd44aef80201ee26e65fa54"
+      "End": "a7d6fa959a744569ab20982db493a0e5",
+      "Id": "d154b9c22b5c45ed94139073880f8a48"
     },
     {
-      "Start": "d9f0461974244c1080df9300f8237027",
-      "End": "e576f2c4ef1b4b1e803910fcb71994dc",
-      "Id": "ff725e1654864489a494bf15c0beae17"
+      "Start": "8f93da9779744fd982f4fc110e4feee9",
+      "End": "18cdc7e33c2c4539a0706b81b5989836",
+      "Id": "ddf99e795aa24bad976aede858d035cd"
+    },
+    {
+      "Start": "445f33458e3d4a2daabe665eff8ecad6",
+      "End": "ba748006b1da4e11a8bcd8ae441846e2",
+      "Id": "b59f219476e9497080ffa329de2f12a6"
+    },
+    {
+      "Start": "445f33458e3d4a2daabe665eff8ecad6",
+      "End": "98fd31bd508849b196b6502f2cabc3a1",
+      "Id": "ce4e9dd91786455e97add010d4359e2b"
+    },
+    {
+      "Start": "ea827723f4c04c2fbaeaad732fe1366d",
+      "End": "3858a0754cad49a59dbe62088805c4fe",
+      "Id": "4b8d64ecbc404164a49796c6ca874c01"
     }
   ],
   "Dependencies": [],
@@ -673,16 +641,16 @@
       "Nodes": [
         "dd916e2863e54995b204e9437e1000be",
         "df4087d7f09c49e0baae87f6697500e1",
-        "e5e8884e770d414b8005d15918abc15d",
         "874dbe9d9f8746cd9e2c396aa7765253",
         "3152c39a8f6149eaa395c42e6c5fcf82",
         "f56850ef5df342b7aff03308283424f2",
         "90c56c9404e84ed2a9e5da78030f5ff3",
-        "0f2d8d047bc54fa2b3249d905a07214a",
-        "e9940d70015f44b297d03294cd77b70b",
         "1bc88a9a297d415683d33256228007e6",
         "86296c98b21a46759d1db2e2371bb751",
-        "de4a4423caae4e60b96a93dac964f9f7"
+        "52def370953b4412af2d3ddc10c1280f",
+        "ddb97e749aea42bcbfd278335e956303",
+        "f00e1a6ce0ea46c79369a10e9b5a4135",
+        "156e75de32724734aadb86dda6e0f3e4"
       ]
     }
   ],
@@ -751,23 +719,13 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "IfcModel.CanonicalName",
-        "Id": "e5e8884e770d414b8005d15918abc15d",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1638.5995444120194,
-        "Y": 139.25693207288526
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Ifc Save",
         "Id": "874dbe9d9f8746cd9e2c396aa7765253",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1847.4571167227439,
-        "Y": 325.35006596641676
+        "X": 1861.1326593515321,
+        "Y": 255.72912167440415
       },
       {
         "ShowGeometry": true,
@@ -776,8 +734,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1668.9551718866419,
-        "Y": 280.55045115693247
+        "X": 1584.4691871590221,
+        "Y": 254.44259704742774
       },
       {
         "ShowGeometry": true,
@@ -796,8 +754,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 773.62424713622818,
-        "Y": 95.618413127861032
+        "X": 612.004197886913,
+        "Y": 4.86253931863024
       },
       {
         "ShowGeometry": true,
@@ -806,28 +764,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1066.0113214340042,
-        "Y": -60.76863153065807
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Ifc PSetRemoval",
-        "Id": "0f2d8d047bc54fa2b3249d905a07214a",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1133.7378824127275,
-        "Y": 265.82389585562851
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "6f89085571f44b4d9255c0c020b5a3ca",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 975.85746287754068,
-        "Y": 224.77847370969295
+        "X": 673.150278643361,
+        "Y": 282.36316533711863
       },
       {
         "ShowGeometry": true,
@@ -836,18 +774,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 955.36562925957537,
-        "Y": 330.35555988274348
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "LogMessage.ToData",
-        "Id": "e9940d70015f44b297d03294cd77b70b",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 640.08650461225739,
-        "Y": 383.21660155208178
+        "X": 975.25732762872144,
+        "Y": 516.84023209349164
       },
       {
         "ShowGeometry": true,
@@ -856,8 +784,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 346.60474037112431,
-        "Y": 387.73170561732991
+        "X": 344.11827807498094,
+        "Y": 396.43432365383137
       },
       {
         "ShowGeometry": true,
@@ -866,23 +794,53 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": true,
         "Excluded": false,
-        "X": 1538.1859890770208,
-        "Y": -35.853796578702713
+        "X": 1876.6829040251187,
+        "Y": 61.754754740089254
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Exclude items from",
+        "Id": "52def370953b4412af2d3ddc10c1280f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 862.8860026215267,
+        "Y": -1.3735928585916781
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc PSet Removal",
+        "Id": "ddb97e749aea42bcbfd278335e956303",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1136.39685519729,
+        "Y": 249.759099051883
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Reason",
+        "Id": "f00e1a6ce0ea46c79369a10e9b5a4135",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 912.6152485443929,
+        "Y": 658.782146767457
       },
       {
         "ShowGeometry": true,
         "Name": "IfcModel.LogMessages",
-        "Id": "de4a4423caae4e60b96a93dac964f9f7",
+        "Id": "156e75de32724734aadb86dda6e0f3e4",
         "IsSetAsInput": false,
         "IsSetAsOutput": true,
         "Excluded": false,
-        "X": 1811.7859890770208,
-        "Y": -15.853796578702713
+        "X": 1522.1775668074918,
+        "Y": 69.869638289479809
       }
     ],
     "Annotations": [],
-    "X": -105.42801226464258,
-    "Y": 31.109659685195879,
-    "Zoom": 0.64348452115349608
+    "X": 61.710294889826173,
+    "Y": 76.802272926274284,
+    "Zoom": 0.42392795592387722
   }
 }

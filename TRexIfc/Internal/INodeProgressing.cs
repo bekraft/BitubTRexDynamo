@@ -154,7 +154,7 @@ namespace Internal
         /// <param name="finishAction">The finishing action.</param>
         /// <param name="isBroken">Whether the finish is reached by error</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void NotifyFinish(ActionType finishAction, bool isBroken)
+        public void NotifyFinish(LogReason finishAction, bool isBroken)
         {
             OnFinished(new NodeFinishedEventArgs(finishAction, Name, false, isBroken));
         }
@@ -171,7 +171,7 @@ namespace Internal
         [IsVisibleInDynamoLibrary(false)]
         public void Report(ICancelableProgressState value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Changed, value));
+            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Changed, value));
         }
     }
 }

@@ -28,10 +28,13 @@ namespace Internal
 
         static GlobalLogging()
         {
+            var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var ownVersion = typeof(GlobalLogging).Assembly.GetName().Version;
+            var dynamoVersion = typeof(IsVisibleInDynamoLibraryAttribute).Assembly.GetName().Version;
             var logger = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(new LoggingLevelSwitch(Serilog.Events.LogEventLevel.Debug))
                 .WriteTo.Async(a => a.File(
-                    "TRexIfcDynamoRun.log",
+                    $"{userProfile}\\TRexIfc{ownVersion.Major}.{ownVersion.Minor}_Dynamo{dynamoVersion.Major}.{dynamoVersion.Minor}.log",
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
                     outputTemplate: messageTemplate))

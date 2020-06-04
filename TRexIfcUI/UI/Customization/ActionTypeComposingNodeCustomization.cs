@@ -13,11 +13,11 @@ namespace UI.Customization
 {
 #pragma warning disable CS1591
 
-    public class ActionTypeComposingNodeCustomization : BaseNodeViewCustomization<ActionTypeComposingNodeModel>
+    public class ActionTypeComposingNodeCustomization : BaseNodeViewCustomization<LogReasonComposingNodeModel>
     {
         private SelectableListControl _control;
 
-        public override void CustomizeView(ActionTypeComposingNodeModel model, NodeView nodeView)
+        public override void CustomizeView(LogReasonComposingNodeModel model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
 
@@ -33,7 +33,7 @@ namespace UI.Customization
 
         private void SelectionListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            NodeModel.Selected = _control.SelectionListBox.SelectedItems.Cast<ActionType>().ToArray();
+            NodeModel.Selected = _control.SelectionListBox.SelectedItems.Cast<LogReason>().ToArray();
         }
 
         public override void Dispose()

@@ -12,7 +12,7 @@ namespace UI.Customization
     public abstract class CancelableProgressingOptionNodeCustomization<T>
         : CancelableProgressingNodeCustomization<T> where T : CancelableProgressingOptionNodeModel
     {
-        protected CancelableProgressingOptionNodeCustomization(ProgressOnPortType progressOnPort, ActionType actionOnPort)
+        protected CancelableProgressingOptionNodeCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
             : base(progressOnPort, actionOnPort)
         {
         }

@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Microsoft.Extensions.Logging;
+
+using Xbim.Ifc4.UtilityResource;
+
 using Bitub.Ifc;
 using Bitub.Ifc.Transform.Requests;
 using Bitub.Ifc.Transform;
 
+using Autodesk.DesignScript.Runtime;
+
+using Geom;
 using Store;
 using Log;
-
-using Autodesk.DesignScript.Runtime;
 using Internal;
-using Xbim.Ifc4.UtilityResource;
-
-using Autodesk.DesignScript.Geometry;
 
 namespace Task
 {
@@ -26,6 +28,8 @@ namespace Task
 
         #region Internals
 
+        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
+
         private readonly IIfcTransformRequest _ifcTransformRequest;
 
         internal IfcTransform(IIfcTransformRequest transformRequest)
@@ -33,31 +37,31 @@ namespace Task
             _ifcTransformRequest = transformRequest;
         }
 
-        private static ActionType TransformActionToActionType(TransformAction a)
+        private static LogReason TransformActionToActionType(TransformAction a)
         {
             switch (a)
             {
                 case TransformAction.Added:
-                    return ActionType.Added | ActionType.Transformed;
+                    return LogReason.Added | LogReason.Transformed;
                 case TransformAction.Modified:
-                    return ActionType.Modified | ActionType.Transformed;
+                    return LogReason.Modified | LogReason.Transformed;
                 case TransformAction.NotTransferred:
-                    return ActionType.Removed | ActionType.Transformed;
+                    return LogReason.Removed | LogReason.Transformed;
                 case TransformAction.Transferred:
-                    return ActionType.Copied | ActionType.Transformed;
+                    return LogReason.Copied | LogReason.Transformed;
 
                 default:
-                    return ActionType.Changed | ActionType.Transformed;
+                    return LogReason.Changed | LogReason.Transformed;
             }
         }
 
-        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries, ActionType filter = ActionType.Any)
+        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries, LogReason filter = LogReason.Any)
         {
             foreach (var entry in logEntries)
             {
                 var action = TransformActionToActionType(entry.PerformedAction);
                 if (filter.HasFlag(action)) yield return LogMessage.BySeverityAndMessage(
-                    Severity.Info,
+                    LogSeverity.Info,
                     action, "'{0}': #{1} {2}",
                     canonicalFrag,
                     entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
@@ -65,38 +69,65 @@ namespace Task
             }
         }
 
+        private static bool TryCastEnum<T>(object objFilterMask, out T member) where T : Enum
+        {
+            member = default(T);
+            bool isCasted = true;
+            if (objFilterMask is T a)
+                member = a;
+            else if (objFilterMask is string s)
+                member = (T)Enum.Parse(typeof(T), s);
+            else if (objFilterMask is int i)
+                member = (T)Enum.ToObject(typeof(T), i);
+            else
+            {
+                Log.LogWarning($"Couldn't cast '{objFilterMask}' to {nameof(T)}");
+                isCasted = false;
+            }
+
+            return isCasted;
+        }
+
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel CreateIfcModelTransform(IfcModel source, IfcTransform transform, string canonicalFrag)
+        public static IfcModel CreateIfcModelTransform(IfcModel source, IfcTransform transform, string canonicalFrag, object objFilterMask)
         {
+            LogReason filterMask;
+            if (!TryCastEnum(objFilterMask, out filterMask))
+                Log.LogInformation($"Using default filter: {LogReason.Any}");
+
             return IfcStore.CreateFromTransform(source, (model, node) =>
             {
+                Log.LogInformation($"Starting '{transform._ifcTransformRequest.Name}' on {node.Name} ...");
                 var task = transform._ifcTransformRequest.Run(model, node);
                 // TODO Timeout
                 task.Wait();
-                
+                Log.LogInformation($"Finalized '{transform._ifcTransformRequest.Name}' on {node.Name}.");
+
                 if (task.IsCompleted)
                 {
                     if (node is NodeProgressing np)
-                        np.NotifyFinish(ActionType.Changed, false);
+                        np.NotifyFinish(LogReason.Changed, false);
 
                     using (var result = task.Result)
                     {
                         switch (result.ResultCode)
                         {
                             case TransformResult.Code.Finished:
-                                foreach (var logMessage in TransformLogToMessage($"{transform._ifcTransformRequest.Name}({canonicalFrag})", result.Log))
+                                var name = $"{transform._ifcTransformRequest.Name}({canonicalFrag})";
+                                foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
+                                {
                                     node.ActionLog.Add(logMessage);
-
+                                }
                                 return result.Target;
                             case TransformResult.Code.Canceled:
                                 node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    Severity.Error, ActionType.Any, "Canceled by user request ({0}).", node.Name));
+                                    LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
                                 break;
                             case TransformResult.Code.ExitWithError:
                                 node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    Severity.Error, ActionType.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
+                                    LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
                                 break;
                         }
                     }
@@ -104,10 +135,10 @@ namespace Task
                 else
                 {
                     if (node is NodeProgressing np)
-                        np.NotifyFinish(ActionType.Changed, true);
+                        np.NotifyFinish(LogReason.Changed, true);
 
                     node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                        Severity.Error, ActionType.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
                 }
                 return null;
             }, canonicalFrag);
@@ -126,9 +157,23 @@ namespace Task
             {
                 BlackListNames = blackListPSets,
                 IsNameMatchingCaseSensitive = caseSensitiveMatching,
+                IsLogEnabled = true,
                 EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
             });
         }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcTransform TransformAxisAlignmentRequest(Logger logInstance, IfcAuthorMetadata newMetadata, Alignment alignment, IfcPlacementStrategy placementStrategy)
+        {
+            return new IfcTransform(new IfcPlacementTransformRequest(logInstance.LoggerFactory)
+            {
+                AxisAlignment = alignment.TheAxisAlignment,
+                IsLogEnabled = true,
+                PlacementStrategy = placementStrategy,
+                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+            });
+        }
+
 
 #pragma warning restore CS1591
 

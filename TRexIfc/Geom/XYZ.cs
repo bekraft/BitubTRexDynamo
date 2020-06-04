@@ -81,5 +81,17 @@ namespace Geom
         {
             return ADPoint.ByCoordinates(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
         }
+
+        /// <summary>
+        /// Translates the XYZ coordinate by given offsets.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <returns></returns>
+        public XYZ Translate(double x, double y = 0, double z = 0)
+        {
+            return new XYZ(TheXYZ.X + x, TheXYZ.Y + y, TheXYZ.Z + z);
+        }
     }
 }

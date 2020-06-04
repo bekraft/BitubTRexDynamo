@@ -12,6 +12,10 @@ using Newtonsoft.Json;
 using Log;
 using Store;
 
+using Internal;
+using Geom;
+using Bitub.Ifc.Transform.Requests;
+
 namespace Task
 {
     /// <summary>
@@ -19,21 +23,20 @@ namespace Task
     /// by their names complete from input model and returns a modifed output model.
     /// Modifications (addings and changes are tagged by editor authoring credentials). 
     /// </summary>
-    [NodeName("Ifc PSet Removal")]
-    [NodeDescription("Removal task which drops entire property sets by their name")]
+    [NodeName("Ifc Axis Alignment")]
+    [NodeDescription("Changes the model coordinate system alignment by offset and rotation.")]
     [NodeCategory("TRexIfc.Task")]
-    [InPortTypes(new string[] { nameof(String), nameof(Boolean), nameof(IfcAuthorMetadata), nameof(String), nameof(IfcModel), nameof(LogReason) })]
+    [InPortTypes(new string[] { nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcPSetRemovalTransformNodeModel : CancelableProgressingNodeModel
+    public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel
     {
         /// <summary>
-        /// New removal node.
+        /// New ifc axis alignment.
         /// </summary>
-        public IfcPSetRemovalTransformNodeModel()
+        public IfcAxisAlignmentTransformNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("removePSetNames", "Black list of PSets about to be removed")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("caseSensitiveNames", "Enable case sensitive matching", AstFactory.BuildBooleanNode(false))));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("alignment", "Axis alignment")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("authorMetadata", "Credentials of authoring editor")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("canonicalName", "Fragment name of canonical full name")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
@@ -42,12 +45,20 @@ namespace Task
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC output model")));
 
             RegisterAllPorts();
+            InitStrategyOptions();
             IsCancelable = true;
         }
 
         [JsonConstructor]
-        IfcPSetRemovalTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        IfcAxisAlignmentTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            InitStrategyOptions();
+        }
+
+        private void InitStrategyOptions()
+        {
+            foreach (var o in Enum.GetValues(typeof(IfcPlacementStrategy)))
+                AvailableOptions.Add((IfcPlacementStrategy)o);
         }
 
 #pragma warning disable CS1591
@@ -62,10 +73,7 @@ namespace Task
                 {
                     switch (port.Index)
                     {
-                        case 1:
-                            inputs[port.Index] = AstFactory.BuildBooleanNode(false);
-                            break;
-                        case 5:
+                        case 4:
                             inputs[port.Index] = MapEnum(LogReason.Any);
                             break;
                         default:
@@ -79,34 +87,28 @@ namespace Task
                 }
             }
 
-            // TODO Wrap pset names into list if not already done
-            if (inputs[0] is StringNode n)
-            {   // Rewrite input AST 
-                inputs[0] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputs[0] });
-            }
-
             // Get logger
             var callGetLogger = AstFactory.BuildFunctionCall(
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
-                new List<AssociativeNode>() { inputs[4] });
+                new List<AssociativeNode>() { inputs[3] });
 
             // Get transform request
             var callCreateRequest = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, string[], bool, IfcTransform>(IfcTransform.RemovePropertySetsRequest),
-                new List<AssociativeNode>() { callGetLogger, inputs[2], inputs[0], inputs[1] });
+                new Func<Logger, IfcAuthorMetadata, Alignment, IfcPlacementStrategy, IfcTransform>(IfcTransform.TransformAxisAlignmentRequest),
+                new List<AssociativeNode>() { callGetLogger, inputs[1], inputs[0], MapEnum((IfcPlacementStrategy)SelectedOption) });
 
             // Create transformation delegate
             var callCreateIfcModelDelegate = AstFactory.BuildFunctionCall(
                 new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.CreateIfcModelTransform),
-                new List<AssociativeNode>() { inputs[4], callCreateRequest, inputs[3], inputs[5] });
+                new List<AssociativeNode>() { inputs[3], callCreateRequest, inputs[2], inputs[4] });
 
             return new[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateIfcModelDelegate)
             };
-
         }
 
 #pragma warning restore CS1591
+
     }
 }

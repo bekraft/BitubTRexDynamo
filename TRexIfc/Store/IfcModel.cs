@@ -66,14 +66,14 @@ namespace Store
                 {
                     switch (msg.Severity)
                     {
-                        case Severity.Info:
+                        case LogSeverity.Info:
                             Store.Logger?.LogInfo(msg.Message);
                             break;
-                        case Severity.Warning:
+                        case LogSeverity.Warning:
                             Store.Logger?.LogWarning(msg.Message);
                             break;
-                        case Severity.Critical:
-                        case Severity.Error:
+                        case LogSeverity.Critical:
+                        case LogSeverity.Error:
                             Store.Logger?.LogError(msg.Message);
                             break;
                     }
@@ -83,20 +83,20 @@ namespace Store
 
         internal void NotifySaveProgressChanged(int percentage, object stateObject)
         {
-            NotifyProgressChanged(ActionType.Saved, percentage, stateObject);
+            NotifyProgressChanged(LogReason.Saved, percentage, stateObject);
         }
 
         internal void NotifyLoadProgressChanged(int percentage, object stateObject)
         {
-            NotifyProgressChanged(ActionType.Loaded, percentage, stateObject);
+            NotifyProgressChanged(LogReason.Loaded, percentage, stateObject);
         }
 
-        internal protected void NotifyProgressChanged(ActionType action, int percentage, object stateObject)
+        internal protected void NotifyProgressChanged(LogReason action, int percentage, object stateObject)
         {
             OnProgressChanged(new NodeProgressingEventArgs(action, percentage, FileName, stateObject));
         }
 
-        internal protected void NotifyOnFinished(ActionType action, bool isCanceled, bool isBroken)
+        internal protected void NotifyOnFinished(LogReason action, bool isCanceled, bool isBroken)
         {
             OnFinished(new NodeFinishedEventArgs(action, FileName, isCanceled, isBroken));
         }
@@ -104,7 +104,7 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public new void Report(ICancelableProgressState value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(ActionType.Changed, value, Name));
+            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Changed, value, Name));
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -252,7 +252,7 @@ namespace Store
         /// Returns the current log messages.
         /// </summary>
         /// <returns>The log messages</returns>
-        public LogMessage[] LogMessages { get => ActionLog.ToArray(); }
+        public LogMessage[] LogMessages() => ActionLog.ToArray();
 
         /// <summary>
         /// Changes the format extension identifier.
@@ -314,14 +314,14 @@ namespace Store
                     fileStream.Close();
                 }
                 
-                ifcModel.NotifyOnFinished(ActionType.Saved, false, false);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(Severity.Info, ActionType.Saved, "Success: '{0}'.", filePathName));
+                ifcModel.NotifyOnFinished(LogReason.Saved, false, false);
+                aboutToBeSaved.ActionLog.Add(new LogMessage(LogSeverity.Info, LogReason.Saved, "Success: '{0}'.", filePathName));
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception: {0}", e.Message);
-                ifcModel.NotifyOnFinished(ActionType.Saved, false, true);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(Severity.Error, ActionType.Loaded, "Failure: '{0}'.", filePathName));
+                ifcModel.NotifyOnFinished(LogReason.Saved, false, true);
+                aboutToBeSaved.ActionLog.Add(new LogMessage(LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
             }
 
             return aboutToBeSaved;

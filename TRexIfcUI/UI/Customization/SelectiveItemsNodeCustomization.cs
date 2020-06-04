@@ -31,7 +31,7 @@ namespace UI.Customization
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
-            model.Modified += Model_Modified;
+            //model.Modified += Model_Modified;
 
             _control.SelectionListBox.SelectionChanged += SelectionListBox_SelectionChanged;
         }
@@ -44,6 +44,11 @@ namespace UI.Customization
                 foreach (var s in AstValue<object>.Resolve(selection, NodeModel.Items))
                     _control.SelectionListBox.SelectedItems.Add(s);
             });
+        }
+
+        protected override void OnCachedValueChange(object sender)
+        {
+            UpdateAvailables();
         }
 
         private void UpdateAvailables()
@@ -83,7 +88,7 @@ namespace UI.Customization
             _control.SelectionListBox.SelectionChanged -= SelectionListBox_SelectionChanged;
             NodeModel.PortDisconnected -= Model_PortDisconnected;
             NodeModel.PortConnected -= Model_PortConnected;
-            NodeModel.Modified -= Model_Modified;
+            //NodeModel.Modified -= Model_Modified;
 
             _control = null;
         }
