@@ -115,7 +115,7 @@ namespace Task
             {
                 ProgressPercentage = 0;
                 ProgressState = "ready";
-                TaskName = "";
+                TaskName = "(not active)";
             }
         }
 
@@ -124,7 +124,7 @@ namespace Task
             lock (_monitor)
             {
                 ProgressState = "done";
-                TaskName = "";
+                TaskName = "(Finished)";
             }    
         }
 

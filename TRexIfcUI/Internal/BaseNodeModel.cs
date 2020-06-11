@@ -23,10 +23,22 @@ namespace Internal
         {
         }
 
+        protected void WarnForMissingInputs(bool withDefaults = false)
+        {
+            Warning(string.Format("Missing connected ports ({0})", 
+                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+        }
+
+        protected void ErrorForMissingInputs(bool withDefaults = false)
+        {
+            Error(string.Format("Missing connected ports ({0})",
+                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+        }
+
         protected AssociativeNode MapEnum(Enum value)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<string, string, object>(GlobalArgumentService.DeserializeEnum),
+                new Func<string, string, object>(GlobalArgumentService.TryParseEnum),
                 new List<AssociativeNode>() 
                 { 
                     AstFactory.BuildStringNode(value.GetType().FullName), 
@@ -77,7 +89,7 @@ namespace Internal
             var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
 
             var data = ids.Select(id => engineController.GetMirror(id).GetData());
-            return data.SelectMany(Unwrap<T>).ToArray();
+            return data.SelectMany(Unwrap<T>).Distinct().ToArray();
         }
 
         private static T[] Unwrap<T>(MirrorData data)
@@ -136,7 +148,7 @@ namespace Internal
             if (null == data)
                 return new T[] { };
             else
-                return Unwrap<T>(data);
+                return Unwrap<T>(data).Distinct().ToArray();
         }
 
         protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum

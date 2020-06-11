@@ -6,11 +6,9 @@ Bitub TRex Dynamo Bindings
 
 ### ToDo
 
- - ActionFlag combinator
- - Filtering by action
- - List Selection Node
- - Distinct Equality Filter
+ - IfcModel.LogMessages => UI Node with interactive table
  - Codepage Transformator
+ - Global logging to file
 
 ### Features
  - Reading of IFC2.3, IFC4,  IFC4.1 

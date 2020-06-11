@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using Dynamo.Utilities;
+
 using Autodesk.DesignScript.Geometry;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
-using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
@@ -21,7 +18,11 @@ namespace Task
 
     public abstract class SelectableItemListNodeModel : BaseNodeModel
     {
-        internal protected const int ID_ITEMS_IN = 0;
+        #region Internals
+        private List<AstObjectValue> _items = new List<AstObjectValue>();
+        private List<AstReference> _selected = new List<AstReference>();
+        private List<string> _persistentSelected = new List<string>();
+        #endregion
 
         /// <summary>
         /// New selective items node.
@@ -41,30 +42,41 @@ namespace Task
         }
 
         [JsonIgnore]
-        public ObservableCollection<AstObjectValue> Items { get; } = new ObservableCollection<AstObjectValue>();
+        public List<AstObjectValue> Items
+        {
+            get {
+                return _items;
+            }
+            private set {
+                _items = value;
+                RaisePropertyChanged(nameof(Items));
+            }
+        }
 
-        public List<AstReference> Selected { get; set; } = new List<AstReference>();
+        [JsonIgnore]
+        public List<AstReference> Selected
+        {
+            get => _selected;            
+        }
+
+        public List<string> SelectedValue 
+        { 
+            get {
+                return _persistentSelected;
+            }
+            set {
+                _persistentSelected = value;
+                RaisePropertyChanged(nameof(SelectedValue));
+            }
+        } 
 
         internal protected bool SetItems(params AstObjectValue[] items)
         {
-            // Remove non-existent values
-            var dropItems = Items
-                .Where(j => -1 == Array.FindIndex(items, k => StringComparer.Ordinal.Equals(k, j)))
-                .ToArray();
+            var identical = (items.Length == _items.Count) && items.All(r => _items.Contains(r));
 
-            DispatchOnUIThread(() => dropItems.ForEach(j => Items.Remove(j)));
-
-            // Find new by string equality
-            var newItems = items
-                .Where(k => !Items.Any(j => StringComparer.Ordinal.Equals(j, k)))
-                .ToArray();
-
-            DispatchOnUIThread(() => Items.AddRange(newItems));
-
-            if (newItems.Length > 0 || dropItems.Length > 0)
+            if (!identical)
             {
-                RaisePropertyChanged(nameof(Items));
-                SynchronizeSelected(Selected, true);
+                DispatchOnUIThread(() => Items = new List<AstObjectValue>(items));
                 return true;
             }
             else
@@ -73,11 +85,34 @@ namespace Task
             }
         }
 
-        internal protected void SynchronizeSelected(IEnumerable<AstReference> selection, bool forceUpdate = false)
+        internal protected bool SetSelected(AstReference[] selected, bool forceModified)
         {
-            Selected = Items.Where(c => selection.Contains(c)).Cast<AstReference>().ToList();
-            RaisePropertyChanged(nameof(Selected));
-            OnNodeModified(forceUpdate);
+            var identical = (_selected.Count == selected.Length) && (selected.All(r => _selected.Contains(r)));
+            if (!identical)
+            {
+                _selected = new List<AstReference>(selected);
+                _persistentSelected = _selected.Select(v => v.ToString()).ToList();
+                if (forceModified)
+                {
+                    RaisePropertyChanged(nameof(SelectedValue));
+                    OnNodeModified(true);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal protected AstReference[] SelectByValues(string[] selectedValue)
+        {
+            List<AstReference> selected = new List<AstReference>();
+            foreach(var v in GlobalArgumentService.FilterBySerializationValue(Items.ToArray(), selectedValue, false))
+            {
+                selected.Add(v as AstReference);
+            }
+            return selected.ToArray();
         }
     }
 }

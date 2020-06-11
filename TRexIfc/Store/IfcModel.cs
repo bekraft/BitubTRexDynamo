@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Text.RegularExpressions;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -12,13 +13,11 @@ using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
+using Bitub.Ifc;
+using Bitub.Transfer;
+
 using Internal;
 using Log;
-using Bitub.Transfer;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Text.RegularExpressions;
-using Bitub.Ifc;
 
 namespace Store
 {
@@ -135,21 +134,25 @@ namespace Store
         [IsVisibleInDynamoLibrary(false)]
         public Qualifier Qualifier { get; private set; }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public string GetFilePathName(string canonicalSep = "-", bool withExtension = true)
-        {            
-            switch (Qualifier.GuidOrNameCase)
+        internal static string GetFilePathName(Qualifier qualifier, string canonicalSep = "-", bool withExtension = true)
+        {
+            switch (qualifier.GuidOrNameCase)
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
-                    var fileName1 = $"{Path.GetTempPath()}{Path.DirectorySeparatorChar}{Qualifier.Anonymous.ToBase64String()}";
+                    var fileName1 = $"{Path.GetTempPath()}{Path.DirectorySeparatorChar}{qualifier.Anonymous.ToBase64String()}";
                     return withExtension ? fileName1 + ".ifc" : fileName1;
                 case Qualifier.GuidOrNameOneofCase.Named:
-                    var fileName2 = string.IsNullOrEmpty(canonicalSep) ? Name : Qualifier.Named.ToLabel(canonicalSep, 1, 1);
-                    var fullFileName2 = $"{Qualifier.Named.Frags[0]}{Path.DirectorySeparatorChar}{fileName2}";
-                    return withExtension ?  $"{fullFileName2}.{Qualifier.Named.Frags.Last()}" : fullFileName2;
+                    var fileName2 = string.IsNullOrEmpty(canonicalSep) ? qualifier.Named.Frags[1] : qualifier.Named.ToLabel(canonicalSep, 1, 1);
+                    var fullFileName2 = $"{qualifier.Named.Frags[0]}{Path.DirectorySeparatorChar}{fileName2}";
+                    return withExtension ? $"{fullFileName2}.{qualifier.Named.Frags.Last()}" : fullFileName2;
                 default:
                     throw new NotSupportedException($"Missing qualifier");
             }
+        }
+
+        internal string GetFilePathName(string canonicalSep = "-", bool withExtension = true)
+        {
+            return GetFilePathName(Qualifier, canonicalSep, withExtension);
         }
 
 #pragma warning restore CS1591
@@ -247,12 +250,6 @@ namespace Store
         /// </summary>
         /// <param name="seperator">The separator between name fragments</param>
         public string CanonicalFileName(string seperator = "-") => Path.GetFileName(GetFilePathName(seperator, true));
-
-        /// <summary>
-        /// Returns the current log messages.
-        /// </summary>
-        /// <returns>The log messages</returns>
-        public LogMessage[] LogMessages() => ActionLog.ToArray();
 
         /// <summary>
         /// Changes the format extension identifier.

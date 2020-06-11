@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
+
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
@@ -13,9 +13,9 @@ namespace Store
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.
     /// </summary>
     [NodeName("Ifc AuthorMetadata")]
+    [NodeDescription("Configure authoring editor name and organisation details")]
     [NodeCategory("TRexIfc.Store")]
-    [OutPortTypes(typeof(IfcAuthorMetadata))]
-    [OutPortDescriptions("Author's metadata")]
+    [OutPortTypes(typeof(IfcAuthorMetadata))]    
     [IsDesignScriptCompatible]
     public class IfcAuthorMetadataNodeModel : NodeModel
     {
@@ -24,7 +24,13 @@ namespace Store
         private string _organisationName = "";
         private string _organisationAddress = "";
         private string _authorName = "";
-        private string _authorGivenName = "";        
+        private string _authorGivenName = "";
+
+        [JsonConstructor]
+        IfcAuthorMetadataNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
         #endregion
 
         /// <summary>
@@ -32,13 +38,8 @@ namespace Store
         /// </summary>
         public IfcAuthorMetadataNodeModel()
         {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("authorData", "Author's metadata")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("authorMetadata", "Author's metadata")));
             RegisterAllPorts();
-        }
-
-        [JsonConstructor]
-        IfcAuthorMetadataNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
         }
 
         /// <summary>
@@ -107,8 +108,7 @@ namespace Store
         }
 
 #pragma warning disable CS1591
-
-        [IsVisibleInDynamoLibrary(false)]
+        
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var authorNode = AstFactory.BuildStringNode(_authorName);

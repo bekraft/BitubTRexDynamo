@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using Autodesk.DesignScript.Runtime;
 using Bitub.Transfer;
@@ -10,7 +11,8 @@ namespace Internal
 {
     /// <summary>
     /// Interface tagging an interactive zero touch node.
-    /// </summary>    
+    /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public interface INodeProgressing : IProgress<ICancelableProgressState>
     {
         /// <summary>
@@ -29,7 +31,7 @@ namespace Internal
         /// Log message receiver.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        ICollection<LogMessage> ActionLog { get; }
+        ObservableCollection<LogMessage> ActionLog { get; }
 
         /// <summary>
         /// A representative name.
@@ -55,7 +57,15 @@ namespace Internal
         /// Logging messages.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public ICollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
+        public ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
+
+        /// <summary>
+        /// Retrieves the current log state as an array.
+        /// </summary>
+        /// <param name="nodeProgressing">The logging source</param>
+        /// <returns>The current log</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
         /// <summary>
         /// See <see cref="INodeProgressing.OnProgressChange"/>
@@ -165,13 +175,18 @@ namespace Internal
         public virtual string Name { get => "Progressing node"; }
 
         /// <summary>
+        /// Default log reason.
+        /// </summary>
+        protected virtual LogReason DefaultReason { get => LogReason.Changed; }
+
+        /// <summary>
         /// Reporting progress from outside.
         /// </summary>
         /// <param name="value">The progress state</param>
         [IsVisibleInDynamoLibrary(false)]
         public void Report(ICancelableProgressState value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Changed, value));
+            OnProgressChanged(new NodeProgressingEventArgs(DefaultReason, value));
         }
     }
 }

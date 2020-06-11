@@ -71,6 +71,8 @@ namespace Store
                             inputs[1] = AstFactory.BuildNullNode();
                             break;
                         default:
+                            WarnForMissingInputs();
+                            ResetState();
                             // No evalable, cancel here
                             return new[]
                             {

@@ -36,6 +36,18 @@ namespace Export
         private SceneTransformationStrategy _transformationStrategy = SceneTransformationStrategy.Quaternion;
         private ScenePositioningStrategy _positioningStrategy = ScenePositioningStrategy.NoCorrection;
 
+        [JsonConstructor]
+        SceneExportSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            if (null == SelectedGraphicalContext)
+                SelectedGraphicalContext = new List<string>();
+        }
+
         #endregion 
 
         /// <summary>
@@ -52,18 +64,6 @@ namespace Export
 
             RegisterAllPorts();
             Init();
-        }
-
-        [JsonConstructor]
-        SceneExportSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
-            Init();
-        }
-
-        private void Init()
-        {
-            if (null == SelectedGraphicalContext)
-                SelectedGraphicalContext = new List<string>();
         }
 
         /// <summary>
@@ -168,6 +168,8 @@ namespace Export
                             // No provided scene contexts
                             break;
                         default:
+                            WarnForMissingInputs();
+
                             // No evalable, cancel here
                             return new[]
                             {

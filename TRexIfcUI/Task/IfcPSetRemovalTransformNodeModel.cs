@@ -69,7 +69,8 @@ namespace Task
                             inputs[port.Index] = MapEnum(LogReason.Any);
                             break;
                         default:
-                            Warning($"Missing inputs (first unkown '{InPorts[port.Index].Name}')");
+                            WarnForMissingInputs();
+                            ResetState();
                             // No evalable, cancel here
                             return new[]
                             {
@@ -92,12 +93,12 @@ namespace Task
 
             // Get transform request
             var callCreateRequest = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, string[], bool, IfcTransform>(IfcTransform.RemovePropertySetsRequest),
+                new Func<Logger, IfcAuthorMetadata, string[], bool, IfcTransform>(IfcTransform.NewRemovePropertySetsRequest),
                 new List<AssociativeNode>() { callGetLogger, inputs[2], inputs[0], inputs[1] });
 
             // Create transformation delegate
             var callCreateIfcModelDelegate = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.CreateIfcModelTransform),
+                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() { inputs[4], callCreateRequest, inputs[3], inputs[5] });
 
             return new[]

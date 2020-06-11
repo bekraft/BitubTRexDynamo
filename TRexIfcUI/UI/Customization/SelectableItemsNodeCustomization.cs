@@ -11,7 +11,7 @@ namespace UI.Customization
 {
 #pragma warning disable CS1591
 
-    public class SelectiveItemsNodeCustomization : BaseNodeViewCustomization<SelectableItemListNodeModel>
+    public class SelectableItemsNodeCustomization : BaseNodeViewCustomization<SelectableItemListNodeModel>
     {
         #region Internals
 
@@ -27,68 +27,58 @@ namespace UI.Customization
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 
-            InitSelection(model.Selected.ToArray());
+            UpdateItems();
+
+            var selectedItems = NodeModel.SelectByValues(NodeModel.SelectedValue.ToArray());
+            DispatchUI(() => 
+            {
+                foreach (var s in selectedItems)
+                    _control.SelectionListBox.SelectedItems.Add(s);
+            });
+            ScheduleAsync(() => NodeModel.SetSelected(selectedItems, false));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
-            //model.Modified += Model_Modified;
 
             _control.SelectionListBox.SelectionChanged += SelectionListBox_SelectionChanged;
         }
 
-        private void InitSelection(AstReference[] selection)
-        {
-            UpdateAvailables();
-            DispatchUI(() =>
-            {   
-                foreach (var s in AstValue<object>.Resolve(selection, NodeModel.Items))
-                    _control.SelectionListBox.SelectedItems.Add(s);
-            });
-        }
-
         protected override void OnCachedValueChange(object sender)
         {
-            UpdateAvailables();
+            UpdateItems();
         }
 
-        private void UpdateAvailables()
+        private void UpdateItems()
         {
-            var items = NodeModel.GetCachedAstInput<object>(SelectableItemListNodeModel.ID_ITEMS_IN, ModelEngineController);
+            var items = NodeModel.GetCachedAstInput<object>(0, ModelEngineController);
             NodeModel.SetItems(items);
         }
 
         private void SelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Get all selected context identifiers
             var selected = (sender as ListBox).SelectedItems.Cast<AstReference>().ToArray();
-            // And synchronize
-            ScheduleAsync(() => NodeModel.SynchronizeSelected(selected, true));
-        }
-
-        private void Model_Modified(Dynamo.Graph.Nodes.NodeModel obj)
-        {
-            ScheduleAsync(UpdateAvailables);
+            ScheduleAsync(() => NodeModel.SetSelected(selected, true));
         }
 
         private void Model_PortConnected(Dynamo.Graph.Nodes.PortModel arg1, Dynamo.Graph.Connectors.ConnectorModel arg2)
         {
-            ScheduleAsync(UpdateAvailables);
+            ScheduleAsync(UpdateItems);
         }
 
         private void Model_PortDisconnected(Dynamo.Graph.Nodes.PortModel obj)
         {
-            ScheduleAsync(UpdateAvailables);
+            ScheduleAsync(UpdateItems);
         }
 
         public override void Dispose()
         {
             if (null == _control)
-                throw new ObjectDisposedException(nameof(SelectiveItemsNodeCustomization));
+                throw new ObjectDisposedException(nameof(SelectableItemsNodeCustomization));
 
             _control.SelectionListBox.SelectionChanged -= SelectionListBox_SelectionChanged;
+
             NodeModel.PortDisconnected -= Model_PortDisconnected;
             NodeModel.PortConnected -= Model_PortConnected;
-            //NodeModel.Modified -= Model_Modified;
 
             _control = null;
         }

@@ -47,7 +47,10 @@ namespace Task
             RegisterAllPorts();
             InitStrategyOptions();
             IsCancelable = true;
+            SelectedOption = PlacementOptions[default(IfcPlacementStrategy)];
         }
+
+        #region Internals
 
         [JsonConstructor]
         IfcAxisAlignmentTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -55,11 +58,19 @@ namespace Task
             InitStrategyOptions();
         }
 
+        private IDictionary<object, string> PlacementOptions = new Dictionary<object, string>()
+        {
+            { IfcPlacementStrategy.ChangeRootPlacements, "Change existing placements" },
+            { IfcPlacementStrategy.NewRootPlacement, "Insert new root placement" }
+        };
+
         private void InitStrategyOptions()
         {
             foreach (var o in Enum.GetValues(typeof(IfcPlacementStrategy)))
-                AvailableOptions.Add((IfcPlacementStrategy)o);
+                AvailableOptions.Add(PlacementOptions[o]);
         }
+
+        #endregion
 
 #pragma warning disable CS1591
 
@@ -77,7 +88,8 @@ namespace Task
                             inputs[port.Index] = MapEnum(LogReason.Any);
                             break;
                         default:
-                            Warning($"Missing inputs (first unkown '{InPorts[port.Index].Name}')");
+                            WarnForMissingInputs();
+                            ResetState();
                             // No evalable, cancel here
                             return new[]
                             {
@@ -92,14 +104,17 @@ namespace Task
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
                 new List<AssociativeNode>() { inputs[3] });
 
+            // Get current strategy selection as int index
+            var strategyOption = (int)PlacementOptions.First(g => g.Value.Equals(SelectedOption)).Key;
+
             // Get transform request
             var callCreateRequest = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, Alignment, IfcPlacementStrategy, IfcTransform>(IfcTransform.TransformAxisAlignmentRequest),
-                new List<AssociativeNode>() { callGetLogger, inputs[1], inputs[0], MapEnum((IfcPlacementStrategy)SelectedOption) });
+                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
+                new List<AssociativeNode>() { callGetLogger, inputs[1], inputs[0], AstFactory.BuildIntNode(strategyOption) });
 
             // Create transformation delegate
             var callCreateIfcModelDelegate = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.CreateIfcModelTransform),
+                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() { inputs[3], callCreateRequest, inputs[2], inputs[4] });
 
             return new[]

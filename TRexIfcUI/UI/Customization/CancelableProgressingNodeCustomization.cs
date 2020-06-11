@@ -35,7 +35,7 @@ namespace UI.Customization
         : BaseNodeViewCustomization<T> where T : CancelableProgressingNodeModel
     {
         public ProgressOnPortType ProgressOnPort { get; private set; }
-        public LogReason ActionOnPort { get; private set; }
+        public LogReason LogReasonOnPort { get; private set; }
 
         private List<ProgressingPort> _nodeProgressingPort = new List<ProgressingPort>();
         private readonly object _monitor = new object();
@@ -43,7 +43,7 @@ namespace UI.Customization
         protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
         {
             ProgressOnPort = progressOnPort;
-            ActionOnPort = actionOnPort;
+            LogReasonOnPort = actionOnPort;
         }
 
         protected virtual void CreateView(T model, NodeView nodeView)
@@ -58,7 +58,7 @@ namespace UI.Customization
         {
             base.CustomizeView(model, nodeView);
             CreateView(model, nodeView);
-            ResetProgress();
+            NodeModel.ResetState();
 
             NodeModel.PortConnected += NodeModel_PortConnected;
             NodeModel.PortDisconnected += NodeModel_PortDisconnected;
@@ -66,33 +66,29 @@ namespace UI.Customization
 
         private void NodeModel_PortDisconnected(PortModel pm)
         {
-            int count = 0;
             switch (pm.PortType)
             {
                 case PortType.Input:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.InPorts))
-                        count += RemoveOnProgressChanging(pm.PortType, pm.Index).Length;
+                        RemoveOnProgressChanging(pm.PortType, pm.Index);
                     break;
                 case PortType.Output:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.OutPorts))
-                        count += RemoveOnProgressChanging(pm.PortType, pm.Index).Length;
+                        RemoveOnProgressChanging(pm.PortType, pm.Index);
                     break;
             }
 
-            if (count > 0)
-                ResetProgress();
-        }
+            foreach (var eventSource in NodeProgressingMatching())
+                eventSource.ClearState();
 
-        protected virtual void ResetProgress()
-        {
-            NodeModel.ProgressPercentage = 0;
-            NodeModel.ProgressState = "";
-            NodeModel.TaskName = "(no active task)";
+            NodeModel.ResetState();
         }
 
         private void NodeModel_PortConnected(PortModel pm, ConnectorModel cm)
         {
-            switch(pm.PortType)
+            NodeModel.ResetState();
+
+            switch (pm.PortType)
             {
                 case PortType.Input:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.InPorts))
@@ -145,19 +141,22 @@ namespace UI.Customization
             return eventSources.ToArray();
         }
 
+        protected IEnumerable<NodeProgressing> NodeProgressingMatching(PortType? portType = null, int? portIndex = null)
+        {
+            return _nodeProgressingPort
+                .Where(n => (!portType.HasValue || portType == n.Item1) && (!portIndex.HasValue || portIndex == n.Item2))
+                .SelectMany(n => n.Item3);
+        }
+
         protected NodeProgressing[] RemoveOnProgressChanging(PortType? portType = null, int? portIndex = null)
         {
             List<NodeProgressing> eventSources = new List<NodeProgressing>();
             lock (_monitor)
             {                
-                foreach (var np in _nodeProgressingPort
-                    .Where(n => (!portType.HasValue || portType == n.Item1) && (!portIndex.HasValue || portIndex == n.Item2)))
+                foreach (var eventSource in NodeProgressingMatching(portType, portIndex))
                 {
-                    foreach (var eventSource in np.Item3)
-                    {
-                        eventSource.OnProgressChange -= OnProgressChanged;
-                        eventSources.Add(eventSource);
-                    }
+                    eventSource.OnProgressChange -= OnProgressChanged;                        
+                    eventSources.Add(eventSource);
                 }
 
                 // Filtering for remaining port connections
@@ -180,7 +179,7 @@ namespace UI.Customization
 
         private void OnProgressChanged(object sender, NodeProgressingEventArgs e)
         {
-            if (ActionOnPort.HasFlag(e.Action))
+            if (LogReasonOnPort.HasFlag(e.Reason))
             {
                 NodeModel.ProgressPercentage = e.Percentage;
                 NodeModel.ProgressState = e.State?.ToString() ?? e.TaskName;

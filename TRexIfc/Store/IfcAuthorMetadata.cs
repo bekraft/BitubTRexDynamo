@@ -13,6 +13,7 @@ namespace Store
     /// <summary>
     /// IFC authoring meta data
     /// </summary>
+    [PreferredShortName("AuthorMetadata")]
     public class IfcAuthorMetadata
     {
         #region Internals
@@ -47,7 +48,7 @@ namespace Store
         /// <param name="organisationName">The authoring organisation name</param>
         /// <param name="organisationID">The authoring organisation ID</param>
         /// <param name="address">The address of the organisation</param>
-        /// <returns>New meta data wrapping author's credentials and organisation details</returns>
+        /// <returns>New meta data wrapping author's credentials and organisation details</returns>        
         public static IfcAuthorMetadata ByAuthorAndOrganisation(
             string name, 
             string givenName, 

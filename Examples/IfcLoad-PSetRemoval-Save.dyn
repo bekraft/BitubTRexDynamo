@@ -7,22 +7,7 @@
     "ResolutionMap": {}
   },
   "Inputs": [],
-  "Outputs": [
-    {
-      "Id": "86296c98b21a46759d1db2e2371bb751",
-      "Name": "IfcModel.LogMessages",
-      "Type": "unknown",
-      "InitialValue": "",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
-    },
-    {
-      "Id": "156e75de32724734aadb86dda6e0f3e4",
-      "Name": "IfcModel.LogMessages",
-      "Type": "unknown",
-      "InitialValue": "",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
-    }
-  ],
+  "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Log.FileLog, TRexIfcUI",
@@ -296,7 +281,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Keine Beschreibung verfügbar"
+      "Description": "Configure authoring editor name and organisation details"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -347,77 +332,6 @@
       ],
       "Replication": "Auto",
       "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.LogMessages",
-      "Id": "86296c98b21a46759d1db2e2371bb751",
-      "Inputs": [
-        {
-          "Id": "5a30eb1ac15f4bc59855d3b4ea264f0d",
-          "Name": "ifcModel",
-          "Description": "Store.IfcModel",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "2dde4c850d764d99a84d192afbe16713",
-          "Name": "LogMessage[]",
-          "Description": "The log messages",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
-    },
-    {
-      "ConcreteType": "Task.ExcludingItemListNodeModel, TRexIfcUI",
-      "Selected": [
-        {
-          "ConcreteType": "Internal.AstValue`1[[System.Object, mscorlib]], TRexIfcUI",
-          "AstId": "var_f56850ef5df342b7aff03308283424f2",
-          "ArrayIndex": 4
-        },
-        {
-          "ConcreteType": "Internal.AstValue`1[[System.Object, mscorlib]], TRexIfcUI",
-          "AstId": "var_f56850ef5df342b7aff03308283424f2",
-          "ArrayIndex": 7
-        }
-      ],
-      "NodeType": "ExtensionNode",
-      "Id": "52def370953b4412af2d3ddc10c1280f",
-      "Inputs": [
-        {
-          "Id": "b38ab8436be64180b259b852bb2e3b27",
-          "Name": "items",
-          "Description": "Provided candidates",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "8f93da9779744fd982f4fc110e4feee9",
-          "Name": "selected",
-          "Description": "Selected candidates",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Excludes multiple items from a list of available items using its string representation."
     },
     {
       "ConcreteType": "Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
@@ -497,10 +411,9 @@
     {
       "ConcreteType": "Log.LogReasonComposingNodeModel, TRexIfcUI",
       "Selected": [
-        240,
-        4,
-        64,
-        16
+        16,
+        32,
+        64
       ],
       "NodeType": "ExtensionNode",
       "Id": "f00e1a6ce0ea46c79369a10e9b5a4135",
@@ -520,15 +433,17 @@
       "Description": "Composing log reasons for filtering logs"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.LogMessages",
-      "Id": "156e75de32724734aadb86dda6e0f3e4",
+      "ConcreteType": "Task.ExcludingItemListNodeModel, TRexIfcUI",
+      "SelectedValue": [
+        "Identity Data"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "0d6de8522f66447f9e721e32ec8f0ed1",
       "Inputs": [
         {
-          "Id": "98fd31bd508849b196b6502f2cabc3a1",
-          "Name": "ifcModel",
-          "Description": "Store.IfcModel",
+          "Id": "15a4e7172802457b9cbc7c5c23ecadb8",
+          "Name": "items",
+          "Description": "Provided candidates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -537,17 +452,75 @@
       ],
       "Outputs": [
         {
-          "Id": "ab25e0cdfdcb4ea5b59dcd98983ea924",
-          "Name": "LogMessage[]",
-          "Description": "The log messages",
+          "Id": "df306ee2f4e54d60b794cd17c90a3226",
+          "Name": "selected",
+          "Description": "Selected candidates",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
+      "Replication": "Disabled",
+      "Description": "Excludes multiple items from a list of available items using its string representation."
+    },
+    {
+      "ConcreteType": "Log.LogMessageTableNodeModel, TRexIfcUI",
+      "NodeType": "ExtensionNode",
+      "Id": "4f138dc9b5c84096a4617fbd0c06432c",
+      "Inputs": [
+        {
+          "Id": "b674e2b5284842f7b8a6be59a7ca9477",
+          "Name": "source",
+          "Description": "Logging event source (i.e. IfcModel)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2d6b73cb539846eab805aa4ef569adfe",
+          "Name": "logData",
+          "Description": "Tabular logged event data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Interactive table grid displaying incoming logged events."
+    },
+    {
+      "ConcreteType": "Log.LogMessageTableNodeModel, TRexIfcUI",
+      "NodeType": "ExtensionNode",
+      "Id": "acb05fe66b4a453dac86192422440287",
+      "Inputs": [
+        {
+          "Id": "4b04953b34564d729101dbb9782d04c9",
+          "Name": "source",
+          "Description": "Logging event source (i.e. IfcModel)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3fcb879fd929403ab1835b50cc5f8ecc",
+          "Name": "logData",
+          "Description": "Tabular logged event data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Interactive table grid displaying incoming logged events."
     }
   ],
   "Connectors": [
@@ -583,8 +556,8 @@
     },
     {
       "Start": "795851e95b484ef6a8f3707577d69a1e",
-      "End": "5a30eb1ac15f4bc59855d3b4ea264f0d",
-      "Id": "4bfd45a83c3642679da96c1458c3350a"
+      "End": "4b04953b34564d729101dbb9782d04c9",
+      "Id": "ff30828e82294f0cb6c66b9ae321f478"
     },
     {
       "Start": "3a4882cf4b0a4829bb7bd8f716f78dc2",
@@ -598,8 +571,8 @@
     },
     {
       "Start": "1756ab62a91a42e88a627f9e8b9e3aa3",
-      "End": "b38ab8436be64180b259b852bb2e3b27",
-      "Id": "c704e313b3a84c00b9e4952641bfc084"
+      "End": "15a4e7172802457b9cbc7c5c23ecadb8",
+      "Id": "c642998ef94a445b9ce836adb7acd848"
     },
     {
       "Start": "7eb03d62e23341e3bf7527ef3419a5ef",
@@ -612,24 +585,24 @@
       "Id": "d154b9c22b5c45ed94139073880f8a48"
     },
     {
-      "Start": "8f93da9779744fd982f4fc110e4feee9",
-      "End": "18cdc7e33c2c4539a0706b81b5989836",
-      "Id": "ddf99e795aa24bad976aede858d035cd"
-    },
-    {
       "Start": "445f33458e3d4a2daabe665eff8ecad6",
       "End": "ba748006b1da4e11a8bcd8ae441846e2",
       "Id": "b59f219476e9497080ffa329de2f12a6"
     },
     {
       "Start": "445f33458e3d4a2daabe665eff8ecad6",
-      "End": "98fd31bd508849b196b6502f2cabc3a1",
-      "Id": "ce4e9dd91786455e97add010d4359e2b"
+      "End": "b674e2b5284842f7b8a6be59a7ca9477",
+      "Id": "f4217754e1d748eaa9f26b61e4d6d9b2"
     },
     {
       "Start": "ea827723f4c04c2fbaeaad732fe1366d",
       "End": "3858a0754cad49a59dbe62088805c4fe",
       "Id": "4b8d64ecbc404164a49796c6ca874c01"
+    },
+    {
+      "Start": "df306ee2f4e54d60b794cd17c90a3226",
+      "End": "18cdc7e33c2c4539a0706b81b5989836",
+      "Id": "37d7b5b8aca54e009236c730f0dfb569"
     }
   ],
   "Dependencies": [],
@@ -646,11 +619,11 @@
         "f56850ef5df342b7aff03308283424f2",
         "90c56c9404e84ed2a9e5da78030f5ff3",
         "1bc88a9a297d415683d33256228007e6",
-        "86296c98b21a46759d1db2e2371bb751",
-        "52def370953b4412af2d3ddc10c1280f",
         "ddb97e749aea42bcbfd278335e956303",
         "f00e1a6ce0ea46c79369a10e9b5a4135",
-        "156e75de32724734aadb86dda6e0f3e4"
+        "0d6de8522f66447f9e721e32ec8f0ed1",
+        "4f138dc9b5c84096a4617fbd0c06432c",
+        "acb05fe66b4a453dac86192422440287"
       ]
     }
   ],
@@ -724,8 +697,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1861.1326593515321,
-        "Y": 255.72912167440415
+        "X": 1913.9717483032373,
+        "Y": 252.5267526470281
       },
       {
         "ShowGeometry": true,
@@ -744,8 +717,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1185.5152047375191,
-        "Y": 621.24414204437653
+        "X": 1454.5142030371085,
+        "Y": -9.6225563487087129
       },
       {
         "ShowGeometry": true,
@@ -789,26 +762,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "IfcModel.LogMessages",
-        "Id": "86296c98b21a46759d1db2e2371bb751",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": true,
-        "Excluded": false,
-        "X": 1876.6829040251187,
-        "Y": 61.754754740089254
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Exclude items from",
-        "Id": "52def370953b4412af2d3ddc10c1280f",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 862.8860026215267,
-        "Y": -1.3735928585916781
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Ifc PSet Removal",
         "Id": "ddb97e749aea42bcbfd278335e956303",
         "IsSetAsInput": false,
@@ -829,18 +782,38 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "IfcModel.LogMessages",
-        "Id": "156e75de32724734aadb86dda6e0f3e4",
+        "Name": "Exclude items from",
+        "Id": "0d6de8522f66447f9e721e32ec8f0ed1",
         "IsSetAsInput": false,
-        "IsSetAsOutput": true,
+        "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1522.1775668074918,
-        "Y": 69.869638289479809
+        "X": 880.55483313351419,
+        "Y": 0.533843455329901
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Message Table",
+        "Id": "4f138dc9b5c84096a4617fbd0c06432c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1601.0878642931291,
+        "Y": 428.05010861003484
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Message Table",
+        "Id": "acb05fe66b4a453dac86192422440287",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1999.0563889870332,
+        "Y": 73.586710706600627
       }
     ],
     "Annotations": [],
-    "X": 61.710294889826173,
-    "Y": 76.802272926274284,
-    "Zoom": 0.42392795592387722
+    "X": -974.46757311301815,
+    "Y": -18.917983068630051,
+    "Zoom": 0.761554236135223
   }
 }

@@ -46,8 +46,8 @@ namespace Internal
         /// <param name="action">The action type</param>
         public NodeFinishedEventArgs(IProgressState finalState, LogReason action, string taskName = null)
         {
-            TaskName = taskName ?? $"{finalState.StateObject}";
-            IsCanceled = finalState.State == ProgressTokenState.IsCanceled;
+            TaskName = taskName ?? $"{finalState?.StateObject}";
+            IsCanceled = finalState?.State == ProgressTokenState.IsCanceled;
             Action = action;
         }
 

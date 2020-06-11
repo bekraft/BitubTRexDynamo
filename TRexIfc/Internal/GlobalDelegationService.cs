@@ -6,7 +6,7 @@ using Autodesk.DesignScript.Runtime;
 
 namespace Internal
 {
-#pragma warning disable CS1591
+#pragma warning disable CS1591   
 
     [IsVisibleInDynamoLibrary(false)]
     public sealed class GlobalDelegationService
@@ -18,8 +18,7 @@ namespace Internal
         /// </summary>
         /// <param name="f1">A function having 1 argument</param>
         /// <returns>Function key</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Put<T1>(Func<T1, object> f1)
+        internal static string Put<T1>(Func<T1, object> f1)
         {
             bool hasAdded;
             string key;
@@ -36,8 +35,7 @@ namespace Internal
         /// </summary>
         /// <param name="f2">Function reference</param>
         /// <returns>Function key</returns>       
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Put<T1,T2>(Func<T1, T2, object> f2)
+        internal static string Put<T1,T2>(Func<T1, T2, object> f2)
         {
             bool hasAdded;
             string key;
@@ -54,8 +52,7 @@ namespace Internal
         /// </summary>
         /// <param name="f2">Function reference</param>
         /// <returns>Function key</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Put<T1, T2, T3>(Func<T1, T2, T3, object> f2)
+        internal static string Put<T1, T2, T3>(Func<T1, T2, T3, object> f2)
         {
             bool hasAdded;
             string key;
@@ -72,8 +69,7 @@ namespace Internal
         /// </summary>
         /// <param name="f2">Function reference</param>
         /// <returns>Function key</returns>       
-        [IsVisibleInDynamoLibrary(false)]
-        public static string Put<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f2)
+        internal static string Put<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f2)
         {
             bool hasAdded;
             string key;
@@ -91,8 +87,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, string arg1)
+        internal static object Call(string key, string arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -103,8 +98,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, double arg1)
+        internal static object Call(string key, double arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -115,8 +109,7 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, object arg1)
+        internal static object Call(string key, object arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -128,20 +121,17 @@ namespace Internal
         /// <param name="arg1">1st argument</param>
         /// <param name="arg2">2nd argument</param>
         /// <returns></returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, object arg1, object arg2)
+        internal static object Call(string key, object arg1, object arg2)
         {
             return InternallyCall(key, arg1, arg2);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, object arg1, object arg2, object arg3)
+        internal static object Call(string key, object arg1, object arg2, object arg3)
         {
             return InternallyCall(key, arg1, arg2, arg3);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public static object Call(string key, object arg1, object arg2, object arg3, object arg4)
+        internal static object Call(string key, object arg1, object arg2, object arg3, object arg4)
         {
             return InternallyCall(key, arg1, arg2, arg3, arg4);
         }
@@ -152,7 +142,7 @@ namespace Internal
         {
         }
 
-        internal static object InternallyCall<T1>(string key, T1 arg1)
+        private static object InternallyCall<T1>(string key, T1 arg1)
         {
             object f;
             if (!FunctionCache.TryRemove(key, out f))
@@ -162,7 +152,7 @@ namespace Internal
             return r;
         }
 
-        internal static object InternallyCall<T1,T2>(string key, T1 arg1, T2 arg2)
+        private static object InternallyCall<T1,T2>(string key, T1 arg1, T2 arg2)
         {
             object f;
             if (!FunctionCache.TryRemove(key, out f))
@@ -172,7 +162,7 @@ namespace Internal
             return r;
         }
 
-        internal static object InternallyCall<T1, T2, T3>(string key, T1 arg1, T2 arg2, T3 arg3)
+        private static object InternallyCall<T1, T2, T3>(string key, T1 arg1, T2 arg2, T3 arg3)
         {
             object f;
             if (!FunctionCache.TryRemove(key, out f))
@@ -182,7 +172,7 @@ namespace Internal
             return r;
         }
 
-        internal static object InternallyCall<T1, T2, T3, T4>(string key, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        private static object InternallyCall<T1, T2, T3, T4>(string key, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             object f;
             if (!FunctionCache.TryRemove(key, out f))

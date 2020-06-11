@@ -24,6 +24,15 @@ namespace Store
     [IsDesignScriptCompatible]
     public class IfcLoadStoreNodeModel : CancelableProgressingNodeModel
     {
+        #region Internals
+
+        [JsonConstructor]
+        IfcLoadStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
+        #endregion
+
         /// <summary>
         /// New IFC store node model.
         /// </summary>
@@ -38,11 +47,6 @@ namespace Store
             RegisterAllPorts();
 
             IsCancelable = true;
-        }
-
-        [JsonConstructor]
-        IfcLoadStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
         }
 
 #pragma warning disable CS1591
@@ -63,6 +67,8 @@ namespace Store
                             inputs[port.Index] = AstFactory.BuildNullNode();
                             break;
                         default:
+                            WarnForMissingInputs();
+                            ResetState();
                             // No evalable, cancel here
                             return new[]
                             {

@@ -21,30 +21,6 @@ using Internal;
 namespace Store
 {
     /// <summary>
-    /// Simple IFC model producer.
-    /// </summary>
-    /// <returns></returns>
-    [IsVisibleInDynamoLibrary(false)]
-    public delegate IModel ProducerDelegate();
-
-    /// <summary>
-    /// Delegating model production.
-    /// </summary>
-    /// <param name="node">The log and progress receiver</param>
-    /// <returns></returns>
-    [IsVisibleInDynamoLibrary(false)]
-    public delegate IModel ProducerProgressDelegate(INodeProgressing node);
-
-    /// <summary>
-    /// Delgating model transformation.
-    /// </summary>
-    /// <param name="sourceModel">The source model</param>
-    /// <param name="node">The log and progress receiver</param>
-    /// <returns></returns>
-    [IsVisibleInDynamoLibrary(false)]
-    public delegate IModel TransformerProgressDelegate(IModel sourceModel, INodeProgressing node);
-
-    /// <summary>
     /// Background IFC storage handling.
     /// </summary> 
     [IsVisibleInDynamoLibrary(false)]
@@ -63,9 +39,9 @@ namespace Store
         // The internal weak reference
         private WeakReference<IModel> _model;
         // The model producer hook 
-        private ProducerDelegate _producer;
-
-        private IModel __model;
+        private ModelDelegate _producer;
+        // Store time stamp
+        private long? _timeStamp;
 
         static IfcStore()
         {
@@ -83,7 +59,7 @@ namespace Store
             XbimModel = model;
         }
 
-        private IfcStore(ProducerDelegate producerDelegate)
+        private IfcStore(ModelDelegate producerDelegate)
         {
             _producer = producerDelegate;
         }
@@ -154,9 +130,10 @@ namespace Store
                     if (_model?.TryGetTarget(out model) ?? false)
                         return model;
                     
-                    __model = _producer.Invoke();
-                    _model = new WeakReference<IModel>(__model);
-                    return __model;
+                    model = _producer.Invoke();
+                    _model = new WeakReference<IModel>(model);
+
+                    return model;
                 }
             }
             private set {
@@ -181,11 +158,13 @@ namespace Store
             var logger = theModel.Store.Logger;
             logger?.LogInfo("Start loading file '{0}'.", filePathName);
             try
-            {
+            {                
                 var model = Xbim.Ifc.IfcStore.Open(filePathName, null, null, theModel.NotifyLoadProgressChanged, Xbim.IO.XbimDBAccess.Read);
                 prefs?.ApplyTo(model);
                 theModel.NotifyOnFinished(LogReason.Loaded, false, false);
                 logger?.LogInfo("File '{0}' has been loaded successfully.", filePathName);
+                theModel.Store._timeStamp = File.GetCreationTime(filePathName).ToBinary();
+
                 return model;
             }
             catch (Exception e)
@@ -203,12 +182,26 @@ namespace Store
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
+        public delegate IModel ModelDelegate();
+
+        [IsVisibleInDynamoLibrary(false)]
+        public delegate IModel ModelProgressDelegate(INodeProgressing node);
+
+        [IsVisibleInDynamoLibrary(false)]
+        public delegate IModel ModelTransformProgressDelegate(IModel sourceModel, INodeProgressing node);        
+
 #pragma warning restore CS1591
 
         /// <summary>
         /// The logger instance (or null if there is no).
         /// </summary>
         public Logger Logger { get; set; }
+
+        /// <summary>
+        /// Gets the time stamp.
+        /// </summary>
+        public DateTime TimeStamp { get => DateTime.FromBinary(_timeStamp ?? DateTime.Now.ToBinary() ); }
 
         /// <summary>
         /// Get or creates a new model store from file and logger instance.
@@ -251,7 +244,7 @@ namespace Store
         /// <param name="canonicalAddon"></param>
         /// <param name="logInstance"></param>
         /// <returns></returns>
-        public static IfcModel CreateFromProducer(ProducerProgressDelegate producerDelegate, 
+        public static IfcModel CreateFromProducer(ModelProgressDelegate producerDelegate, 
             Qualifier ancestor, string canonicalAddon, Logger logInstance)
         {
             var store = new IfcStore(logInstance);
@@ -268,7 +261,7 @@ namespace Store
         /// <param name="canoncialName">The canonical fragment</param>
         /// <returns></returns>
         public static IfcModel CreateFromTransform(IfcModel source, 
-            TransformerProgressDelegate transformerDelegate, string canoncialName)
+            ModelTransformProgressDelegate transformerDelegate, string canoncialName)
         {
             var store = new IfcStore(source.Store.Logger);            
             var ifcModel = new IfcModel(store, BuildQualifier(source.Qualifier, canoncialName));

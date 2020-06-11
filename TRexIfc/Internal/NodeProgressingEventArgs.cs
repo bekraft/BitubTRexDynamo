@@ -36,21 +36,21 @@ namespace Internal
         /// <summary>
         /// The action type.
         /// </summary>
-        public readonly LogReason Action;
+        public readonly LogReason Reason;
 
         /// <summary>
         /// Wrapping an internal event reference.
         /// </summary>
         /// <param name="state">The source state</param>
         /// <param name="taskName">The task name</param>
-        /// <param name="action">The action type</param>
-        public NodeProgressingEventArgs(LogReason action, ICancelableProgressState state, string taskName = null)
+        /// <param name="reason">The action type</param>
+        public NodeProgressingEventArgs(LogReason reason, ICancelableProgressState state, string taskName = null)
         {
             InternalState = state;
             TaskName = $"{taskName ?? state.State.ToString()}";
-            State = state.StateObject;
-            Percentage = state.Percentage;
-            Action = action;
+            State = state?.StateObject;
+            Percentage = state?.Percentage ?? 0;
+            Reason = reason;
         }
 
         /// <summary>
@@ -59,13 +59,13 @@ namespace Internal
         /// <param name="percentage">The percetange</param>
         /// <param name="taskName">The task name</param>
         /// <param name="state">The state</param>
-        /// <param name="action">The action type</param>
-        public NodeProgressingEventArgs(LogReason action, int percentage, string taskName = null, object state = null)
+        /// <param name="reason">The action type</param>
+        public NodeProgressingEventArgs(LogReason reason, int percentage, string taskName = null, object state = null)
         {
             Percentage = Math.Max(0, Math.Min(100, percentage));
             TaskName = taskName;
             State = state;
-            Action = action;
+            Reason = reason;
         }
     }
 }

@@ -58,5 +58,25 @@ namespace Task
             
             return set.ToArray();
         }
+
+        /// <summary>
+        /// Converts all lines into upper case invariant strings.
+        /// </summary>
+        /// <param name="line">The line</param>
+        /// <returns>Upper case lines</returns>
+        public static string ToUpper(string line)
+        {
+            return line.ToUpperInvariant();
+        }
+        
+        /// <summary>
+        /// Converts all lines into lower case invariant strings.
+        /// </summary>
+        /// <param name="line">The line</param>
+        /// <returns>The lower case lines</returns>
+        public static string ToLower(string line)
+        {
+            return line.ToLowerInvariant();
+        }
     }
 }

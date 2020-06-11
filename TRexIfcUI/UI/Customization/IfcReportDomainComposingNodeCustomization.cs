@@ -1,23 +1,18 @@
 ﻿using Dynamo.Controls;
-using Dynamo.Utilities;
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using Log;
+using Validation;
 
 namespace UI.Customization
 {
 #pragma warning disable CS1591
 
-    public class ActionTypeComposingNodeCustomization : BaseNodeViewCustomization<LogReasonComposingNodeModel>
+    public class IfcReportDomainComposingNodeCustomization : BaseNodeViewCustomization<IfcReportDomainComposingNodeModel>
     {
         private SelectableListControl _control;
 
-        public override void CustomizeView(LogReasonComposingNodeModel model, NodeView nodeView)
+        public override void CustomizeView(IfcReportDomainComposingNodeModel model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
 
@@ -33,7 +28,7 @@ namespace UI.Customization
 
         private void SelectionListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            NodeModel.Selected = _control.SelectionListBox.SelectedItems.Cast<LogReason>().ToArray();
+            NodeModel.Selected = _control.SelectionListBox.SelectedItems.Cast<IfcReportDomain>().ToArray();
         }
 
         public override void Dispose()

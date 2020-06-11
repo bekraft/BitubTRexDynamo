@@ -46,6 +46,8 @@ namespace Export
             SelectedOption = SceneExport.Extensions[0];
         }
 
+        #region Internals
+
         [JsonConstructor]
         SceneExporterNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
@@ -57,6 +59,8 @@ namespace Export
             foreach (var ext in SceneExport.Extensions)
                 AvailableOptions.Add(ext);
         }
+
+        #endregion
 
 #pragma warning disable CS1591
 
@@ -74,6 +78,9 @@ namespace Export
                             // Canonical separator is optional
                             break;
                         default:
+                            WarnForMissingInputs();
+                            ResetState();
+
                             // No evalable, cancel here
                             return new[]
                             {

@@ -7,6 +7,8 @@ using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
+using System;
+using Internal;
 
 namespace Task
 {
@@ -19,12 +21,12 @@ namespace Task
     [InPortTypes(typeof(object[]))]
     [OutPortTypes(typeof(object[]))]
     [IsDesignScriptCompatible]
-    public class SelectiveItemListNodeModel : SelectableItemListNodeModel
+    public class SelectingItemListNodeModel : SelectableItemListNodeModel
     {
         #region Internals
 
         [JsonConstructor]
-        SelectiveItemListNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        SelectingItemListNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
 
@@ -33,7 +35,7 @@ namespace Task
         /// <summary>
         /// New selective item list node model.
         /// </summary>
-        public SelectiveItemListNodeModel() : base()
+        public SelectingItemListNodeModel() : base()
         {
         }
 
@@ -51,10 +53,20 @@ namespace Task
 
             AssociativeNode selectedNode;
             if (Selected?.Count > 0)
-                selectedNode = AstFactory.BuildExprList(
-                        Selected.Select(c => c.ToAstNode() as AssociativeNode).ToList());
+            {
+                selectedNode = AstFactory.BuildExprList(Selected.Select(c => c.ToAstNode()).ToList());
+            }
             else
-                selectedNode = AstFactory.BuildNullNode();
+            {
+                selectedNode = AstFactory.BuildFunctionCall(
+                    new Func<object[], string[], bool, object[]>(GlobalArgumentService.FilterBySerializationValue),
+                    new List<AssociativeNode>()
+                    {
+                         inputAstNodes[0],
+                         AstFactory.BuildExprList(SelectedValue.Select(v => AstFactory.BuildStringNode(v) as AssociativeNode).ToList()),
+                         AstFactory.BuildBooleanNode(false)
+                    });
+            }
 
             return new AssociativeNode[]
             {
