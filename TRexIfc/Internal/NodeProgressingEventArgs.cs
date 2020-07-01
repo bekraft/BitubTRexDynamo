@@ -5,12 +5,14 @@ using Bitub.Transfer;
 using Autodesk.DesignScript.Runtime;
 using Log;
 
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("TRexIfcUI")]
+
 namespace Internal
 {
     /// <summary>
     /// Node progressing event arguments.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
     internal class NodeProgressingEventArgs : EventArgs
     {
         /// <summary>

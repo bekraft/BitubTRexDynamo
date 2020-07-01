@@ -1,18 +1,17 @@
 # Bitub TRex Dynamo
 
-Bitub TRex Dynamo Bindings
+Bitub TRex Dynamo Bindings using [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
 ## TRexIfc
 
-### ToDo
+Currently supports [Dynamo 2.6+](https://github.com/DynamoDS/Dynamo).
 
- - IfcModel.LogMessages => UI Node with interactive table
- - Codepage Transformator
- - Global logging to file
+### Basics store nodes
 
-### Features
- - Reading of IFC2.3, IFC4,  IFC4.1 
- - Dumping of metadata information, property information etc.
- - Filtering
- - Transforming
- - Saving IFC
+ - IfcLoad
+ - IfcSave
+ 
+### Transformation pipes
+ - Model location alignment
+ - Trimming psets
+

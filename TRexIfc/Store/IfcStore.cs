@@ -182,14 +182,11 @@ namespace Store
 
         #endregion
 
-        [IsVisibleInDynamoLibrary(false)]
-        public delegate IModel ModelDelegate();
+        internal delegate IModel ModelDelegate();
 
-        [IsVisibleInDynamoLibrary(false)]
-        public delegate IModel ModelProgressDelegate(NodeProgressing node);
+        internal delegate IModel ModelProgressDelegate(NodeProgressing node);
 
-        [IsVisibleInDynamoLibrary(false)]
-        public delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing node);        
+        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing node);        
 
 #pragma warning restore CS1591
 
@@ -244,7 +241,7 @@ namespace Store
         /// <param name="canonicalAddon"></param>
         /// <param name="logInstance"></param>
         /// <returns></returns>
-        public static IfcModel CreateFromProducer(ModelProgressDelegate producerDelegate, 
+        internal static IfcModel CreateFromProducer(ModelProgressDelegate producerDelegate, 
             Qualifier ancestor, string canonicalAddon, Logger logInstance)
         {
             var store = new IfcStore(logInstance);
@@ -260,7 +257,7 @@ namespace Store
         /// <param name="transformerDelegate">The delegate</param>
         /// <param name="canoncialName">The canonical fragment</param>
         /// <returns></returns>
-        public static IfcModel CreateFromTransform(IfcModel source, 
+        internal static IfcModel CreateFromTransform(IfcModel source, 
             ModelTransformProgressDelegate transformerDelegate, string canoncialName)
         {
             var store = new IfcStore(source.Store.Logger);            
