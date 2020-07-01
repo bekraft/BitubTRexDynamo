@@ -1,19 +1,12 @@
-﻿using Dynamo.Graph.Connectors;
+﻿using System;
+using Dynamo.ViewModels;
+using Dynamo.Graph.Nodes;
+using System.Windows.Threading;
 
 using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Wpf;
 using Dynamo.Scheduler;
-
-using Export;
-using Store;
-
-using System;
-using System.Windows.Controls;
-using Dynamo.ViewModels;
-using Dynamo.Graph.Nodes;
-using System.Windows.Threading;
-using System.Threading.Tasks;
 
 namespace UI.Customization
 {
@@ -22,10 +15,13 @@ namespace UI.Customization
 
     public abstract class BaseNodeViewCustomization<T> : INodeViewCustomization<T> where T : NodeModel
     {
+        #region Internals
         private DynamoViewModel _viewModel;
         private DispatcherSynchronizationContext _syncContext;
         private NodeView _nodeView;
+
         protected T NodeModel { get; set; }
+        #endregion
 
         public virtual void CustomizeView(T model, NodeView nodeView)
         {
@@ -48,16 +44,30 @@ namespace UI.Customization
         {
         }
 
-        protected void ScheduleAsync(Action modelAction, Action uiAction = null)
+        protected DelegateBasedAsyncTask AsyncThenUI(DelegateBasedAsyncTask task, Action action)
         {
-            var chain = new DelegateBasedAsyncTask(_viewModel.Model.Scheduler, modelAction);
-            chain.ThenSend((_) => uiAction?.Invoke(), _syncContext);
-            _viewModel.Model.Scheduler.ScheduleForExecution(chain);
+            task.ThenSend((_) => action?.BeginInvoke(action.EndInvoke, null), _syncContext);
+            return task;
+        }
+
+        protected DelegateBasedAsyncTask AsyncTask(Action action)
+        {
+            return new DelegateBasedAsyncTask(_viewModel.Model.Scheduler, action);
+        }
+
+        protected void AsyncSchedule(DelegateBasedAsyncTask task)
+        {
+            _viewModel.Model.Scheduler.ScheduleForExecution(task);
+        }
+
+        protected void AsyncSchedule(Action action, Action thenUI = null)
+        {
+            AsyncSchedule(AsyncThenUI(AsyncTask(action), thenUI));
         }
 
         protected void DispatchUI(Action uiAction)
         {
-            _nodeView?.Dispatcher.Invoke(uiAction);
+            _nodeView?.Dispatcher.BeginInvoke(uiAction, DispatcherPriority.Background);
         }
 
         protected EngineController ModelEngineController { get => _viewModel.Model.EngineController; }

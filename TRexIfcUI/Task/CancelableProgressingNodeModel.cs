@@ -42,7 +42,9 @@ namespace Task
         [JsonIgnore]
         public Visibility CancellationVisibility
         {
-            get => _visibility;
+            get {
+                return _visibility;
+            }
             set {
                 _visibility = value;
                 RaisePropertyChanged(nameof(CancellationVisibility));
@@ -51,7 +53,9 @@ namespace Task
 
         public bool IsCancelable
         {
-            get => _isCancelable;
+            get {
+                return _isCancelable;
+            }
             set {
                 _isCancelable = value;
                 RaisePropertyChanged(nameof(IsCancelable));
@@ -61,7 +65,9 @@ namespace Task
         [JsonIgnore]
         public bool IsCanceled
         {
-            get => _isCanceled;
+            get {
+                return _isCanceled;
+            }
             set {
                 _isCanceled = value;
                 RaisePropertyChanged(nameof(IsCanceled));
@@ -71,7 +77,9 @@ namespace Task
         [JsonIgnore]
         public string ProgressState
         {
-            get => _progressState;
+            get {
+                return _progressState;
+            }
             set {
                 _progressState = value;
                 RaisePropertyChanged(nameof(ProgressState));                
@@ -81,7 +89,9 @@ namespace Task
         [JsonIgnore]
         public string TaskName
         {
-            get => _taskName;
+            get {
+                return _taskName;
+            }
             set {
                 _taskName = value;
                 RaisePropertyChanged(nameof(TaskName));                
@@ -91,7 +101,9 @@ namespace Task
         [JsonIgnore]
         public int ProgressPercentage
         {
-            get => _progressPercentage;
+            get {
+                return _progressPercentage;
+            }
             set {
                 _progressPercentage = Math.Max(0, Math.Min(100, value));
                 RaisePropertyChanged(nameof(ProgressPercentage));

@@ -170,7 +170,7 @@ namespace Store
         /// <summary>
         /// The source store name.
         /// </summary>
-        public override string Name
+        internal override string Name
         {
             get {
                 switch (Qualifier.GuidOrNameCase)
@@ -312,13 +312,13 @@ namespace Store
                 }
                 
                 ifcModel.NotifyOnFinished(LogReason.Saved, false, false);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(LogSeverity.Info, LogReason.Saved, "Success: '{0}'.", filePathName));
+                aboutToBeSaved.ActionLog.Add(new LogMessage(aboutToBeSaved.FileName, LogSeverity.Info, LogReason.Saved, "Success: '{0}'.", filePathName));
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception: {0}", e.Message);
                 ifcModel.NotifyOnFinished(LogReason.Saved, false, true);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
+                aboutToBeSaved.ActionLog.Add(new LogMessage(aboutToBeSaved.FileName, LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
             }
 
             return aboutToBeSaved;

@@ -7,33 +7,53 @@
              mc:Ignorable="d" 
              d:DesignHeight="60" d:DesignWidth="120">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                  HorizontalScrollBarVisibility="Auto"
-                  Margin="3,3,3,3"
-                  MaxHeight="150" MaxWidth="300">
-        
-        <Grid x:Name="ContextGrid" HorizontalAlignment="Stretch" Margin="0,0,0,0">
-            
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+    <Grid Margin="3,3,3,3" MinWidth="100">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <DataGrid x:Name="DataGrid"
-                      ItemsSource="{Binding DataTable, Mode=OneWay}"
-                      Margin="0,0,0,0"                      
-                      AlternatingRowBackground="AliceBlue"
-                      AlternationCount="2"
-                      GridLinesVisibility="Horizontal"
-                      HorizontalGridLinesBrush="CornflowerBlue"
-                      AutoGenerateColumns="True"
-                      CanUserResizeColumns="True"
-                      RowDetailsVisibilityMode="Visible"
-                      CanUserAddRows="False"
-                      SelectionUnit="FullRow"
-                      SelectionMode="Extended">
-                
-            </DataGrid>
-        </Grid>
-    </ScrollViewer>
+        <Slider Value="{Binding Count, Mode=TwoWay}" 
+                Grid.Row="0" Grid.Column="1"
+                Maximum="{Binding MaxCount, Mode=TwoWay}"
+                Minimum="{Binding MinCount, Mode=TwoWay}"/>
+        <Label Content="{Binding Count, Mode=OneWay}" 
+               FontSize="8" 
+               MinWidth="25"
+               Grid.Row="0" Grid.Column="0"/>
         
+        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                      Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                      Margin="2,2,2,2"
+                      HorizontalScrollBarVisibility="Auto"
+                      MaxHeight="150" MaxWidth="300">
+        
+            <Grid x:Name="ContextGrid" HorizontalAlignment="Stretch" Margin="0,0,0,0">
+            
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DataGrid x:Name="DataGrid"
+                          ItemsSource="{Binding DataTable, Mode=OneWay}"
+                          Margin="0,0,0,0"                      
+                          AlternatingRowBackground="AliceBlue"
+                          AlternationCount="2"
+                          GridLinesVisibility="Horizontal"
+                          HorizontalGridLinesBrush="CornflowerBlue"
+                          AutoGenerateColumns="True"
+                          CanUserResizeColumns="True"
+                          RowDetailsVisibilityMode="Visible"
+                          CanUserAddRows="False"
+                          SelectionUnit="FullRow"
+                          SelectionMode="Extended">
+                
+                </DataGrid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

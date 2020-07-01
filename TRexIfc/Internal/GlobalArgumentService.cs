@@ -5,7 +5,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 
 namespace Internal
 {
@@ -58,11 +57,40 @@ namespace Internal
                 member = (T)Enum.ToObject(typeof(T), l);
             else
             {
-                Log.LogWarning($"Parsing/casting of '{serializedEnum}' (type '{serializedEnum.GetType().Name}') to type '{member.GetType().Name}' failed.");
+                if (null != serializedEnum)
+                    Log.LogWarning($"Parsing/casting of '{serializedEnum}' (type '{serializedEnum.GetType().Name}') to type '{member.GetType().Name}' failed.");
                 isCasted = false;
             }
 
             return isCasted;
+        }
+
+        /// <summary>
+        /// Decomposes an object by its properties.
+        /// </summary>
+        /// <param name="dataArray">The data</param>
+        /// <param name="takeCount">The limiting count</param>
+        /// <returns>An enumerable of same length of property values</returns>
+        public static object[][] Decompose(object[] dataArray, int takeCount = int.MaxValue)
+        {
+            return dataArray?.Take(takeCount).Select(data =>
+            {
+                var props = data.GetType().GetProperties();
+                if (props.Length > 0)
+                    return props
+                        .Where(p => p.CanRead)
+                        .Select(p =>
+                        {
+                            var obj = p.GetValue(data);
+                            if (obj is Enum e)
+                                return e.ToString();
+                            else
+                                return obj;
+                        })
+                        .ToArray();
+                else
+                    return new object[] { data.ToString() };
+            }).ToArray();
         }
 
         /// <summary>

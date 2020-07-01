@@ -11,32 +11,32 @@ namespace Internal
     /// Node progressing event arguments.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class NodeProgressingEventArgs : EventArgs
+    internal class NodeProgressingEventArgs : EventArgs
     {
         /// <summary>
         /// Internal state object
         /// </summary>
-        public readonly ICancelableProgressState InternalState;
+        internal readonly ICancelableProgressState InternalState;
 
         /// <summary>
         /// The state.
         /// </summary>
-        public readonly object State;
+        internal readonly object State;
 
         /// <summary>
         /// The task name.
         /// </summary>
-        public readonly string TaskName;
+        internal readonly string TaskName;
         
         /// <summary>
         /// The percentage (between 0 and 100)
         /// </summary>
-        public readonly int Percentage;
+        internal readonly int Percentage;
 
         /// <summary>
         /// The action type.
         /// </summary>
-        public readonly LogReason Reason;
+        internal readonly LogReason Reason;
 
         /// <summary>
         /// Wrapping an internal event reference.
@@ -44,7 +44,7 @@ namespace Internal
         /// <param name="state">The source state</param>
         /// <param name="taskName">The task name</param>
         /// <param name="reason">The action type</param>
-        public NodeProgressingEventArgs(LogReason reason, ICancelableProgressState state, string taskName = null)
+        internal NodeProgressingEventArgs(LogReason reason, ICancelableProgressState state, string taskName = null)
         {
             InternalState = state;
             TaskName = $"{taskName ?? state.State.ToString()}";
@@ -60,7 +60,7 @@ namespace Internal
         /// <param name="taskName">The task name</param>
         /// <param name="state">The state</param>
         /// <param name="reason">The action type</param>
-        public NodeProgressingEventArgs(LogReason reason, int percentage, string taskName = null, object state = null)
+        internal NodeProgressingEventArgs(LogReason reason, int percentage, string taskName = null, object state = null)
         {
             Percentage = Math.Max(0, Math.Min(100, percentage));
             TaskName = taskName;

@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Dynamo.Controls;
-using Dynamo.Utilities;
 
-using Internal;
-using Log;
+using Dynamo.Controls;
+
+using Task;
 
 namespace UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class LogMessageTableNodeCustomization : BaseNodeViewCustomization<LogMessageTableNodeModel>
+    public class DataTablePreviewNodeCustomization : BaseNodeViewCustomization<DataTablePreviewNodeModel>
     {
         class EnumToTextConverter : IValueConverter
         {
@@ -33,12 +32,11 @@ namespace UI.Customization
 
         #region Internals
 
-        private NodeProgressing[] _eventSources = new NodeProgressing[] { };
         private SortableTableControl _control;
 
         #endregion
 
-        public override void CustomizeView(LogMessageTableNodeModel model, NodeView nodeView)
+        public override void CustomizeView(DataTablePreviewNodeModel model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
 
@@ -65,40 +63,15 @@ namespace UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            // Get recently updated event sources
-            var eventSources = NodeModel.GetCachedInput<NodeProgressing>(0, ModelEngineController);
-            // Assumes that sources are unique with the current array
-            if (eventSources.Length == _eventSources.Length
-                // No change action if same, or both empty
-                && (_eventSources.All(i => eventSources.Any(j => i == j)))) return;
-
-            foreach (var eventSource in _eventSources)
-                eventSource.ActionLog.CollectionChanged -= ActionLog_CollectionChanged;
-
-            DispatchUI(() =>
-            {
-                NodeModel.DataTable.Clear();
-                foreach (var eventSource in eventSources)
-                    NodeModel.DataTable.AddRange(eventSource.ActionLog);
-            });
-            
-            foreach (var eventSource in eventSources)
-                eventSource.ActionLog.CollectionChanged += ActionLog_CollectionChanged;
-
-            _eventSources = eventSources;
-        }
-
-        private void ActionLog_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            DispatchUI( () => NodeModel.DataTable.AddRange(e.NewItems.Cast<LogMessage>()) );
+            ObservableCollection<object> postedData = null;
+            AsyncSchedule(
+                () => { postedData = new ObservableCollection<object>(NodeModel.GetCachedInput<object>(0, ModelEngineController)); },
+                () => { NodeModel.DataTable = postedData; }
+            );
         }
 
         public override void Dispose()
         {
-            foreach (var eventSource in _eventSources)
-                eventSource.ActionLog.CollectionChanged -= ActionLog_CollectionChanged;
-
-            _eventSources = null;
             _control = null;
         }
     }

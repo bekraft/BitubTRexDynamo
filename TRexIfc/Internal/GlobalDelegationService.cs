@@ -4,6 +4,10 @@ using System.Collections.Concurrent;
 
 using Autodesk.DesignScript.Runtime;
 
+using Bitub.Transfer;
+using Google.Protobuf;
+using Microsoft.Extensions.Logging;
+
 namespace Internal
 {
 #pragma warning disable CS1591   
@@ -11,74 +15,65 @@ namespace Internal
     [IsVisibleInDynamoLibrary(false)]
     public sealed class GlobalDelegationService
     {
-        private readonly static ConcurrentDictionary<string, object> FunctionCache = new ConcurrentDictionary<string, object>();
-
         /// <summary>
         /// Registers a simple in => out function.
         /// </summary>
         /// <param name="f1">A function having 1 argument</param>
         /// <returns>Function key</returns>
-        internal static string Put<T1>(Func<T1, object> f1)
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Put<T1>(Func<T1,object> f1)
         {
-            bool hasAdded;
-            string key;
-            do
-            {
-                key = Guid.NewGuid().ToString();
-                hasAdded = FunctionCache.TryAdd(key, f1);
-            } while (!hasAdded);
-            return key;
+            return JsonFormatter.Default.Format(PutAnonymous(f1));
         }
 
         /// <summary>
-        /// Registers a 2-argument function
+        /// Registers a simple in => out function.
         /// </summary>
-        /// <param name="f2">Function reference</param>
-        /// <returns>Function key</returns>       
-        internal static string Put<T1,T2>(Func<T1, T2, object> f2)
-        {
-            bool hasAdded;
-            string key;
-            do
-            {
-                key = Guid.NewGuid().ToString();
-                hasAdded = FunctionCache.TryAdd(key, f2);
-            } while (!hasAdded);
-            return key;
-        }
-
-        /// <summary>
-        /// Registers a 2-argument function
-        /// </summary>
-        /// <param name="f2">Function reference</param>
+        /// <param name="named">The reference name</param>
+        /// <param name="f1">A function having 1 argument</param>
         /// <returns>Function key</returns>
-        internal static string Put<T1, T2, T3>(Func<T1, T2, T3, object> f2)
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Put<T1>(Qualifier named, Func<T1, object> f1)
         {
-            bool hasAdded;
-            string key;
-            do
+            FunctionCache.AddOrUpdate(named, f1, (q, f) => 
             {
-                key = Guid.NewGuid().ToString();
-                hasAdded = FunctionCache.TryAdd(key, f2);
-            } while (!hasAdded);
-            return key;
+                Log.LogWarning("{0}: Key '{1}' already present. Using new function reference.", typeof(GlobalDelegationService), named.ToLabel());
+                return f1;
+            });
+            return JsonFormatter.Default.Format(named);
         }
 
         /// <summary>
         /// Registers a 2-argument function
         /// </summary>
         /// <param name="f2">Function reference</param>
-        /// <returns>Function key</returns>       
-        internal static string Put<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f2)
+        /// <returns>Function key</returns>   
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Put<T1,T2>(Func<T1, T2, object> f2)
         {
-            bool hasAdded;
-            string key;
-            do
-            {
-                key = Guid.NewGuid().ToString();
-                hasAdded = FunctionCache.TryAdd(key, f2);
-            } while (!hasAdded);
-            return key;
+            return JsonFormatter.Default.Format(PutAnonymous(f2));
+        }
+
+        /// <summary>
+        /// Registers a 2-argument function
+        /// </summary>
+        /// <param name="f3">Function reference</param>
+        /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Put<T1, T2, T3>(Func<T1, T2, T3, object> f3)
+        {
+            return JsonFormatter.Default.Format(PutAnonymous(f3));
+        }
+
+        /// <summary>
+        /// Registers a 2-argument function
+        /// </summary>
+        /// <param name="f4">Function reference</param>
+        /// <returns>Function key</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string Put<T1, T2, T3, T4>(Func<T1, T2, T3, T4, object> f4)
+        {
+            return JsonFormatter.Default.Format(PutAnonymous(f4));
         }
 
         /// <summary>
@@ -87,7 +82,8 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        internal static object Call(string key, string arg1)
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, string arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -98,7 +94,8 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        internal static object Call(string key, double arg1)
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, double arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -109,7 +106,8 @@ namespace Internal
         /// <param name="key">The function key</param>
         /// <param name="arg1">1st argument</param>
         /// <returns></returns>
-        internal static object Call(string key, object arg1)
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, object arg1)
         {
             return InternallyCall(key, arg1);
         }
@@ -121,69 +119,85 @@ namespace Internal
         /// <param name="arg1">1st argument</param>
         /// <param name="arg2">2nd argument</param>
         /// <returns></returns>
-        internal static object Call(string key, object arg1, object arg2)
+        [IsVisibleInDynamoLibrary(false)]
+        public static object Call(string key, object arg1, object arg2)
         {
             return InternallyCall(key, arg1, arg2);
         }
 
-        internal static object Call(string key, object arg1, object arg2, object arg3)
+        public static object Call(string key, object arg1, object arg2, object arg3)
         {
             return InternallyCall(key, arg1, arg2, arg3);
         }
 
-        internal static object Call(string key, object arg1, object arg2, object arg3, object arg4)
+        public static object Call(string key, object arg1, object arg2, object arg3, object arg4)
         {
             return InternallyCall(key, arg1, arg2, arg3, arg4);
         }
 
         #region Internals
 
+        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<GlobalDelegationService>();
+
+        private readonly static ConcurrentDictionary<Qualifier, object> FunctionCache = new ConcurrentDictionary<Qualifier, object>();
+
         private GlobalDelegationService()
         {
         }
 
-        private static object InternallyCall<T1>(string key, T1 arg1)
+        private static Qualifier PutAnonymous(object f)
         {
-            object f;
-            if (!FunctionCache.TryRemove(key, out f))
-                throw new NotImplementedException();
-
-            var r = (f as Func<T1, object>)?.Invoke(arg1);
-            return r;
+            bool hasAdded;
+            Qualifier key;
+            do
+            {
+                key = System.Guid.NewGuid().ToQualifier();
+                hasAdded = FunctionCache.TryAdd(key, f);
+            } while (!hasAdded);
+            return key;
         }
 
-        private static object InternallyCall<T1,T2>(string key, T1 arg1, T2 arg2)
+        private static T Get<T>(string sQualifier)
         {
-            object f;
-            if (!FunctionCache.TryRemove(key, out f))
-                throw new NotImplementedException();
+            var q = JsonParser.Default.Parse<Qualifier>(sQualifier);
+            object f = null;
+            switch(q.GuidOrNameCase)
+            {
+                case Qualifier.GuidOrNameOneofCase.Anonymous:
+                    if (!FunctionCache.TryRemove(q, out f))
+                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(GlobalDelegationService), q);
+                    break;
+                case Qualifier.GuidOrNameOneofCase.Named:
+                    if (!FunctionCache.TryGetValue(q, out f))
+                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(GlobalDelegationService), q);
+                    break;
+            }
 
-            var r = (f as Func<T1, T2, object>)?.Invoke(arg1, arg2);
-            return r;
+            return (T)f;
         }
 
-        private static object InternallyCall<T1, T2, T3>(string key, T1 arg1, T2 arg2, T3 arg3)
+        private static object InternallyCall<T1>(string sQualifier, T1 arg1)
         {
-            object f;
-            if (!FunctionCache.TryRemove(key, out f))
-                throw new NotImplementedException();
-
-            var r = (f as Func<T1, T2, T3, object>)?.Invoke(arg1, arg2, arg3);
-            return r;
+            return Get<Func<T1, object>>(sQualifier)?.Invoke(arg1);
         }
 
-        private static object InternallyCall<T1, T2, T3, T4>(string key, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        private static object InternallyCall<T1,T2>(string sQualifier, T1 arg1, T2 arg2)
         {
-            object f;
-            if (!FunctionCache.TryRemove(key, out f))
-                throw new NotImplementedException();
+            return Get<Func<T1, T2, object>>(sQualifier)?.Invoke(arg1, arg2);
+        }
 
-            var r = (f as Func<T1, T2, T3, T4, object>)?.Invoke(arg1, arg2, arg3, arg4);
-            return r;
+        private static object InternallyCall<T1, T2, T3>(string sQualifier, T1 arg1, T2 arg2, T3 arg3)
+        {
+            return Get<Func<T1, T2, T3, object>>(sQualifier)?.Invoke(arg1, arg2, arg3);
+        }
+
+        private static object InternallyCall<T1, T2, T3, T4>(string sQualifier, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        {
+            return Get<Func<T1, T2, T3, T4, object>>(sQualifier)?.Invoke(arg1, arg2, arg3, arg4);
         }
 
         #endregion
     }
-
+    
 #pragma warning restore CS1591
 }

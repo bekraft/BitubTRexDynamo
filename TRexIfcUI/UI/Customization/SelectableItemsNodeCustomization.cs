@@ -35,7 +35,7 @@ namespace UI.Customization
                 foreach (var s in selectedItems)
                     _control.SelectionListBox.SelectedItems.Add(s);
             });
-            ScheduleAsync(() => NodeModel.SetSelected(selectedItems, false));
+            AsyncSchedule(() => NodeModel.SetSelected(selectedItems, false));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
@@ -56,18 +56,18 @@ namespace UI.Customization
 
         private void SelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var selected = (sender as ListBox).SelectedItems.Cast<AstReference>().ToArray();
-            ScheduleAsync(() => NodeModel.SetSelected(selected, true));
+            var selected = (sender as ListBox).SelectedItems.Cast<AstReference>().ToArray();            
+            AsyncSchedule(() => NodeModel.SetSelected(selected, true));
         }
 
         private void Model_PortConnected(Dynamo.Graph.Nodes.PortModel arg1, Dynamo.Graph.Connectors.ConnectorModel arg2)
         {
-            ScheduleAsync(UpdateItems);
+            AsyncSchedule(UpdateItems);
         }
 
         private void Model_PortDisconnected(Dynamo.Graph.Nodes.PortModel obj)
         {
-            ScheduleAsync(UpdateItems);
+            AsyncSchedule(UpdateItems);
         }
 
         public override void Dispose()

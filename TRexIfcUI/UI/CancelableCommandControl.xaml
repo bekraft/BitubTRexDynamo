@@ -21,11 +21,11 @@
                      Grid.Row="0"
                      Margin="5,5,5,5"
                      Minimum="0" Maximum="100"
-                     Value="{Binding Path=ProgressPercentage}"/>
+                     Value="{Binding ProgressPercentage, Mode=OneWay}"/>
         
         <Button x:Name="Cancel"
-                IsEnabled="{Binding Path=IsCancelable}"
-                Visibility="{Binding Path=CancellationVisibility}"                
+                IsEnabled="{Binding IsCancelable, Mode=OneWay}"
+                Visibility="{Binding CancellationVisibility, Mode=OneWay}"                
                 Grid.Row="0"
                 Grid.Column="1"
                 FontSize="8"
@@ -41,7 +41,7 @@
                HorizontalContentAlignment="Center"
                VerticalContentAlignment="Center"
                VerticalAlignment="Center"
-               Content="{Binding Path=ProgressState}"/>
+               Content="{Binding ProgressState, Mode=OneWay}"/>
 
         <Label x:Name="TaskName"  
                Grid.Column="0"
@@ -52,7 +52,7 @@
                HorizontalContentAlignment="Left"
                VerticalContentAlignment="Center"
                VerticalAlignment="Center"               
-               Content="{Binding Path=TaskName}"/>
+               Content="{Binding TaskName, Mode=OneWay}"/>
 
     </Grid>
 </UserControl>

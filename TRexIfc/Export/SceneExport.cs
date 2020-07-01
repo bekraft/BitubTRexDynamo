@@ -47,7 +47,7 @@ namespace Export
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public override string Name
+        internal override string Name
         {
             get => "Scene Export";
         }
@@ -123,12 +123,12 @@ namespace Export
                 }
 
                 return LogMessage.BySeverityAndMessage(
-                    LogSeverity.Info, LogReason.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
+                    ifcModel.FileName, LogSeverity.Info, LogReason.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
             }
             catch (Exception e)
             {
                 return LogMessage.BySeverityAndMessage(
-                    LogSeverity.Critical, LogReason.Saved, "({0}) '{1}'", e.Message, sceneFileName);
+                    ifcModel.FileName, LogSeverity.Critical, LogReason.Saved, "({0}) '{1}'", e.Message, sceneFileName);
             }
         }
 

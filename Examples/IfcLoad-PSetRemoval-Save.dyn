@@ -131,7 +131,7 @@
     },
     {
       "ConcreteType": "Store.IfcSaveStoreNodeModel, TRexIfcUI",
-      "SelectedOption": "ifc",
+      "SelectedOption": "ifczip",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "874dbe9d9f8746cd9e2c396aa7765253",
@@ -286,12 +286,12 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "\"Changed\";",
+      "Code": "\"PSetClean\";",
       "Id": "9cf8d60e4d9a4556afcacfcccc1eacba",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "0e1b19655c0e42b694cc8da3e9969cf9",
+          "Id": "87c39c9361f0433bb3ebce12444cb12c",
           "Name": "",
           "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
@@ -302,36 +302,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.LogMessages",
-      "Id": "1bc88a9a297d415683d33256228007e6",
-      "Inputs": [
-        {
-          "Id": "b52b6573459445fdb8503a3b38ec282c",
-          "Name": "ifcModel",
-          "Description": "Store.IfcModel",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d9f0461974244c1080df9300f8237027",
-          "Name": "LogMessage[]",
-          "Description": "The log messages",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Returns the current log messages.\n\nIfcModel.LogMessages ( ): LogMessage[]"
     },
     {
       "ConcreteType": "Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
@@ -465,14 +435,25 @@
       "Description": "Excludes multiple items from a list of available items using its string representation."
     },
     {
-      "ConcreteType": "Log.LogMessageTableNodeModel, TRexIfcUI",
+      "ConcreteType": "Log.LogFilterNodeModel, TRexIfcUI",
+      "LogCount": 55,
+      "LogMinSeverity": 0,
       "NodeType": "ExtensionNode",
-      "Id": "4f138dc9b5c84096a4617fbd0c06432c",
+      "Id": "2d79ee2c771a4e9ea2c69a2d4ff61f2e",
       "Inputs": [
         {
-          "Id": "b674e2b5284842f7b8a6be59a7ca9477",
-          "Name": "source",
-          "Description": "Logging event source (i.e. IfcModel)",
+          "Id": "ec08b8cfa90b4e4b95619b81ca17b3f9",
+          "Name": "logSource",
+          "Description": "Log source (i.e. IfcModel)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "be39c9b4022a401296b64ecc30395cad",
+          "Name": "logReason",
+          "Description": "Reason filter flags",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -481,9 +462,9 @@
       ],
       "Outputs": [
         {
-          "Id": "2d6b73cb539846eab805aa4ef569adfe",
-          "Name": "logData",
-          "Description": "Tabular logged event data",
+          "Id": "5bfc629943c545429c085ca4c981899f",
+          "Name": "logMessages",
+          "Description": "Log events",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -491,17 +472,40 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Interactive table grid displaying incoming logged events."
+      "Description": "Log filtering node"
     },
     {
-      "ConcreteType": "Log.LogMessageTableNodeModel, TRexIfcUI",
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"-\";",
+      "Id": "af0ca31811ea4f198abd98d57145dfd3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "806c5e31bce549a49648870e5233d343",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Task.DataTablePreviewNodeModel, TRexIfcUI",
+      "MinCount": 1,
+      "MaxCount": 100,
+      "Count": 19,
       "NodeType": "ExtensionNode",
-      "Id": "acb05fe66b4a453dac86192422440287",
+      "Id": "44f1b6161452440f9b2578797ff683c4",
       "Inputs": [
         {
-          "Id": "4b04953b34564d729101dbb9782d04c9",
-          "Name": "source",
-          "Description": "Logging event source (i.e. IfcModel)",
+          "Id": "f9fb7c99be2349219614eeac1c5062c3",
+          "Name": "in",
+          "Description": "Input grid data (i.e. LogMessage)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -510,9 +514,9 @@
       ],
       "Outputs": [
         {
-          "Id": "3fcb879fd929403ab1835b50cc5f8ecc",
-          "Name": "logData",
-          "Description": "Tabular logged event data",
+          "Id": "a8c8b51ccc2343e697e076a1d6af93f7",
+          "Name": "out",
+          "Description": "Limited data",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -520,7 +524,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Interactive table grid displaying incoming logged events."
+      "Description": "Interactive table grid displaying incoming data with a given count threshold."
     }
   ],
   "Connectors": [
@@ -546,23 +550,13 @@
     },
     {
       "Start": "1f0848eed1694c299fe9f02727897a31",
-      "End": "b52b6573459445fdb8503a3b38ec282c",
-      "Id": "92603eda6fae4793a973630110a09c8c"
-    },
-    {
-      "Start": "1f0848eed1694c299fe9f02727897a31",
       "End": "3039a04f1349410a955a3d8d784a20ab",
       "Id": "61fec6f764ce409bb362612bb5431c97"
     },
     {
-      "Start": "795851e95b484ef6a8f3707577d69a1e",
-      "End": "4b04953b34564d729101dbb9782d04c9",
-      "Id": "ff30828e82294f0cb6c66b9ae321f478"
-    },
-    {
       "Start": "3a4882cf4b0a4829bb7bd8f716f78dc2",
       "End": "9bfe59dbd7c5445897ad212f51679a61",
-      "Id": "11acfb2717c5428b9b9d73e71d2d8289"
+      "Id": "2f5b4cf15dc44e499df06bcb0c7d5459"
     },
     {
       "Start": "d15556427185481e81904f4f89b1165c",
@@ -580,9 +574,9 @@
       "Id": "7fec55fb53aa4aadb114047c7fa13c91"
     },
     {
-      "Start": "0e1b19655c0e42b694cc8da3e9969cf9",
+      "Start": "87c39c9361f0433bb3ebce12444cb12c",
       "End": "a7d6fa959a744569ab20982db493a0e5",
-      "Id": "d154b9c22b5c45ed94139073880f8a48"
+      "Id": "a8719198a0a14d22979699a6db2fff37"
     },
     {
       "Start": "445f33458e3d4a2daabe665eff8ecad6",
@@ -591,8 +585,8 @@
     },
     {
       "Start": "445f33458e3d4a2daabe665eff8ecad6",
-      "End": "b674e2b5284842f7b8a6be59a7ca9477",
-      "Id": "f4217754e1d748eaa9f26b61e4d6d9b2"
+      "End": "ec08b8cfa90b4e4b95619b81ca17b3f9",
+      "Id": "892318ee760349488b4b9baec214631e"
     },
     {
       "Start": "ea827723f4c04c2fbaeaad732fe1366d",
@@ -603,6 +597,16 @@
       "Start": "df306ee2f4e54d60b794cd17c90a3226",
       "End": "18cdc7e33c2c4539a0706b81b5989836",
       "Id": "37d7b5b8aca54e009236c730f0dfb569"
+    },
+    {
+      "Start": "5bfc629943c545429c085ca4c981899f",
+      "End": "f9fb7c99be2349219614eeac1c5062c3",
+      "Id": "29dfb7469d614d6ba7155befcd862778"
+    },
+    {
+      "Start": "806c5e31bce549a49648870e5233d343",
+      "End": "6a8a1f453f7c420ba2edf3dbf0ea8667",
+      "Id": "086fb588d84640f582d5f656666862c5"
     }
   ],
   "Dependencies": [],
@@ -618,12 +622,11 @@
         "3152c39a8f6149eaa395c42e6c5fcf82",
         "f56850ef5df342b7aff03308283424f2",
         "90c56c9404e84ed2a9e5da78030f5ff3",
-        "1bc88a9a297d415683d33256228007e6",
         "ddb97e749aea42bcbfd278335e956303",
         "f00e1a6ce0ea46c79369a10e9b5a4135",
         "0d6de8522f66447f9e721e32ec8f0ed1",
-        "4f138dc9b5c84096a4617fbd0c06432c",
-        "acb05fe66b4a453dac86192422440287"
+        "2d79ee2c771a4e9ea2c69a2d4ff61f2e",
+        "44f1b6161452440f9b2578797ff683c4"
       ]
     }
   ],
@@ -657,8 +660,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 281.6,
-        "Y": 56.399999999999977
+        "X": 350.31912630012982,
+        "Y": 50.673406141655789
       },
       {
         "ShowGeometry": true,
@@ -667,8 +670,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 21.471000475569383,
-        "Y": 207.9850807038427
+        "X": 33.555880870048384,
+        "Y": 166.20062330191558
       },
       {
         "ShowGeometry": true,
@@ -677,8 +680,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 25.599999999999909,
-        "Y": 54.799999999999841
+        "X": 31.642440197239466,
+        "Y": 52.7858532675867
       },
       {
         "ShowGeometry": true,
@@ -697,8 +700,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1913.9717483032373,
-        "Y": 252.5267526470281
+        "X": 2063.9631840423554,
+        "Y": 235.18948610816213
       },
       {
         "ShowGeometry": true,
@@ -707,8 +710,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1584.4691871590221,
-        "Y": 254.44259704742774
+        "X": 1672.784066748271,
+        "Y": 235.33604403664856
       },
       {
         "ShowGeometry": true,
@@ -717,8 +720,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1454.5142030371085,
-        "Y": -9.6225563487087129
+        "X": 31.7362111195373,
+        "Y": 274.72412622761607
       },
       {
         "ShowGeometry": true,
@@ -727,8 +730,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 612.004197886913,
-        "Y": 4.86253931863024
+        "X": 650.07530609899788,
+        "Y": 49.345784637420195
       },
       {
         "ShowGeometry": true,
@@ -737,28 +740,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 673.150278643361,
-        "Y": 282.36316533711863
+        "X": 348.16607718232933,
+        "Y": 378.28361246438362
       },
       {
         "ShowGeometry": true,
-        "Name": "Code Block",
+        "Name": "Workflow name",
         "Id": "9cf8d60e4d9a4556afcacfcccc1eacba",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 975.25732762872144,
-        "Y": 516.84023209349164
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "IfcModel.LogMessages",
-        "Id": "1bc88a9a297d415683d33256228007e6",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 344.11827807498094,
-        "Y": 396.43432365383137
+        "X": 362.19046752332565,
+        "Y": -114.11006967573002
       },
       {
         "ShowGeometry": true,
@@ -767,8 +760,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1136.39685519729,
-        "Y": 249.759099051883
+        "X": 1194.2971104203245,
+        "Y": 237.17208704687548
       },
       {
         "ShowGeometry": true,
@@ -777,8 +770,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 912.6152485443929,
-        "Y": 658.782146767457
+        "X": 29.529747996688116,
+        "Y": 384.7029685337933
       },
       {
         "ShowGeometry": true,
@@ -787,33 +780,43 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 880.55483313351419,
-        "Y": 0.533843455329901
+        "X": 896.917948740024,
+        "Y": 48.364489074358374
       },
       {
         "ShowGeometry": true,
-        "Name": "Log Message Table",
-        "Id": "4f138dc9b5c84096a4617fbd0c06432c",
+        "Name": "Log Filter",
+        "Id": "2d79ee2c771a4e9ea2c69a2d4ff61f2e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1601.0878642931291,
-        "Y": 428.05010861003484
+        "X": 1675.6106513892662,
+        "Y": 46.599445114665
       },
       {
         "ShowGeometry": true,
-        "Name": "Log Message Table",
-        "Id": "acb05fe66b4a453dac86192422440287",
+        "Name": "Code Block",
+        "Id": "af0ca31811ea4f198abd98d57145dfd3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1999.0563889870332,
-        "Y": 73.586710706600627
+        "X": 1869.0,
+        "Y": 391.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data Preview",
+        "Id": "44f1b6161452440f9b2578797ff683c4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2065.4859950649657,
+        "Y": -29.377293192409411
       }
     ],
     "Annotations": [],
-    "X": -974.46757311301815,
-    "Y": -18.917983068630051,
-    "Zoom": 0.761554236135223
+    "X": -219.48506086839632,
+    "Y": 135.23793352670364,
+    "Zoom": 0.64321084117013227
   }
 }

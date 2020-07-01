@@ -62,6 +62,12 @@ namespace UI.Customization
 
             NodeModel.PortConnected += NodeModel_PortConnected;
             NodeModel.PortDisconnected += NodeModel_PortDisconnected;
+            NodeModel.Modified += NodeModel_Modified;
+        }
+
+        private void NodeModel_Modified(NodeModel obj)
+        {
+            
         }
 
         private void NodeModel_PortDisconnected(PortModel pm)
@@ -172,6 +178,8 @@ namespace UI.Customization
             // Remove first (since the internal event sources might have changed)
             foreach (var eventSource in RemoveOnProgressChanging())
                 eventSource.ClearState();
+
+            NodeModel.ResetState();
 
             // Add any newly attached event source is unknown => clear state before (since it might be changed)
             AddOnProgressChanging();

@@ -54,9 +54,9 @@ namespace Geom
             }
             catch(Exception e)
             {
-                return LogMessage.BySeverityAndMessage(LogSeverity.Error, LogReason.Saved, "Error while saving '{0}': {1}", fileName, e.Message);
+                return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Error, LogReason.Saved, "Error while saving '{0}': {1}", fileName, e.Message);
             }
-            return LogMessage.BySeverityAndMessage(LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", fileName);
+            return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", fileName);
         }
 
         /// <summary>

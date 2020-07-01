@@ -28,7 +28,8 @@ namespace UI.Customization
             {
                 case PortType.Input:
                     var ifcModels = NodeModel.GetCachedInput<IfcModel>(portModel.Index, ModelEngineController);
-                    NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.FormatExtension;
+                    if (1 == ifcModels.Length)
+                        NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.FormatExtension;
                     break;
                 case PortType.Output:
                     break;

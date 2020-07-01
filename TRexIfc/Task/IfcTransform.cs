@@ -60,7 +60,7 @@ namespace Task
             }
         }
 
-        private static IEnumerable<LogMessage> TransformLogToMessage(string canonicalFrag, IEnumerable<TransformLogEntry> logEntries, LogReason filter = LogReason.Any)
+        private static IEnumerable<LogMessage> TransformLogToMessage(string storeName, IEnumerable<TransformLogEntry> logEntries, LogReason filter = LogReason.Any)
         {
             foreach (var entry in logEntries)
             {
@@ -68,9 +68,9 @@ namespace Task
                 if (filter.HasFlag(action))
                 {
                     yield return LogMessage.BySeverityAndMessage(
+                        storeName,
                         LogSeverity.Info,
-                        action, "'{0}': #{1} {2}",
-                        canonicalFrag,
+                        action, "#{0} {1}",
                         entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
                         entry.InstanceHandle?.EntityExpressType.Name ?? "(type unknown)");
                 }
@@ -115,7 +115,7 @@ namespace Task
                         switch (result.ResultCode)
                         {
                             case TransformResult.Code.Finished:
-                                var name = $"{transform.Request.Name}({canonicalFrag})";
+                                var name = $"{transform.Request.Name}({node.Name})";
                                 foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
                                 {
                                     node.ActionLog.Add(logMessage);
@@ -123,11 +123,11 @@ namespace Task
                                 return result.Target;
                             case TransformResult.Code.Canceled:
                                 node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
+                                    node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
                                 break;
                             case TransformResult.Code.ExitWithError:
                                 node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
+                                    node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
                                 break;
                         }
                     }
@@ -138,7 +138,7 @@ namespace Task
                         np.NotifyFinish(LogReason.Changed, true);
 
                     node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                        LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
                 }
                 return null;
             }, canonicalFrag);

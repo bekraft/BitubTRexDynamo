@@ -7,43 +7,16 @@ using Autodesk.DesignScript.Runtime;
 using Bitub.Transfer;
 using Log;
 
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("TRexIfcUI")]
+
 namespace Internal
 {
-    /// <summary>
-    /// Interface tagging an interactive zero touch node.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public interface INodeProgressing : IProgress<ICancelableProgressState>
-    {
-        /// <summary>
-        /// Emitting progress change information
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        event EventHandler<NodeProgressingEventArgs> OnProgressChange;
-
-        /// <summary>
-        /// Emitting once progress has been finished.S
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        event EventHandler<NodeFinishedEventArgs> OnFinish;
-
-        /// <summary>
-        /// Log message receiver.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        ObservableCollection<LogMessage> ActionLog { get; }
-
-        /// <summary>
-        /// A representative name.
-        /// </summary>
-        string Name { get; }
-    }
-
     /// <summary>
     /// Node progressing event template
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public abstract class NodeProgressing : INodeProgressing
+    public abstract class NodeProgressing : IProgress<ICancelableProgressState>
     {
         #region Internals
         private EventHandler<NodeProgressingEventArgs> _onProgressChangeEvent;
@@ -57,7 +30,7 @@ namespace Internal
         /// Logging messages.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
+        internal ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
         /// <summary>
         /// Retrieves the current log state as an array.
@@ -65,13 +38,10 @@ namespace Internal
         /// <param name="nodeProgressing">The logging source</param>
         /// <returns>The current log</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
+        internal static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
-        /// <summary>
-        /// See <see cref="INodeProgressing.OnProgressChange"/>
-        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public event EventHandler<NodeProgressingEventArgs> OnProgressChange
+        internal event EventHandler<NodeProgressingEventArgs> OnProgressChange
         {
             add {
                 NodeProgressingEventArgs args;
@@ -90,11 +60,8 @@ namespace Internal
             }
         }
 
-        /// <summary>
-        /// See <see cref="INodeProgressing.OnFinish"/>
-        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public event EventHandler<NodeFinishedEventArgs> OnFinish
+        internal event EventHandler<NodeFinishedEventArgs> OnFinish
         {
             add {
                 NodeFinishedEventArgs args;
@@ -117,7 +84,7 @@ namespace Internal
         /// Clears the current known state.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public virtual void ClearState()
+        internal virtual void ClearState()
         {
             lock (_monitor)
             {
@@ -130,7 +97,7 @@ namespace Internal
         /// Emitting progress changes
         /// </summary>
         /// <param name="args">The args</param>
-        protected virtual void OnProgressChanged(NodeProgressingEventArgs args)
+        internal virtual void OnProgressChanged(NodeProgressingEventArgs args)
         {
             EventHandler<NodeProgressingEventArgs> onProgressEvent;
             lock (_monitor)
@@ -146,7 +113,7 @@ namespace Internal
         /// Emitting finish actions
         /// </summary>
         /// <param name="args">The args</param>
-        protected virtual void OnFinished(NodeFinishedEventArgs args)
+        internal virtual void OnFinished(NodeFinishedEventArgs args)
         {
             EventHandler<NodeFinishedEventArgs> onFinishEvent;
             lock (_monitor)
@@ -164,7 +131,7 @@ namespace Internal
         /// <param name="finishAction">The finishing action.</param>
         /// <param name="isBroken">Whether the finish is reached by error</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void NotifyFinish(LogReason finishAction, bool isBroken)
+        internal void NotifyFinish(LogReason finishAction, bool isBroken)
         {
             OnFinished(new NodeFinishedEventArgs(finishAction, Name, false, isBroken));
         }
@@ -172,7 +139,7 @@ namespace Internal
         /// <summary>
         /// The name.
         /// </summary>
-        public virtual string Name { get => "Progressing node"; }
+        internal virtual string Name { get => "Progressing node"; }
 
         /// <summary>
         /// Default log reason.

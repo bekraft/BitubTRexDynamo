@@ -1,0 +1,1143 @@
+{
+  "Uuid": "3a83d19d-44d7-4f10-be3c-6c1ab5d86596",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcLoad-Align-Save",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.Alignment.ByOffsetShift@Geom.XYZ,Geom.XYZ",
+      "Id": "8f51260e469944d1a53de3c2bd64bc05",
+      "Inputs": [
+        {
+          "Id": "4b48f8acd8eb472d86270fb678b7033d",
+          "Name": "offsetA",
+          "Description": "The source offset.\n\nXYZ",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50c36a2232384465ad5551f4cd976210",
+          "Name": "offsetB",
+          "Description": "The target offset\n\nXYZ",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d2db995891b54cd7a1ea62dea3928448",
+          "Name": "Alignment",
+          "Description": "An alignment structure.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new alignment by simply shifting offset from A to B.\n\nAlignment.ByOffsetShift (offsetA: XYZ, offsetB: XYZ): Alignment"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "Id": "bf81e3b0a3894cf6b7f069cb3a21cdd1",
+      "Inputs": [
+        {
+          "Id": "e51b3e5a9cdb44868ba0c78795158451",
+          "Name": "x",
+          "Description": "X\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0426d78f84774999a94665ac1aeba91c",
+          "Name": "y",
+          "Description": "Y\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "53e86087b6574189b7c923e2ca862bab",
+          "Name": "z",
+          "Description": "Z\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "76f6b26d03be472e836d886500369902",
+          "Name": "XYZ",
+          "Description": "A 3D point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n0;\n0;",
+      "Id": "b6b42828cce540618245727967dae8d5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "755d313b4e434147b0ac623f7ada2fad",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a8b70bedc30e47e98093647169420f7d",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7cb50c0dd962473dba69e7a4e099d36d",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "Id": "c9e4333a2ba44a76bf55918d219a0e6f",
+      "Inputs": [
+        {
+          "Id": "eceba6d2c8374fe08828e0ad98de6f2a",
+          "Name": "x",
+          "Description": "X\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "88200fbe89d746e5883d21a040ec396e",
+          "Name": "y",
+          "Description": "Y\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa83a008e9eb4042ae7fdda3842c1736",
+          "Name": "z",
+          "Description": "Z\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "155e6038690b400db0ad3ee4b833f0da",
+          "Name": "XYZ",
+          "Description": "A 3D point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-9.2348486328125;\n-2.74641772460938;\n0;",
+      "Id": "3ddde678659449ba8b1433efd1021a87",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7ed538f45a3a41f1b6a53d36bb74f4ea",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62fad11b42db46bb970ebde670359235",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a267fce0f88c43e99331196b251c66d8",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Geom.Alignment.SaveTo@string",
+      "Id": "a615d33197c744f8a500127d78a4b4d4",
+      "Inputs": [
+        {
+          "Id": "94cbfd99a44c43029fe427a58f306533",
+          "Name": "alignment",
+          "Description": "Geom.Alignment",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18b5477a199645bab37ce4d830630611",
+          "Name": "fileName",
+          "Description": "The file name\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "df267fb039924687acbbfcab4b59d57e",
+          "Name": "LogMessage",
+          "Description": "A log message",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Will save the current alignment to a persistent file as XML.\n\nAlignment.SaveTo (fileName: string): LogMessage"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\Offset-Shift.xml",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\Offset-Shift.xml",
+      "NodeType": "ExtensionNode",
+      "Id": "15892cf081a34faf884ea341573ee727",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8c0b9d4a1ea542718d09ee2805db8e9e",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-Align-Save.log",
+      "InputValue": "Out\\IfcLoad-Align-Save.log",
+      "NodeType": "ExtensionNode",
+      "Id": "9a59e502e87c42e8ba2635f348d60770",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a6e3a28606b34dd6bc2d206ae30001c9",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "62cb103f98cc4f7e8f1a84abf8e94ec2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fedd9a9171ea41d2ab4b591f1bccb231",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "2cac8a0f7e8346f391ae269ed9b75283",
+      "Inputs": [
+        {
+          "Id": "cb0cc6f67de24fd881a5ecdceb8d1ee2",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6b1174d761fb426997371c93f45a9bc8",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a new file logger with given template name."
+    },
+    {
+      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "8763f8100cd04a91b957f0d2b7029180",
+      "Inputs": [
+        {
+          "Id": "d26677b076f34657af8bce5e18365393",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3f51233beae846e986e7f085284cdc5f",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a98b160725cb4a7e89438701e62188f2",
+          "Name": "prefs",
+          "Description": "Tessellation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4a27383ca8644ed890b0c4f1621e12d8",
+          "Name": "ifcModel",
+          "Description": "IFC model instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcAuthorMetadata.ByAuthor@string,string",
+      "Id": "c8f5663e36a04f8b9506931c7a0fd465",
+      "Inputs": [
+        {
+          "Id": "e69497d9b87f4bcd96f1dce1da2155ed",
+          "Name": "newEditorName",
+          "Description": "A name\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3dd8b089792e4bcb8ff6740ae039d1c3",
+          "Name": "newGivenName",
+          "Description": "A given name\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "739fb85f04344423a42272b56c105cba",
+          "Name": "IfcAuthorMetadata",
+          "Description": "New metadata wrapping the author's credentials only",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a new IFC metadate record by editor.\n\nIfcAuthorMetadata.ByAuthor (newEditorName: string, newGivenName: string): IfcAuthorMetadata"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"One\";\n\"Some\";",
+      "Id": "7c5e46167bd0458e849b1260f5773e32",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a3368b4e3259499a96f8f2b71df8a5f7",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "23a8da2a7d5841c9a5e87b070e936ba4",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"Aligned\";",
+      "Id": "856110d361334d4d82488fc1dac36095",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dacb633fff9e492ea4f105e4ae143352",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Log.LogReasonComposingNodeModel, TRexIfcUI",
+      "Selected": [
+        16,
+        64
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "4db6ba8de50a434f9b1f78ebb1a983c3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f0bcb2fee9924ba9adcea2abde38e391",
+          "Name": "logReasonFlag",
+          "Description": "Log reason flag",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Composing log reasons for filtering logs"
+    },
+    {
+      "ConcreteType": "Task.IfcAxisAlignmentTransformNodeModel, TRexIfcUI",
+      "SelectedOption": "Insert new root placement",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "fd8437b921ce4617a4c461b3bceaec66",
+      "Inputs": [
+        {
+          "Id": "88d95aaaa46b4d018b66fb27629b9a12",
+          "Name": "alignment",
+          "Description": "Axis alignment",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5ebc69476321465dbc3d7f8f8317f873",
+          "Name": "authorMetadata",
+          "Description": "Credentials of authoring editor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "61f3e65dc9744eaf9d126c8dc27eea40",
+          "Name": "canonicalName",
+          "Description": "Fragment name of canonical full name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "11f55503a86b453d827a18ce852b5523",
+          "Name": "ifcModel",
+          "Description": "IFC input model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "edf84a8ebe18407eb7d267a8ad74c737",
+          "Name": "logReasonFilter",
+          "Description": "Log reason type filtering",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f40028badca74f068f9f46f34ed6ed49",
+          "Name": "ifcModel",
+          "Description": "IFC output model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Changes the model coordinate system alignment by offset and rotation."
+    },
+    {
+      "ConcreteType": "Store.IfcSaveStoreNodeModel, TRexIfcUI",
+      "SelectedOption": "ifc",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "ae7119a6033a495d96d0bea537606384",
+      "Inputs": [
+        {
+          "Id": "d1b91d21847945c4b20fe71ec2a8063c",
+          "Name": "ifcModel",
+          "Description": "Input model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb0ba6c3994349118ad1364ab5116afb",
+          "Name": "separator",
+          "Description": "If using canonical name, define the separator",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8267663c46454cfaaefe936add77fc68",
+          "Name": "ifcModel",
+          "Description": "Saved model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Store.IfcModel.RelocatePath@string",
+      "Id": "02dcb5b405ed442981907e6554a064af",
+      "Inputs": [
+        {
+          "Id": "76d4d4aed0474414bc83537cbcf43ebd",
+          "Name": "ifcModel",
+          "Description": "Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4d2cc29e17b84e3bb8cf127e10437bdf",
+          "Name": "newPathName",
+          "Description": "The new path/folder name\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8aa8e5e20f7746a5b93ee50e9cf1f9f6",
+          "Name": "IfcModel",
+          "Description": "A new reference to the model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Relocates the containing folder.\n\nIfcModel.RelocatePath (newPathName: string): IfcModel"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "NodeType": "ExtensionNode",
+      "Id": "ce193b7b5ba345b2a0005a4137a98d1e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bc21318938c7439980004a4d9e544c58",
+          "Name": "",
+          "Description": "Directory",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einen Verzeichnisses auf dem System, um seinen Pfad abzurufen."
+    },
+    {
+      "ConcreteType": "Log.LogFilterNodeModel, TRexIfcUI",
+      "LogCount": 10,
+      "LogMinSeverity": 0,
+      "NodeType": "ExtensionNode",
+      "Id": "94127fb0790d4490b2ef97acba756714",
+      "Inputs": [
+        {
+          "Id": "8c1ae79f3acf45298025ab38d9b05d13",
+          "Name": "logSource",
+          "Description": "Log source (i.e. IfcModel)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "dbf8b8a4f24b480782a1f1d87d018aa1",
+          "Name": "logReason",
+          "Description": "Reason filter flags",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "11d904d61e454b6eb5dc8a74a72ea8f8",
+          "Name": "logMessages",
+          "Description": "Log events",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Log filtering node"
+    },
+    {
+      "ConcreteType": "Task.DataTablePreviewNodeModel, TRexIfcUI",
+      "MinCount": 1,
+      "MaxCount": 100,
+      "Count": 10,
+      "NodeType": "ExtensionNode",
+      "Id": "07e23328fca04b5f8b0d86c508d5a655",
+      "Inputs": [
+        {
+          "Id": "fc67e730df7341b39d275a2d81b5dc82",
+          "Name": "in",
+          "Description": "Input grid data (i.e. LogMessage)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dc45fb3b3c094e84845155930bf95907",
+          "Name": "out",
+          "Description": "Limited data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Interactive table grid displaying incoming data with a given count threshold."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d2db995891b54cd7a1ea62dea3928448",
+      "End": "94cbfd99a44c43029fe427a58f306533",
+      "Id": "5bcb13fa447e4b27af615a91b05f8c50"
+    },
+    {
+      "Start": "d2db995891b54cd7a1ea62dea3928448",
+      "End": "88d95aaaa46b4d018b66fb27629b9a12",
+      "Id": "eed308d0826042bba52de3dcece7c251"
+    },
+    {
+      "Start": "76f6b26d03be472e836d886500369902",
+      "End": "50c36a2232384465ad5551f4cd976210",
+      "Id": "18776c33d35a4ea280eac11075eb0fe9"
+    },
+    {
+      "Start": "755d313b4e434147b0ac623f7ada2fad",
+      "End": "e51b3e5a9cdb44868ba0c78795158451",
+      "Id": "bd41ad58befb4803966d25566d351394"
+    },
+    {
+      "Start": "a8b70bedc30e47e98093647169420f7d",
+      "End": "0426d78f84774999a94665ac1aeba91c",
+      "Id": "85596ffa783b42d2897c91446a4b901c"
+    },
+    {
+      "Start": "7cb50c0dd962473dba69e7a4e099d36d",
+      "End": "53e86087b6574189b7c923e2ca862bab",
+      "Id": "9e3a26b689e945d5bc768770a0e7024f"
+    },
+    {
+      "Start": "155e6038690b400db0ad3ee4b833f0da",
+      "End": "4b48f8acd8eb472d86270fb678b7033d",
+      "Id": "bdd58ea6ab6b4448add9fedc317db7f6"
+    },
+    {
+      "Start": "7ed538f45a3a41f1b6a53d36bb74f4ea",
+      "End": "eceba6d2c8374fe08828e0ad98de6f2a",
+      "Id": "d8504b23b447497ca64da8e90dbb8c78"
+    },
+    {
+      "Start": "62fad11b42db46bb970ebde670359235",
+      "End": "88200fbe89d746e5883d21a040ec396e",
+      "Id": "a82714bf6763481e80b3a88b2e2ea70b"
+    },
+    {
+      "Start": "a267fce0f88c43e99331196b251c66d8",
+      "End": "aa83a008e9eb4042ae7fdda3842c1736",
+      "Id": "643fc8141f8a4513a74f11b2f3dad846"
+    },
+    {
+      "Start": "8c0b9d4a1ea542718d09ee2805db8e9e",
+      "End": "18b5477a199645bab37ce4d830630611",
+      "Id": "e4110d72f4f34aaeba13633d2b74b343"
+    },
+    {
+      "Start": "a6e3a28606b34dd6bc2d206ae30001c9",
+      "End": "cb0cc6f67de24fd881a5ecdceb8d1ee2",
+      "Id": "895d6a0a929049eda441faa142aefe9d"
+    },
+    {
+      "Start": "fedd9a9171ea41d2ab4b591f1bccb231",
+      "End": "d26677b076f34657af8bce5e18365393",
+      "Id": "ad6d9c6188b04f05a9bcfc7961053b23"
+    },
+    {
+      "Start": "6b1174d761fb426997371c93f45a9bc8",
+      "End": "3f51233beae846e986e7f085284cdc5f",
+      "Id": "b67fcfd5881247289628edd1d964f5f0"
+    },
+    {
+      "Start": "4a27383ca8644ed890b0c4f1621e12d8",
+      "End": "11f55503a86b453d827a18ce852b5523",
+      "Id": "cf1ae72ca8894822909fb26377996e4d"
+    },
+    {
+      "Start": "739fb85f04344423a42272b56c105cba",
+      "End": "5ebc69476321465dbc3d7f8f8317f873",
+      "Id": "31ebf120766749a595296d056ab7d566"
+    },
+    {
+      "Start": "a3368b4e3259499a96f8f2b71df8a5f7",
+      "End": "e69497d9b87f4bcd96f1dce1da2155ed",
+      "Id": "9e0b1f5bdb6e48b1b2be8b7c9204141d"
+    },
+    {
+      "Start": "23a8da2a7d5841c9a5e87b070e936ba4",
+      "End": "3dd8b089792e4bcb8ff6740ae039d1c3",
+      "Id": "5464db377fc34a13b7189b565fee3cd5"
+    },
+    {
+      "Start": "dacb633fff9e492ea4f105e4ae143352",
+      "End": "61f3e65dc9744eaf9d126c8dc27eea40",
+      "Id": "165d0181bef042f49e7beca2659bf5f7"
+    },
+    {
+      "Start": "f0bcb2fee9924ba9adcea2abde38e391",
+      "End": "edf84a8ebe18407eb7d267a8ad74c737",
+      "Id": "0b9c122a52e44bb4a47992b9b81b0e2c"
+    },
+    {
+      "Start": "f40028badca74f068f9f46f34ed6ed49",
+      "End": "76d4d4aed0474414bc83537cbcf43ebd",
+      "Id": "39ed49ee98a4490d9ba5c9aca7dc01a4"
+    },
+    {
+      "Start": "f40028badca74f068f9f46f34ed6ed49",
+      "End": "8c1ae79f3acf45298025ab38d9b05d13",
+      "Id": "b287203d74364695aeb5d6a1df2cf613"
+    },
+    {
+      "Start": "8aa8e5e20f7746a5b93ee50e9cf1f9f6",
+      "End": "d1b91d21847945c4b20fe71ec2a8063c",
+      "Id": "43bd45d12035487499f309f7fd29b882"
+    },
+    {
+      "Start": "bc21318938c7439980004a4d9e544c58",
+      "End": "4d2cc29e17b84e3bb8cf127e10437bdf",
+      "Id": "228a1202bfab4a97b89005949737b876"
+    },
+    {
+      "Start": "11d904d61e454b6eb5dc8a74a72ea8f8",
+      "End": "fc67e730df7341b39d275a2d81b5dc82",
+      "Id": "7b7c24a066e64bdc81f16a35a9cd4578"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRexIfc",
+      "Version": "0.1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "8f51260e469944d1a53de3c2bd64bc05",
+        "bf81e3b0a3894cf6b7f069cb3a21cdd1",
+        "c9e4333a2ba44a76bf55918d219a0e6f",
+        "a615d33197c744f8a500127d78a4b4d4",
+        "2cac8a0f7e8346f391ae269ed9b75283",
+        "8763f8100cd04a91b957f0d2b7029180",
+        "c8f5663e36a04f8b9506931c7a0fd465",
+        "4db6ba8de50a434f9b1f78ebb1a983c3",
+        "fd8437b921ce4617a4c461b3bceaec66",
+        "ae7119a6033a495d96d0bea537606384",
+        "02dcb5b405ed442981907e6554a064af",
+        "94127fb0790d4490b2ef97acba756714",
+        "07e23328fca04b5f8b0d86c508d5a655"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.8481",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Alignment.ByOffsetShift",
+        "Id": "8f51260e469944d1a53de3c2bd64bc05",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 285.30345248733937,
+        "Y": -39.917206921767757
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "XYZ.ByCoordinates",
+        "Id": "bf81e3b0a3894cf6b7f069cb3a21cdd1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 70.399999999999977,
+        "Y": 43.599999999999994
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b6b42828cce540618245727967dae8d5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -177.77442151440641,
+        "Y": 52.759169892587295
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "XYZ.ByCoordinates",
+        "Id": "c9e4333a2ba44a76bf55918d219a0e6f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 67.199999999999932,
+        "Y": -103.60000000000001
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3ddde678659449ba8b1433efd1021a87",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -184.14154042119193,
+        "Y": -102.2291637520234
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Alignment.SaveTo",
+        "Id": "a615d33197c744f8a500127d78a4b4d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 272.44331233628247,
+        "Y": 113.97535355475679
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "15892cf081a34faf884ea341573ee727",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -8.5841632236165424,
+        "Y": 210.24428116870126
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "9a59e502e87c42e8ba2635f348d60770",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -50.431348988365244,
+        "Y": -256.06173592790856
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "62cb103f98cc4f7e8f1a84abf8e94ec2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -47.122667534056859,
+        "Y": -379.12515741395009
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Logger",
+        "Id": "2cac8a0f7e8346f391ae269ed9b75283",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 286.57439014539671,
+        "Y": -256.11491427757693
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "8763f8100cd04a91b957f0d2b7029180",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 645.98377768065393,
+        "Y": -297.52780873934768
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcAuthorMetadata.ByAuthor",
+        "Id": "c8f5663e36a04f8b9506931c7a0fd465",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 290.55043250190306,
+        "Y": 333.98632083406113
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7c5e46167bd0458e849b1260f5773e32",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 143.10977107812812,
+        "Y": 342.65317834966868
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "856110d361334d4d82488fc1dac36095",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 790.8959680556336,
+        "Y": -34.173338071500439
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Reason",
+        "Id": "4db6ba8de50a434f9b1f78ebb1a983c3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 789.23153602005743,
+        "Y": 97.176741646333824
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Axis Alignment",
+        "Id": "fd8437b921ce4617a4c461b3bceaec66",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1064.433360141619,
+        "Y": -216.72246548951586
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Save",
+        "Id": "ae7119a6033a495d96d0bea537606384",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1850.9855281348969,
+        "Y": -213.92464774420648
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.RelocatePath",
+        "Id": "02dcb5b405ed442981907e6554a064af",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1552.4243709865202,
+        "Y": -217.47860710762615
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Directory Path",
+        "Id": "ce193b7b5ba345b2a0005a4137a98d1e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1068.1941685564502,
+        "Y": -378.30846196859522
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Filter",
+        "Id": "94127fb0790d4490b2ef97acba756714",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1555.01677250212,
+        "Y": -393.21149841470736
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data Preview",
+        "Id": "07e23328fca04b5f8b0d86c508d5a655",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1860.7387855906823,
+        "Y": -396.90845230573535
+      }
+    ],
+    "Annotations": [],
+    "X": -342.45433430109142,
+    "Y": 424.81523952939614,
+    "Zoom": 0.6874655407376361
+  }
+}

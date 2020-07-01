@@ -37,9 +37,12 @@ namespace Validation
         /// <returns>The validation messages</returns>
         public IfcValidationMessage[] Messages(object reportFilter)
         {
-            IfcReportDomain domainFilter = IfcReportDomain.AllIssues;
+            IfcReportDomain domainFilter;
             if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            {
                 Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                domainFilter = IfcReportDomain.AllIssues;
+            }
 
             return MessagePipe.Where(m => domainFilter.HasFlag(m.Domain)).ToArray();
         }
@@ -52,9 +55,12 @@ namespace Validation
         /// <returns>An array of messages</returns>
         public static IfcValidationMessage[] Messages(IfcValidationTask validationTask, object reportFilter)
         {
-            IfcReportDomain domainFilter = IfcReportDomain.AllIssues;
+            IfcReportDomain domainFilter;
             if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            {
                 Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                domainFilter = IfcReportDomain.AllIssues;
+            }
 
             return validationTask?.Result().Messages(domainFilter);
         }

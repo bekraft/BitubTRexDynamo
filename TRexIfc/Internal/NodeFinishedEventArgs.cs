@@ -5,38 +5,40 @@ using Bitub.Transfer;
 using Autodesk.DesignScript.Runtime;
 using Log;
 
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("TRexIfcUI")]
+
 namespace Internal
 {
     /// <summary>
     /// Node finish action event arguments.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class NodeFinishedEventArgs : EventArgs
+    internal class NodeFinishedEventArgs : EventArgs
     {
         /// <summary>
         /// The associated task name.
         /// </summary>
-        public readonly string TaskName;
+        internal readonly string TaskName;
 
         /// <summary>
         /// Whether canceled by user.
         /// </summary>
-        public readonly bool IsCanceled;
+        internal readonly bool IsCanceled;
 
         /// <summary>
         /// Whether broken by internals.
         /// </summary>
-        public readonly bool IsBroken;
+        internal readonly bool IsBroken;
 
         /// <summary>
         /// The action type.
         /// </summary>
-        public readonly LogReason Action;
+        internal readonly LogReason Action;
 
         /// <summary>
         /// Reference to internal state.
         /// </summary>
-        public readonly IProgressState InternalFinalState;
+        internal readonly IProgressState InternalFinalState;
 
         /// <summary>
         /// New finish by internal state and task name
@@ -44,7 +46,7 @@ namespace Internal
         /// <param name="finalState">The internal state</param>
         /// <param name="taskName">The task name</param>
         /// <param name="action">The action type</param>
-        public NodeFinishedEventArgs(IProgressState finalState, LogReason action, string taskName = null)
+        internal NodeFinishedEventArgs(IProgressState finalState, LogReason action, string taskName = null)
         {
             TaskName = taskName ?? $"{finalState?.StateObject}";
             IsCanceled = finalState?.State == ProgressTokenState.IsCanceled;
@@ -58,7 +60,7 @@ namespace Internal
         /// <param name="isCanceled">Cancellation flag</param>
         /// <param name="isBroken">Broken flag</param>
         /// <param name="action">The action type</param>
-        public NodeFinishedEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
+        internal NodeFinishedEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
         {
             TaskName = taskName;
             IsCanceled = isCanceled;

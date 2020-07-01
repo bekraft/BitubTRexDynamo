@@ -81,11 +81,11 @@ namespace Export
             try
             {
                 settings.InternalSettings.SaveTo(fileName);
-                return LogMessage.BySeverityAndMessage(LogSeverity.Info, LogReason.Saved, "Saved {0}", fileName);
+                return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Info, LogReason.Saved, "Saved {0}", fileName);
             }
             catch(Exception e)
             {
-                return LogMessage.BySeverityAndMessage(LogSeverity.Error, LogReason.Saved, "{0}: {1} ({2})", e, e.Message, fileName);
+                return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Error, LogReason.Saved, "{0}: {1} ({2})", e, e.Message, fileName);
             }
         }
 

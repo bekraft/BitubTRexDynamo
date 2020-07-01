@@ -186,10 +186,10 @@ namespace Store
         public delegate IModel ModelDelegate();
 
         [IsVisibleInDynamoLibrary(false)]
-        public delegate IModel ModelProgressDelegate(INodeProgressing node);
+        public delegate IModel ModelProgressDelegate(NodeProgressing node);
 
         [IsVisibleInDynamoLibrary(false)]
-        public delegate IModel ModelTransformProgressDelegate(IModel sourceModel, INodeProgressing node);        
+        public delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing node);        
 
 #pragma warning restore CS1591
 
