@@ -43,7 +43,8 @@ namespace Task
 #pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {            
+        {
+            ClearErrorsAndWarnings();
             AssociativeNode resultList;
             if (IsPartiallyApplied)
             {
@@ -68,7 +69,7 @@ namespace Task
                         });
                 }
             }
-
+            
             return new AssociativeNode[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), resultList)

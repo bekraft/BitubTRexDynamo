@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Internal;
 
 using AstObjectValue = Internal.AstValue<object>;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Task
 {
@@ -91,7 +92,7 @@ namespace Task
             if (!identical)
             {
                 _selected = new List<AstReference>(selected);
-                _persistentSelected = _selected.Select(v => v.ToString()).ToList();
+                SilentSetPersistentValue();
                 if (forceModified)
                 {
                     RaisePropertyChanged(nameof(SelectedValue));
@@ -105,14 +106,9 @@ namespace Task
             }
         }
 
-        internal protected AstReference[] SelectByValues(string[] selectedValue)
+        protected void SilentSetPersistentValue()
         {
-            List<AstReference> selected = new List<AstReference>();
-            foreach(var v in GlobalArgumentService.FilterBySerializationValue(Items.ToArray(), selectedValue, false))
-            {
-                selected.Add(v as AstReference);
-            }
-            return selected.ToArray();
+            _persistentSelected = _selected.Select(v => v.ToString()).ToList();
         }
     }
 }

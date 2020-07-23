@@ -116,14 +116,34 @@ namespace Internal
             }
         }
 
+        /// <summary>
+        /// Exclude values by serialized representation.
+        /// </summary>
+        /// <param name="values">Values to be filtered</param>
+        /// <param name="selected">Selection</param>
+        /// <param name="ignoreCase">Whether to ignore case</param>
+        /// <returns>A filtered array</returns>
         public static object[] ExludeBySerializationValue(object[] values, string[] selected, bool ignoreCase)
         {
+            if (null == selected || null == values)
+                return values ?? new object[] { };
+
             var comparer = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             return values.Where(v => 0 > Array.FindIndex(selected, s => String.Equals(v?.ToString(), s, comparer))).ToArray();
         }
 
+        /// <summary>
+        /// Select values by serialized representation.
+        /// </summary>
+        /// <param name="values">Values to be filtered</param>
+        /// <param name="selected">Selection</param>
+        /// <param name="ignoreCase">Whether to ignore case</param>
+        /// <returns>A filtered array</returns>
         public static object[] FilterBySerializationValue(object[] values, string[] selected, bool ignoreCase)
         {
+            if (null == selected || null == values)
+                return new object[] { };
+
             var comparer = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             return values.Where(v => -1 < Array.FindIndex(selected, s => String.Equals(v?.ToString(), s, comparer))).ToArray();
         }

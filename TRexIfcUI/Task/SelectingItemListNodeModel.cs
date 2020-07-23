@@ -43,6 +43,7 @@ namespace Task
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             if (IsPartiallyApplied)
             {
                 return new AssociativeNode[]
@@ -67,7 +68,7 @@ namespace Task
                          AstFactory.BuildBooleanNode(false)
                     });
             }
-
+            
             return new AssociativeNode[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), selectedNode)

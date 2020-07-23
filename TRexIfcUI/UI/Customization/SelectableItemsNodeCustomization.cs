@@ -29,14 +29,6 @@ namespace UI.Customization
 
             UpdateItems();
 
-            var selectedItems = NodeModel.SelectByValues(NodeModel.SelectedValue.ToArray());
-            DispatchUI(() => 
-            {
-                foreach (var s in selectedItems)
-                    _control.SelectionListBox.SelectedItems.Add(s);
-            });
-            AsyncSchedule(() => NodeModel.SetSelected(selectedItems, false));
-
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
 
@@ -51,7 +43,22 @@ namespace UI.Customization
         private void UpdateItems()
         {
             var items = NodeModel.GetCachedAstInput<object>(0, ModelEngineController);
-            NodeModel.SetItems(items);
+            var serializedValues = NodeModel.SelectedValue.ToArray();
+            if (NodeModel.SetItems(items))
+                TryRestoreSelection(serializedValues);
+        }
+
+        private void TryRestoreSelection(string[] serializedSelection)
+        {
+            var restored = GlobalArgumentService.FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false).Cast<AstReference>();
+            DispatchUI(() =>
+            {
+                if (0 == _control?.SelectionListBox.SelectedItems.Count)
+                {
+                    foreach (var astReference in restored)
+                        _control.SelectionListBox.SelectedItems.Add(astReference);
+                }
+            });
         }
 
         private void SelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
