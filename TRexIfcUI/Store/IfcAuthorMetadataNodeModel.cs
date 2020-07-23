@@ -111,6 +111,7 @@ namespace Store
         
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             var authorNode = AstFactory.BuildStringNode(_authorName);
             var authorGivenNode = AstFactory.BuildStringNode(_authorGivenName);
             var orgIdNode = AstFactory.BuildStringNode(_organisationId);

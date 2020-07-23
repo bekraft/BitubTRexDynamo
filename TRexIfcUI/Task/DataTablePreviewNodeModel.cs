@@ -143,6 +143,7 @@ namespace Task
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             // Get current logging data from event source
             AssociativeNode dataReturn = AstFactory.BuildFunctionCall(
                 new Func<object[], int, object[][]>(GlobalArgumentService.Decompose),

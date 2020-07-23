@@ -62,6 +62,7 @@ namespace Log
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             if (InPorts.Any(p => !p.IsConnected))
             {
                 return new[]

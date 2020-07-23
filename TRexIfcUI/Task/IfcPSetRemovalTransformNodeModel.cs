@@ -54,6 +54,7 @@ namespace Task
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             AssociativeNode[] inputs = inputAstNodes.ToArray();
 
             if (IsPartiallyApplied)

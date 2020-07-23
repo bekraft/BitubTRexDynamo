@@ -15,25 +15,41 @@ namespace Internal
     public class AstReference
     {
         public string AstId { get; set; }
-        public int? ArrayIndex { get; set; }
+        public int[] ArrayIndex { get; set; }
 
         public override bool Equals(object obj)
         {
-            return obj is AstReference value &&
-                   AstId == value.AstId &&
-                   ArrayIndex == value.ArrayIndex;
+            return obj is AstReference reference &&
+                   AstId == reference.AstId &&
+                   Enumerable.SequenceEqual(ArrayIndex, reference.ArrayIndex);
         }
 
         public override int GetHashCode()
         {
             int hashCode = -2051493648;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AstId);
-            hashCode = hashCode * -1521134295 + ArrayIndex.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<int[]>.Default.GetHashCode(ArrayIndex);
             return hashCode;
         }
 
-        public AssociativeNode ToAstNode() => ArrayIndex.HasValue ?
-            AstFactory.BuildIdentifier(AstId, AstFactory.BuildIntNode(ArrayIndex.Value)) : AstFactory.BuildIdentifier(AstId);
+        public AssociativeNode ToAstNode()
+        {
+            if (ArrayIndex?.Length > 0)
+            {
+                AssociativeNode valueNode = AstFactory.BuildIdentifier(AstId, AstFactory.BuildIntNode(ArrayIndex[0]));
+                if (ArrayIndex.Length > 1)
+                {
+                    foreach (var i in ArrayIndex.Skip(1))
+                        valueNode = AstFactory.BuildIndexExpression(valueNode, AstFactory.BuildIntNode(i));
+                }
+
+                return valueNode;
+            }
+            else
+            {
+                return AstFactory.BuildIdentifier(AstId);
+            }
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
@@ -49,7 +65,7 @@ namespace Internal
             Value = astValue.Value;
         }
 
-        public AstValue(string astId, T value, int? arrayIndex = null)
+        public AstValue(string astId, T value, params int[] arrayIndex)
         {
             AstId = astId;
             Value = value;
