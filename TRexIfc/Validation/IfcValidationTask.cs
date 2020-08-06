@@ -84,28 +84,25 @@ namespace Validation
                 if (null == innerModel)
                     throw new NotSupportedException("No internal model available");
 
-                var progressToken = new CancelableProgressStateToken(true, innerModel.Instances.Count / 50);
-                List<IfcValidationMessage> failingMessages = new List<IfcValidationMessage>();
-                progressToken.Update(0, "IFC GUID checking");
+                var cp = t.CreateProgressMonitor(Log.LogReason.Checked);
+                cp.NotifyProgressEstimateUpdate(innerModel.Instances.Count / 50);
 
+                List<IfcValidationMessage> failingMessages = new List<IfcValidationMessage>();
                 foreach (var instance in innerModel.Instances.OfType<IIfcRoot>())
                 {
                     var message = guidStore.Put(ifcModel.Qualifier, instance);
 
-                    if (progressToken.Done > 0.90 * progressToken.Total)
-                        progressToken.IncreaseTotalEffort((long)Math.Floor(progressToken.Total * 1.25));
+                    if (cp.State.Done > 0.90 * cp.State.TotalEstimate)
+                        cp.NotifyProgressEstimateUpdate((long)Math.Floor(cp.State.TotalEstimate * 1.25));
 
-                    progressToken.Increment();
-                    t.OnProgressChanged(new NodeProgressingEventArgs(Log.LogReason.Checked, progressToken, ifcModel.FileName));
+                    cp.NotifyOnProgressChange(1, "Checking unique IfcGUID values...");
 
                     failingMessages.Add(message);
-                    if (progressToken.IsCanceled)
+                    if (cp.State.IsCanceled)
                         break;
                 }
 
-                progressToken.Update(progressToken.Total);
-                t.OnProgressChanged(new NodeProgressingEventArgs(Log.LogReason.Checked, progressToken, ifcModel.Name));
-                t.OnFinished(new NodeFinishedEventArgs(progressToken, Log.LogReason.Checked, ifcModel.FileName));
+                cp.NotifyOnProgressEnd();
 
                 return new IfcGuidCheckResult(guidStore) { MessagePipe = failingMessages };
             });

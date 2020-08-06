@@ -34,15 +34,21 @@ namespace Export
         internal readonly IfcSceneExporter InternalSceneExport;
 
         internal SceneExport(ILoggerFactory loggerFactory)
-        {
-            InternalSceneExport = new IfcSceneExporter(new XbimTesselationContext(), loggerFactory);
-            InternalSceneExport.OnProgressChange += SceneExporter_OnProgressChange;
+        {            
+            InternalSceneExport = new IfcSceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
         }
 
-        private void SceneExporter_OnProgressChange(ICancelableProgressState changedState)
+        private void SceneExporter_OnProgressChange(object sender, ProgressStateToken changedState)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Saved, changedState, "Exporting" ));
+            OnProgressChanged(new NodeProgressEventArgs(LogReason.Saved, changedState, "Exporting" ));
         }
+
+        private void SceneExporter_OnProgressEnd(object sender, ProgressStateToken endState)
+        {
+            OnProgressEnded(new NodeProgressEndEventArgs(LogReason.Saved, endState, "Exporting"));
+        }
+
+        protected override LogReason DefaultReason => LogReason.Saved;
 
         #endregion
 
@@ -98,32 +104,38 @@ namespace Export
                 if (null == internalModel)
                     throw new ArgumentNullException("ifcModel");
 
-                var sceneTask = sceneExport.InternalSceneExport.Run(internalModel);
-                // TODO Time out
-                sceneTask.Wait();
-                    
-                switch(extension.ToLower())
-                {
-                    case "scene":
-                        using (var binStream = File.Create(sceneFileName))
-                        {
-                            var binScene = sceneTask.Result.Scene.ToByteArray();
-                            binStream.Write(binScene, 0, binScene.Length);
-                        }
-                        break;
-                    case "json":
-                        using (var textStream = File.CreateText(sceneFileName))
-                        {
-                            var json = new JsonFormatter(new JsonFormatter.Settings(true)).Format(sceneTask.Result.Scene);
-                            textStream.Write(json);
-                        }
-                        break;
-                    default:
-                        throw new NotImplementedException($"Missing implementation for '{extension}'");
-                }
+                var progressMonitor = new CancelableProgressing(true);
+                progressMonitor.OnProgressChange += sceneExport.SceneExporter_OnProgressChange;
+                progressMonitor.OnProgressEnd += sceneExport.SceneExporter_OnProgressEnd;
 
-                return LogMessage.BySeverityAndMessage(
-                    ifcModel.FileName, LogSeverity.Info, LogReason.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
+                using (var sceneTask = sceneExport.InternalSceneExport.Run(internalModel, progressMonitor))
+                {
+                    // TODO Time out
+                    sceneTask.Wait();
+
+                    switch (extension.ToLower())
+                    {
+                        case "scene":
+                            using (var binStream = File.Create(sceneFileName))
+                            {
+                                var binScene = sceneTask.Result.Scene.ToByteArray();
+                                binStream.Write(binScene, 0, binScene.Length);
+                            }
+                            break;
+                        case "json":
+                            using (var textStream = File.CreateText(sceneFileName))
+                            {
+                                var json = new JsonFormatter(new JsonFormatter.Settings(true)).Format(sceneTask.Result.Scene);
+                                textStream.Write(json);
+                            }
+                            break;
+                        default:
+                            throw new NotImplementedException($"Missing implementation for '{extension}'");
+                    }
+
+                    return LogMessage.BySeverityAndMessage(
+                        ifcModel.FileName, LogSeverity.Info, LogReason.Saved, "Wrote {0} ({1}) scene file '{2}'", extension, sceneTask.Result.Scene.Name, sceneFileName);
+                }
             }
             catch (Exception e)
             {

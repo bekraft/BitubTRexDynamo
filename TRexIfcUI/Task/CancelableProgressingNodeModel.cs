@@ -6,7 +6,7 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 
 using Bitub.Transfer;
-using Autodesk.DesignScript.Runtime;
+
 using Internal;
 
 // Disable comment warning
@@ -24,7 +24,7 @@ namespace Task
         private string _taskName;
         private Visibility _visibility;
 
-        private ICancelableProgressState _progressToken;
+        private ProgressStateToken _progressToken;
 
         private object _monitor = new object();
         #endregion
@@ -110,7 +110,7 @@ namespace Task
             }
         }
 
-        public void InitNode(ICancelableProgressState progressToken)
+        public void InitNode(ProgressStateToken progressToken)
         {
             lock (_monitor)
             {
@@ -149,7 +149,7 @@ namespace Task
             }
         }
 
-        public void Report(ICancelableProgressState value)
+        public void Report(ProgressStateToken value)
         {
             lock (_monitor)
             {

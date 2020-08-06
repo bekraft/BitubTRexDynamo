@@ -2,7 +2,6 @@
 
 using Bitub.Transfer;
 
-using Autodesk.DesignScript.Runtime;
 using Log;
 
 using System.Runtime.CompilerServices;
@@ -13,7 +12,7 @@ namespace Internal
     /// <summary>
     /// Node finish action event arguments.
     /// </summary>
-    internal class NodeFinishedEventArgs : EventArgs
+    internal class NodeProgressEndEventArgs : EventArgs
     {
         /// <summary>
         /// The associated task name.
@@ -38,18 +37,18 @@ namespace Internal
         /// <summary>
         /// Reference to internal state.
         /// </summary>
-        internal readonly IProgressState InternalFinalState;
+        internal readonly ProgressStateToken InternalState;
 
         /// <summary>
         /// New finish by internal state and task name
         /// </summary>
-        /// <param name="finalState">The internal state</param>
+        /// <param name="endState">The internal state</param>
         /// <param name="taskName">The task name</param>
         /// <param name="action">The action type</param>
-        internal NodeFinishedEventArgs(IProgressState finalState, LogReason action, string taskName = null)
+        internal NodeProgressEndEventArgs(LogReason action, ProgressStateToken endState, string taskName = null)
         {
-            TaskName = taskName ?? $"{finalState?.StateObject}";
-            IsCanceled = finalState?.State == ProgressTokenState.IsCanceled;
+            TaskName = taskName ?? $"{endState?.StateObject}";
+            IsCanceled = endState?.State == ProgressTokenState.IsCanceled;
             Action = action;
         }
 
@@ -60,7 +59,7 @@ namespace Internal
         /// <param name="isCanceled">Cancellation flag</param>
         /// <param name="isBroken">Broken flag</param>
         /// <param name="action">The action type</param>
-        internal NodeFinishedEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
+        internal NodeProgressEndEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
         {
             TaskName = taskName;
             IsCanceled = isCanceled;

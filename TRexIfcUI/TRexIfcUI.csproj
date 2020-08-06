@@ -81,7 +81,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20204-Beta.391</Version>
+      <Version>0.1.20219-Beta.479</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.6.0.8481</Version>
@@ -95,7 +95,7 @@
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.6.0.8481</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20049.18428" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -104,15 +104,22 @@
       <Name>TRexIfc</Name>
     </ProjectReference>
   </ItemGroup>
+
+  <PropertyGroup>
+    <!--Copy to Dynamo sandbox for testing -->
+    <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
+    <!--Copy to Dynamo revit for publishing -->
+    <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
+  </PropertyGroup>
+
+  <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">
+    <!-- Remove before copying -->
+    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
+    <RemoveDir Directories="$(DeployFolder)" />
+  </Target>
   
   <!-- After build -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles"> <!-- PostBuildEvent -->
-    <PropertyGroup>
-      <!--Copy to Dynamo sandbox for testing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-      <!--Copy to Dynamo revit for publishing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    </PropertyGroup>
     <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfcUI package..." />
     <!--Defining folders to copy-->
     <ItemGroup>
@@ -122,9 +129,6 @@
       <SourcePkg Include="pkg.json" />
       <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
     </ItemGroup>
-    <!-- Remove before copying -->
-    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
-    <RemoveDir Directories="$(DeployFolder)" />
     <!--Copying to Build Folder-->
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />
@@ -132,7 +136,7 @@
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
     <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
     <Message Importance="High" Text="==&gt; Will copy @(SourceDlls)" />
-    <Message Importance="High" Text="==&gt; Built to $(TargetDir)$(ProjectName)" />
+    <Message Importance="High" Text="==&gt; From $(TargetDir)$(ProjectName)" />
     <ItemGroup>
       <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
     </ItemGroup>

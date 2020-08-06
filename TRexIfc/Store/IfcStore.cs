@@ -186,7 +186,7 @@ namespace Store
 
         internal delegate IModel ModelProgressDelegate(NodeProgressing node);
 
-        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing node);        
+        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing progressingNode);        
 
 #pragma warning restore CS1591
 

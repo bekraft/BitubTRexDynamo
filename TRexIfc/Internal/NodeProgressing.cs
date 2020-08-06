@@ -8,6 +8,9 @@ using Bitub.Transfer;
 using Log;
 
 using System.Runtime.CompilerServices;
+using System.Collections.Concurrent;
+using Autodesk.DesignScript.Geometry;
+
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
@@ -16,14 +19,18 @@ namespace Internal
     /// Node progressing event template
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public abstract class NodeProgressing : IProgress<ICancelableProgressState>
+    public abstract class NodeProgressing : IProgress<ProgressStateToken>
     {
         #region Internals
-        private EventHandler<NodeProgressingEventArgs> _onProgressChangeEvent;
-        private EventHandler<NodeFinishedEventArgs> _onFinishEvent;
         private readonly object _monitor = new object();
-        private NodeProgressingEventArgs _recentProgressEventArgs;
-        private NodeFinishedEventArgs _recentFinishEventArgs;
+
+        private EventHandler<NodeProgressEventArgs> _onProgressChangeEvent;
+        private EventHandler<NodeProgressEndEventArgs> _onProgressEndEvent;
+        
+        private NodeProgressEventArgs _progressEventArgs;
+        private NodeProgressEndEventArgs _progressEndEventArgs;
+
+        private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _openProgress = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
         #endregion
 
         /// <summary>
@@ -41,14 +48,14 @@ namespace Internal
         internal static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
         [IsVisibleInDynamoLibrary(false)]
-        internal event EventHandler<NodeProgressingEventArgs> OnProgressChange
+        internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {
             add {
-                NodeProgressingEventArgs args;
+                NodeProgressEventArgs args;
                 lock (_monitor)
                 {
                     _onProgressChangeEvent += value;
-                    args = _recentProgressEventArgs;
+                    args = _progressEventArgs;
                 }
 
                 if (null != args)
@@ -61,22 +68,22 @@ namespace Internal
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        internal event EventHandler<NodeFinishedEventArgs> OnFinish
+        internal event EventHandler<NodeProgressEndEventArgs> OnProgressEnd
         {
             add {
-                NodeFinishedEventArgs args;
+                NodeProgressEndEventArgs args;
                 lock (_monitor)
                 {
-                    _onFinishEvent += value;
-                    args = _recentFinishEventArgs;
+                    _onProgressEndEvent += value;
+                    args = _progressEndEventArgs;
                 }
 
                 if (null != args)
-                    value.Invoke(this, _recentFinishEventArgs);
+                    value.Invoke(this, _progressEndEventArgs);
             }
             remove {
                 lock (_monitor)
-                    _onFinishEvent -= value;
+                    _onProgressEndEvent -= value;
             }
         }
 
@@ -88,8 +95,8 @@ namespace Internal
         {
             lock (_monitor)
             {
-                _recentFinishEventArgs = null;
-                _recentProgressEventArgs = null;
+                _progressEndEventArgs = null;
+                _progressEventArgs = null;
             }
         }
 
@@ -97,32 +104,38 @@ namespace Internal
         /// Emitting progress changes
         /// </summary>
         /// <param name="args">The args</param>
-        internal virtual void OnProgressChanged(NodeProgressingEventArgs args)
+        internal virtual void OnProgressChanged(NodeProgressEventArgs args)
         {
-            EventHandler<NodeProgressingEventArgs> onProgressEvent;
+            EventHandler<NodeProgressEventArgs> eventHandler;
             lock (_monitor)
             {
-                onProgressEvent = _onProgressChangeEvent;
-                _recentProgressEventArgs = args;
+                eventHandler = _onProgressChangeEvent;
+                _progressEventArgs = args;
             }
 
-            onProgressEvent?.Invoke(this, args);
+            eventHandler?.Invoke(this, args);
         }
 
         /// <summary>
         /// Emitting finish actions
         /// </summary>
         /// <param name="args">The args</param>
-        internal virtual void OnFinished(NodeFinishedEventArgs args)
+        internal virtual void OnProgressEnded(NodeProgressEndEventArgs args)
         {
-            EventHandler<NodeFinishedEventArgs> onFinishEvent;
+            EventHandler<NodeProgressEndEventArgs> eventHandler;
             lock (_monitor)
             {
-                onFinishEvent = _onFinishEvent;
-                _recentFinishEventArgs = args;
+                eventHandler = _onProgressEndEvent;
+                _progressEndEventArgs = args;
+
+                CancelableProgressing cp;
+                if ((null != args.InternalState) && _openProgress.TryRemove(args.InternalState, out cp))
+                {
+                    cp.Dispose();
+                }
             }
 
-            onFinishEvent?.Invoke(this, args);
+            eventHandler?.Invoke(this, args);
         }
 
         /// <summary>
@@ -130,16 +143,51 @@ namespace Internal
         /// </summary>
         /// <param name="finishAction">The finishing action.</param>
         /// <param name="isBroken">Whether the finish is reached by error</param>
-        [IsVisibleInDynamoLibrary(false)]
-        internal void NotifyFinish(LogReason finishAction, bool isBroken)
+        internal void OnProgressEnded(LogReason finishAction, bool isBroken)
         {
-            OnFinished(new NodeFinishedEventArgs(finishAction, Name, false, isBroken));
+            OnProgressEnded(new NodeProgressEndEventArgs(finishAction, Name, false, isBroken));
         }
 
         /// <summary>
         /// The name.
         /// </summary>
         internal virtual string Name { get => "Progressing node"; }
+
+        /// <summary>
+        /// Returns an array of open progresses.
+        /// </summary>
+        /// <returns>Open progressing</returns>
+        internal CancelableProgressing[] GetOpenProgresses()
+        {
+            return _openProgress.Values.ToArray();
+        }
+
+        internal bool IsBusy 
+        { 
+            get => _openProgress.Count > 0; 
+        }
+
+        internal void CancelAll()
+        {
+            GetOpenProgresses().ForEach(p => p.Cancel());
+        }
+
+        /// <summary>
+        /// Gets or creates a new progress monitor.
+        /// </summary>
+        /// <returns>A cancelable progress monitor reporting to this node model</returns>
+        internal CancelableProgressing CreateProgressMonitor(LogReason logReason)
+        {
+            var cp = new CancelableProgressing(true);
+            if (!_openProgress.TryAdd(cp.State, cp))
+                throw new NotSupportedException("Internal state exception. Progress token already added.");
+
+            // Attach forwarding of events
+            cp.OnProgressChange += (sender, e) => OnProgressChanged(new NodeProgressEventArgs(logReason, e));
+            cp.OnProgressEnd += (sender, e) => OnProgressEnded(new NodeProgressEndEventArgs(logReason, e));
+
+            return cp;
+        }
 
         /// <summary>
         /// Default log reason.
@@ -151,9 +199,9 @@ namespace Internal
         /// </summary>
         /// <param name="value">The progress state</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void Report(ICancelableProgressState value)
+        public void Report(ProgressStateToken value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(DefaultReason, value));
+            OnProgressChanged(new NodeProgressEventArgs(DefaultReason, value));
         }
     }
 }

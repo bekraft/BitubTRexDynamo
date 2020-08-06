@@ -25,8 +25,8 @@ namespace Internal
         {
             RootNamespaceAssemblyResolver = new Dictionary<string, string>()
             {
-                { "Bitub.Ifc", typeof(Bitub.Ifc.IfcAuthoringMetadata).Assembly.FullName },
-                { "Bitub.Transfer", typeof(Bitub.Transfer.CancelableProgress).Assembly.FullName }
+                { "Bitub.Ifc", typeof(Bitub.Ifc.IfcAuthoringMetadata).Assembly.FullName }, // Example class name
+                { "Bitub.Transfer", typeof(Bitub.Transfer.ILogging).Assembly.FullName }  // Example class name
             };
         }
 

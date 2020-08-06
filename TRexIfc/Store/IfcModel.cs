@@ -24,7 +24,7 @@ namespace Store
     /// <summary>
     /// IFC model instance
     /// </summary>
-    public class IfcModel : NodeProgressing, IProgress<ICancelableProgressState>, IDisposable
+    public class IfcModel : NodeProgressing, IDisposable
     {
 #pragma warning disable CS1591
 
@@ -92,18 +92,18 @@ namespace Store
 
         internal protected void NotifyProgressChanged(LogReason action, int percentage, object stateObject)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(action, percentage, FileName, stateObject));
+            OnProgressChanged(new NodeProgressEventArgs(action, percentage, FileName, stateObject));
         }
 
         internal protected void NotifyOnFinished(LogReason action, bool isCanceled, bool isBroken)
         {
-            OnFinished(new NodeFinishedEventArgs(action, FileName, isCanceled, isBroken));
+            OnProgressEnded(new NodeProgressEndEventArgs(action, FileName, isCanceled, isBroken));
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public new void Report(ICancelableProgressState value)
+        public new void Report(ProgressStateToken value)
         {
-            OnProgressChanged(new NodeProgressingEventArgs(LogReason.Changed, value, Name));
+            OnProgressChanged(new NodeProgressEventArgs(LogReason.Changed, value, Name));
         }
 
         [IsVisibleInDynamoLibrary(false)]

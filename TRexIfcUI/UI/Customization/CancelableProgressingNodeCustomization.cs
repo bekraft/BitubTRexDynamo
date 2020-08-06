@@ -185,7 +185,7 @@ namespace UI.Customization
             AddOnProgressChanging();
         }
 
-        private void OnProgressChanged(object sender, NodeProgressingEventArgs e)
+        private void OnProgressChanged(object sender, NodeProgressEventArgs e)
         {
             if (LogReasonOnPort.HasFlag(e.Reason))
             {

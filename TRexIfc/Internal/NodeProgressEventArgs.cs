@@ -2,7 +2,6 @@
 
 using Bitub.Transfer;
 
-using Autodesk.DesignScript.Runtime;
 using Log;
 
 using System.Runtime.CompilerServices;
@@ -13,12 +12,12 @@ namespace Internal
     /// <summary>
     /// Node progressing event arguments.
     /// </summary>
-    internal class NodeProgressingEventArgs : EventArgs
+    internal class NodeProgressEventArgs : EventArgs
     {
         /// <summary>
         /// Internal state object
         /// </summary>
-        internal readonly ICancelableProgressState InternalState;
+        internal readonly ProgressStateToken InternalState;
 
         /// <summary>
         /// The state.
@@ -46,7 +45,7 @@ namespace Internal
         /// <param name="state">The source state</param>
         /// <param name="taskName">The task name</param>
         /// <param name="reason">The action type</param>
-        internal NodeProgressingEventArgs(LogReason reason, ICancelableProgressState state, string taskName = null)
+        internal NodeProgressEventArgs(LogReason reason, ProgressStateToken state, string taskName = null)
         {
             InternalState = state;
             TaskName = $"{taskName ?? state.State.ToString()}";
@@ -62,7 +61,7 @@ namespace Internal
         /// <param name="taskName">The task name</param>
         /// <param name="state">The state</param>
         /// <param name="reason">The action type</param>
-        internal NodeProgressingEventArgs(LogReason reason, int percentage, string taskName = null, object state = null)
+        internal NodeProgressEventArgs(LogReason reason, int percentage, string taskName = null, object state = null)
         {
             Percentage = Math.Max(0, Math.Min(100, percentage));
             TaskName = taskName;

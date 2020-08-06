@@ -88,13 +88,13 @@ namespace Internal
             var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
             var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
 
-            var data = ids.Select(id => engineController.GetMirror(id).GetData());
+            var data = ids.Select(id => engineController.GetMirror(id)?.GetData());
             return data.SelectMany(Unwrap<T>).Distinct().ToArray();
         }
 
         private static T[] Unwrap<T>(MirrorData data)
         {
-            if (data.IsCollection)
+            if (data?.IsCollection ?? false)
                 return data.GetElements().SelectMany(e =>
                 {
                     if (e.IsCollection)
@@ -104,7 +104,7 @@ namespace Internal
                     else
                         return new T[] { };
                 }).ToArray();
-            else if (data.Data is T obj)
+            else if (data?.Data is T obj)
                 return new T[] { obj };
             else
                 return new T[] { };
@@ -120,12 +120,12 @@ namespace Internal
         {
             var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
             var idNodes = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index));
-            return idNodes.SelectMany(idn => UnwrapAstValue<T>(engineController.GetMirror(idn.Name).GetData(), idn)).ToArray();
+            return idNodes.SelectMany(idn => UnwrapAstValue<T>(engineController.GetMirror(idn.Name)?.GetData(), idn)).ToArray();
         }
 
         private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, IdentifierNode idn, params int[] indexes)
         {
-            if (data.IsCollection)
+            if (data?.IsCollection ?? false)
             {
                 return data.GetElements().SelectMany((e, index) =>
                 {
@@ -137,7 +137,7 @@ namespace Internal
                         return new AstValue<T>[] { };
                 }).ToArray();
             }
-            else if (data.Data is T obj)
+            else if (data?.Data is T obj)
                 return new AstValue<T>[] { new AstValue<T>(idn.Name, obj) };
             else
                 return new AstValue<T>[] { };

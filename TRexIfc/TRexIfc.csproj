@@ -58,7 +58,7 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20204-Beta.391</Version>
+      <Version>0.1.20219-Beta.479</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">
@@ -80,18 +80,19 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20049.18428" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.0" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <!--Copy to Dynamo sandbox for testing -->
+    <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
+    <!--Copy to Dynamo revit for publishing -->
+    <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
+  </PropertyGroup>
 
   <!-- After build -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
     <!-- PostBuildEvent -->
-    <PropertyGroup>
-      <!--Copy to Dynamo sandbox for testing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-      <!--Copy to Dynamo revit for publishing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    </PropertyGroup>
     <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfc package ..." />
     <!--Defining folders to copy-->
     <ItemGroup>

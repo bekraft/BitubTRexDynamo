@@ -100,47 +100,57 @@ namespace Task
             return IfcStore.CreateFromTransform(source, (model, node) =>
             {
                 Log.LogInformation("({0}) Starting '{1}' on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
-                var task = transform.Request.Run(model, node);                
-                task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
-
-                Log.LogInformation("({0}) Finalized '{1}' on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
-
-                if (task.IsCompleted)
+                try
                 {
-                    if (node is NodeProgressing np)
-                        np.NotifyFinish(LogReason.Changed, false);
-
-                    using (var result = task.Result)
+                    using (var task = transform.Request.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
                     {
-                        switch (result.ResultCode)
-                        {
-                            case TransformResult.Code.Finished:
-                                var name = $"{transform.Request.Name}({node.Name})";
-                                foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
-                                {
-                                    node.ActionLog.Add(logMessage);
-                                }
-                                return result.Target;
-                            case TransformResult.Code.Canceled:
-                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
-                                break;
-                            case TransformResult.Code.ExitWithError:
-                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (node is NodeProgressing np)
-                        np.NotifyFinish(LogReason.Changed, true);
+                        task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
 
-                    node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                        node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        Log.LogInformation("({0}) Finalized '{1}' on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
+
+                        if (task.IsCompleted)
+                        {
+                            if (node is NodeProgressing np)
+                                np.OnProgressEnded(LogReason.Changed, false);
+
+                            using (var result = task.Result)
+                            {
+                                switch (result.ResultCode)
+                                {
+                                    case TransformResult.Code.Finished:
+                                        var name = $"{transform.Request.Name}({node.Name})";
+                                        foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
+                                        {
+                                            node.ActionLog.Add(logMessage);
+                                        }
+                                        return result.Target;
+                                    case TransformResult.Code.Canceled:
+                                        node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                            node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
+                                        break;
+                                    case TransformResult.Code.ExitWithError:
+                                        node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                            node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (node is NodeProgressing np)
+                                np.OnProgressEnded(LogReason.Changed, true);
+
+                            node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        }
+                        return null;
+                    }
+                } 
+                catch(Exception thrownOnExec)
+                {
+                    Log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
+                    throw new Exception("Exception while executing task");
                 }
-                return null;
             }, canonicalFrag);
         }
 

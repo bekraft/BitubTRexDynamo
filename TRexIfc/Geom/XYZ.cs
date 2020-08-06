@@ -2,6 +2,7 @@
 
 using Autodesk.DesignScript.Runtime;
 using ADPoint = Autodesk.DesignScript.Geometry.Point;
+using Bitub.Transfer.Spatial;
 
 namespace Geom
 {
@@ -22,6 +23,11 @@ namespace Geom
 
         internal XYZ() : this(0, 0, 0)
         { }
+
+        internal XYZ(Bitub.Transfer.Spatial.XYZ xyz)
+        {
+            TheXYZ = xyz;
+        }
 
         internal XYZ(double x, double y, double z)
         {
@@ -92,6 +98,34 @@ namespace Geom
         public XYZ Translate(double x, double y = 0, double z = 0)
         {
             return new XYZ(TheXYZ.X + x, TheXYZ.Y + y, TheXYZ.Z + z);
+        }
+
+        /// <summary>
+        /// Translate via given vector.
+        /// </summary>
+        /// <param name="vector">The vector</param>
+        /// <returns>Returns a new translated XYZ</returns>
+        public XYZ Translate(XYZ vector)
+        {
+            return new XYZ(TheXYZ.Add(vector.TheXYZ));
+        }
+
+        /// <summary>
+        /// Returns a mean point of given points.
+        /// </summary>
+        /// <param name="points">The points</param>
+        /// <returns>A new mean point</returns>
+        public static XYZ Mean(XYZ[] points)
+        {
+            double x = 0, y = 0, z = 0;
+            foreach (var xyz in points)
+            {
+                x += xyz.TheXYZ.X;
+                y += xyz.TheXYZ.Y;
+                z += xyz.TheXYZ.Z;
+            }
+
+            return new XYZ(x / points.Length, y / points.Length, z / points.Length);
         }
     }
 }
