@@ -93,7 +93,7 @@ namespace Store
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callIfcModelSave)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), DockOnProgressing(callIfcModelSave))
             };
         }
 

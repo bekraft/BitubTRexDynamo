@@ -10,12 +10,6 @@ namespace Task
     public interface ICancelableTaskNode : IProgress<ProgressStateToken>
     {
         /// <summary>
-        /// Initializes the node with an initial progress token.
-        /// </summary>
-        /// <param name="progressToken">The progress token</param>
-        void InitNode(ProgressStateToken progressToken);
-
-        /// <summary>
         /// Whether the progress has been canceled.
         /// </summary>
         bool IsCanceled { get; set; }

@@ -85,7 +85,7 @@ namespace Store
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callGetOrCreateModelStore)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), DockOnProgressing(callGetOrCreateModelStore))
             };
         }
 

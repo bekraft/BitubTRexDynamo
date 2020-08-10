@@ -8,9 +8,13 @@ using Newtonsoft.Json;
 using Bitub.Transfer;
 
 using Internal;
+using ProtoCore.AST.AssociativeAST;
+using System.Runtime.CompilerServices;
 
 // Disable comment warning
 #pragma warning disable CS1591
+
+[assembly: InternalsVisibleTo("TRexIfc")]
 
 namespace Task
 {
@@ -24,20 +28,68 @@ namespace Task
         private string _taskName;
         private Visibility _visibility;
 
-        private ProgressStateToken _progressToken;
-
-        private object _monitor = new object();
+        private object _mutex = new object();
+        private readonly string _dockCallbackQualifier;
         #endregion
 
         protected CancelableProgressingNodeModel() : base()
         {
             ResetState();
+            _dockCallbackQualifier = GlobalDelegationService.Put<NodeProgressing>(
+                new[] { GetType().FullName, nameof(DockOnProgressing) }.ToQualifier(), DockOnProgressing);
         }
 
         protected CancelableProgressingNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
-        }        
+            _dockCallbackQualifier = GlobalDelegationService.Put<object>(
+                new[] { GetType().FullName, nameof(DockOnProgressing) }.ToQualifier(), DockOnProgressing);
+        }
+
+        private void OnNodeProgessEnded(object sender, NodeProgressEndEventArgs args)
+        {
+            if (sender is NodeProgressing np)
+            {
+                np.OnProgressChange -= OnNodeProgressChanged;
+                np.OnProgressEnd -= OnNodeProgessEnded;
+            }
+        }
+
+        private void OnNodeProgressChanged(object sender, NodeProgressEventArgs args)
+        {
+            lock (_mutex)
+            {
+                ProgressPercentage = args.Percentage;
+                ProgressState = args.State?.ToString() ?? args.TaskName;
+                TaskName = args.TaskName;                
+            }
+        }
+
+        internal object DockOnProgressing(object obj)
+        {
+            if (obj is NodeProgressing nodeProgressing)
+            {
+                nodeProgressing.OnProgressChange += OnNodeProgressChanged;
+                nodeProgressing.OnProgressEnd += OnNodeProgessEnded;
+            } 
+            else
+            {
+                if (null != obj)
+                    Warning($"Expected a progress event source but got '{obj.GetType()}'");
+            }
+            return obj;
+        }
+
+        protected AssociativeNode DockOnProgressing(AssociativeNode progressProducer)
+        {
+            return AstFactory.BuildFunctionCall(
+                new Func<string, object, object>(GlobalDelegationService.Call),
+                new List<AssociativeNode>()
+                {
+                    AstFactory.BuildStringNode(_dockCallbackQualifier),
+                    progressProducer
+                });
+        }
 
         [JsonIgnore]
         public Visibility CancellationVisibility
@@ -105,25 +157,15 @@ namespace Task
                 return _progressPercentage;
             }
             set {
-                _progressPercentage = Math.Max(0, Math.Min(100, value));
+                _progressPercentage = System.Math.Max(0, System.Math.Min(100, value));
                 RaisePropertyChanged(nameof(ProgressPercentage));
-            }
-        }
-
-        public void InitNode(ProgressStateToken progressToken)
-        {
-            lock (_monitor)
-            {
-                _progressToken = progressToken;
-
-                if (IsCancelable && IsCanceled)
-                    _progressToken.MarkCanceled();
             }
         }
 
         public void ResetState()
         {
-            lock (_monitor)
+            ClearErrorsAndWarnings();
+            lock (_mutex)
             {
                 ProgressPercentage = 0;
                 ProgressState = "ready";
@@ -131,18 +173,9 @@ namespace Task
             }
         }
 
-        public void ClearState()
-        {
-            lock (_monitor)
-            {
-                ProgressState = "done";
-                TaskName = "(Finished)";
-            }    
-        }
-
         public void Report(int percentage, object userState)
         {
-            lock(_monitor)
+            lock(_mutex)
             {
                 ProgressPercentage = percentage;
                 ProgressState = $"{userState?.ToString() ?? "Running"}";
@@ -151,10 +184,8 @@ namespace Task
 
         public void Report(ProgressStateToken value)
         {
-            lock (_monitor)
+            lock (_mutex)
             {
-                _progressToken = value;
-
                 var percentage = value.Percentage;
                 ProgressPercentage = percentage;
                 ProgressState = $"{percentage}%";
@@ -162,7 +193,7 @@ namespace Task
                 if (IsCancelable && IsCanceled)
                     value.MarkCanceled();
             }
-        }        
+        }
     }
 }
 
