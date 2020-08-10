@@ -50,6 +50,7 @@ namespace Internal
             TaskName = taskName ?? $"{endState?.StateObject}";
             IsCanceled = endState?.State == ProgressTokenState.IsCanceled;
             Action = action;
+            InternalState = endState;
         }
 
         /// <summary>

@@ -169,6 +169,14 @@ namespace Internal
                 return Unwrap<T>(data).Distinct().ToArray();
         }
 
+        protected AssociativeNode NodeToExprList<N>(AssociativeNode n) where N : AssociativeNode
+        {
+            if (n is N valueNode)
+                return AstFactory.BuildExprList(new List<AssociativeNode>() { valueNode });
+            else
+                return n;
+        }
+
         protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
         {
             return AstFactory.BuildStringNode(Enum.GetName(typeof(T), n));

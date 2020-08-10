@@ -63,7 +63,7 @@ namespace UI.Customization
             NodeModel.PortConnected += NodeModel_PortConnected;
             NodeModel.PortDisconnected += NodeModel_PortDisconnected;
             NodeModel.Modified += NodeModel_Modified;
-        }
+        }        
 
         private void NodeModel_Modified(NodeModel obj)
         {

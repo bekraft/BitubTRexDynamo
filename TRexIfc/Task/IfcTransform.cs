@@ -99,14 +99,14 @@ namespace Task
 
             return IfcStore.CreateFromTransform(source, (model, node) =>
             {
-                Log.LogInformation("({0}) Starting '{1}' on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
+                Log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
                 try
                 {
                     using (var task = transform.Request.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
                     {
                         task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
 
-                        Log.LogInformation("({0}) Finalized '{1}' on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
+                        Log.LogInformation("Finalized '{1}' ({0}) on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
 
                         if (task.IsCompleted)
                         {
@@ -161,12 +161,15 @@ namespace Task
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, string[] blackListPSets, bool caseSensitiveMatching)
+        public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, 
+            string[] removePropertySets, string[] keepPropertySets, bool caseSensitiveMatching)
         {
             return new IfcTransform(new IfcPropertySetRemovalRequest(logInstance.LoggerFactory)
             {
-                BlackListNames = blackListPSets,
+                RemovePropertySet = removePropertySets,
+                KeepPropertySet = keepPropertySets,
                 IsNameMatchingCaseSensitive = caseSensitiveMatching,
+                IsRemovingPSetOnConflict = false,
                 IsLogEnabled = true,
                 EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
             });

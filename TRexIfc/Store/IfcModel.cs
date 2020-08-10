@@ -65,15 +65,16 @@ namespace Store
                 {
                     switch (msg.Severity)
                     {
+                        case LogSeverity.Debug:
                         case LogSeverity.Info:
-                            Store.Logger?.LogInfo(msg.Message);
+                            Store.Logger?.LogInfo(msg.ToString());
                             break;
                         case LogSeverity.Warning:
-                            Store.Logger?.LogWarning(msg.Message);
+                            Store.Logger?.LogWarning(msg.ToString());
                             break;
                         case LogSeverity.Critical:
                         case LogSeverity.Error:
-                            Store.Logger?.LogError(msg.Message);
+                            Store.Logger?.LogError(msg.ToString());
                             break;
                     }
                 }

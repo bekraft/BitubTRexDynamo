@@ -10,6 +10,7 @@ using Log;
 using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using Autodesk.DesignScript.Geometry;
+using Microsoft.Extensions.Logging;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
@@ -31,12 +32,13 @@ namespace Internal
         private NodeProgressEndEventArgs _progressEndEventArgs;
 
         private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _openProgress = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
+
+        private readonly static ILogger<NodeProgressing> Log = GlobalLogging.LoggingFactory.CreateLogger<NodeProgressing>();
         #endregion
 
         /// <summary>
         /// Logging messages.
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         internal ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
         /// <summary>
@@ -44,10 +46,8 @@ namespace Internal
         /// </summary>
         /// <param name="nodeProgressing">The logging source</param>
         /// <returns>The current log</returns>
-        [IsVisibleInDynamoLibrary(false)]
         internal static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
-        [IsVisibleInDynamoLibrary(false)]
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {
             add {
@@ -67,7 +67,6 @@ namespace Internal
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         internal event EventHandler<NodeProgressEndEventArgs> OnProgressEnd
         {
             add {
@@ -90,7 +89,6 @@ namespace Internal
         /// <summary>
         /// Clears the current known state.
         /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
         internal virtual void ClearState()
         {
             lock (_monitor)
@@ -129,9 +127,11 @@ namespace Internal
                 _progressEndEventArgs = args;
 
                 CancelableProgressing cp;
+                Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Action}'");
                 if ((null != args.InternalState) && _openProgress.TryRemove(args.InternalState, out cp))
                 {
                     cp.Dispose();
+                    Log.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
                 }
             }
 
@@ -185,6 +185,8 @@ namespace Internal
             // Attach forwarding of events
             cp.OnProgressChange += (sender, e) => OnProgressChanged(new NodeProgressEventArgs(logReason, e));
             cp.OnProgressEnd += (sender, e) => OnProgressEnded(new NodeProgressEndEventArgs(logReason, e));
+
+            Log.LogInformation($"Progress monitor started with '{cp.State.State}' at {cp.State.Percentage} % logging for '{logReason}'");
 
             return cp;
         }
