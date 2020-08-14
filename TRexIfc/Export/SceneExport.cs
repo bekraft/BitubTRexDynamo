@@ -31,21 +31,11 @@ namespace Export
 
         #region Internals
 
-        internal readonly IfcSceneExporter InternalSceneExport;
+        internal readonly IfcSceneExporter Exporter;
 
         internal SceneExport(ILoggerFactory loggerFactory)
         {            
-            InternalSceneExport = new IfcSceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
-        }
-
-        private void SceneExporter_OnProgressChange(object sender, ProgressStateToken changedState)
-        {
-            OnProgressChanged(new NodeProgressEventArgs(LogReason.Saved, changedState, "Exporting" ));
-        }
-
-        private void SceneExporter_OnProgressEnd(object sender, ProgressStateToken endState)
-        {
-            OnProgressEnded(new NodeProgressEndEventArgs(LogReason.Saved, endState, "Exporting"));
+            Exporter = new IfcSceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
         }
 
         protected override LogReason DefaultReason => LogReason.Saved;
@@ -71,7 +61,7 @@ namespace Export
                 throw new ArgumentNullException("settings");
 
             var sceneExport = new SceneExport(logger?.LoggerFactory);              
-            sceneExport.InternalSceneExport.Settings = settings.InternalSettings;
+            sceneExport.Exporter.Settings = settings.Settings;
             return sceneExport;
         }
 
@@ -104,7 +94,7 @@ namespace Export
                 if (null == internalModel)
                     throw new ArgumentNullException("ifcModel");
 
-                using (var sceneTask = sceneExport.InternalSceneExport.Run(internalModel, sceneExport.CreateProgressMonitor(LogReason.Saved)))
+                using (var sceneTask = sceneExport.Exporter.Run(internalModel, sceneExport.CreateProgressMonitor(LogReason.Saved)))
                 {
                     // TODO Time out
                     sceneTask.Wait();
@@ -147,7 +137,7 @@ namespace Export
         /// </summary>
         public SceneExportSettings Settings
         {
-            get => new SceneExportSettings(InternalSceneExport.Settings);
+            get => new SceneExportSettings(Exporter.Settings);
         }
 
         /// <summary>

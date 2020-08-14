@@ -25,11 +25,10 @@ namespace Export
 
         internal SceneExportSettings(IfcSceneExportSettings settings)
         {
-            InternalSettings = settings;
+            Settings = settings;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public IfcSceneExportSettings InternalSettings { get; private set; }
+        public readonly IfcSceneExportSettings Settings;
 
         #endregion
 
@@ -56,17 +55,15 @@ namespace Export
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
 
-            var settings = new SceneExportSettings
+            var settings = new SceneExportSettings(new IfcSceneExportSettings
             {
-                InternalSettings = new IfcSceneExportSettings
-                {
-                    Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
-                    Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
-                    UserModelCenter = offset.TheXYZ,
-                    UnitsPerMeter = unitPerMeter,
-                    UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] {}
-                }
-            };
+                Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
+                Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
+                UserModelCenter = offset.TheXYZ,
+                UnitsPerMeter = unitPerMeter,
+                UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] { }
+            });
+            
             return SceneExport.CreateSceneExport(settings, logger);
         }
 
@@ -80,7 +77,7 @@ namespace Export
         {
             try
             {
-                settings.InternalSettings.SaveTo(fileName);
+                settings.Settings.SaveTo(fileName);
                 return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Info, LogReason.Saved, "Saved {0}", fileName);
             }
             catch(Exception e)
@@ -92,26 +89,26 @@ namespace Export
         /// <summary>
         /// The transformation strategy.
         /// </summary>
-        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), InternalSettings.Transforming); }
+        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), Settings.Transforming); }
 
         /// <summary>
         /// The positioning strategy.
         /// </summary>
-        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), InternalSettings.Positioning); }
+        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), Settings.Positioning); }
 
         /// <summary>
         /// The scaling as units per meter.
         /// </summary>
-        public double UnitsPerMeter { get => InternalSettings.UnitsPerMeter; }
+        public double UnitsPerMeter { get => Settings.UnitsPerMeter; }
 
         /// <summary>
         /// The offset shift
         /// </summary>
-        public XYZ Offset { get => new XYZ { TheXYZ = InternalSettings.UserModelCenter }; }
+        public XYZ Offset { get => new XYZ { TheXYZ = Settings.UserModelCenter }; }
 
         /// <summary>
         /// Names of model contexts to be exported.
         /// </summary>
-        public string[] SceneContexts { get => InternalSettings.UserRepresentationContext.Select(c => c.Name).ToArray(); }
+        public string[] SceneContexts { get => Settings.UserRepresentationContext.Select(c => c.Name).ToArray(); }
     }
 }

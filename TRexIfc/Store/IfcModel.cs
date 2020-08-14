@@ -288,7 +288,7 @@ namespace Store
                             internalModel.SaveAsIfcXml(fileStream, ifcModel.NotifySaveProgressChanged);
                             break;
                         case "ifczip":
-                            internalModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.Ifc, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.IfcZip | Xbim.IO.StorageType.Ifc, ifcModel.NotifySaveProgressChanged);
                             break;
                         default:
                             logger?.LogWarning("File extension not known: '{0}'. Use (IFC, IFCXML or IFCZIP)", Path.GetExtension(filePathName));
