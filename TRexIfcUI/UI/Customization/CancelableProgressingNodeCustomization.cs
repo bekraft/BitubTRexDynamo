@@ -84,9 +84,6 @@ namespace UI.Customization
                     break;
             }
 
-            foreach (var eventSource in NodeProgressingMatching())
-                eventSource.ClearState();
-
             NodeModel.ResetState();
         }
 
@@ -175,10 +172,6 @@ namespace UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            // Remove first (since the internal event sources might have changed)
-            foreach (var eventSource in RemoveOnProgressChanging())
-                eventSource.ClearState();
-
             NodeModel.ResetState();
 
             // Add any newly attached event source is unknown => clear state before (since it might be changed)

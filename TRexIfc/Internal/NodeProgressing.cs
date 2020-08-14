@@ -23,15 +23,12 @@ namespace Internal
     public abstract class NodeProgressing : IProgress<ProgressStateToken>
     {
         #region Internals
-        private readonly object _monitor = new object();
+        private readonly object _mutex = new object();
 
         private EventHandler<NodeProgressEventArgs> _onProgressChangeEvent;
         private EventHandler<NodeProgressEndEventArgs> _onProgressEndEvent;
         
-        private NodeProgressEventArgs _progressEventArgs;
-        private NodeProgressEndEventArgs _progressEndEventArgs;
-
-        private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _openProgress = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
+        private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
 
         private readonly static ILogger<NodeProgressing> Log = GlobalLogging.LoggingFactory.CreateLogger<NodeProgressing>();
         #endregion
@@ -51,18 +48,14 @@ namespace Internal
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {
             add {
-                NodeProgressEventArgs args;
-                lock (_monitor)
+                lock (_mutex)
                 {
-                    _onProgressChangeEvent += value;
-                    args = _progressEventArgs;
+                    if (!_onProgressChangeEvent.GetInvocationList().Contains(value))
+                        _onProgressChangeEvent += value;
                 }
-
-                if (null != args)
-                    value.Invoke(this, args);
             }
             remove {
-                lock (_monitor)
+                lock (_mutex)
                     _onProgressChangeEvent -= value;
             }
         }
@@ -70,33 +63,18 @@ namespace Internal
         internal event EventHandler<NodeProgressEndEventArgs> OnProgressEnd
         {
             add {
-                NodeProgressEndEventArgs args;
-                lock (_monitor)
+                lock (_mutex)
                 {
-                    _onProgressEndEvent += value;
-                    args = _progressEndEventArgs;
+                    if (!_onProgressEndEvent.GetInvocationList().Contains(value))
+                        _onProgressEndEvent += value;
                 }
-
-                if (null != args)
-                    value.Invoke(this, _progressEndEventArgs);
             }
             remove {
-                lock (_monitor)
+                lock (_mutex)
                     _onProgressEndEvent -= value;
             }
         }
 
-        /// <summary>
-        /// Clears the current known state.
-        /// </summary>
-        internal virtual void ClearState()
-        {
-            lock (_monitor)
-            {
-                _progressEndEventArgs = null;
-                _progressEventArgs = null;
-            }
-        }
 
         /// <summary>
         /// Emitting progress changes
@@ -105,11 +83,8 @@ namespace Internal
         internal virtual void OnProgressChanged(NodeProgressEventArgs args)
         {
             EventHandler<NodeProgressEventArgs> eventHandler;
-            lock (_monitor)
-            {
+            lock (_mutex)
                 eventHandler = _onProgressChangeEvent;
-                _progressEventArgs = args;
-            }
 
             eventHandler?.Invoke(this, args);
         }
@@ -121,17 +96,16 @@ namespace Internal
         internal virtual void OnProgressEnded(NodeProgressEndEventArgs args)
         {
             EventHandler<NodeProgressEndEventArgs> eventHandler;
-            lock (_monitor)
+            lock (_mutex)
             {
                 eventHandler = _onProgressEndEvent;
-                _progressEndEventArgs = args;
 
                 CancelableProgressing cp;
                 Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Action}'");
-                if ((null != args.InternalState) && _openProgress.TryRemove(args.InternalState, out cp))
-                {
-                    cp.Dispose();
+                if ((null != args.InternalState) && _progressMonitor.TryRemove(args.InternalState, out cp))
+                {                    
                     Log.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
+                    cp.Dispose();
                 }
             }
 
@@ -159,12 +133,12 @@ namespace Internal
         /// <returns>Open progressing</returns>
         internal CancelableProgressing[] GetOpenProgresses()
         {
-            return _openProgress.Values.ToArray();
+            return _progressMonitor.Values.ToArray();
         }
 
         internal bool IsBusy 
         { 
-            get => _openProgress.Count > 0; 
+            get => _progressMonitor.Count > 0; 
         }
 
         internal void CancelAll()
@@ -179,7 +153,7 @@ namespace Internal
         internal CancelableProgressing CreateProgressMonitor(LogReason logReason)
         {
             var cp = new CancelableProgressing(true);
-            if (!_openProgress.TryAdd(cp.State, cp))
+            if (!_progressMonitor.TryAdd(cp.State, cp))
                 throw new NotSupportedException("Internal state exception. Progress token already added.");
 
             // Attach forwarding of events
