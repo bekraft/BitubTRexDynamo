@@ -103,9 +103,9 @@ namespace Internal
                 CancelableProgressing cp;
                 Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Action}'");
                 if ((null != args.InternalState) && _progressMonitor.TryRemove(args.InternalState, out cp))
-                {
-                    cp.Dispose();
+                {                    
                     Log.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
+                    cp.Dispose();
                 }
             }
 

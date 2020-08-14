@@ -104,11 +104,7 @@ namespace Export
                 if (null == internalModel)
                     throw new ArgumentNullException("ifcModel");
 
-                var progressMonitor = new CancelableProgressing(true);
-                progressMonitor.OnProgressChange += sceneExport.SceneExporter_OnProgressChange;
-                progressMonitor.OnProgressEnd += sceneExport.SceneExporter_OnProgressEnd;
-
-                using (var sceneTask = sceneExport.InternalSceneExport.Run(internalModel, progressMonitor))
+                using (var sceneTask = sceneExport.InternalSceneExport.Run(internalModel, sceneExport.CreateProgressMonitor(LogReason.Saved)))
                 {
                     // TODO Time out
                     sceneTask.Wait();

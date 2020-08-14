@@ -95,7 +95,7 @@
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.6.0.8481</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.0" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20213.31545" />
   </ItemGroup>
 
   <ItemGroup>
