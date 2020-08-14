@@ -12,8 +12,11 @@ namespace Internal
 {
 #pragma warning disable CS1591   
 
+    /// <summary>
+    /// Invisible helper which should be public since Dynamo has to reach it.
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public sealed class GlobalDelegationService
+    public sealed class DynamicDelegation
     {
         /// <summary>
         /// Registers a simple in => out function.
@@ -21,7 +24,7 @@ namespace Internal
         /// <param name="f1">A function having 1 argument</param>
         /// <returns>Function key</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static string Put<T1>(Func<T1,object> f1)
+        public static string Put<T1>(Func<T1, object> f1)
         {
             return JsonFormatter.Default.Format(PutAnonymous(f1));
         }
@@ -37,7 +40,7 @@ namespace Internal
         {
             FunctionCache.AddOrUpdate(named, f1, (q, f) => 
             {
-                Log.LogWarning("{0}: Key '{1}' already present. Using new function reference.", typeof(GlobalDelegationService), named.ToLabel());
+                Log.LogWarning("{0}: Key '{1}' already present. Using new function reference.", typeof(DynamicDelegation), named.ToLabel());
                 return f1;
             });
             return JsonFormatter.Default.Format(named);
@@ -137,11 +140,11 @@ namespace Internal
 
         #region Internals
 
-        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<GlobalDelegationService>();
+        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<DynamicDelegation>();
 
         private readonly static ConcurrentDictionary<Qualifier, object> FunctionCache = new ConcurrentDictionary<Qualifier, object>();
 
-        private GlobalDelegationService()
+        private DynamicDelegation()
         {
         }
 
@@ -165,11 +168,11 @@ namespace Internal
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
                     if (!FunctionCache.TryRemove(q, out f))
-                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(GlobalDelegationService), q);
+                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(DynamicDelegation), q);
                     break;
                 case Qualifier.GuidOrNameOneofCase.Named:
                     if (!FunctionCache.TryGetValue(q, out f))
-                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(GlobalDelegationService), q);
+                        Log.LogError("{0}: Key '{1}' is not existing.", typeof(DynamicDelegation), q);
                     break;
             }
 

@@ -24,7 +24,7 @@ namespace Store
     /// <summary>
     /// IFC model instance
     /// </summary>
-    public class IfcModel : NodeProgressing, IDisposable
+    public class IfcModel : ProgressingTask, IDisposable
     {
 #pragma warning disable CS1591
 
@@ -83,36 +83,23 @@ namespace Store
 
         internal void NotifySaveProgressChanged(int percentage, object stateObject)
         {
-            NotifyProgressChanged(LogReason.Saved, percentage, stateObject);
+            NotifyOnProgressChanged(LogReason.Saved, percentage, stateObject);
         }
 
         internal void NotifyLoadProgressChanged(int percentage, object stateObject)
         {
-            NotifyProgressChanged(LogReason.Loaded, percentage, stateObject);
-        }
-
-        internal protected void NotifyProgressChanged(LogReason action, int percentage, object stateObject)
-        {
-            OnProgressChanged(new NodeProgressEventArgs(action, percentage, FileName, stateObject));
-        }
-
-        internal protected void NotifyOnFinished(LogReason action, bool isCanceled, bool isBroken)
-        {
-            OnProgressEnded(new NodeProgressEndEventArgs(action, FileName, isCanceled, isBroken));
+            NotifyOnProgressChanged(LogReason.Loaded, percentage, stateObject);
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public new void Report(ProgressStateToken value)
+        public override void Dispose()
         {
-            OnProgressChanged(new NodeProgressEventArgs(LogReason.Changed, value, Name));
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public void Dispose()
-        {
-            if (null == Store) 
+            if (null == Store)
                 throw new ObjectDisposedException(nameof(IfcModel));
-            (ActionLog as ObservableCollection<LogMessage>).CollectionChanged -= ActionLog_CollectionChanged;
+
+            base.Dispose();
+
+            ActionLog.CollectionChanged -= ActionLog_CollectionChanged;
             Store = null;
         }
 
@@ -281,10 +268,9 @@ namespace Store
                 throw new ArgumentNullException("ifcModel");
 
             var logger = ifcModel.Store.Logger;                       
-            var aboutToBeSaved = ifcModel.ChangeFormat(extension);
-            var filePathName = aboutToBeSaved.GetFilePathName(separator, true);
+            var savingModel = ifcModel.ChangeFormat(extension);
+            var filePathName = savingModel.GetFilePathName(separator, true);
 
-            logger?.LogInfo("Saving '{0}'.", filePathName);
             try
             {
                 var internalModel = ifcModel.Store.XbimModel;
@@ -312,17 +298,17 @@ namespace Store
                     fileStream.Close();
                 }
                 
-                ifcModel.NotifyOnFinished(LogReason.Saved, false, false);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(aboutToBeSaved.FileName, LogSeverity.Info, LogReason.Saved, "Success: '{0}'.", filePathName));
+                ifcModel.NotifyOnProgressEnded(LogReason.Saved, false, false);
+                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", filePathName));
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception: {0}", e.Message);
-                ifcModel.NotifyOnFinished(LogReason.Saved, false, true);
-                aboutToBeSaved.ActionLog.Add(new LogMessage(aboutToBeSaved.FileName, LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
+                ifcModel.NotifyOnProgressEnded(LogReason.Saved, false, true);
+                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
             }
 
-            return aboutToBeSaved;
+            return savingModel;
         }
 
         /// <summary>

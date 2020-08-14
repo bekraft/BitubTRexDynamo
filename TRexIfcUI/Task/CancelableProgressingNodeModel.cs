@@ -20,6 +20,9 @@ namespace Task
 {
     public abstract class CancelableProgressingNodeModel : BaseNodeModel, ICancelableTaskNode
     {
+        const string DEFAULT_PROGRESS_STATE = "(inactive)";
+        const string DEFAULT_TASK_NAME = "(no tasks progressing)";
+
         #region Internals
         private bool _isCancelable;
         private bool _isCanceled;
@@ -35,27 +38,26 @@ namespace Task
         protected CancelableProgressingNodeModel() : base()
         {
             ResetState();
-            _dockCallbackQualifier = GlobalDelegationService.Put<NodeProgressing>(
-                new[] { GetType().FullName, nameof(DockOnProgressing) }.ToQualifier(), DockOnProgressing);
+            _dockCallbackQualifier = DynamicDelegation.Put<ProgressingTask>(
+                new[] { GetType().FullName, nameof(BuildAstNodeProgressMonitor) }.ToQualifier(), DockProgressMonitor);
         }
 
         protected CancelableProgressingNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
-            _dockCallbackQualifier = GlobalDelegationService.Put<object>(
-                new[] { GetType().FullName, nameof(DockOnProgressing) }.ToQualifier(), DockOnProgressing);
+            _dockCallbackQualifier = DynamicDelegation.Put<object>(
+                new[] { GetType().FullName, nameof(BuildAstNodeProgressMonitor) }.ToQualifier(), DockProgressMonitor);
         }
 
-        private void OnNodeProgessEnded(object sender, NodeProgressEndEventArgs args)
+        internal void OnNodeProgessEnded(object sender, NodeProgressEndEventArgs args = null)
         {
-            if (sender is NodeProgressing np)
+            if (sender is ProgressingTask np)
             {
-                np.OnProgressChange -= OnNodeProgressChanged;
-                np.OnProgressEnd -= OnNodeProgessEnded;
+                np.OnProgressChange -= OnNodeProgressChanged;                
             }
         }
 
-        private void OnNodeProgressChanged(object sender, NodeProgressEventArgs args)
+        internal void OnNodeProgressChanged(object sender, NodeProgressEventArgs args)
         {
             lock (_mutex)
             {
@@ -65,12 +67,11 @@ namespace Task
             }
         }
 
-        internal object DockOnProgressing(object obj)
+        public object DockProgressMonitor(object obj)
         {
-            if (obj is NodeProgressing nodeProgressing)
+            if (obj is ProgressingTask nodeProgressing)
             {
                 nodeProgressing.OnProgressChange += OnNodeProgressChanged;
-                nodeProgressing.OnProgressEnd += OnNodeProgessEnded;
             } 
             else
             {
@@ -80,10 +81,10 @@ namespace Task
             return obj;
         }
 
-        protected AssociativeNode DockOnProgressing(AssociativeNode progressProducer)
+        protected AssociativeNode BuildAstNodeProgressMonitor(AssociativeNode progressProducer)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<string, object, object>(GlobalDelegationService.Call),
+                new Func<string, object, object>(DynamicDelegation.Call),
                 new List<AssociativeNode>()
                 {
                     AstFactory.BuildStringNode(_dockCallbackQualifier),
@@ -168,8 +169,8 @@ namespace Task
             lock (_mutex)
             {
                 ProgressPercentage = 0;
-                ProgressState = "ready";
-                TaskName = "(not active)";
+                ProgressState = DEFAULT_PROGRESS_STATE;
+                TaskName = DEFAULT_TASK_NAME;
             }
         }
 

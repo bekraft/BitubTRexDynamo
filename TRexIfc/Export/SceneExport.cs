@@ -25,7 +25,7 @@ namespace Export
     /// <summary>
     /// Scene export utility.
     /// </summary>   
-    public class SceneExport : NodeProgressing
+    public class SceneExport : ProgressingTask
     {        
         public static string[] Extensions = new string[] { "json", "scene" };
 

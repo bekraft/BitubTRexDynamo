@@ -14,7 +14,10 @@ using Internal;
 
 using Log;
 
-using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, Internal.NodeProgressing[]>;
+using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, Internal.ProgressingTask[]>;
+using Autodesk.DesignScript.Geometry;
+
+using Bitub.Transfer;
 
 namespace UI.Customization
 {
@@ -67,7 +70,9 @@ namespace UI.Customization
 
         private void NodeModel_Modified(NodeModel obj)
         {
-            
+            RemoveOnProgressChanging().ForEach(np => OnProgressChanged(np, np.LatestProgressEventArgs));
+            NodeModel.ResetState();
+            DockProgressMonitor().ForEach(np => OnProgressChanged(np, np.LatestProgressEventArgs));
         }
 
         private void NodeModel_PortDisconnected(PortModel pm)
@@ -95,11 +100,11 @@ namespace UI.Customization
             {
                 case PortType.Input:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.InPorts))
-                        AddOnProgressChanging(pm.PortType, pm.Index);
+                        DockProgressMonitor(pm.PortType, pm.Index).ForEach(np => OnProgressChanged(np, np.LatestProgressEventArgs));
                     break;
                 case PortType.Output:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.OutPorts))
-                        AddOnProgressChanging(pm.PortType, pm.Index);
+                        DockProgressMonitor(pm.PortType, pm.Index).ForEach(np => OnProgressChanged(np, np.LatestProgressEventArgs));
                     break;
             }
         }
@@ -113,21 +118,21 @@ namespace UI.Customization
                     .Select(p => new ProgressingPort(
                         p.PortType, 
                         p.Index, 
-                        NodeModel.GetCachedInput<NodeProgressing>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
+                        NodeModel.GetCachedInput<ProgressingTask>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
             if (progressOnPort.HasFlag(ProgressOnPortType.OutPorts))
                 eventSources = eventSources.Concat(NodeModel.OutPorts
                     .Where(p => (!portType.HasValue || portType == p.PortType) && (!portIndex.HasValue || portIndex == p.Index))
                     .Select(p => new ProgressingPort(
                         p.PortType, 
                         p.Index, 
-                        NodeModel.GetCachedOutput<NodeProgressing>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
+                        NodeModel.GetCachedOutput<ProgressingTask>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
 
             return eventSources.Where(e => e.Item3.Length > 0).ToArray();
         }
 
-        protected NodeProgressing[] AddOnProgressChanging(PortType? portType = null, int? portIndex = null)
+        protected ProgressingTask[] DockProgressMonitor(PortType? portType = null, int? portIndex = null)
         {
-            List<NodeProgressing> eventSources = new List<NodeProgressing>();
+            List<ProgressingTask> eventSources = new List<ProgressingTask>();
             lock (_monitor)
             {
                 foreach (var np in GetNodeProgressing(ProgressOnPort, portType, portIndex))
@@ -135,6 +140,7 @@ namespace UI.Customization
                     foreach (var eventSource in np.Item3)
                     {
                         eventSource.OnProgressChange += OnProgressChanged;
+                        eventSource.OnProgressEnd += OnProgressEnded;
                         eventSources.Add(eventSource);
                     }
                     
@@ -144,16 +150,16 @@ namespace UI.Customization
             return eventSources.ToArray();
         }
 
-        protected IEnumerable<NodeProgressing> NodeProgressingMatching(PortType? portType = null, int? portIndex = null)
+        protected IEnumerable<ProgressingTask> NodeProgressingMatching(PortType? portType = null, int? portIndex = null)
         {
             return _nodeProgressingPort
                 .Where(n => (!portType.HasValue || portType == n.Item1) && (!portIndex.HasValue || portIndex == n.Item2))
                 .SelectMany(n => n.Item3);
         }
 
-        protected NodeProgressing[] RemoveOnProgressChanging(PortType? portType = null, int? portIndex = null)
+        protected ProgressingTask[] RemoveOnProgressChanging(PortType? portType = null, int? portIndex = null)
         {
-            List<NodeProgressing> eventSources = new List<NodeProgressing>();
+            List<ProgressingTask> eventSources = new List<ProgressingTask>();
             lock (_monitor)
             {                
                 foreach (var eventSource in NodeProgressingMatching(portType, portIndex))
@@ -172,27 +178,33 @@ namespace UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            NodeModel.ResetState();
+            DockProgressMonitor().ForEach(np => OnProgressChanged(np, np.LatestProgressEventArgs));
+        }
 
-            // Add any newly attached event source is unknown => clear state before (since it might be changed)
-            AddOnProgressChanging();
+        private void OnProgressEnded(object sender, NodeProgressEndEventArgs e)
+        {
+            NodeModel.OnNodeProgessEnded(sender, e);
         }
 
         private void OnProgressChanged(object sender, NodeProgressEventArgs e)
         {
+            if (e is NodeProgressEndEventArgs endArgs)
+                OnProgressEnded(sender, endArgs);
+            else if (!e?.InternalState?.IsAlive ?? false)
+                OnProgressEnded(sender, new NodeProgressEndEventArgs(e.Reason, e.InternalState));
+
+
             /*
             if (LogReasonOnPort.HasFlag(e.Reason))
             {
-                NodeModel.ProgressPercentage = e.Percentage;
-                NodeModel.ProgressState = e.State?.ToString() ?? e.TaskName;
-                NodeModel.TaskName = e.TaskName ?? e.State?.ToString();
+                // TODO Log event to progress monitor stack
             }
             */
         }
 
         public override void Dispose()
         {
-            RemoveOnProgressChanging();            
+            RemoveOnProgressChanging().ForEach(np => NodeModel.OnNodeProgessEnded(np));
         }
     }
 

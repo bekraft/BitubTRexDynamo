@@ -5,6 +5,8 @@ using Bitub.Transfer;
 using Log;
 
 using System.Runtime.CompilerServices;
+using Autodesk.DesignScript.Runtime;
+
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
@@ -12,7 +14,8 @@ namespace Internal
     /// <summary>
     /// Node progressing event arguments.
     /// </summary>
-    internal class NodeProgressEventArgs : EventArgs
+    [IsVisibleInDynamoLibrary(false)]
+    public class NodeProgressEventArgs : EventArgs
     {
         /// <summary>
         /// Internal state object
@@ -48,7 +51,7 @@ namespace Internal
         internal NodeProgressEventArgs(LogReason reason, ProgressStateToken state, string taskName = null)
         {
             InternalState = state;
-            TaskName = $"{taskName ?? state.State.ToString()}";
+            TaskName = $"{taskName ?? state?.StateObject}";
             State = state?.StateObject;
             Percentage = state?.Percentage ?? 0;
             Reason = reason;

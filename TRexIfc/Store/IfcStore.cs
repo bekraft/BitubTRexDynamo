@@ -161,7 +161,7 @@ namespace Store
             {                
                 var model = Xbim.Ifc.IfcStore.Open(filePathName, null, null, theModel.NotifyLoadProgressChanged, Xbim.IO.XbimDBAccess.Read);
                 prefs?.ApplyTo(model);
-                theModel.NotifyOnFinished(LogReason.Loaded, false, false);
+                theModel.NotifyOnProgressEnded(LogReason.Loaded, false, false);
                 logger?.LogInfo("File '{0}' has been loaded successfully.", filePathName);
                 theModel.Store._timeStamp = File.GetCreationTime(filePathName).ToBinary();
 
@@ -170,7 +170,7 @@ namespace Store
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception while loading '{0}'.", filePathName);
-                theModel.NotifyOnFinished(LogReason.Loaded, false, true);                            
+                theModel.NotifyOnProgressEnded(LogReason.Loaded, false, true);                            
             }
             return null;
         }
@@ -184,9 +184,9 @@ namespace Store
 
         internal delegate IModel ModelDelegate();
 
-        internal delegate IModel ModelProgressDelegate(NodeProgressing node);
+        internal delegate IModel ModelProgressDelegate(ProgressingTask node);
 
-        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing progressingNode);        
+        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, ProgressingTask progressingNode);        
 
 #pragma warning restore CS1591
 

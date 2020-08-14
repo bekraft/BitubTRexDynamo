@@ -110,7 +110,7 @@ namespace Task
 
                         if (task.IsCompleted)
                         {
-                            if (node is NodeProgressing np)
+                            if (node is ProgressingTask np)
                                 np.OnProgressEnded(LogReason.Changed, false);
 
                             using (var result = task.Result)
@@ -137,7 +137,7 @@ namespace Task
                         }
                         else
                         {
-                            if (node is NodeProgressing np)
+                            if (node is ProgressingTask np)
                                 np.OnProgressEnded(LogReason.Changed, true);
 
                             node.ActionLog.Add(LogMessage.BySeverityAndMessage(

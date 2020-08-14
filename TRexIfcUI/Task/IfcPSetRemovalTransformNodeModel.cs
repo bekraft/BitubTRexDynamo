@@ -122,7 +122,7 @@ namespace Task
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), DockOnProgressing(callCreateIfcModelDelegate))
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), BuildAstNodeProgressMonitor(callCreateIfcModelDelegate))
             };
 
         }

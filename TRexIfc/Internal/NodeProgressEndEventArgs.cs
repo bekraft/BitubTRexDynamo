@@ -5,6 +5,8 @@ using Bitub.Transfer;
 using Log;
 
 using System.Runtime.CompilerServices;
+using Autodesk.DesignScript.Runtime;
+
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
@@ -12,13 +14,9 @@ namespace Internal
     /// <summary>
     /// Node finish action event arguments.
     /// </summary>
-    internal class NodeProgressEndEventArgs : EventArgs
-    {
-        /// <summary>
-        /// The associated task name.
-        /// </summary>
-        internal readonly string TaskName;
-
+    [IsVisibleInDynamoLibrary(false)]
+    public class NodeProgressEndEventArgs : NodeProgressEventArgs
+    {       
         /// <summary>
         /// Whether canceled by user.
         /// </summary>
@@ -30,42 +28,31 @@ namespace Internal
         internal readonly bool IsBroken;
 
         /// <summary>
-        /// The action type.
-        /// </summary>
-        internal readonly LogReason Action;
-
-        /// <summary>
-        /// Reference to internal state.
-        /// </summary>
-        internal readonly ProgressStateToken InternalState;
-
-        /// <summary>
-        /// New finish by internal state and task name
+        /// New progress end by internal state and task name.
         /// </summary>
         /// <param name="endState">The internal state</param>
         /// <param name="taskName">The task name</param>
-        /// <param name="action">The action type</param>
-        internal NodeProgressEndEventArgs(LogReason action, ProgressStateToken endState, string taskName = null)
+        /// <param name="reason">The log reason type</param>
+        internal NodeProgressEndEventArgs(LogReason reason, ProgressStateToken endState, string taskName = null)
+            : base(reason, endState, taskName)
         {
-            TaskName = taskName ?? $"{endState?.StateObject}";
-            IsCanceled = endState?.State == ProgressTokenState.IsCanceled;
-            Action = action;
-            InternalState = endState;
+            IsCanceled = endState?.State.HasFlag(ProgressTokenState.IsCanceled) ?? false;
+            IsBroken = endState?.State.HasFlag(ProgressTokenState.IsBroken) ?? false;
         }
 
         /// <summary>
-        /// New finish by giving explicit details
+        /// New progress end by giving explicit details.
         /// </summary>
         /// <param name="taskName">Taskname</param>
         /// <param name="isCanceled">Cancellation flag</param>
         /// <param name="isBroken">Broken flag</param>
-        /// <param name="action">The action type</param>
-        internal NodeProgressEndEventArgs(LogReason action, string taskName, bool isCanceled = false, bool isBroken = false)
+        /// <param name="reason">The action type</param>
+        /// <param name="stateObject">The end state object</param>
+        internal NodeProgressEndEventArgs(LogReason reason, string taskName, object stateObject = null, bool isCanceled = false, bool isBroken = false)
+            : base(reason, 100, taskName, stateObject)
         {
-            TaskName = taskName;
             IsCanceled = isCanceled;
             IsBroken = isBroken;
-            Action = action;
         }
     }
 }

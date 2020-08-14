@@ -11,26 +11,28 @@ using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using Autodesk.DesignScript.Geometry;
 using Microsoft.Extensions.Logging;
+using Xbim.Ifc4.ElectricalDomain;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
 {
     /// <summary>
-    /// Node progressing event template
+    /// A progressing task which emits changes, progress end events and logging data.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public abstract class NodeProgressing : IProgress<ProgressStateToken>
+    public abstract class ProgressingTask : IDisposable
     {
         #region Internals
         private readonly object _mutex = new object();
 
-        private EventHandler<NodeProgressEventArgs> _onProgressChangeEvent;
-        private EventHandler<NodeProgressEndEventArgs> _onProgressEndEvent;
+        private NodeProgressEventArgs __eventArgs;
+        private EventHandler<NodeProgressEventArgs> __onProgressChangeEvent;
+        private EventHandler<NodeProgressEndEventArgs> __onProgressEndEvent;
         
         private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
 
-        private readonly static ILogger<NodeProgressing> Log = GlobalLogging.LoggingFactory.CreateLogger<NodeProgressing>();
+        private readonly static ILogger<ProgressingTask> Log = GlobalLogging.LoggingFactory.CreateLogger<ProgressingTask>();
         #endregion
 
         /// <summary>
@@ -43,20 +45,20 @@ namespace Internal
         /// </summary>
         /// <param name="nodeProgressing">The logging source</param>
         /// <returns>The current log</returns>
-        internal static LogMessage[] GetActionLog(NodeProgressing nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
+        internal static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {
             add {
                 lock (_mutex)
                 {
-                    if (!_onProgressChangeEvent.GetInvocationList().Contains(value))
-                        _onProgressChangeEvent += value;
+                    if (!__onProgressChangeEvent?.GetInvocationList().Contains(value) ?? true)
+                        __onProgressChangeEvent += value;
                 }
             }
             remove {
                 lock (_mutex)
-                    _onProgressChangeEvent -= value;
+                    __onProgressChangeEvent -= value;
             }
         }
 
@@ -65,43 +67,54 @@ namespace Internal
             add {
                 lock (_mutex)
                 {
-                    if (!_onProgressEndEvent.GetInvocationList().Contains(value))
-                        _onProgressEndEvent += value;
+                    if (!__onProgressEndEvent?.GetInvocationList().Contains(value) ?? true)
+                        __onProgressEndEvent += value;
                 }
             }
             remove {
                 lock (_mutex)
-                    _onProgressEndEvent -= value;
+                    __onProgressEndEvent -= value;
             }
         }
 
+        internal NodeProgressEventArgs LatestProgressEventArgs
+        {
+            get {
+                lock (_mutex)
+                    return __eventArgs;
+            }
+        }
 
         /// <summary>
-        /// Emitting progress changes
+        /// Emitting progress changes.
         /// </summary>
         /// <param name="args">The args</param>
-        internal virtual void OnProgressChanged(NodeProgressEventArgs args)
+        internal protected virtual void OnProgressChanged(NodeProgressEventArgs args)
         {
             EventHandler<NodeProgressEventArgs> eventHandler;
             lock (_mutex)
-                eventHandler = _onProgressChangeEvent;
+            {
+                eventHandler = __onProgressChangeEvent;
+                __eventArgs = args;
+            }
 
             eventHandler?.Invoke(this, args);
         }
 
         /// <summary>
-        /// Emitting finish actions
+        /// Emitting progress end.
         /// </summary>
         /// <param name="args">The args</param>
-        internal virtual void OnProgressEnded(NodeProgressEndEventArgs args)
+        internal protected virtual void OnProgressEnded(NodeProgressEndEventArgs args)
         {
             EventHandler<NodeProgressEndEventArgs> eventHandler;
             lock (_mutex)
             {
-                eventHandler = _onProgressEndEvent;
+                eventHandler = __onProgressEndEvent;
+                __eventArgs = args;
 
                 CancelableProgressing cp;
-                Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Action}'");
+                Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Reason}'");
                 if ((null != args.InternalState) && _progressMonitor.TryRemove(args.InternalState, out cp))
                 {                    
                     Log.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
@@ -117,9 +130,31 @@ namespace Internal
         /// </summary>
         /// <param name="finishAction">The finishing action.</param>
         /// <param name="isBroken">Whether the finish is reached by error</param>
-        internal void OnProgressEnded(LogReason finishAction, bool isBroken)
+        internal protected void OnProgressEnded(LogReason finishAction, bool isBroken)
         {
             OnProgressEnded(new NodeProgressEndEventArgs(finishAction, Name, false, isBroken));
+        }
+
+        /// <summary>
+        /// Notifies all sinks on progress change.
+        /// </summary>
+        /// <param name="action">The logging action happened</param>
+        /// <param name="percentage">The current percentage</param>
+        /// <param name="stateObject">The current state object</param>
+        internal protected void NotifyOnProgressChanged(LogReason action, int percentage, object stateObject)
+        {
+            OnProgressChanged(new NodeProgressEventArgs(action, percentage, Name, stateObject));
+        }
+
+        /// <summary>
+        /// Notifies all sinks on progress end.
+        /// </summary>
+        /// <param name="action">The logging action happened</param>
+        /// <param name="isCanceled">Whether the progress was cancelled</param>
+        /// <param name="isBroken">Whether the progress was broken</param>
+        internal protected void NotifyOnProgressEnded(LogReason action, bool isCanceled, bool isBroken)
+        {
+            OnProgressEnded(new NodeProgressEndEventArgs(action, Name, isCanceled, isBroken));
         }
 
         /// <summary>
@@ -171,13 +206,19 @@ namespace Internal
         protected virtual LogReason DefaultReason { get => LogReason.Changed; }
 
         /// <summary>
-        /// Reporting progress from outside.
+        /// Detaches all event handlers and clears current progress information.
         /// </summary>
-        /// <param name="value">The progress state</param>
         [IsVisibleInDynamoLibrary(false)]
-        public void Report(ProgressStateToken value)
+        public virtual void Dispose()
         {
-            OnProgressChanged(new NodeProgressEventArgs(DefaultReason, value));
+            ActionLog.Clear();
+            
+            lock (_mutex)
+            {
+                __eventArgs = null;
+                __onProgressChangeEvent = null;
+                __onProgressEndEvent = null;
+            }
         }
     }
 }

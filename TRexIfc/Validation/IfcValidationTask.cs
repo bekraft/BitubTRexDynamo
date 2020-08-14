@@ -16,7 +16,7 @@ namespace Validation
     /// <summary>
     /// A validation task running as a delayed
     /// </summary>
-    public class IfcValidationTask : NodeProgressing
+    public class IfcValidationTask : ProgressingTask
     {
         #region Internals
 
