@@ -64,10 +64,10 @@ namespace Export
 
 #pragma warning disable CS1591
 
-        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            ClearErrorsAndWarnings();
+            BeforeBuildOutputAst();
+
             AssociativeNode[] inputs = inputAstNodes.ToArray();            
             if (IsPartiallyApplied)
             {
@@ -94,7 +94,7 @@ namespace Export
             var callRunSceneExport = AstFactory.BuildFunctionCall(
                 new Func<SceneExport, IfcModel, string, string, string, LogMessage>(SceneExport.RunSceneExport),
                 new List<AssociativeNode>() {
-                    inputs[0],
+                    inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
                     inputs[1],
                     inputs[2],
                     AstFactory.BuildStringNode(SelectedOption.ToString()),

@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using Autodesk.DesignScript.Geometry;
 using Microsoft.Extensions.Logging;
 using Xbim.Ifc4.ElectricalDomain;
+using System.ComponentModel;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
@@ -33,6 +34,7 @@ namespace Internal
         private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
 
         private readonly static ILogger<ProgressingTask> Log = GlobalLogging.LoggingFactory.CreateLogger<ProgressingTask>();
+
         #endregion
 
         /// <summary>

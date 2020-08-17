@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 
 using Task;
 using Log;
+using Internal;
 
 namespace Store
 {
@@ -53,7 +54,8 @@ namespace Store
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            ClearErrorsAndWarnings();
+            BeforeBuildOutputAst();
+
             AssociativeNode[] inputs = inputAstNodes.ToArray();
 
             if (IsPartiallyApplied)
@@ -85,7 +87,7 @@ namespace Store
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), BuildAstNodeProgressMonitor(callGetOrCreateModelStore))
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callGetOrCreateModelStore.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName))
             };
         }
 

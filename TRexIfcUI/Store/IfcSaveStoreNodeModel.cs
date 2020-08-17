@@ -57,7 +57,8 @@ namespace Store
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            ClearErrorsAndWarnings();
+            BeforeBuildOutputAst();
+
             AssociativeNode[] inputs = inputAstNodes.ToArray();
 
             if (IsPartiallyApplied)
@@ -93,7 +94,7 @@ namespace Store
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), BuildAstNodeProgressMonitor(callIfcModelSave))
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callIfcModelSave.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName))
             };
         }
 

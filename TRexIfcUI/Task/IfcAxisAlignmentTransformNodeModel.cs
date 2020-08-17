@@ -76,7 +76,8 @@ namespace Task
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            ClearErrorsAndWarnings();
+            BeforeBuildOutputAst();
+
             AssociativeNode[] inputs = inputAstNodes.ToArray();
 
             if (IsPartiallyApplied)
@@ -120,7 +121,7 @@ namespace Task
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateIfcModelDelegate)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateIfcModelDelegate.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName))
             };
         }
 

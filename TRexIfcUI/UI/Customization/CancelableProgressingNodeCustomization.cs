@@ -63,10 +63,22 @@ namespace UI.Customization
             CreateView(model, nodeView);
             NodeModel.ResetState();
 
+            ModelEngineController.LiveRunnerRuntimeCore.ExecutionEvent += LiveRunnerRuntimeCore_ExecutionEvent;
+
             NodeModel.PortConnected += NodeModel_PortConnected;
             NodeModel.PortDisconnected += NodeModel_PortDisconnected;
             NodeModel.Modified += NodeModel_Modified;
-        }        
+        }
+
+        private void LiveRunnerRuntimeCore_ExecutionEvent(object sender, ProtoCore.ExecutionStateEventArgs e)
+        {
+            switch(e.ExecutionState)
+            {
+                case ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd:
+                    NodeModel.ResetState();
+                    break;
+            }            
+        }
 
         private void NodeModel_Modified(NodeModel obj)
         {
@@ -205,6 +217,7 @@ namespace UI.Customization
         public override void Dispose()
         {
             RemoveOnProgressChanging().ForEach(np => NodeModel.OnNodeProgessEnded(np));
+            ModelEngineController.LiveRunnerRuntimeCore.ExecutionEvent -= LiveRunnerRuntimeCore_ExecutionEvent;
         }
     }
 

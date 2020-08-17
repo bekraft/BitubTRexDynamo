@@ -10,6 +10,8 @@ using Bitub.Transfer;
 using Internal;
 using ProtoCore.AST.AssociativeAST;
 using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 // Disable comment warning
 #pragma warning disable CS1591
@@ -25,28 +27,30 @@ namespace Task
 
         #region Internals
         private bool _isCancelable;
-        private bool _isCanceled;
+        private bool __isCanceled;
         private int _progressPercentage;
         private string _progressState;
         private string _taskName;
         private Visibility _visibility;
 
         private object _mutex = new object();
-        private readonly string _dockCallbackQualifier;
         #endregion
 
         protected CancelableProgressingNodeModel() : base()
         {
             ResetState();
-            _dockCallbackQualifier = DynamicDelegation.Put<ProgressingTask>(
-                new[] { GetType().FullName, nameof(BuildAstNodeProgressMonitor) }.ToQualifier(), DockProgressMonitor);
+            DynamicDelegation.Put<ProgressingTask, ProgressingTask>(ProgressingTaskMethodName, ConsumeAstProgressingTask);
         }
 
         protected CancelableProgressingNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ResetState();
-            _dockCallbackQualifier = DynamicDelegation.Put<object>(
-                new[] { GetType().FullName, nameof(BuildAstNodeProgressMonitor) }.ToQualifier(), DockProgressMonitor);
+            DynamicDelegation.Put<ProgressingTask, ProgressingTask>(ProgressingTaskMethodName, ConsumeAstProgressingTask);
+        }
+
+        internal protected string[] ProgressingTaskMethodName
+        {
+            get => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
         }
 
         internal void OnNodeProgessEnded(object sender, NodeProgressEndEventArgs args = null)
@@ -63,33 +67,35 @@ namespace Task
             {
                 ProgressPercentage = args.Percentage;
                 ProgressState = args.State?.ToString() ?? args.TaskName;
-                TaskName = args.TaskName;                
+                TaskName = args.TaskName;
+
+                if (null != args.InternalState)
+                {
+                    if (__isCanceled && !args.InternalState.IsAboutCancelling)
+                        args.InternalState.MarkCancelling();
+
+                    if (args.InternalState.IsCanceled)
+                        IsCanceled = true;
+                }
             }
         }
 
-        public object DockProgressMonitor(object obj)
+        public ObservableCollection<ProgressingTask> ProgressingTasksDone { get; } = new ObservableCollection<ProgressingTask>();
+
+        public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask obj)
         {
-            if (obj is ProgressingTask nodeProgressing)
-            {
-                nodeProgressing.OnProgressChange += OnNodeProgressChanged;
-            } 
+            if (null != obj)
+                obj.OnProgressChange += OnNodeProgressChanged;
             else
-            {
-                if (null != obj)
-                    Warning($"Expected a progress event source but got '{obj.GetType()}'");
-            }
+                throw new ArgumentNullException();
+
             return obj;
         }
 
-        protected AssociativeNode BuildAstNodeProgressMonitor(AssociativeNode progressProducer)
+        protected virtual void BeforeBuildOutputAst()
         {
-            return AstFactory.BuildFunctionCall(
-                new Func<string, object, object>(DynamicDelegation.Call),
-                new List<AssociativeNode>()
-                {
-                    AstFactory.BuildStringNode(_dockCallbackQualifier),
-                    progressProducer
-                });
+            ClearErrorsAndWarnings();
+            ProgressingTasksDone.Clear();
         }
 
         [JsonIgnore]
@@ -119,10 +125,13 @@ namespace Task
         public bool IsCanceled
         {
             get {
-                return _isCanceled;
+                lock (_mutex)
+                    return __isCanceled;
             }
             set {
-                _isCanceled = value;
+                lock (_mutex)
+                    __isCanceled = value;
+
                 RaisePropertyChanged(nameof(IsCanceled));
             }
         }
