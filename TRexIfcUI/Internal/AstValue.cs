@@ -32,6 +32,8 @@ namespace Internal
             return hashCode;
         }
 
+        public bool IsTransient { get => string.IsNullOrWhiteSpace(AstId); }
+
         public AssociativeNode ToAstNode()
         {
             if (ArrayIndex?.Length > 0)
@@ -65,11 +67,31 @@ namespace Internal
             Value = astValue.Value;
         }
 
+        public AstValue(T value) : this(null, value)
+        { }
+
         public AstValue(string astId, T value, params int[] arrayIndex)
         {
             AstId = astId;
             Value = value;
             ArrayIndex = arrayIndex;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is AstValue<T> value)
+            {
+                if (string.IsNullOrWhiteSpace(value.AstId))
+                    return EqualityComparer<T>.Default.Equals(value.Value, Value);
+                else
+                    return base.Equals(value);
+            }
+            return false;
         }
 
         [JsonIgnore]

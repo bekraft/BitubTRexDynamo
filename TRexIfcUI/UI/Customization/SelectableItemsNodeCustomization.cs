@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 
@@ -27,7 +28,7 @@ namespace UI.Customization
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 
-            UpdateItems();
+            UpdateItems(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
@@ -37,14 +38,13 @@ namespace UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            UpdateItems();
+            UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
         }
 
-        private void UpdateItems()
+        private void UpdateItems(IEnumerable<AstValue<object>> items)
         {
-            var items = NodeModel.GetCachedAstInput<object>(0, ModelEngineController);
             var serializedValues = NodeModel.SelectedValue.ToArray();
-            if (NodeModel.SetItems(items))
+            if (NodeModel.SetItems(items.ToArray()))
                 TryRestoreSelection(serializedValues);
         }
 
@@ -69,12 +69,12 @@ namespace UI.Customization
 
         private void Model_PortConnected(Dynamo.Graph.Nodes.PortModel arg1, Dynamo.Graph.Connectors.ConnectorModel arg2)
         {
-            AsyncSchedule(UpdateItems);
+            AsyncSchedule(() => UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController)));
         }
 
         private void Model_PortDisconnected(Dynamo.Graph.Nodes.PortModel obj)
         {
-            AsyncSchedule(UpdateItems);
+            AsyncSchedule(() => UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController)));
         }
 
         public override void Dispose()

@@ -52,13 +52,8 @@ namespace Task
             }
             else
             {
-                if (Selected?.Count > 0)
-                {
-                    resultList = AstFactory.BuildExprList(
-                            Items.Where(c => !Selected.Contains(c)).Select(c => c.ToAstNode()).ToList());
-                }
-                else
-                {
+                if (Selected?.Any(v => v.IsTransient) ?? true)
+                {   // Build from persistent selection
                     resultList = AstFactory.BuildFunctionCall(
                         new Func<object[], string[], bool, object[]>(GlobalArgumentService.ExludeBySerializationValue),
                         new List<AssociativeNode>()
@@ -67,6 +62,11 @@ namespace Task
                             AstFactory.BuildExprList(SelectedValue.Select(v => AstFactory.BuildStringNode(v) as AssociativeNode).ToList()),
                             AstFactory.BuildBooleanNode(false)
                         });
+                }
+                else
+                {   // Build from live AST
+                    resultList = AstFactory.BuildExprList(
+                        Items.Where(c => !Selected.Contains(c)).Select(c => c.ToAstNode()).ToList());                    
                 }
             }
             
