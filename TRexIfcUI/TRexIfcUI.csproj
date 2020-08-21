@@ -81,7 +81,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20227-Beta.423</Version>
+      <Version>0.1.20232-Beta.517</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.6.0.8481</Version>
@@ -110,6 +110,7 @@
     <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
     <!--Copy to Dynamo revit for publishing -->
     <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">

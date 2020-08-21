@@ -157,7 +157,7 @@ namespace Store
 
         /// <summary>
         /// The source store name.
-        /// </summary>
+        /// </summary>        
         internal override string Name
         {
             get {
@@ -399,19 +399,30 @@ namespace Store
         /// </summary>
         /// <returns>A list of property set names in use</returns>
         public string[] PropertySetNames() => Store.XbimModel?.Instances
-            .OfType<IIfcPropertySet>()
+            .OfType<IIfcPropertySetDefinition>()
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();
 
         /// <summary>
-        /// Lists all property sets by their name and groups by products.
+        /// Lists all property sets by declaring product type.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
-        public Dictionary<string, string[]> PropertySetNamesPerProduct() => Store.XbimModel?.Instances
-            .OfType<IIfcProduct>()
-            .Select(p => new KeyValuePair<string, string[]>(p.ExpressType.Name, p.PropertiesSets<IIfcProperty>().Select(s => s.Item1).ToArray()))
-            .ToDictionary(e => e.Key, e => e.Value);
+        public Dictionary<string, string[]> PropertySetsPerProductType() => Store.XbimModel?.Instances
+            .OfType<IIfcPropertySetDefinition>()
+            .SelectMany(s => s.DefinesOccurrence.SelectMany(r => r.RelatedObjects.OfType<IIfcProduct>().Select(e => (e.ExpressType.Name, s.Name?.ToString()))))
+            .ToLookup(t => t.Item1, t => t.Item2)
+            .ToDictionary(g => g.Key, g => g.Distinct().ToArray());
+
+        /// <summary>
+        /// Returns a dictionary of pset names referencing property names.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, string[]> PropertiesPerSet() => Store.XbimModel?.Instances
+            .OfType<IIfcProperty>()
+            .SelectMany(p => p.PartOfPset.Select(s => (s.Name, p.Name)))
+            .ToLookup(p => p.Item1, p => p.Item2.ToString())
+            .ToDictionary(p => p.Key?.ToString(), p => p.Distinct().ToArray());
 
         /// <summary>
         /// Graphical contexts

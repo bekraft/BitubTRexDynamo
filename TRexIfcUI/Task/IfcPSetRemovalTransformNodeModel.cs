@@ -45,13 +45,20 @@ namespace Task
         /// </summary>
         public IfcPSetRemovalTransformNodeModel()
         {
-            InPorts.Insert((int)InArguments.RemovePSetNames, new PortModel(PortType.Input, this, new PortData("removePSetNames", "List of property sets about to be removed")));
-            InPorts.Insert((int)InArguments.KeepPSetNames, new PortModel(PortType.Input, this, new PortData("keepPSetNames", "List of property sets about to be kept exclusively")));
-            InPorts.Insert((int)InArguments.CaseSensitiveNames, new PortModel(PortType.Input, this, new PortData("caseSensitiveNames", "Enable case sensitive matching", AstFactory.BuildBooleanNode(false))));
-            InPorts.Insert((int)InArguments.AuthorMetadata, new PortModel(PortType.Input, this, new PortData("authorMetadata", "Credentials of authoring editor")));
-            InPorts.Insert((int)InArguments.CanonicalName, new PortModel(PortType.Input, this, new PortData("canonicalName", "Fragment name of canonical full name")));
-            InPorts.Insert((int)InArguments.IfcModel, new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
-            InPorts.Insert((int)InArguments.LogReasonFilter, new PortModel(PortType.Input, this, new PortData("logReasonFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Insert((int)InArguments.RemovePSetNames, 
+                new PortModel(PortType.Input, this, new PortData("excludeNames", "List of property sets about to be removed")));
+            InPorts.Insert((int)InArguments.KeepPSetNames, 
+                new PortModel(PortType.Input, this, new PortData("includeNames", "List of property sets about to be kept exclusively")));
+            InPorts.Insert((int)InArguments.CaseSensitiveNames,
+                new PortModel(PortType.Input, this, new PortData("caseSensitiveNames", "Enable case sensitive matching", AstFactory.BuildBooleanNode(false))));
+            InPorts.Insert((int)InArguments.AuthorMetadata,
+                new PortModel(PortType.Input, this, new PortData("authorMetadata", "Credentials of authoring editor")));
+            InPorts.Insert((int)InArguments.CanonicalName, 
+                new PortModel(PortType.Input, this, new PortData("canonicalName", "Fragment name of canonical full name")));
+            InPorts.Insert((int)InArguments.IfcModel, 
+                new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
+            InPorts.Insert((int)InArguments.LogReasonFilter, 
+                new PortModel(PortType.Input, this, new PortData("logReasonFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC output model")));
 
@@ -78,6 +85,10 @@ namespace Task
                 {
                     switch (port.Index)
                     {
+                        case (int)InArguments.RemovePSetNames:
+                        case (int)InArguments.KeepPSetNames:
+                            inputs[port.Index] = AstFactory.BuildExprList(new List<AssociativeNode>());
+                            break;
                         case (int)InArguments.CaseSensitiveNames:
                             inputs[port.Index] = AstFactory.BuildBooleanNode(false);
                             break;

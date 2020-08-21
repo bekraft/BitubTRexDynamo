@@ -11,8 +11,6 @@ using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 using Autodesk.DesignScript.Geometry;
 using Microsoft.Extensions.Logging;
-using Xbim.Ifc4.ElectricalDomain;
-using System.ComponentModel;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
@@ -91,7 +89,7 @@ namespace Internal
         /// Emitting progress changes.
         /// </summary>
         /// <param name="args">The args</param>
-        internal protected virtual void OnProgressChanged(NodeProgressEventArgs args)
+        internal void OnProgressChanged(NodeProgressEventArgs args)
         {
             EventHandler<NodeProgressEventArgs> eventHandler;
             lock (_mutex)
@@ -107,7 +105,7 @@ namespace Internal
         /// Emitting progress end.
         /// </summary>
         /// <param name="args">The args</param>
-        internal protected virtual void OnProgressEnded(NodeProgressEndEventArgs args)
+        internal void OnProgressEnded(NodeProgressEndEventArgs args)
         {
             EventHandler<NodeProgressEndEventArgs> eventHandler;
             lock (_mutex)
@@ -161,8 +159,8 @@ namespace Internal
 
         /// <summary>
         /// The name.
-        /// </summary>
-        internal virtual string Name { get => "Progressing node"; }
+        /// </summary>        
+        internal virtual string Name { get; set; } = "Progressing node";
 
         /// <summary>
         /// Returns an array of open progresses.
@@ -221,6 +219,12 @@ namespace Internal
                 __onProgressChangeEvent = null;
                 __onProgressEndEvent = null;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} '{1}' ({2})", 
+                GetType().Name, Name, LatestProgressEventArgs?.GetProgressState().ToString() ?? "(unknown state)");
         }
     }
 }

@@ -5,7 +5,6 @@ using Bitub.Transfer;
 using Log;
 
 using System.Runtime.CompilerServices;
-using Autodesk.DesignScript.Runtime;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
@@ -14,8 +13,7 @@ namespace Internal
     /// <summary>
     /// Node progressing event arguments.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class NodeProgressEventArgs : EventArgs
+    internal class NodeProgressEventArgs : EventArgs
     {
         /// <summary>
         /// Internal state object
@@ -70,6 +68,15 @@ namespace Internal
             TaskName = taskName;
             State = state;
             Reason = reason;
+        }
+
+        /// <summary>
+        /// Returns the state of internal progress token or by default <code>ProgressTokenState.IsCancelable | ProgressTokenState.IsRunning</code>
+        /// </summary>
+        /// <returns>The state</returns>
+        internal protected ProgressTokenState GetProgressState()
+        {
+            return InternalState?.State ?? ProgressTokenState.IsCancelable | ProgressTokenState.IsRunning;
         }
     }
 }

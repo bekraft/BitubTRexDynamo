@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 using Autodesk.DesignScript.Runtime;
+
 using Microsoft.Extensions.Logging;
 
 using Serilog;
 using Serilog.Core;
+
+[assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
 {
@@ -12,19 +17,23 @@ namespace Internal
     /// Global logging configuration.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public sealed class GlobalLogging
+    internal sealed class GlobalLogging
     {
+        internal static readonly Stopwatch DiagnosticStopWatch;
+        
         /// <summary>
         /// Global logging factory.
         /// </summary>
         public static readonly ILoggerFactory LoggingFactory;
 
-        const string messageTemplate =
+        private const string messageTemplate =
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId} '{ThreadName}'){NewLine}{Exception}";
 
         // TODO Flush / close when exiting
         static GlobalLogging()
         {
+            DiagnosticStopWatch = new Stopwatch();
+
             var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var ownVersion = typeof(GlobalLogging).Assembly.GetName().Version;
             var dynamoVersion = typeof(IsVisibleInDynamoLibraryAttribute).Assembly.GetName().Version;

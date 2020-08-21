@@ -1,11 +1,8 @@
-﻿using System;
-
-using Bitub.Transfer;
+﻿using Bitub.Transfer;
 
 using Log;
 
 using System.Runtime.CompilerServices;
-using Autodesk.DesignScript.Runtime;
 
 [assembly: InternalsVisibleTo("TRexIfcUI")]
 
@@ -14,8 +11,7 @@ namespace Internal
     /// <summary>
     /// Node finish action event arguments.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public class NodeProgressEndEventArgs : NodeProgressEventArgs
+    internal class NodeProgressEndEventArgs : NodeProgressEventArgs
     {       
         /// <summary>
         /// Whether canceled by user.
@@ -53,6 +49,16 @@ namespace Internal
         {
             IsCanceled = isCanceled;
             IsBroken = isBroken;
+        }
+
+        /// <summary>
+        /// The final state of progress
+        /// </summary>
+        /// <returns>The state</returns>
+        internal new ProgressTokenState GetProgressState()
+        {
+            return InternalState?.State ??
+                ProgressTokenState.IsTerminated | (IsBroken ? ProgressTokenState.IsBroken : 0) | (IsCanceled ? ProgressTokenState.IsCanceled : 0);
         }
     }
 }

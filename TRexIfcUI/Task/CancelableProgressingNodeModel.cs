@@ -12,6 +12,7 @@ using ProtoCore.AST.AssociativeAST;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections.ObjectModel;
+using UI;
 
 // Disable comment warning
 #pragma warning disable CS1591
@@ -53,15 +54,18 @@ namespace Task
             get => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
         }
 
-        internal void OnNodeProgessEnded(object sender, NodeProgressEndEventArgs args = null)
+        internal void OnTaskProgessEnded(object sender, NodeProgressEndEventArgs args = null)
         {
-            if (sender is ProgressingTask np)
+            if (sender is ProgressingTask task)
             {
-                np.OnProgressChange -= OnNodeProgressChanged;                
+                task.OnProgressChange -= OnTaskProgressChanged;
+                task.OnProgressEnd -= OnTaskProgessEnded;
+
+                DispatchOnUIThread(() => ActiveTasks.Add(new ProgressingTaskInfo(task)));
             }
         }
 
-        internal void OnNodeProgressChanged(object sender, NodeProgressEventArgs args)
+        internal void OnTaskProgressChanged(object sender, NodeProgressEventArgs args)
         {
             lock (_mutex)
             {
@@ -80,14 +84,20 @@ namespace Task
             }
         }
 
-        public ObservableCollection<ProgressingTask> ProgressingTasksDone { get; } = new ObservableCollection<ProgressingTask>();
+        [JsonIgnore]
+        public ObservableCollection<ProgressingTaskInfo> ActiveTasks { get; } = new ObservableCollection<ProgressingTaskInfo>();
 
         public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask obj)
         {
             if (null != obj)
-                obj.OnProgressChange += OnNodeProgressChanged;
+            {
+                obj.OnProgressChange += OnTaskProgressChanged;
+                obj.OnProgressEnd += OnTaskProgessEnded;
+            }
             else
+            {
                 throw new ArgumentNullException();
+            }
 
             return obj;
         }
@@ -95,7 +105,7 @@ namespace Task
         protected virtual void BeforeBuildOutputAst()
         {
             ClearErrorsAndWarnings();
-            ProgressingTasksDone.Clear();
+            ActiveTasks.Clear();
         }
 
         [JsonIgnore]

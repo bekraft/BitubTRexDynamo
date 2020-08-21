@@ -74,8 +74,20 @@ namespace UI.Customization
         {
             switch(e.ExecutionState)
             {
+                case ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin:
+                    lock (GlobalLogging.DiagnosticStopWatch)
+                    {
+                        if (!GlobalLogging.DiagnosticStopWatch.IsRunning)
+                            GlobalLogging.DiagnosticStopWatch.Restart();
+                    }
+                    DispatchUI(() => NodeModel.ActiveTasks.Clear());
+                    break;
+
                 case ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd:
                     NodeModel.ResetState();
+                    lock (GlobalLogging.DiagnosticStopWatch)
+                        GlobalLogging.DiagnosticStopWatch.Stop();
+
                     break;
             }            
         }
@@ -152,7 +164,6 @@ namespace UI.Customization
                     foreach (var eventSource in np.Item3)
                     {
                         eventSource.OnProgressChange += OnProgressChanged;
-                        eventSource.OnProgressEnd += OnProgressEnded;
                         eventSources.Add(eventSource);
                     }
                     
@@ -176,7 +187,7 @@ namespace UI.Customization
             {                
                 foreach (var eventSource in NodeProgressingMatching(portType, portIndex))
                 {
-                    eventSource.OnProgressChange -= OnProgressChanged;                        
+                    eventSource.OnProgressChange -= OnProgressChanged;
                     eventSources.Add(eventSource);
                 }
 
@@ -194,8 +205,7 @@ namespace UI.Customization
         }
 
         private void OnProgressEnded(object sender, NodeProgressEndEventArgs e)
-        {
-            NodeModel.OnNodeProgessEnded(sender, e);
+        {            
         }
 
         private void OnProgressChanged(object sender, NodeProgressEventArgs e)
@@ -204,19 +214,11 @@ namespace UI.Customization
                 OnProgressEnded(sender, endArgs);
             else if (!e?.InternalState?.IsAlive ?? false)
                 OnProgressEnded(sender, new NodeProgressEndEventArgs(e.Reason, e.InternalState));
-
-
-            /*
-            if (LogReasonOnPort.HasFlag(e.Reason))
-            {
-                // TODO Log event to progress monitor stack
-            }
-            */
         }
 
         public override void Dispose()
         {
-            RemoveOnProgressChanging().ForEach(np => NodeModel.OnNodeProgessEnded(np));
+            RemoveOnProgressChanging().ForEach(np => NodeModel.OnTaskProgessEnded(np));
             ModelEngineController.LiveRunnerRuntimeCore.ExecutionEvent -= LiveRunnerRuntimeCore_ExecutionEvent;
         }
     }
