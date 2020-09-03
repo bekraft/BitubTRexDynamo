@@ -59,7 +59,7 @@ namespace Internal
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static ProgressingTask Call(Qualifier qualifier, ProgressingTask arg1)
+        public static ProgressingTask CallDynamicTaskConsumer(Qualifier qualifier, ProgressingTask arg1)
         {
             return InternallyCall<ProgressingTask, ProgressingTask>(qualifier, arg1);
         }

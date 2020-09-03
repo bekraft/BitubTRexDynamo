@@ -9,15 +9,10 @@ namespace UI.Customization
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class SceneExporterNodeCustomization : CancelableProgressingOptionNodeCustomization<SceneExporterNodeModel>
+    public class SceneExporterNodeCustomization : CancelableOptionCommandCustomization<SceneExporterNodeModel>
     {
         public SceneExporterNodeCustomization(): base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
         {
-        }
-
-        public override void CustomizeView(SceneExporterNodeModel model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
         }
     }
 

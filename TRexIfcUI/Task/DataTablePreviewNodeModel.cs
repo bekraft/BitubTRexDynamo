@@ -16,7 +16,7 @@ namespace Task
     /// </summary>
     [NodeName("Data Preview")]
     [NodeDescription("Interactive table grid displaying incoming data with a given count threshold.")]
-    [InPortTypes(typeof(object))]
+    [InPortTypes(typeof(List<object>))]
     [OutPortTypes(typeof(object[][]))]
     [NodeCategory("TRexIfc.Task.Tasks")]
     [IsDesignScriptCompatible]
@@ -56,7 +56,7 @@ namespace Task
         public DataTablePreviewNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("in", "Input grid data (i.e. LogMessage)")));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("out", "Limited data")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("out", "Data property preview")));
             RegisterAllPorts();
 
             DataTable = new ObservableCollection<object>();
@@ -146,7 +146,7 @@ namespace Task
             ClearErrorsAndWarnings();
             // Get current logging data from event source
             AssociativeNode dataReturn = AstFactory.BuildFunctionCall(
-                new Func<object[], int, object[][]>(GlobalArgumentService.Decompose),
+                new Func<List<object>, int, object[][]>(GlobalArgumentService.DecomposeArray),
                 new List<AssociativeNode>()
                 {
                     inputAstNodes[0],

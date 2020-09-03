@@ -74,7 +74,7 @@ namespace Internal
         /// Returns the state of internal progress token or by default <code>ProgressTokenState.IsCancelable | ProgressTokenState.IsRunning</code>
         /// </summary>
         /// <returns>The state</returns>
-        internal protected ProgressTokenState GetProgressState()
+        internal virtual ProgressTokenState GetProgressState()
         {
             return InternalState?.State ?? ProgressTokenState.IsCancelable | ProgressTokenState.IsRunning;
         }

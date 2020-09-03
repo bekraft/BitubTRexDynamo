@@ -58,9 +58,8 @@ namespace Export
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitsPerMeter", "Scaling units per Meter"))); // 1
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("providedContexts", "Provided representation model contexts"))); // 2
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logger", "Logger instance"))); // 3
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("sceneExporter", "Scene exporter")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene export settings")));
 
             RegisterAllPorts();
             Init();
@@ -165,7 +164,6 @@ namespace Export
                             inputs[1] = AstFactory.BuildDoubleNode(1.0);
                             break;
                         case 2:
-                        case 3:
                             // No provided scene contexts
                             break;
                         default:
@@ -188,14 +186,13 @@ namespace Export
                 sceneContexts = AstFactory.BuildNullNode();
 
             var callCreateSceneExport = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, double, string[], Logger, SceneExport>(SceneExportSettings.BySettings),                
+                new Func<string, string, XYZ, double, string[], SceneExportSettings>(SceneExportSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
                     inputs[0],
                     inputs[1],
-                    sceneContexts,
-                    inputs[3]
+                    sceneContexts                    
                 });
 
             return new[]

@@ -71,27 +71,51 @@ namespace Internal
         /// <param name="dataArray">The data</param>
         /// <param name="takeCount">The limiting count</param>
         /// <returns>An enumerable of same length of property values</returns>
-        public static object[][] Decompose(object[] dataArray, int takeCount = int.MaxValue)
+        public static object[][] DecomposeArray(List<object> dataArray, int takeCount = int.MaxValue)
         {
-            return dataArray?.Take(takeCount).Select(data =>
-            {
-                var props = data.GetType().GetProperties();
-                if (props.Length > 0)
-                    return props
-                        .Where(p => p.CanRead)
-                        .Select(p =>
-                        {
-                            var obj = p.GetValue(data);
-                            if (obj is Enum e)
-                                return e.ToString();
-                            else
-                                return obj;
-                        })
-                        .ToArray();
-                else
-                    return new object[] { data.ToString() };
-            }).ToArray();
+            return Flatten(dataArray).Take(takeCount).Select(DecomposeObject).ToArray();
         }
+
+        // Single decomposition
+        private static object[] DecomposeObject(object data)
+        {
+            var props = data.GetType().GetProperties();
+            if (props.Length > 0)
+                return props
+                    .Where(p => p.CanRead)
+                    .Select(p =>
+                    {
+                        var obj = p.GetValue(data);
+                        if (!p.PropertyType.IsPrimitive)
+                            return obj.ToString();
+                        else
+                            return obj;
+                    })
+                    .ToArray();
+            else
+                return new object[] { data.ToString() };
+        }
+
+        // Flatten nested data
+        private static object[] Flatten(object data)
+        {
+            if (data is IEnumerable<object> outer)
+                return outer.SelectMany(o => Flatten(o)).ToArray();
+            else
+                return new[] { data };
+        }
+
+        /// <summary>
+        /// Decomposes an object by its properties.
+        /// </summary>
+        /// <param name="data">The data</param>
+        /// <param name="takeCount">The limiting count</param>
+        /// <returns>An enumerable of same length of property values</returns>
+        public static object[][] Decompose(object data, int takeCount = int.MaxValue)
+        {
+            return Flatten(data).Take(takeCount).Select(DecomposeObject).ToArray();
+        }
+
 
         /// <summary>
         /// Will try to parse a given enum serialization of a given type.

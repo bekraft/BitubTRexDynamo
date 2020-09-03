@@ -80,7 +80,7 @@ namespace Validation
 
             return new IfcValidationTask(ifcModel, (t) =>
             {
-                var innerModel = ifcModel.Store.XbimModel;
+                var innerModel = ifcModel.XbimModel;
                 if (null == innerModel)
                     throw new NotSupportedException("No internal model available");
 

@@ -10,7 +10,7 @@ namespace UI.Customization
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcSaveNodeCustomization : CancelableProgressingOptionNodeCustomization<IfcSaveStoreNodeModel>
+    public class IfcSaveNodeCustomization : CancelableOptionCommandCustomization<IfcSaveStoreNodeModel>
     {
         public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
         {

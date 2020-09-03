@@ -54,12 +54,12 @@ namespace Store
                 Qualifier = qualifier;
             }
 
-            (ActionLog as ObservableCollection<LogMessage>).CollectionChanged += ActionLog_CollectionChanged;
+            ActionLog.CollectionChanged += ActionLog_CollectionChanged;
         }
 
         private void ActionLog_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 foreach (LogMessage msg in e.NewItems.Cast<LogMessage>())
                 {
@@ -108,6 +108,11 @@ namespace Store
             get => Qualifier.GuidOrNameCase != Qualifier.GuidOrNameOneofCase.Named;
         }
 
+        internal IModel XbimModel
+        {
+            get => IsCanceled ? null : Store.XbimModel;
+        }
+
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
@@ -148,12 +153,12 @@ namespace Store
         /// <summary>
         /// The current IFC schema version of the element collection.
         /// </summary>
-        public string Schema { get => Store.XbimModel.SchemaVersion.ToString(); }
+        public string Schema { get => XbimModel?.SchemaVersion.ToString(); }
 
         /// <summary>
         /// The project name.
         /// </summary>
-        public string ProjectName { get => Store.XbimModel.Instances.FirstOrDefault<IIfcProject>()?.Name; }
+        public string ProjectName { get => XbimModel?.Instances.FirstOrDefault<IIfcProject>()?.Name; }
 
         /// <summary>
         /// The source store name.
@@ -271,9 +276,17 @@ namespace Store
             var savingModel = ifcModel.ChangeFormat(extension);
             var filePathName = savingModel.GetFilePathName(separator, true);
 
+            if (ifcModel.IsCanceled)
+            {
+                savingModel.IsCanceled = true;
+                savingModel.ActionLog.Add(
+                    LogMessage.BySeverityAndMessage(savingModel.Name, LogSeverity.Info, LogReason.Saved, "Saving '{0}' has been canceled.", filePathName));
+                return savingModel;
+            }
+
             try
             {
-                var internalModel = ifcModel.Store.XbimModel;
+                var internalModel = ifcModel.XbimModel;
                 if (null == internalModel)
                     throw new Exception("No internal model");
 
@@ -388,7 +401,7 @@ namespace Store
         /// Lists all product types which are present in the model
         /// </summary>
         /// <returns>A list of distinct IFC product types held by the collection</returns>
-        public string[] ProductTypes() => Store.XbimModel?.Instances
+        public string[] ProductTypes() => XbimModel?.Instances
             .OfType<IIfcProduct>()
             .Select(p => p.ExpressType.Name)
             .Distinct()
@@ -398,7 +411,7 @@ namespace Store
         /// Lists all property sets by their name.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
-        public string[] PropertySetNames() => Store.XbimModel?.Instances
+        public string[] PropertySetNames() => XbimModel?.Instances
             .OfType<IIfcPropertySetDefinition>()
             .Select(e => e.Name?.ToString())
             .Distinct()
@@ -408,7 +421,7 @@ namespace Store
         /// Lists all property sets by declaring product type.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
-        public Dictionary<string, string[]> PropertySetsPerProductType() => Store.XbimModel?.Instances
+        public Dictionary<string, string[]> PropertySetsPerProductType() => XbimModel?.Instances
             .OfType<IIfcPropertySetDefinition>()
             .SelectMany(s => s.DefinesOccurrence.SelectMany(r => r.RelatedObjects.OfType<IIfcProduct>().Select(e => (e.ExpressType.Name, s.Name?.ToString()))))
             .ToLookup(t => t.Item1, t => t.Item2)
@@ -418,7 +431,7 @@ namespace Store
         /// Returns a dictionary of pset names referencing property names.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string[]> PropertiesPerSet() => Store.XbimModel?.Instances
+        public Dictionary<string, string[]> PropertiesPerSet() => XbimModel?.Instances
             .OfType<IIfcProperty>()
             .SelectMany(p => p.PartOfPset.Select(s => (s.Name, p.Name)))
             .ToLookup(p => p.Item1, p => p.Item2.ToString())
@@ -428,7 +441,7 @@ namespace Store
         /// Graphical contexts
         /// </summary>
         /// <returns></returns>
-        public string[] GraphicalContexts() => Store.XbimModel?.Instances
+        public string[] GraphicalContexts() => XbimModel?.Instances
                 .OfType<IIfcGeometricRepresentationContext>()
                 .Select(c => c.ContextIdentifier?.ToString())
                 .Where(s => !string.IsNullOrWhiteSpace(s))

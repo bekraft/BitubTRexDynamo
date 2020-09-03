@@ -82,8 +82,8 @@ namespace Store
             }
 
             var callGetOrCreateModelStore = AstFactory.BuildFunctionCall(
-                new Func<string, Logger, IfcTessellationPrefs, IfcModel>(IfcStore.GetOrCreateModelStore),
-                new List<AssociativeNode>() { inputs[0], inputs[1], inputs[2] });
+                new Func<string, Logger, IfcTessellationPrefs, bool, IfcModel>(IfcStore.ByIfcModelFile),
+                new List<AssociativeNode>() { inputs[0], inputs[1], inputs[2], AstFactory.BuildBooleanNode(IsCanceled) });
 
             return new[]
             {

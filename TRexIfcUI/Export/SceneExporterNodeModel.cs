@@ -1,18 +1,14 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
 using Internal;
 using Task;
-using Log;
-using Geom;
 using Store;
 
 namespace Export
@@ -22,8 +18,8 @@ namespace Export
     /// </summary>
     [NodeName("Scene Export")]
     [NodeCategory("TRexIfc.Export")]
-    [InPortTypes(new string[] { nameof(SceneExport), nameof(IfcModel), nameof(String), nameof(String)})]
-    [OutPortTypes(typeof(LogMessage))]
+    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel), nameof(String), nameof(String)})]
+    [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
     public class SceneExporterNodeModel : CancelableProgressingOptionNodeModel
     {
@@ -32,12 +28,12 @@ namespace Export
         /// </summary>
         public SceneExporterNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("sceneExporter", "Scene exporter")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("settings", "Export settings")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("pathName", "Export path name")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("exportSummary", "Export summaries")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "model")));
 
             RegisterAllPorts();
             InitOptions();
@@ -91,14 +87,30 @@ namespace Export
                 }
             }
 
+            var callCreateSceneExport = AstFactory.BuildFunctionCall(
+                new Func<SceneExportSettings, IfcModel, SceneExport>(SceneExport.BySettingsAndModel),
+                new List<AssociativeNode>() 
+                { 
+                    inputs[0], 
+                    inputs[1]
+                });
+
+            var callSetExtension = AstFactory.BuildFunctionCall(
+                new Func<SceneExport, string, SceneExport>(SceneExport.ExportAs),
+                new List<AssociativeNode>()
+                {
+                    callCreateSceneExport,
+                    AstFactory.BuildStringNode(SelectedOption.ToString())
+                });
+
             var callRunSceneExport = AstFactory.BuildFunctionCall(
-                new Func<SceneExport, IfcModel, string, string, string, LogMessage>(SceneExport.RunSceneExport),
-                new List<AssociativeNode>() {
-                    inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    inputs[1],
+                new Func<SceneExport, string, string, IfcModel>(SceneExport.RunSceneExport),
+                new List<AssociativeNode>() 
+                {
+                    callSetExtension.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
                     inputs[2],
-                    AstFactory.BuildStringNode(SelectedOption.ToString()),
-                    inputs[3] });
+                    inputs[3]
+                });
 
             return new[]
             {

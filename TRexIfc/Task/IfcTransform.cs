@@ -37,6 +37,8 @@ namespace Task
 
         internal CancellationTokenSource CancellationSource { get; private set; }
 
+        internal string Mark { get; set; } = $"{DateTime.Now.ToBinary()}";
+
         internal IfcTransform(IIfcTransformRequest transformRequest)
         {
             Request = transformRequest;
@@ -88,7 +90,7 @@ namespace Task
                 throw new ArgumentNullException(nameof(transform));
 
             if (null == canonicalFrag)
-                canonicalFrag = "new";
+                canonicalFrag = transform.Mark;
 
             LogReason filterMask;
             if (!GlobalArgumentService.TryCastEnum(objFilterMask, out filterMask))
@@ -97,7 +99,7 @@ namespace Task
             if (null == transform.CancellationSource)
                 transform.CancellationSource = new CancellationTokenSource();
 
-            return IfcStore.CreateFromTransform(source, (model, node) =>
+            return IfcStore.ByTransform(source, (model, node) =>
             {
                 Log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
                 try

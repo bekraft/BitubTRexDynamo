@@ -25,7 +25,7 @@ namespace Internal
         public static AssociativeNode ToDynamicTaskProgressingFunc(this AssociativeNode taskProgressingNode, params string[] funcQualifier)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<Qualifier, ProgressingTask, ProgressingTask>(DynamicDelegation.Call),
+                new Func<Qualifier, ProgressingTask, ProgressingTask>(DynamicDelegation.CallDynamicTaskConsumer),
                 new List<AssociativeNode>()
                 {
                         AstFactory.BuildFunctionCall(

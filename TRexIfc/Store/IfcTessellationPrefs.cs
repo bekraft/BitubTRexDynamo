@@ -80,7 +80,7 @@ namespace Store
         /// <returns>Current tesselation preferences</returns>
         public static IfcTessellationPrefs ByModelDefaults(IfcModel ifcModel)
         {
-            var internalModel = ifcModel?.Store.XbimModel;
+            var internalModel = ifcModel?.XbimModel;
             if (null == internalModel)
                 throw new ArgumentNullException("ifcModel");
 

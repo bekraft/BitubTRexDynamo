@@ -55,7 +55,7 @@ namespace Internal
         /// The final state of progress
         /// </summary>
         /// <returns>The state</returns>
-        internal new ProgressTokenState GetProgressState()
+        internal override ProgressTokenState GetProgressState()
         {
             return InternalState?.State ??
                 ProgressTokenState.IsTerminated | (IsBroken ? ProgressTokenState.IsBroken : 0) | (IsCanceled ? ProgressTokenState.IsCanceled : 0);

@@ -28,6 +28,7 @@ namespace Export
             Settings = settings;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         public readonly IfcSceneExportSettings Settings;
 
         #endregion
@@ -42,15 +43,13 @@ namespace Export
         /// <param name="offset">The offset coordinates</param>
         /// <param name="unitPerMeter">The units per meter</param>
         /// <param name="sceneContexts">The scene context(s) to be exported</param>
-        /// <param name="logger">The logging instance</param>
-        /// <returns></returns>
+        /// <returns>New scene export settings</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExport BySettings(string transformationStrategy,
+        public static SceneExportSettings ByParameters(string transformationStrategy,
             string positioningStrategy,
             XYZ offset,
             double unitPerMeter,
-            string[] sceneContexts,
-            Logger logger)
+            string[] sceneContexts)
         {
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
@@ -63,8 +62,8 @@ namespace Export
                 UnitsPerMeter = unitPerMeter,
                 UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] { }
             });
-            
-            return SceneExport.CreateSceneExport(settings, logger);
+
+            return settings;
         }
 
         /// <summary>
@@ -102,7 +101,7 @@ namespace Export
         public double UnitsPerMeter { get => Settings.UnitsPerMeter; }
 
         /// <summary>
-        /// The offset shift
+        /// The model offset in meter.
         /// </summary>
         public XYZ Offset { get => new XYZ { TheXYZ = Settings.UserModelCenter }; }
 

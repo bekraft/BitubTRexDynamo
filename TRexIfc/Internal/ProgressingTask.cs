@@ -176,9 +176,12 @@ namespace Internal
             get => _progressMonitor.Count > 0; 
         }
 
+        internal bool IsCanceled { get; set; } = false;
+
         internal void CancelAll()
         {
             GetOpenProgresses().ForEach(p => p.Cancel());
+            IsCanceled = true;
         }
 
         /// <summary>

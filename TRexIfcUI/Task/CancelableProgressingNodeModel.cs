@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Bitub.Transfer;
 
 using Internal;
-using ProtoCore.AST.AssociativeAST;
+
 using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections.ObjectModel;
@@ -32,9 +32,10 @@ namespace Task
         private int _progressPercentage;
         private string _progressState;
         private string _taskName;
-        private Visibility _visibility;
+        private Visibility _visibility = Visibility.Collapsed;
 
         private object _mutex = new object();
+
         #endregion
 
         protected CancelableProgressingNodeModel() : base()
@@ -58,10 +59,11 @@ namespace Task
         {
             if (sender is ProgressingTask task)
             {
-                task.OnProgressChange -= OnTaskProgressChanged;
-                task.OnProgressEnd -= OnTaskProgessEnded;
-
-                DispatchOnUIThread(() => ActiveTasks.Add(new ProgressingTaskInfo(task)));
+                var taskInfo = DoneTasks.FirstOrDefault(t => task == t.Task);
+                if (null != taskInfo)
+                    DispatchOnUIThread(() => taskInfo.Update());
+                else
+                    DispatchOnUIThread(() => DoneTasks.Add(new ProgressingTaskInfo(task)));
             }
         }
 
@@ -77,9 +79,12 @@ namespace Task
                 {
                     if (__isCanceled && !args.InternalState.IsAboutCancelling)
                         args.InternalState.MarkCancelling();
+                }
 
-                    if (args.InternalState.IsCanceled)
-                        IsCanceled = true;
+                if (sender is ProgressingTask task)
+                {
+                    if (__isCanceled)
+                        task.CancelAll();
                 }
             }
         }
@@ -87,25 +92,35 @@ namespace Task
         [JsonIgnore]
         public ObservableCollection<ProgressingTaskInfo> ActiveTasks { get; } = new ObservableCollection<ProgressingTaskInfo>();
 
-        public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask obj)
+        [JsonIgnore]
+        public ObservableCollection<ProgressingTaskInfo> DoneTasks { get; } = new ObservableCollection<ProgressingTaskInfo>();
+
+        public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask task)
         {
-            if (null != obj)
+            if (null != task)
             {
-                obj.OnProgressChange += OnTaskProgressChanged;
-                obj.OnProgressEnd += OnTaskProgessEnded;
+                task.OnProgressChange += OnTaskProgressChanged;
+                task.OnProgressEnd += OnTaskProgessEnded;
+
+                if (!ActiveTasks.Any(t => ReferenceEquals(t.Task, task)))
+                    DispatchOnUIThread(() => ActiveTasks.Add(new ProgressingTaskInfo(task)));                        
             }
             else
             {
                 throw new ArgumentNullException();
             }
 
-            return obj;
+            return task;
         }
 
         protected virtual void BeforeBuildOutputAst()
         {
             ClearErrorsAndWarnings();
-            ActiveTasks.Clear();
+            DispatchOnUIThread(() =>
+            {
+                DoneTasks.Clear();
+                ActiveTasks.Clear();
+            });
         }
 
         [JsonIgnore]
@@ -115,8 +130,15 @@ namespace Task
                 return _visibility;
             }
             set {
-                _visibility = value;
-                RaisePropertyChanged(nameof(CancellationVisibility));
+                if (value != Visibility.Hidden && !IsCancelable)
+                {
+                    Log($"{Name} is not cancelable. No cancel button available.");
+                }
+                else
+                {
+                    _visibility = value;
+                    RaisePropertyChanged(nameof(CancellationVisibility));
+                }
             }
         }
 
@@ -128,13 +150,14 @@ namespace Task
             set {
                 _isCancelable = value;
                 RaisePropertyChanged(nameof(IsCancelable));
+                CancellationVisibility = value ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
         [JsonIgnore]
         public bool IsCanceled
         {
-            get {
+            get {                
                 lock (_mutex)
                     return __isCanceled;
             }
@@ -143,6 +166,8 @@ namespace Task
                     __isCanceled = value;
 
                 RaisePropertyChanged(nameof(IsCanceled));
+
+                ActiveTasks.ForEach(t => t.Task.IsCanceled = true);
             }
         }
 
@@ -191,6 +216,8 @@ namespace Task
                 ProgressState = DEFAULT_PROGRESS_STATE;
                 TaskName = DEFAULT_TASK_NAME;
             }
+
+            CancellationVisibility = Visibility.Collapsed;
         }
 
         public void Report(int percentage, object userState)

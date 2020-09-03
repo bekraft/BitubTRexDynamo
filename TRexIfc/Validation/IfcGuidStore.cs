@@ -83,7 +83,7 @@ namespace Validation
         /// <returns>The modified store</returns>
         public IfcGuidStore Ingest(IfcModel ifcModel)
         {
-            var innerModel = ifcModel.Store.XbimModel;
+            var innerModel = ifcModel.XbimModel;
             if (null == innerModel)
                 throw new ArgumentNullException(nameof(ifcModel));
 
