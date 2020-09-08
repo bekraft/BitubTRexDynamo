@@ -5,34 +5,59 @@
   <PropertyGroup>
     <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
     <DeployDynamoVersion>2.6</DeployDynamoVersion>
+    <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
+
+    <Authors>Bernold Kraft</Authors>
+    <Company>Bitub</Company>
+    <Copyright>Bernold Kraft</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://www.github.com/bekraft/BitubTRexDynamo</PackageProjectUrl>
+
+    <BuildMajor>0</BuildMajor>
+    <BuildMinor>1</BuildMinor>
+    <BuildRelease>0</BuildRelease>
+    <BuildQualifier></BuildQualifier>
+    <Build>0</Build>
+
+    <Configurations>Debug;Release;Beta</Configurations>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup>
-    
+  <PropertyGroup Condition=" '$(Configuration)' == 'Beta' ">
+    <BuildRelease>$([System.DateTime]::Now.ToString("yy"))$([System.String]::Format("{0:000}",$([System.DateTime]::Now.DayOfYear)))</BuildRelease>
+    <DayOfMonth>$([MSBuild]::Multiply($([MSBuild]::Multiply($([System.DateTime]::Now.Day), 24)), 60))</DayOfMonth>
+    <HourOfDay>$([MSBuild]::Multiply($([System.DateTime]::Now.Hour), 60))</HourOfDay>
+    <Build>$([MSBuild]::Add($([MSBuild]::Add($([System.DateTime]::Now.Minute),$(HourOfDay))), $(DayOfMonth)))</Build>
+    <BuildQualifier>-Beta</BuildQualifier>
+  </PropertyGroup>
+
+  <PropertyGroup>    
     <TargetFrameworks>net47</TargetFrameworks>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
 
-    <!-- <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids> -->
-    
     <Title>TRexIfc UI</Title>
-    <Description></Description>
     <OutputType>Library</OutputType>
     <StartupObject />
 
-    <Version>0.1.0.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
+    <AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyVersionAttribute("$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)")];</AssemblyFileVersionAttribute>
+    <AssemblyVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</AssemblyVersion>
+    <FileVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</FileVersion>
+    <Version>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</Version>    
   </PropertyGroup>
 
-  <!-- <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" /> -->
-  
-  <ItemGroup>
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
-    <!-- Removed libs for ease of file -->
-  </ItemGroup>
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -55,6 +80,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
     <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Beta|net47|AnyCPU'">
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <!-- <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" /> -->
+
+  <ItemGroup>
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -105,43 +140,46 @@
     </ProjectReference>
   </ItemGroup>
 
-  <PropertyGroup>
-    <!--Copy to Dynamo sandbox for testing -->
-    <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    <!--Copy to Dynamo revit for publishing -->
-    <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    <LangVersion>8.0</LangVersion>
+  <PropertyGroup>    
+    <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>    
   </PropertyGroup>
 
   <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">
     <!-- Remove before copying -->
-    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
-    <RemoveDir Directories="$(DeployFolder)" />
+    <Message Importance="High" Text="Removing contents from $(DeployPath)." />
+    <RemoveDir Directories="$(DeployPath)" />
+    <RemoveDir Condition="'$(Configuration)' == 'Beta'" Directories="$(DeployDynamoPath)" />
   </Target>
   
-  <!-- After build -->
-  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles"> <!-- PostBuildEvent -->
-    <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfcUI package..." />
-    <!--Defining folders to copy-->
+  <!-- Post build event-->
+  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
+    <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
       <SourceXmls Include="$(TargetDir)*.xml" />
-      <SourcePkg Include="pkg.json" />
-      <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
+      <SourcePkg Include="pkg.json" />      
     </ItemGroup>
-    <!--Copying to Build Folder-->
-    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployFolder)" />
-    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
-    <Message Importance="High" Text="==&gt; Will copy @(SourceDlls)" />
-    <Message Importance="High" Text="==&gt; From $(TargetDir)$(ProjectName)" />
+
+    <Message Importance="High" Text="Will copy @(SourceDlls)´..." />
+
+    <!-- Copying to deploy folder-->
+    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
+    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
+
+    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '0.1.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg)&quot;"/>
+    
+    <Message Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployPath)." />
+    
     <ItemGroup>
-      <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
-    </ItemGroup>
-    <Message Importance="High" Text="==&gt; Deployed to $(DeployFolder)" />
+      <SourcePackage Include="$(DeployPath)\**\*.*" />
+    </ItemGroup>    
+    
+    <!-- Copy to Dynamo app folder if Beta -->
+    <Copy Condition="'$(Configuration)' == 'Beta'" SourceFiles="@(SourcePackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
+    <Message Condition="'$(Configuration)' == 'Beta'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>
 
 </Project>

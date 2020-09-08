@@ -32,18 +32,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dynamo", "Dynamo", "{63BE75
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Beta|Any CPU = Beta|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BC161C5-E9F1-4B41-BA92-6DC3D502B00C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{319029B7-377E-4A89-8FD1-DB16C0D5ECD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Beta|Any CPU.ActiveCfg = Beta|Any CPU
+		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Beta|Any CPU.Build.0 = Beta|Any CPU
 		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
