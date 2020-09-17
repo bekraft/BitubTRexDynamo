@@ -12,8 +12,8 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://www.github.com/bekraft/BitubTRexDynamo</PackageProjectUrl>
 
-    <BuildMajor>0</BuildMajor>
-    <BuildMinor>1</BuildMinor>
+    <BuildMajor>1</BuildMajor>
+    <BuildMinor>0</BuildMinor>
     <BuildRelease>0</BuildRelease>
     <BuildQualifier></BuildQualifier>
     <Build>0</Build>
@@ -22,12 +22,12 @@
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   
-  <PropertyGroup Condition=" '$(Configuration)' == 'Beta' ">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <BuildRelease>$([System.DateTime]::Now.ToString("yy"))$([System.String]::Format("{0:000}",$([System.DateTime]::Now.DayOfYear)))</BuildRelease>
     <DayOfMonth>$([MSBuild]::Multiply($([MSBuild]::Multiply($([System.DateTime]::Now.Day), 24)), 60))</DayOfMonth>
     <HourOfDay>$([MSBuild]::Multiply($([System.DateTime]::Now.Hour), 60))</HourOfDay>
     <Build>$([MSBuild]::Add($([MSBuild]::Add($([System.DateTime]::Now.Minute),$(HourOfDay))), $(DayOfMonth)))</Build>
-    <BuildQualifier>-Beta</BuildQualifier>
+    <BuildQualifier>-Alpha</BuildQualifier>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -74,6 +74,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
@@ -95,7 +96,7 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20247-Beta.346</Version>
+      <Version>1.0.20259-Beta-098465a.22460</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">
@@ -126,7 +127,7 @@
 
   <!-- Post build event -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">    
-    <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)."/>    
+    <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />    
     <ItemGroup>
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
@@ -148,8 +149,8 @@
     </ItemGroup>    
     
     <!-- Copy to Dynamo app folder if Beta -->
-    <Copy Condition="'$(Configuration)' == 'Beta'" SourceFiles="@(SourcePackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
-    <Message Condition="'$(Configuration)' == 'Beta'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
+    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(SourcePackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
+    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>
 
 </Project>
