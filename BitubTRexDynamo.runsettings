@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Example taken from https://docs.microsoft.com/de-de/visualstudio/test/configure-unit-tests-by-using-a-dot-runsettings-file?view=vs-2019 -->
+<RunSettings>
+  <RunConfiguration>
+    <MaxCpuCount>1</MaxCpuCount>
+    <ResultsDirectory>.\TestResults</ResultsDirectory>
+
+    <!-- x86 or x64 -->
+    <TargetPlatform>x64</TargetPlatform>
+    <!-- Framework35 | [Framework40] | Framework45 -->
+    <TargetFrameworkVersion>Framework45</TargetFrameworkVersion>
+    <!-- Set to 30 minutes -->
+    <TestSessionTimeout>18000000</TestSessionTimeout>
+  </RunConfiguration>
+
+  <MSTest>
+    <MapInconclusiveToFailed>True</MapInconclusiveToFailed>
+    <CaptureTraceOutput>true</CaptureTraceOutput>
+    <DeleteDeploymentDirectoryAfterTestRunIsComplete>False</DeleteDeploymentDirectoryAfterTestRunIsComplete>
+    <!-- Since Xbim.Geometry.Engine DLLs are lazy loaded it is better to keep files in the non-isolated 
+    output directory. Otherwise we have to switch to legacy mode and deploy those seperately -->
+    <DeploymentEnabled>false</DeploymentEnabled>    
+  </MSTest>
+  
+</RunSettings>
