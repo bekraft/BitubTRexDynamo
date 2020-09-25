@@ -3,6 +3,9 @@
 
   <!-- <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" /> -->
   <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
+
     <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
     <DeployDynamoVersion>2.6</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
@@ -111,7 +114,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.20259-Beta-098465a.22460</Version>
+      <Version>1.0.20265-Alpha.31065</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.6.0.8481</Version>

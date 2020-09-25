@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\BitubTRexDynamo.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
     <ProjectGuid>{1F94B5B4-5DF5-43F3-8A1D-ABF2DE537FE3}</ProjectGuid>
 
     <RootNamespace>TRexIfc.Tests</RootNamespace>
@@ -61,5 +65,8 @@
     <PackageReference Include="MSTest.TestFramework">
       <Version>2.1.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TRexIfc\TRexIfc.csproj" />
   </ItemGroup>
 </Project>

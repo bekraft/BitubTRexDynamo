@@ -94,16 +94,16 @@ namespace Geom
         /// calculations.
         /// </summary>
         /// <param name="offsetA">The offset of A</param>
-        /// <param name="endA">The orientation point of A</param>
+        /// <param name="endA">The orientation point of A (or undefined if simpliy shifted along X)</param>
         /// <param name="offsetB">The offset of B</param>
-        /// <param name="endB">The orientation point of B</param>
+        /// <param name="endB">The orientation point of B (or undefined if simpliy shifted along X)</param>
         /// <returns>An alignment structure.</returns>
         public static Alignment By2x2Reference(XYZ offsetA, XYZ endA, XYZ offsetB, XYZ endB)
         {
             return new Alignment(new IfcAxisAlignment
             {
-                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, endA.TheXYZ),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, endB.TheXYZ)
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, endA?.TheXYZ ?? offsetA.Translate(1).TheXYZ),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, endB?.TheXYZ ?? offsetB.Translate(1).TheXYZ)
             });
         }
     }

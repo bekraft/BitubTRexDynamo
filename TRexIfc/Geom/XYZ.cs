@@ -3,6 +3,7 @@
 using Autodesk.DesignScript.Runtime;
 using ADPoint = Autodesk.DesignScript.Geometry.Point;
 using Bitub.Transfer.Spatial;
+using System;
 
 namespace Geom
 {
@@ -66,6 +67,24 @@ namespace Geom
         public static XYZ ByCoordinates(double x, double y, double z)
         {
             return new XYZ(x, y, z);
+        }
+
+        /// <summary>
+        /// A new array of XYZ by given cooridinates.
+        /// </summary>
+        /// <param name="xyz">The coordinate list</param>
+        /// <returns>The XYZ list</returns>
+        public static XYZ[] ByList(double[] xyz)
+        {
+            if (0 != xyz.Length % 3)
+                throw new ArgumentException($"Expecting a double list of a length module 3");
+
+            var xyzs = new XYZ[xyz.Length / 3];
+            for (int i=0; i < xyzs.Length; i++)
+            {
+                xyzs[i] = new XYZ(xyz[i * 3], xyz[i * 3 + 1], xyz[i * 3 + 2]);
+            }
+            return xyzs;
         }
 
         /// <summary>
