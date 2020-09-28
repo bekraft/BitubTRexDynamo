@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Xbim.Common;
 using Xbim.Ifc;

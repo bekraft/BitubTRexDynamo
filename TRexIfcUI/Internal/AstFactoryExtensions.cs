@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 // Disable comment warning
 #pragma warning disable CS1591

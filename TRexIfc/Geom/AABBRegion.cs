@@ -1,12 +1,6 @@
-﻿using Store;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using SpatialABox = Bitub.Transfer.Spatial.ABox;
-using SpatialXYZ = Bitub.Transfer.Spatial.XYZ;
+﻿
+using Bitub.Dto.Spatial;
+//using SpatialXYZ = Bitub.Dto.Spatial.XYZ;
 
 namespace Geom
 {
@@ -17,14 +11,14 @@ namespace Geom
     {
         #region Internals
 
-        internal SpatialABox TheABox { get; set; }
+        internal ABox TheABox { get; set; }
 
         internal AABBRegion(double dx, double dy, double dz)
         {
-            TheABox = new SpatialABox
+            TheABox = new ABox
             {
-                Min = new SpatialXYZ(),
-                Max = new SpatialXYZ
+                Min = new Bitub.Dto.Spatial.XYZ(),
+                Max = new Bitub.Dto.Spatial.XYZ
                 {
                     X = dx,
                     Y = dy,
@@ -33,7 +27,7 @@ namespace Geom
             };
         }
 
-        internal AABBRegion(SpatialABox aBox)
+        internal AABBRegion(ABox aBox)
         {
             TheABox = aBox;
         }
@@ -58,7 +52,7 @@ namespace Geom
         /// <returns>A new region</returns>
         public static AABBRegion ByExtent(XYZ min, XYZ max, double weight = 1.0)
         {
-            return new AABBRegion(new SpatialABox { Min = min.TheXYZ, Max = max.TheXYZ }) { Weight = weight };
+            return new AABBRegion(new ABox { Min = min.TheXYZ, Max = max.TheXYZ }) { Weight = weight };
         }
     }
 }

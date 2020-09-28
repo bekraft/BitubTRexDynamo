@@ -14,7 +14,7 @@ using Task;
 using Internal;
 
 using Log;
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, Internal.ProgressingTask[]>;
 

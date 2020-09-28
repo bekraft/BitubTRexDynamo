@@ -14,7 +14,7 @@ using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
 using Bitub.Ifc;
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Internal;
 using Log;
@@ -45,7 +45,7 @@ namespace Store
                 {
                     Anonymous = new GlobalUniqueId
                     {
-                        Guid = new Bitub.Transfer.Guid { Raw = System.Guid.NewGuid().ToByteArray().ToByteString() }
+                        Guid = new Bitub.Dto.Guid { Raw = System.Guid.NewGuid().ToByteArray().ToByteString() }
                     }
                 };
             }

@@ -2,7 +2,7 @@
 
 using Autodesk.DesignScript.Runtime;
 using ADPoint = Autodesk.DesignScript.Geometry.Point;
-using Bitub.Transfer.Spatial;
+using Bitub.Dto.Spatial;
 using System;
 
 namespace Geom
@@ -20,19 +20,19 @@ namespace Geom
         /// The internal point reference.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public Bitub.Transfer.Spatial.XYZ TheXYZ { get; set; }
+        public Bitub.Dto.Spatial.XYZ TheXYZ { get; set; }
 
         internal XYZ() : this(0, 0, 0)
         { }
 
-        internal XYZ(Bitub.Transfer.Spatial.XYZ xyz)
+        internal XYZ(Bitub.Dto.Spatial.XYZ xyz)
         {
             TheXYZ = xyz;
         }
 
         internal XYZ(double x, double y, double z)
         {
-            TheXYZ = new Bitub.Transfer.Spatial.XYZ { X = x, Y = y, Z = z };
+            TheXYZ = new Bitub.Dto.Spatial.XYZ { X = x, Y = y, Z = z };
         }
 
         [IsVisibleInDynamoLibrary(false)]

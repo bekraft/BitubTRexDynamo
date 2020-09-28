@@ -6,7 +6,7 @@ using System.Linq;
 using Xbim.Common;
 using Xbim.Ifc4.Interfaces;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Store;
 using Internal;

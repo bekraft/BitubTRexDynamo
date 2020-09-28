@@ -3,7 +3,7 @@
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Ifc.Transform;
-using Bitub.Transfer.Scene;
+using Bitub.Dto.Scene;
 
 using Log;
 
@@ -84,7 +84,7 @@ namespace Geom
             return new Alignment(new IfcAxisAlignment
             {
                 SourceReferenceAxis = new IfcAlignReferenceAxis(),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(new Bitub.Transfer.Spatial.XYZ(), xAxis.TheXYZ)
+                TargetReferenceAxis = new IfcAlignReferenceAxis(new Bitub.Dto.Spatial.XYZ(), xAxis.TheXYZ)
             });
         }
 

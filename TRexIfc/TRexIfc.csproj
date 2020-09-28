@@ -99,7 +99,7 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.20265-Alpha.31065</Version>
+      <Version>1.0.20272-Alpha.41218</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
     <PackageReference Include="DynamoVisualProgramming.DynamoServices">

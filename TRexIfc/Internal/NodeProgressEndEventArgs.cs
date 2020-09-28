@@ -1,4 +1,4 @@
-﻿using Bitub.Transfer;
+﻿using Bitub.Dto;
 
 using Log;
 

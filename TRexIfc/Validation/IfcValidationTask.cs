@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Internal;
 using Store;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 namespace Task
 {

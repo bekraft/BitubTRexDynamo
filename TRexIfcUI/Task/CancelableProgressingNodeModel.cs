@@ -5,7 +5,7 @@ using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Internal;
 

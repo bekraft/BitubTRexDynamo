@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
+
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 using Internal;
 
 namespace UI
@@ -76,9 +77,18 @@ namespace UI
         public override bool Equals(object obj)
         {
             if (obj is ProgressingTaskInfo info)
-                return object.ReferenceEquals(Task, info.Task);
+                return ReferenceEquals(Task, info.Task);
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Propagates the hash code of task.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Task.GetHashCode();
         }
     }
 }
