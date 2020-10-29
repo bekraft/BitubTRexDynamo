@@ -168,10 +168,10 @@ namespace Task
         {
             return new IfcTransform(new IfcPropertySetRemovalRequest(logInstance.LoggerFactory)
             {
-                RemovePropertySet = removePropertySets,
-                KeepPropertySet = keepPropertySets,
+                ExludePropertySetByName = removePropertySets,
+                IncludePropertySetByName = keepPropertySets,
                 IsNameMatchingCaseSensitive = caseSensitiveMatching,
-                IsRemovingPSetOnConflict = false,
+                FilterRuleStrategy = FilterRuleStrategyType.IncludeBeforeExclude,
                 IsLogEnabled = true,
                 EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
             });

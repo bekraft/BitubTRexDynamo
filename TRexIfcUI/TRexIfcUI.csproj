@@ -114,7 +114,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.20272-Alpha.41218</Version>
+      <Version>1.0.20302-Alpha.41131</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.6.0.8481</Version>

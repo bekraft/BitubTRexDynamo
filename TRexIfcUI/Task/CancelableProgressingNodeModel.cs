@@ -59,11 +59,7 @@ namespace Task
         {
             if (sender is ProgressingTask task)
             {
-                var taskInfo = DoneTasks.FirstOrDefault(t => task == t.Task);
-                if (null != taskInfo)
-                    DispatchOnUIThread(() => taskInfo.Update());
-                else
-                    DispatchOnUIThread(() => DoneTasks.Add(new ProgressingTaskInfo(task)));
+                DispatchCreateOrUpdate(task);
             }
         }
 
@@ -90,10 +86,56 @@ namespace Task
         }
 
         [JsonIgnore]
-        public ObservableCollection<ProgressingTaskInfo> ActiveTasks { get; } = new ObservableCollection<ProgressingTaskInfo>();
+        public ObservableCollection<ProgressingTaskInfo> ActiveTasks 
+        { 
+            get; 
+        } = new ObservableCollection<ProgressingTaskInfo>();
 
-        [JsonIgnore]
-        public ObservableCollection<ProgressingTaskInfo> DoneTasks { get; } = new ObservableCollection<ProgressingTaskInfo>();
+        public ProgressingTaskInfo[] ActiveTasksSafeCopy
+        {
+            get {
+                lock (_mutex)
+                    return ActiveTasks.ToArray();
+            }
+        }
+
+        public void ClearActiveTaskList()
+        {
+            lock (_mutex)
+                ActiveTasks.Clear();
+        }
+
+        public ProgressingTaskInfo FindActiveTaskInfo(ProgressingTask task)
+        {
+            lock (_mutex)
+                return ActiveTasks.FirstOrDefault(taskInfo => ReferenceEquals(taskInfo.Task, task));
+        }
+
+        public void DispatchCreateOrUpdate(ProgressingTask task)
+        {
+            DispatchOnUIThread(() =>
+            {
+                ProgressingTaskInfo taskInfo;
+                if (!TryCreateActiveTaskInfo(task, out taskInfo))
+                    taskInfo.Update();
+            });
+        }
+
+        public bool TryCreateActiveTaskInfo(ProgressingTask task, out ProgressingTaskInfo taskInfo)
+        {
+            lock (_mutex)
+            {
+                taskInfo = ActiveTasks.FirstOrDefault(taskInfo => ReferenceEquals(taskInfo.Task, task));
+                if (null == taskInfo)
+                {
+                    var newTaskInfo = new ProgressingTaskInfo(task);
+                    taskInfo = newTaskInfo;
+                    ActiveTasks.Add(newTaskInfo);
+                    return true;
+                }
+                return false;
+            }            
+        }
 
         public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask task)
         {
@@ -101,9 +143,7 @@ namespace Task
             {
                 task.OnProgressChange += OnTaskProgressChanged;
                 task.OnProgressEnd += OnTaskProgessEnded;
-
-                if (!ActiveTasks.Any(t => ReferenceEquals(t.Task, task)))
-                    DispatchOnUIThread(() => ActiveTasks.Add(new ProgressingTaskInfo(task)));                        
+                DispatchCreateOrUpdate(task);               
             }
             else
             {
@@ -116,11 +156,6 @@ namespace Task
         protected virtual void BeforeBuildOutputAst()
         {
             ClearErrorsAndWarnings();
-            DispatchOnUIThread(() =>
-            {
-                DoneTasks.Clear();
-                ActiveTasks.Clear();
-            });
         }
 
         [JsonIgnore]
@@ -167,7 +202,7 @@ namespace Task
 
                 RaisePropertyChanged(nameof(IsCanceled));
 
-                ActiveTasks.ForEach(t => t.Task.IsCanceled = true);
+                ActiveTasksSafeCopy.ForEach(t => t.Task.IsCanceled = true);
             }
         }
 

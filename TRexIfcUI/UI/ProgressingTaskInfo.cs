@@ -32,18 +32,18 @@ namespace UI
             SetStatus(task);
         }
 
-        private void SetStatus(ProgressingTask task)
+        private void SetStatus(ProgressingTask task, ProgressTokenState? defaultState = null)
         {
             if (null != task.LatestProgressEventArgs)
-                Status = task.LatestProgressEventArgs.GetProgressState() & (ProgressTokenState)0xf0;
+                Status = task.LatestProgressEventArgs.GetProgressState();
             else
-                Status = ProgressTokenState.IsTerminated;
+                Status = defaultState ?? ProgressTokenState.IsRunning;
         }
 
-        internal void Update()
+        internal void Update(ProgressTokenState? defaultState = null)
         {
             Name = Task.Name;
-            SetStatus(Task);
+            SetStatus(Task, defaultState);
             NotifyPropertyChanged(nameof(Name), nameof(Status));
         }
 

@@ -86,8 +86,13 @@ namespace UI.Customization
             switch(e.ExecutionState)
             {
                 case ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin:
-                    DispatchUI(() => ProgressControl.Cancel.IsEnabled = true );
+                    DispatchUI(() =>
+                    {
+                        ProgressControl.Cancel.IsEnabled = true;
+                        NodeModel.ClearActiveTaskList();
+                    });
                     NodeModel.CancellationVisibility = System.Windows.Visibility.Visible;
+                    
                     lock (GlobalLogging.DiagnosticStopWatch)
                     {
                         if (!GlobalLogging.DiagnosticStopWatch.IsRunning)

@@ -59,7 +59,7 @@
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     Grid.Row="2"
-                    ItemsSource="{Binding Path=DoneTasks}"
+                    ItemsSource="{Binding Path=ActiveTasks}"
                     Margin="5,5,5,5"
                     MaxHeight="150"
                     AutoGenerateColumns="False"

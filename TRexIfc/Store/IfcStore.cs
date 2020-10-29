@@ -15,6 +15,7 @@ using System.Collections.Generic;
 
 using Log;
 using Internal;
+using System.Data;
 
 namespace Store
 {
@@ -242,13 +243,19 @@ namespace Store
         {
             var store = new IfcStore(source.Store.Logger);            
             var ifcModel = new IfcModel(store, BuildQualifier(source.Qualifier, canoncialName));
-            store.Producer = () => transform?.Invoke(source.XbimModel, ifcModel);
-
-            if (source.IsCanceled)
+            store.Producer = () =>
             {
-                ifcModel.IsCanceled = true;
-                store.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
-            }                
+                if (source.IsCanceled)
+                {
+                    ifcModel.IsCanceled = true;
+                    store.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
+                    return null;
+                }
+                else
+                {
+                    return transform?.Invoke(source.XbimModel, ifcModel);
+                }
+            };
             
             return ifcModel;
         }

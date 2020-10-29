@@ -57,6 +57,33 @@ namespace Store
             ActionLog.CollectionChanged += ActionLog_CollectionChanged;
         }
 
+        private static Dictionary<Qualifier, IfcModel> Cache = new Dictionary<Qualifier, IfcModel>();
+
+        internal static bool CacheTryGet(Qualifier qualifier, Func<Qualifier, IfcModel> storeProducer, out IfcModel ifcStore)
+        {
+            lock (typeof(IfcModel))
+            {
+                if (Cache.ContainsKey(qualifier))
+                {
+                    ifcStore = Cache[qualifier];
+                    return true;
+                }
+                else
+                {
+                    ifcStore = storeProducer?.Invoke(qualifier);
+                    Cache[qualifier] = ifcStore;
+                    return false;
+                }
+            }
+        }
+
+        internal static void CacheClear()
+        {
+            lock (typeof(IfcModel))
+                Cache.Clear();
+        }
+
+
         private void ActionLog_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -418,6 +445,27 @@ namespace Store
             .ToArray();
 
         /// <summary>
+        /// Gets all property names from model.
+        /// </summary>
+        /// <returns>The property names</returns>
+        public string[] PropertyNames() => XbimModel?.Instances
+            .OfType<IIfcProperty>()
+            .Select(p => p.Name.ToString())
+            .Distinct()
+            .ToArray();
+
+        /// <summary>
+        /// Gets all full property names (set name and property name) from model.
+        /// </summary>
+        /// <param name="delimiter">The delimiter between set and property name ("." by default)</param>
+        /// <returns>The property names</returns>
+        public string[] FullPropertyNames(string delimiter = ".") => XbimModel?.Instances
+            .OfType<IIfcProperty>()
+            .SelectMany(p => p.PartOfPset.Select(s => $"{s.Name}{delimiter}{p.Name}"))
+            .Distinct()
+            .ToArray();
+
+        /// <summary>
         /// Lists all property sets by declaring product type.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
@@ -436,6 +484,13 @@ namespace Store
             .SelectMany(p => p.PartOfPset.Select(s => (s.Name, p.Name)))
             .ToLookup(p => p.Item1, p => p.Item2.ToString())
             .ToDictionary(p => p.Key?.ToString(), p => p.Distinct().ToArray());
+
+        /// <summary>
+        /// Returns property values per IfcGloballyUniqueId.
+        /// </summary>
+        /// <returns>A dictionary lead by GUID.</returns>
+        public Dictionary<string, string[]> PropertyValuePerObject() =>
+            throw new NotImplementedException();
 
         /// <summary>
         /// Graphical contexts

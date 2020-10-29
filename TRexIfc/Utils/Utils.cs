@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Task
+namespace Utils
 {
     /// <summary>
     /// A collection of simple tasks
     /// </summary>
-    public class Tasks
+    public class Utils
     {
         #region Internals
 
-        internal Tasks()
+        private Utils()
         {
         }
 
@@ -85,12 +85,28 @@ namespace Task
         /// </summary>
         /// <param name="dict">The data dictionary</param>
         /// <returns>Two-dimensional array of keys and values</returns>
-        public static object[][] FlattenDict(Dictionary<object, object> dict)
+        public static object[][] Dict2RowTable(Dictionary<object, object> dict)
         {
             return dict.SelectMany(e =>
             {
                 if (e.Value is IEnumerable<object> en)
                     return en.Select(Value => new[] { e.Key, Value });
+                else
+                    return new[] { new[] { e.Key, e.Value } };
+            }).ToArray();
+        }
+
+        /// <summary>
+        /// Flattens the dictionary as matrix of repitative keys and their associated values.
+        /// </summary>
+        /// <param name="dict">The data dictionary</param>
+        /// <returns>Two-dimensional array of keys and values</returns>
+        public static object[][] Dict2ColumnTable(Dictionary<object, object> dict)
+        {
+            return dict.SelectMany(e =>
+            {
+                if (e.Value is IEnumerable<object> en)
+                    return new[] { new[] { e.Key, en.OrderBy(e => e).ToArray() } };
                 else
                     return new[] { new[] { e.Key, e.Value } };
             }).ToArray();
