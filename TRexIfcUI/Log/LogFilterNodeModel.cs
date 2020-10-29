@@ -92,10 +92,13 @@ namespace Log
 
         public ProgressingTask RegisterOnActionLogChanged(ProgressingTask nodeProgressing)
         {
-            if (!_runtimeStamp.ContainsKey(nodeProgressing.ActionLog))
-                nodeProgressing.ActionLog.CollectionChanged += ActionLog_CollectionChanged;
+            if (null != nodeProgressing)
+            {
+                if (!_runtimeStamp.ContainsKey(nodeProgressing.ActionLog))
+                    nodeProgressing.ActionLog.CollectionChanged += ActionLog_CollectionChanged;
 
-            _runtimeStamp[nodeProgressing.ActionLog] = _timeStamp;
+                _runtimeStamp[nodeProgressing.ActionLog] = _timeStamp;
+            }
             return nodeProgressing;
         }
 

@@ -176,12 +176,12 @@ namespace Internal
             get => _progressMonitor.Count > 0; 
         }
 
-        internal bool IsCanceled { get; set; } = false;
+        internal bool IsCanceled { get; private set; } = false;
 
         internal void CancelAll()
         {
-            GetOpenProgresses().ForEach(p => p.Cancel());
             IsCanceled = true;
+            GetOpenProgresses().ForEach(p => p.Cancel());            
         }
 
         /// <summary>
@@ -224,11 +224,15 @@ namespace Internal
             }
         }
 
+#pragma warning disable CS1591
+
         public override string ToString()
         {
             return string.Format("{0} '{1}' ({2})", 
                 GetType().Name, Name, LatestProgressEventArgs?.GetProgressState().ToString() ?? "(unknown state)");
         }
+
+#pragma warning restore CS1591
     }
 }
 

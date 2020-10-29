@@ -305,7 +305,7 @@ namespace Store
 
             if (ifcModel.IsCanceled)
             {
-                savingModel.IsCanceled = true;
+                savingModel.CancelAll();
                 savingModel.ActionLog.Add(
                     LogMessage.BySeverityAndMessage(savingModel.Name, LogSeverity.Info, LogReason.Saved, "Saving '{0}' has been canceled.", filePathName));
                 return savingModel;

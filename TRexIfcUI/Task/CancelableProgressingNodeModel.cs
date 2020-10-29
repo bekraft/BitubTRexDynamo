@@ -91,12 +91,10 @@ namespace Task
             get; 
         } = new ObservableCollection<ProgressingTaskInfo>();
 
-        public ProgressingTaskInfo[] ActiveTasksSafeCopy
+        public ProgressingTaskInfo[] ActiveTasksSafeCopy()
         {
-            get {
-                lock (_mutex)
-                    return ActiveTasks.ToArray();
-            }
+            lock (_mutex)
+                return ActiveTasks.ToArray();
         }
 
         public void ClearActiveTaskList()
@@ -145,17 +143,13 @@ namespace Task
                 task.OnProgressEnd += OnTaskProgessEnded;
                 DispatchCreateOrUpdate(task);               
             }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-
             return task;
         }
 
         protected virtual void BeforeBuildOutputAst()
         {
             ClearErrorsAndWarnings();
+            ClearActiveTaskList();
         }
 
         [JsonIgnore]
@@ -202,7 +196,7 @@ namespace Task
 
                 RaisePropertyChanged(nameof(IsCanceled));
 
-                ActiveTasksSafeCopy.ForEach(t => t.Task.IsCanceled = true);
+                ActiveTasksSafeCopy().ForEach(t => t.Task.CancelAll());                
             }
         }
 

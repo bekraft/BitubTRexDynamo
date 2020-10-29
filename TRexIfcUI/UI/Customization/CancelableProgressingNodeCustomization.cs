@@ -89,7 +89,6 @@ namespace UI.Customization
                     DispatchUI(() =>
                     {
                         ProgressControl.Cancel.IsEnabled = true;
-                        NodeModel.ClearActiveTaskList();
                     });
                     NodeModel.CancellationVisibility = System.Windows.Visibility.Visible;
                     

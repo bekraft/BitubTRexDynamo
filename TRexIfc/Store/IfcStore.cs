@@ -209,7 +209,7 @@ namespace Store
 
             if (createNope)
             {
-                model.IsCanceled = true;
+                model.CancelAll();
                 store.Logger.LogWarning("Loading '{0}' has been canceled.", fileName);
             }
 
@@ -247,7 +247,7 @@ namespace Store
             {
                 if (source.IsCanceled)
                 {
-                    ifcModel.IsCanceled = true;
+                    ifcModel.CancelAll();
                     store.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
                     return null;
                 }
