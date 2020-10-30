@@ -11,8 +11,8 @@ namespace UI.Customization
 
     public class CancelableCommandCustomization<T> : CancelableProgressingNodeCustomization<T, CancelableCommandControl> where T : CancelableProgressingNodeModel
     {
-        protected CancelableCommandCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
-            : base(progressOnPort, actionOnPort)
+        protected CancelableCommandCustomization(ProgressOnPortType progressOnPort)
+            : base(progressOnPort)
         {
         }
 

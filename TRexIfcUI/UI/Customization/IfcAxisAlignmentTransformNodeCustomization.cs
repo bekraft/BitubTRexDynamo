@@ -7,7 +7,7 @@ namespace UI.Customization
 
     public class IfcAxisAlignmentTransformNodeCustomization : CancelableOptionCommandCustomization<IfcAxisAlignmentTransformNodeModel>
     {
-        public IfcAxisAlignmentTransformNodeCustomization(): base(ProgressOnPortType.OutPorts, Log.LogReason.Changed)
+        public IfcAxisAlignmentTransformNodeCustomization(): base(ProgressOnPortType.OutPorts)
         {
         }
     }

@@ -30,6 +30,8 @@ namespace Store
         [JsonConstructor]
         IfcLoadStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Loaded;
         }
 
         #endregion
@@ -48,6 +50,7 @@ namespace Store
             RegisterAllPorts();
 
             IsCancelable = true;
+            LogReasonMask = LogReason.Loaded;
         }
 
 #pragma warning disable CS1591

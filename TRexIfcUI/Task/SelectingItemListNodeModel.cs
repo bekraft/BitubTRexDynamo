@@ -16,7 +16,7 @@ namespace Task
     /// Select multiple items from a list of available items using its string representation.
     /// </summary>
     [NodeName("Select items from")]
-    [NodeCategory("TRexIfc.Task.Tasks")]
+    [NodeCategory("TRexIfc.Utils")]
     [NodeDescription("Select multiple items from a list of available items using its string representation.")]
     [InPortTypes(typeof(object[]))]
     [OutPortTypes(typeof(object[]))]

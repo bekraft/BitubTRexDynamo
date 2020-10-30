@@ -12,8 +12,8 @@ namespace UI.Customization
 
     public class IfcSaveNodeCustomization : CancelableOptionCommandCustomization<IfcSaveStoreNodeModel>
     {
-        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
-        {
+        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
+        {            
         }
 
         public override void CustomizeView(IfcSaveStoreNodeModel model, NodeView nodeView)

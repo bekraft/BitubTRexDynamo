@@ -8,7 +8,7 @@ namespace UI.Customization
 
     public class IfcGuidCheckValidationNodeCustomization : CancelableCommandCustomization<IfcGuidCheckValidationNodeModel>
     {
-        public IfcGuidCheckValidationNodeCustomization(): base(ProgressOnPortType.OutPorts, Log.LogReason.Checked)
+        public IfcGuidCheckValidationNodeCustomization(): base(ProgressOnPortType.OutPorts)
         {
         }
     }

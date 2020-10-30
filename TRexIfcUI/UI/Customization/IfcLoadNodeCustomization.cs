@@ -7,7 +7,7 @@ namespace UI.Customization
 
     public class IfcLoadNodeCustomization : CancelableCommandCustomization<IfcLoadStoreNodeModel>
     {
-        public IfcLoadNodeCustomization() : base(ProgressOnPortType.OutPorts, Log.LogReason.Loaded)
+        public IfcLoadNodeCustomization() : base(ProgressOnPortType.OutPorts)
         { 
         }
     }

@@ -7,7 +7,7 @@ namespace UI.Customization
 
     public class IfcPSetRemovalNodeCustomization : CancelableCommandCustomization<IfcPSetRemovalTransformNodeModel>
     {
-        public IfcPSetRemovalNodeCustomization() : base(ProgressOnPortType.OutPorts, Log.LogReason.Changed)
+        public IfcPSetRemovalNodeCustomization() : base(ProgressOnPortType.OutPorts)
         {
         }
     }

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 using Task;
 using Store;
+using Log;
 
 namespace Validation
 {
@@ -28,6 +29,8 @@ namespace Validation
         [JsonConstructor]
         IfcGuidCheckValidationNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Checked;
         }
 
         #endregion
@@ -44,6 +47,7 @@ namespace Validation
 
             RegisterAllPorts();
             IsCancelable = true;
+            LogReasonMask = LogReason.Checked;
         }
 
 #pragma warning disable CS1591

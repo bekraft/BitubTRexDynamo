@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Linq;
 using System.Collections.ObjectModel;
 using UI;
+using Log;
 
 // Disable comment warning
 #pragma warning disable CS1591
@@ -34,7 +35,7 @@ namespace Task
         private string _taskName;
         private Visibility _visibility = Visibility.Collapsed;
 
-        private object _mutex = new object();
+        private readonly object _mutex = new object();
 
         #endregion
 
@@ -55,32 +56,41 @@ namespace Task
             get => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
         }
 
+        [JsonIgnore]
+        internal LogReason LogReasonMask { get; set; } = LogReason.Any;
+
         internal void OnTaskProgessEnded(object sender, NodeProgressEndEventArgs args = null)
         {
-            if (sender is ProgressingTask task)
+            if (LogReason.None != (LogReasonMask & args.Reason))
             {
-                DispatchCreateOrUpdate(task);
+                if (sender is ProgressingTask task)
+                {
+                    DispatchCreateOrUpdate(task);
+                }
             }
         }
 
         internal void OnTaskProgressChanged(object sender, NodeProgressEventArgs args)
         {
-            lock (_mutex)
+            if (LogReason.None != (LogReasonMask & args.Reason))
             {
-                ProgressPercentage = args.Percentage;
-                ProgressState = args.State?.ToString() ?? args.TaskName;
-                TaskName = args.TaskName;
-
-                if (null != args.InternalState)
+                lock (_mutex)
                 {
-                    if (__isCanceled && !args.InternalState.IsAboutCancelling)
-                        args.InternalState.MarkCancelling();
-                }
+                    ProgressPercentage = args.Percentage;
+                    ProgressState = args.State?.ToString() ?? args.TaskName;
+                    TaskName = args.TaskName;
 
-                if (sender is ProgressingTask task)
-                {
-                    if (__isCanceled)
-                        task.CancelAll();
+                    if (null != args.InternalState)
+                    {
+                        if (__isCanceled && !args.InternalState.IsAboutCancelling)
+                            args.InternalState.MarkCancelling();
+                    }
+
+                    if (sender is ProgressingTask task)
+                    {
+                        if (__isCanceled)
+                            task.CancelAll();
+                    }
                 }
             }
         }

@@ -18,7 +18,7 @@ namespace Task
     [NodeDescription("Interactive table grid displaying incoming data with a given count threshold.")]
     [InPortTypes(typeof(List<object>))]
     [OutPortTypes(typeof(object[][]))]
-    [NodeCategory("TRexIfc.Task.Tasks")]
+    [NodeCategory("TRexIfc.Utils")]
     [IsDesignScriptCompatible]
     public class DataTablePreviewNodeModel : BaseNodeModel
     {

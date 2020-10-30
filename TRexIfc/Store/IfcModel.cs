@@ -303,19 +303,11 @@ namespace Store
             var savingModel = ifcModel.ChangeFormat(extension);
             var filePathName = savingModel.GetFilePathName(separator, true);
 
-            if (ifcModel.IsCanceled)
-            {
-                savingModel.CancelAll();
-                savingModel.ActionLog.Add(
-                    LogMessage.BySeverityAndMessage(savingModel.Name, LogSeverity.Info, LogReason.Saved, "Saving '{0}' has been canceled.", filePathName));
-                return savingModel;
-            }
-
             try
             {
                 var internalModel = ifcModel.XbimModel;
                 if (null == internalModel)
-                    throw new Exception("No internal model");
+                    throw new ArgumentNullException("No internal model");
 
                 using (var fileStream = File.Create(filePathName))
                 {
@@ -345,7 +337,7 @@ namespace Store
             {
                 logger?.LogError(e, "Exception: {0}", e.Message);
                 ifcModel.NotifyOnProgressEnded(LogReason.Saved, false, true);
-                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Error, LogReason.Loaded, "Failure: '{0}'.", filePathName));
+                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Error, LogReason.Saved, "Failure: '{0}'.", filePathName));
             }
 
             return savingModel;

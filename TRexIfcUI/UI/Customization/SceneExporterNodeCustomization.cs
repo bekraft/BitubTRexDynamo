@@ -11,7 +11,7 @@ namespace UI.Customization
 
     public class SceneExporterNodeCustomization : CancelableOptionCommandCustomization<SceneExporterNodeModel>
     {
-        public SceneExporterNodeCustomization(): base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
+        public SceneExporterNodeCustomization(): base(ProgressOnPortType.InPorts)
         {
         }
     }

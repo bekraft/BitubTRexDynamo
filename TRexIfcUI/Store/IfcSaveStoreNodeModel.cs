@@ -51,6 +51,8 @@ namespace Store
         {
             foreach (var ext in IfcStore.Extensions)
                 AvailableOptions.Add(ext);
+
+            LogReasonMask = LogReason.Saved;
         }
 
 #pragma warning disable CS1591
@@ -84,17 +86,17 @@ namespace Store
                 }
             }
 
-            var callIfcModelSave = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
-                new List<AssociativeNode>() { 
-                    inputAstNodes[0], 
-                    AstFactory.BuildStringNode(SelectedOption as string),                    
-                    inputAstNodes[1]
-                });
-
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callIfcModelSave.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName))
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall(
+                        new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
+                        new List<AssociativeNode>() {
+                            inputAstNodes[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
+                            AstFactory.BuildStringNode(SelectedOption as string),
+                            inputAstNodes[1]
+                        }))
             };
         }
 

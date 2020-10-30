@@ -47,6 +47,7 @@ namespace Task
             RegisterAllPorts();
             InitStrategyOptions();
             IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
             SelectedOption = PlacementOptions[default(IfcPlacementStrategy)];
         }
 
@@ -54,8 +55,10 @@ namespace Task
 
         [JsonConstructor]
         IfcAxisAlignmentTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
+        {            
             InitStrategyOptions();
+            IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
         }
 
         private IDictionary<object, string> PlacementOptions = new Dictionary<object, string>()

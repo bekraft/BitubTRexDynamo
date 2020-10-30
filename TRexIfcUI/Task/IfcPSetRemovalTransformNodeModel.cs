@@ -64,11 +64,14 @@ namespace Task
 
             RegisterAllPorts();
             IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
         }
 
         [JsonConstructor]
         IfcPSetRemovalTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
         }
 
 #pragma warning disable CS1591

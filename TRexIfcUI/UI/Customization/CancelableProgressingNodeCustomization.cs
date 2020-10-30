@@ -37,17 +37,15 @@ namespace UI.Customization
         : BaseNodeViewCustomization<T> where T : CancelableProgressingNodeModel where V : UserControl
     {
         public ProgressOnPortType ProgressOnPort { get; private set; }
-        public LogReason LogReasonOnPort { get; private set; }
 
         #region Internals
 
         private List<ProgressingPort> _taskProgressingOnPort = new List<ProgressingPort>();
         private V _control;
         
-        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
+        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort)
         {
             ProgressOnPort = progressOnPort;
-            LogReasonOnPort = actionOnPort;
         }
 
         protected abstract V CreateControl(T model, NodeView nodeView);

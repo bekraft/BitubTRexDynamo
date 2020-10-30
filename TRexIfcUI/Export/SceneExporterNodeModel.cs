@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Internal;
 using Task;
 using Store;
+using Log;
 
 namespace Export
 {
@@ -54,6 +55,8 @@ namespace Export
         {
             foreach (var ext in SceneExport.Extensions)
                 AvailableOptions.Add(ext);
+
+            LogReasonMask = LogReason.Saved;
         }
 
         #endregion
