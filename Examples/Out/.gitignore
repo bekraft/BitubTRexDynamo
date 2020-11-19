@@ -1,8 +1,9 @@
-.ifc
-.ifczip
-.ifcxml
-.scene
-.json
-.log
-.xml
-.txt
+*.ifc
+*.ifczip
+*.ifcxml
+*.scene
+*.json
+*.log
+*.xml
+*.txt
+*.xlsx
