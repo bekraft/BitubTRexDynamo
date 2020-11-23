@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="UI.FilterMatchTypeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UI"
+             xmlns:bitub_dto_concept="clr-namespace:Bitub.Dto.Concept;assembly=Bitub.Dto"
+             xmlns:mscore="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="150">
+    
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="FilterMatchTypeEnum"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitub_dto_concept:FilterMatchingType"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    
+    <Grid MinHeight="50" MinWidth="100" Margin="3,3,3,3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ComboBox x:Name="LogLevel" 
+                  Grid.Row="0" Grid.Column="0"
+                  VerticalAlignment="Center"
+                  SelectedItem="{Binding Path=MatchType}"
+                  ItemsSource="{Binding Source={StaticResource FilterMatchTypeEnum}}"/>
+
+    </Grid>
+</UserControl>

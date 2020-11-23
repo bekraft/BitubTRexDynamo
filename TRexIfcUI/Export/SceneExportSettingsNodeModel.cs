@@ -1,9 +1,6 @@
 ﻿using System;
-using System.IO;
-using System.Text;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 using Dynamo.Graph.Nodes;
 using Autodesk.DesignScript.Runtime;
@@ -12,12 +9,10 @@ using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
 
 using Internal;
-using Log;
 using Geom;
+using Data;
 
 using Bitub.Ifc.Scene;
-
-using Dynamo.Utilities;
 
 namespace Export
 {
@@ -26,7 +21,7 @@ namespace Export
     /// </summary>
     [NodeName("Scene Export Settings")]
     [NodeCategory("TRexIfc.Export")]
-    [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String) })]
+    [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String), nameof(CanonicalFilter) })]
     [OutPortTypes(new string[] { nameof(SceneExportSettings) })]
     [IsDesignScriptCompatible]
     public class SceneExportSettingsNodeModel : BaseNodeModel
@@ -51,6 +46,7 @@ namespace Export
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitsPerMeter", "Scaling units per Meter"))); // 1
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("providedContexts", "Provided representation model contexts"))); // 2
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("featureClassificationFilter", "Feature-2-classification filter"))); // 2
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene export settings")));
 
@@ -128,13 +124,14 @@ namespace Export
 
 
             var callCreateSceneExport = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, double, string[], SceneExportSettings>(SceneExportSettings.ByParameters),                
+                new Func<string, string, XYZ, float, string[], CanonicalFilter, SceneExportSettings>(SceneExportSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
                     inputs[0],
                     inputs[1],
-                    inputs[2]                    
+                    inputs[2],
+                    inputs[3]
                 });
 
             return new[]

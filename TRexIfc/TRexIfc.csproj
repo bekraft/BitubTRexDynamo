@@ -99,12 +99,9 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.20304-Beta.44035</Version>
+      <Version>1.0.20328-Alpha.34000</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
-    <PackageReference Include="DynamoVisualProgramming.DynamoServices">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.6.0.8481</Version>
     </PackageReference>
@@ -112,10 +109,7 @@
       <Version>3.8.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>2.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
-      <Version>2.1.1</Version>
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
@@ -128,7 +122,7 @@
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
   </PropertyGroup>
 
-  <!-- Post build event -->
+  <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">    
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />    
     <ItemGroup>
@@ -151,7 +145,7 @@
       <SourcePackage Include="$(DeployPath)\**\*.*" />
     </ItemGroup>    
     
-    <!-- Copy to Dynamo app folder if Beta -->
+    <!-- Copy to Dynamo app folder if Debug -->
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(SourcePackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>

@@ -69,8 +69,8 @@ namespace Geom
         {
             return new Alignment(new IfcAxisAlignment
             {
-                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, offsetA.Translate(1.0).TheXYZ),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, offsetB.Translate(1.0).TheXYZ)
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, offsetA.Translate(1.0f).TheXYZ),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, offsetB.Translate(1.0f).TheXYZ)
             });
         }
 

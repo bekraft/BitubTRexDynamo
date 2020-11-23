@@ -106,6 +106,7 @@
 
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <None Remove="UI\FilterMatchTypeControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -114,12 +115,9 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.20304-Beta.44035</Version>
+      <Version>1.0.20328-Alpha.34000</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoServices">
       <Version>2.6.0.8481</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
@@ -138,6 +136,13 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- Local deployment settings and artificact name pattern -->
   <PropertyGroup>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>    
   </PropertyGroup>
@@ -149,8 +154,8 @@
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Removing contents from $(DeployDynamoPath)\$(DeployDynamoProjectName)." />
     <RemoveDir Condition="'$(Configuration)' == 'Debug'" Directories="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
   </Target>
-  
-  <!-- Post build event-->
+
+  <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
@@ -177,7 +182,7 @@
       <DeployedPackage Include="$(DeployPath)\pkg.json" />
     </ItemGroup>    
     
-    <!-- Copy to Dynamo app folder if Beta -->
+    <!-- Copy to Dynamo app folder if Debug alpha  -->
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedPackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />

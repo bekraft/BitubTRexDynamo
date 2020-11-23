@@ -13,7 +13,7 @@ namespace Geom
 
         internal ABox TheABox { get; set; }
 
-        internal AABBRegion(double dx, double dy, double dz)
+        internal AABBRegion(float dx, float dy, float dz)
         {
             TheABox = new ABox
             {

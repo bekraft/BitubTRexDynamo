@@ -41,6 +41,20 @@ namespace Internal
         /// </summary>
         /// <typeparam name="T">The type of enum</typeparam>
         /// <param name="serializedEnum">The serialized representation</param>
+        /// <returns>The enum or a default</returns>
+        public static T TryCastEnumOrDefault<T>(object serializedEnum) where T : Enum
+        {
+            T enumMember = default(T);
+            if (!TryCastEnum(serializedEnum, out enumMember))
+                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", serializedEnum, nameof(T), enumMember);
+            return enumMember;
+        }
+
+        /// <summary>
+        /// Will try to cast a serialized enum as int or string to it's object instance representation.
+        /// </summary>
+        /// <typeparam name="T">The type of enum</typeparam>
+        /// <param name="serializedEnum">The serialized representation</param>
         /// <param name="member">The enum member, if there's a reference</param>
         /// <returns>True, if cast succeeded</returns>
         public static bool TryCastEnum<T>(object serializedEnum, out T member) where T : Enum

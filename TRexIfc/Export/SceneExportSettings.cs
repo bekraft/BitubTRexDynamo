@@ -8,6 +8,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Geom;
 using Log;
+using Data;
 
 namespace Export
 {
@@ -43,13 +44,15 @@ namespace Export
         /// <param name="offset">The offset coordinates</param>
         /// <param name="unitPerMeter">The units per meter</param>
         /// <param name="sceneContexts">The scene context(s) to be exported</param>
+        /// <param name="featureClassificationFilter">A feature filter passing feature to be classifications</param>
         /// <returns>New scene export settings</returns>
         [IsVisibleInDynamoLibrary(false)]
         public static SceneExportSettings ByParameters(string transformationStrategy,
             string positioningStrategy,
             XYZ offset,
-            double unitPerMeter,
-            string[] sceneContexts)
+            float unitPerMeter,
+            string[] sceneContexts,
+            CanonicalFilter featureClassificationFilter)
         {
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
@@ -60,7 +63,8 @@ namespace Export
                 Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
                 UserModelCenter = offset.TheXYZ,
                 UnitsPerMeter = unitPerMeter,
-                UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] { }
+                UserRepresentationContext = sceneContexts?.Select(c => new SceneContext { Name = c }).ToArray() ?? new SceneContext[] { },
+                FeatureToClassifierFilter = featureClassificationFilter?.filter
             });
 
             return settings;

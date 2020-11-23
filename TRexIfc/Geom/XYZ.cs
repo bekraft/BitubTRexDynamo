@@ -30,7 +30,7 @@ namespace Geom
             TheXYZ = xyz;
         }
 
-        internal XYZ(double x, double y, double z)
+        internal XYZ(float x, float y, float z)
         {
             TheXYZ = new Bitub.Dto.Spatial.XYZ { X = x, Y = y, Z = z };
         }
@@ -64,7 +64,7 @@ namespace Geom
         /// <param name="y">Y</param>
         /// <param name="z">Z</param>
         /// <returns>A 3D point</returns>
-        public static XYZ ByCoordinates(double x, double y, double z)
+        public static XYZ ByCoordinates(float x, float y, float z)
         {
             return new XYZ(x, y, z);
         }
@@ -74,7 +74,7 @@ namespace Geom
         /// </summary>
         /// <param name="xyz">The coordinate list</param>
         /// <returns>The XYZ list</returns>
-        public static XYZ[] ByList(double[] xyz)
+        public static XYZ[] ByList(float[] xyz)
         {
             if (0 != xyz.Length % 3)
                 throw new ArgumentException($"Expecting a double list of a length module 3");
@@ -114,7 +114,7 @@ namespace Geom
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <returns></returns>
-        public XYZ Translate(double x, double y = 0, double z = 0)
+        public XYZ Translate(float x, float y = 0, float z = 0)
         {
             return new XYZ(TheXYZ.X + x, TheXYZ.Y + y, TheXYZ.Z + z);
         }
@@ -136,7 +136,7 @@ namespace Geom
         /// <returns>A new mean point</returns>
         public static XYZ Mean(XYZ[] points)
         {
-            double x = 0, y = 0, z = 0;
+            float x = 0, y = 0, z = 0;
             foreach (var xyz in points)
             {
                 x += xyz.TheXYZ.X;

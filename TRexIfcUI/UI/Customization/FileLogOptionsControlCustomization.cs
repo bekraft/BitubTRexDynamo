@@ -8,16 +8,18 @@ namespace UI.Customization
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class FileLogOptionsControlCustomization : INodeViewCustomization<FileLog>
-    {
-        public void CustomizeView(FileLog model, NodeView nodeView)
+    public class FileLogOptionsControlCustomization : BaseNodeViewCustomization<FileLog>
+    {       
+        public override void CustomizeView(FileLog model, NodeView nodeView)
         {
+            base.CustomizeView(model, nodeView);
+
             var logOptionsControl = new LogOptionsControl();
             nodeView.inputGrid.Children.Add(logOptionsControl);
             logOptionsControl.DataContext = model;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {            
         }
     }
