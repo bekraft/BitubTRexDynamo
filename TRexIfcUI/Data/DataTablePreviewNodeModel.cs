@@ -9,7 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 
 using Internal;
 
-namespace Task
+namespace Data
 {
     /// <summary>
     /// Interactive data grid visualising incoming data.
@@ -18,7 +18,7 @@ namespace Task
     [NodeDescription("Interactive table grid displaying incoming data with a given count threshold.")]
     [InPortTypes(typeof(List<object>))]
     [OutPortTypes(typeof(object[][]))]
-    [NodeCategory("TRexIfc.Utils")]
+    [NodeCategory("TRexIfc.Data")]
     [IsDesignScriptCompatible]
     public class DataTablePreviewNodeModel : BaseNodeModel
     {

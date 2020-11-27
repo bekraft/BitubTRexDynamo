@@ -56,7 +56,7 @@ namespace Export
         public static SceneExport BySettingsAndModel(SceneExportSettings settings, IfcModel ifcModel)
         {
             if (null == settings)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             var sceneExport = new SceneExport(ifcModel, ifcModel.Store.Logger?.LoggerFactory);
             sceneExport.Exporter.Settings = settings.Settings;
@@ -155,6 +155,8 @@ namespace Export
         /// <returns>The scene export</returns>
         public static SceneExport ExportAs(SceneExport sceneExport, string extension)
         {
+            if (null == sceneExport)
+                throw new ArgumentException(nameof(sceneExport));
             if (!Extensions.Contains(extension.ToLower()))
                 throw new ArgumentException($"Expecting one of: {string.Join(", ", Extensions)}");
             sceneExport.Extension = extension.ToLower();

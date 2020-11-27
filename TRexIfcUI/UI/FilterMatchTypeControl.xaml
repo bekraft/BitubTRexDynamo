@@ -19,7 +19,7 @@
         </ObjectDataProvider>
     </UserControl.Resources>
     
-    <Grid MinHeight="50" MinWidth="100" Margin="3,3,3,3">
+    <Grid Margin="3,3,3,3">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -28,7 +28,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <ComboBox x:Name="LogLevel" 
+        <ComboBox x:Name="FilterMatchEnum" 
                   Grid.Row="0" Grid.Column="0"
                   VerticalAlignment="Center"
                   SelectedItem="{Binding Path=MatchType}"

@@ -37,7 +37,8 @@ namespace Data
             var matchingType = GlobalArgumentService.TryCastEnumOrDefault<Bitub.Dto.Concept.FilterMatchingType>(matchingTypeEnum);
 
             var filter = new Bitub.Dto.Concept.CanonicalFilter(matchingType, StringComparison.OrdinalIgnoreCase);
-            filter.Filter.AddRange(canonicals.Select(c => c.qualifier.ToClassifier()));
+            if (null != canonicals)
+                filter.Filter.AddRange(canonicals.Select(c => c.qualifier.ToClassifier()));
             return new CanonicalFilter(filter); 
         }
 
@@ -46,7 +47,7 @@ namespace Data
         /// </summary>
         /// <param name="canonicals">The filtering canonical (super or equivalent)</param>
         /// <returns>A new filter</returns>
-        public static CanonicalFilter ByCanonicals(params Canonical[] canonicals)
+        public static CanonicalFilter ByExisting(params Canonical[] canonicals)
         {
             var filter = new Bitub.Dto.Concept.CanonicalFilter(Bitub.Dto.Concept.FilterMatchingType.SubOrEquiv, StringComparison.OrdinalIgnoreCase);
             filter.Filter.AddRange(canonicals.Select(c => c.qualifier.ToClassifier()));

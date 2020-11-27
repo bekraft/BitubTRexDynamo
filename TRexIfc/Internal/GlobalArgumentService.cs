@@ -93,8 +93,8 @@ namespace Internal
         // Single decomposition
         private static object[] DecomposeObject(object data)
         {
-            var props = data.GetType().GetProperties();
-            if (props.Length > 0)
+            var props = data?.GetType().GetProperties();
+            if (props?.Length > 0)
                 return props
                     .Where(p => p.CanRead)
                     .Select(p =>
@@ -107,7 +107,7 @@ namespace Internal
                     })
                     .ToArray();
             else
-                return new object[] { data.ToString() };
+                return new object[] { data?.ToString() };
         }
 
         // Flatten nested data
