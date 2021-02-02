@@ -12,7 +12,7 @@ using Internal;
 using Geom;
 using Data;
 
-using Bitub.Ifc.Scene;
+using Bitub.Ifc.Export;
 
 namespace Export
 {
@@ -99,9 +99,13 @@ namespace Export
                 {
                     switch (port.Index)
                     {
+                        case 0:
+                            break;
                         case 1:
                             // Default units per meter = 1.0
                             inputs[1] = AstFactory.BuildDoubleNode(1.0);
+                            break;
+                        case 3:
                             break;
                         default:
                             WarnForMissingInputs();

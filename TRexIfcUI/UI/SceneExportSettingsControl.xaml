@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:UI"
-             xmlns:bitubifcscene="clr-namespace:Bitub.Ifc.Scene;assembly=Bitub.Ifc"
+             xmlns:bitubifcexport="clr-namespace:Bitub.Ifc.Export;assembly=Bitub.Ifc"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -14,14 +14,14 @@
                             MethodName="GetValues"
                             ObjectType="{x:Type mscore:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="bitubifcscene:ScenePositioningStrategy"/>
+                <x:Type TypeName="bitubifcexport:ScenePositioningStrategy"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <ObjectDataProvider x:Key="SceneTransformationStrategy"
                             MethodName="GetValues"
                             ObjectType="{x:Type mscore:Enum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="bitubifcscene:SceneTransformationStrategy"/>
+                <x:Type TypeName="bitubifcexport:SceneTransformationStrategy"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

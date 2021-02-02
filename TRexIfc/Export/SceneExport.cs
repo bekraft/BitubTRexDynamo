@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-using Bitub.Ifc.Scene;
+using Bitub.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
 using Google.Protobuf;
@@ -96,7 +96,7 @@ namespace Export
                     if (null == internalModel)
                         throw new ArgumentNullException(nameof(IfcModel));
 
-                    using (var sceneTask = sceneExport.Exporter.Run(internalModel, monitor))
+                    using (var sceneTask = sceneExport.Exporter.RunExport(internalModel, monitor))
                     {
                         sceneTask.Wait();
                         if (!monitor.State.IsCanceled && !monitor.State.IsBroken)
@@ -106,14 +106,14 @@ namespace Export
                                 case "scene":
                                     using (var binStream = File.Create(sceneFileName))
                                     {
-                                        var binScene = sceneTask.Result.Scene.ToByteArray();
+                                        var binScene = sceneTask.Result.ExportedModel.ToByteArray();
                                         binStream.Write(binScene, 0, binScene.Length);
                                     }
                                     break;
                                 case "json":
                                     using (var textStream = File.CreateText(sceneFileName))
                                     {
-                                        var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(sceneTask.Result.Scene);
+                                        var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(sceneTask.Result.ExportedModel);
                                         textStream.Write(json);
                                     }
                                     break;

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Windows;
+using System.Runtime.CompilerServices;
+
 using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
@@ -8,11 +12,8 @@ using Newtonsoft.Json;
 using Bitub.Dto;
 
 using Internal;
-
-using System.Runtime.CompilerServices;
-using System.Linq;
-using System.Collections.ObjectModel;
 using UI;
+using UI.Model;
 using Log;
 
 // Disable comment warning

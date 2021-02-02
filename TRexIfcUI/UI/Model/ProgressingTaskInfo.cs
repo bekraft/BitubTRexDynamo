@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Runtime;
 using Bitub.Dto;
 using Internal;
 
-namespace UI
+namespace UI.Model
 {
     /// <summary>
     /// Simple information element for visual representation

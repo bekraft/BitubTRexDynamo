@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using Bitub.Ifc.Scene;
+using Bitub.Ifc.Export;
 using Bitub.Dto.Scene;
 
 using Autodesk.DesignScript.Runtime;
@@ -21,16 +21,16 @@ namespace Export
 
         #region Internals
 
-        internal SceneExportSettings() : this(new IfcSceneExportSettings())
+        internal SceneExportSettings() : this(new IfcExportSettings())
         { }
 
-        internal SceneExportSettings(IfcSceneExportSettings settings)
+        internal SceneExportSettings(IfcExportSettings settings)
         {
             Settings = settings;
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public readonly IfcSceneExportSettings Settings;
+        public readonly IfcExportSettings Settings;
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace Export
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
 
-            var settings = new SceneExportSettings(new IfcSceneExportSettings
+            var settings = new SceneExportSettings(new IfcExportSettings
             {
                 Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
                 Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
