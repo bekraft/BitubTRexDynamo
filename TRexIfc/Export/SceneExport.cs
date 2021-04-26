@@ -26,13 +26,13 @@ namespace Export
 
         #region Internals
 
-        internal readonly IfcSceneExporter Exporter;
+        internal readonly SceneExporter Exporter;
         internal readonly IfcModel IfcModel;
         internal string Extension { get; set; }
 
         internal SceneExport(IfcModel ifcModel, ILoggerFactory loggerFactory)
         {
-            Exporter = new IfcSceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
+            Exporter = new SceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
             IfcModel = ifcModel;
         }
 
@@ -59,7 +59,7 @@ namespace Export
                 throw new ArgumentNullException(nameof(settings));
 
             var sceneExport = new SceneExport(ifcModel, ifcModel.Store.Logger?.LoggerFactory);
-            sceneExport.Exporter.Settings = settings.Settings;
+            sceneExport.Exporter.Preferences = settings.Preferences;
             return sceneExport;
         }
 
@@ -106,14 +106,14 @@ namespace Export
                                 case "scene":
                                     using (var binStream = File.Create(sceneFileName))
                                     {
-                                        var binScene = sceneTask.Result.ExportedModel.ToByteArray();
+                                        var binScene = sceneTask.Result.ToByteArray();
                                         binStream.Write(binScene, 0, binScene.Length);
                                     }
                                     break;
                                 case "json":
                                     using (var textStream = File.CreateText(sceneFileName))
                                     {
-                                        var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(sceneTask.Result.ExportedModel);
+                                        var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(sceneTask.Result);
                                         textStream.Write(json);
                                     }
                                     break;

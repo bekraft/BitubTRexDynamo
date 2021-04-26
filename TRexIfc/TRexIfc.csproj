@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
 
     <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>    
-    <DeployDynamoVersion>2.6</DeployDynamoVersion>
+    <DeployDynamoVersion>2.10</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     
     <Authors>Bernold Kraft</Authors>
@@ -35,7 +35,7 @@
   
   <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
-    <TargetFrameworks>net47</TargetFrameworks>      
+    <TargetFrameworks>net48</TargetFrameworks>      
     <Title>TRexIfc</Title>
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>    
   
@@ -99,14 +99,11 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21025-Alpha.37032</Version>
+      <Version>1.0.21116-Alpha.38039</Version>
     </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.10.1.3976" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Protobuf.Tools">
-      <Version>3.8.0</Version>
+      <Version>2.10.1.3976</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>5.0.0</Version>

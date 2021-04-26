@@ -7,7 +7,7 @@
     <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
 
     <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.6</DeployDynamoVersion>
+    <DeployDynamoVersion>2.10</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
 
     <Authors>Bernold Kraft</Authors>
@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <PropertyGroup>    
-    <TargetFrameworks>net47</TargetFrameworks>
+    <TargetFrameworks>net48</TargetFrameworks>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
 
     <Title>TRexIfc UI</Title>
@@ -115,16 +115,16 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21025-Alpha.37032</Version>
+      <Version>1.0.21116-Alpha.38039</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.6.0.8481</Version>
+      <Version>2.10.1.3976</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
-      <Version>2.6.0.8481</Version>
+      <Version>2.10.1.3976</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.6.0.8481</Version>
+      <Version>2.10.1.3976</Version>
     </PackageReference>
     <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20213.31545" />
   </ItemGroup>
