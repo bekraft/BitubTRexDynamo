@@ -8,7 +8,7 @@
   "keywords": [ "bitub", "ifc", "import", "export", "xbim", "transform" ],
   "dependencies": [],
   "contents": "IFC Xbim wrapper, IFC transformation pipelines, IFC export pipelines",
-  "engine_version": "2.6.0.8481",
+  "engine_version": "2.10",
   "engine": "dynamo",
   "engine_metadata": "",
   "site_url": "https://www.github.com/bekraft/BitubTRexDynamo",

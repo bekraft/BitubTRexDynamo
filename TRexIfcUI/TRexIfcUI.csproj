@@ -115,7 +115,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21116-Alpha.38039</Version>
+      <Version>1.0.21125-Alpha.8524</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.10.1.3976</Version>
@@ -130,6 +130,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TRexAssimp\TRexAssimp.vcxproj" />
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj">
       <Project>{2bc161c5-e9f1-4b41-ba92-6dc3d502b00c}</Project>
       <Name>TRexIfc</Name>
@@ -159,10 +160,11 @@
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
-      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
+      <SourceDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll;$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
       <SourceXmls Include="$(TargetDir)*.xml" />
-      <SourcePkg Include="pkg.json" />      
+      <SourcePkg Include="pkg.json" />
+      <SourceDocs Include="$(SolutionDir)Documentations\*.md"/>
     </ItemGroup>
 
     <Message Importance="High" Text="Will copy @(SourceDlls)´..." />
@@ -172,6 +174,7 @@
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourceDocs)" DestinationFolder="$(DeployPath)\bin\" />
 
     <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg)&quot;" />
     

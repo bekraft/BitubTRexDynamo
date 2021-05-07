@@ -26,13 +26,13 @@ namespace Export
 
         #region Internals
 
-        internal readonly SceneExporter Exporter;
+        internal readonly ComponentModelExporter Exporter;
         internal readonly IfcModel IfcModel;
         internal string Extension { get; set; }
 
         internal SceneExport(IfcModel ifcModel, ILoggerFactory loggerFactory)
         {
-            Exporter = new SceneExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
+            Exporter = new ComponentModelExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
             IfcModel = ifcModel;
         }
 
