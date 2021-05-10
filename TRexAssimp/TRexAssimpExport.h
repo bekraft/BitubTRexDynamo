@@ -9,6 +9,8 @@ using namespace Bitub::Dto::Scene;
 #include <assimp/scene.h>
 #include <assimp/Exporter.hpp>
 
+typedef unsigned int uint;
+
 namespace TRexAssimp
 {
 	public ref class TRexAssimpExport
@@ -19,25 +21,31 @@ namespace TRexAssimp
 		virtual ~TRexAssimpExport();
 
 		property array<String^>^ Extensions { array<String^>^ get(); }
-		bool ExportTo(String^ filePathName, ComponentScene^ componentScene);
+		bool ExportTo(String^ filePathName, String^ ext, ComponentScene^ componentScene);
 
 	private:
-		const int GetOrCreateNodeAndParent(Component^ c, 
+		const uint GetOrCreateNodeAndParent(Component^ c, 
 			std::vector<aiNode*>& nodes, 
-			std::map<int, std::vector<int>>& children, 
-			Dictionary<GlobalUniqueId^, unsigned int>^ nodeMap);
+			std::map<int, std::vector<uint>>& children, 
+			Dictionary<GlobalUniqueId^, uint>^ nodeMap);
 
-		const int GetOrCreateNode(GlobalUniqueId^ id,
+		const uint GetOrCreateNode(GlobalUniqueId^ id,
 			std::vector<aiNode*>& nodes,
-			Dictionary<GlobalUniqueId^, unsigned int>^ nodeMap);
+			Dictionary<GlobalUniqueId^, uint>^ nodeMap);
 
-		const int CreateMesh(ShapeBody^ body, 
+		const uint CreateMesh(ShapeBody^ body, 
 			std::vector<aiMesh*>& meshes);
 
-		Dictionary<RefId^, unsigned int>^ CreateShapes(ComponentScene^ componentScene, 
+		const uint CreateMaterialMesh(std::vector<aiMesh*>& rawMeshes,
+			std::map<uint, std::map<uint, uint>>& meshByMaterialIndex,
+			std::vector<aiMesh*>& materialMeshes,
+			uint rawMeshIndex,
+			uint materialIndex);
+
+		Dictionary<RefId^, uint>^ CreateShapes(ComponentScene^ componentScene, 
 			std::vector<aiMesh*>& meshes);
 
-		Dictionary<RefId^, unsigned int>^ CreateMaterials(ComponentScene^ componentScene,
+		Dictionary<RefId^, uint>^ CreateMaterials(ComponentScene^ componentScene,
 			aiScene& scene);
 
 		aiMaterial* CreateMaterial(Material^ material);
@@ -47,11 +55,12 @@ namespace TRexAssimp
 			aiColor3D& color, 
 			float alpha);
 
-		aiColor3D CreateColor3D(Color^ color, 
-			float % alpha);
-
-		aiMatrix4x4 CreateMat4x4(Transform^ t);
-		aiVector3D CreateVec3D(XYZ^ xyz);
-		aiQuaternion CreateQuat(Quaternion^ q);
+		// Simple entity converters
+		aiColor3D _aiColor3D(Color^ color, float% alpha);
+		aiMatrix3x3 _aiMatrix3(Rotation^ r);
+		aiMatrix4x4 _aiMatrix4(const aiMatrix3x3& r, const aiVector3D& o);
+		aiMatrix4x4 _aiMatrix4(Transform^ t);
+		aiVector3D _aiVector3D(XYZ^ xyz);
+		aiQuaternion _aiQuaternion(Quaternion^ q);
 	};
 }
