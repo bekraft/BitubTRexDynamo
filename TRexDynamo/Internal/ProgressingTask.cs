@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using Autodesk.DesignScript.Runtime;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+
 using Bitub.Dto;
 using Log;
 
-using System.Runtime.CompilerServices;
-using System.Collections.Concurrent;
-using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Runtime;
+
 using Microsoft.Extensions.Logging;
 
-[assembly: InternalsVisibleTo("TRexIfcUI")]
 
 namespace Internal
 {
     /// <summary>
     /// A progressing task which emits changes, progress end events and logging data.
     /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public abstract class ProgressingTask : IDisposable
+    public abstract class ProgressingTask
     {
         #region Internals
         private readonly object _mutex = new object();
@@ -31,20 +27,10 @@ namespace Internal
         
         private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
 
-        private readonly static ILogger<ProgressingTask> Log = GlobalLogging.LoggingFactory.CreateLogger<ProgressingTask>();
+        private readonly static ILogger<ProgressingTask> Log = GlobalLogging.loggingFactory.CreateLogger<ProgressingTask>();
 
-        #endregion
-
-        /// <summary>
-        /// Logging messages.
-        /// </summary>
         internal ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
-        /// <summary>
-        /// Retrieves the current log state as an array.
-        /// </summary>
-        /// <param name="nodeProgressing">The logging source</param>
-        /// <returns>The current log</returns>
         internal static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
 
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
@@ -85,10 +71,6 @@ namespace Internal
             }
         }
 
-        /// <summary>
-        /// Emitting progress changes.
-        /// </summary>
-        /// <param name="args">The args</param>
         internal void OnProgressChanged(NodeProgressEventArgs args)
         {
             EventHandler<NodeProgressEventArgs> eventHandler;
@@ -101,10 +83,6 @@ namespace Internal
             eventHandler?.Invoke(this, args);
         }
 
-        /// <summary>
-        /// Emitting progress end.
-        /// </summary>
-        /// <param name="args">The args</param>
         internal void OnProgressEnded(NodeProgressEndEventArgs args)
         {
             EventHandler<NodeProgressEndEventArgs> eventHandler;
@@ -208,21 +186,7 @@ namespace Internal
         /// </summary>
         protected virtual LogReason DefaultReason { get => LogReason.Changed; }
 
-        /// <summary>
-        /// Detaches all event handlers and clears current progress information.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public virtual void Dispose()
-        {
-            ActionLog.Clear();
-            
-            lock (_mutex)
-            {
-                __eventArgs = null;
-                __onProgressChangeEvent = null;
-                __onProgressEndEvent = null;
-            }
-        }
+        #endregion
 
 #pragma warning disable CS1591
 

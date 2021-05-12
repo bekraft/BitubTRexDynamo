@@ -29,7 +29,7 @@ namespace Task
 
         #region Internals
 
-        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
+        private readonly static ILogger Log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
 
         private readonly IIfcTransformRequest Request;
 

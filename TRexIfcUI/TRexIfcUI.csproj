@@ -3,40 +3,6 @@
 
   <!-- <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" /> -->
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">Any CPU</Platform>
-
-    <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.10</DeployDynamoVersion>
-    <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
-
-    <Authors>Bernold Kraft</Authors>
-    <Company>Bitub</Company>
-    <Copyright>Bernold Kraft</Copyright>
-    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <PackageProjectUrl>https://www.github.com/bekraft/BitubTRexDynamo</PackageProjectUrl>
-
-    <BuildMajor>1</BuildMajor>
-    <BuildMinor>0</BuildMinor>
-    <BuildRelease>0</BuildRelease>
-    <BuildQualifier></BuildQualifier>
-    <Build>0</Build>
-
-    <Configurations>Debug;Release;Beta</Configurations>
-    <LangVersion>8.0</LangVersion>
-    <Platforms>AnyCPU;x64</Platforms>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <BuildRelease>$([System.DateTime]::Now.ToString("yy"))$([System.String]::Format("{0:000}",$([System.DateTime]::Now.DayOfYear)))</BuildRelease>
-    <DayOfMonth>$([MSBuild]::Multiply($([MSBuild]::Multiply($([System.DateTime]::Now.Day), 24)), 60))</DayOfMonth>
-    <HourOfDay>$([MSBuild]::Multiply($([System.DateTime]::Now.Hour), 60))</HourOfDay>
-    <Build>$([MSBuild]::Add($([MSBuild]::Add($([System.DateTime]::Now.Minute),$(HourOfDay))), $(DayOfMonth)))</Build>
-    <BuildQualifier>-Alpha</BuildQualifier>
-  </PropertyGroup>
-
-  <PropertyGroup>    
-    <TargetFrameworks>net48</TargetFrameworks>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
 
     <Title>TRexIfc UI</Title>
@@ -45,10 +11,9 @@
 
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyVersionAttribute("$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)")];</AssemblyFileVersionAttribute>
-    <AssemblyVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</AssemblyVersion>
-    <FileVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</FileVersion>
-    <Version>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</Version>    
+    <Configurations>Debug;Release;Beta</Configurations>
+    <LangVersion>8.0</LangVersion>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -164,7 +129,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TRexAssimp\TRexAssimp.vcxproj" />
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj">
       <Project>{2bc161c5-e9f1-4b41-ba92-6dc3d502b00c}</Project>
       <Name>TRexIfc</Name>

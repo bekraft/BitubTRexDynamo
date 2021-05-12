@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 
 using Autodesk.DesignScript.Runtime;
+
+[assembly: InternalsVisibleTo("TRexIfcUI"), InternalsVisibleTo("TRexIfc"), InternalsVisibleTo("TRexAssimp")]
 
 namespace Config
 {

@@ -60,7 +60,7 @@ List<Component^>^ TRexAssimp::TRexAssimpImport::CreateComponents(const aiScene* 
     {
         const aiNode* node = nodeStack.top();
         nodeStack.pop();
-        for (int i = 0; i < node->mNumChildren; i++)
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
             nodeStack.push(node->mChildren[i]);
         }

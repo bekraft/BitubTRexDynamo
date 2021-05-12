@@ -90,7 +90,7 @@ namespace Internal
 
         #region Internals
 
-        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<DynamicDelegation>();
+        private readonly static ILogger Log = GlobalLogging.loggingFactory.CreateLogger<DynamicDelegation>();
 
         private readonly static ConcurrentDictionary<Qualifier, object> FunctionCache = new ConcurrentDictionary<Qualifier, object>();
 

@@ -14,7 +14,7 @@ namespace Validation
     {
         #region Internals
 
-        internal static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcValidationResult>();
+        internal static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<IfcValidationResult>();
 
         /// <summary>
         /// Validation messages as enumerable.

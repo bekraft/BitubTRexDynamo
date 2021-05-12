@@ -19,6 +19,7 @@ namespace TRexAssimp
 	public:
 		TRexAssimpExport();
 		virtual ~TRexAssimpExport();
+		!TRexAssimpExport();
 
 		property array<String^>^ Extensions { array<String^>^ get(); }
 		bool ExportTo(String^ filePathName, String^ ext, ComponentScene^ componentScene);

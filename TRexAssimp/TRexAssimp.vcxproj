@@ -12,10 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bitub.Dto">
-      <HintPath>..\TRexIfc\bin\$(Configuration)\net48\Bitub.Dto.dll</HintPath>
+      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\Bitub.Dto.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\TRexIfc\bin\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
+      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -176,7 +176,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>$(ProjectDir)x64\assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>

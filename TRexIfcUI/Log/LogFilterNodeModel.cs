@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
 using Internal;
+
 using Dynamo.Utilities;
 
 namespace Log
@@ -121,9 +122,8 @@ namespace Log
             ClearErrorsAndWarnings();
             ClearOnActionLogChanged(_timeStamp);
             _timeStamp = DateTime.Now.ToBinary();
-            
             var callFilter = AstFactory.BuildFunctionCall(
-                new Func<LogSeverity, object, ProgressingTask, int, LogMessage[]>(LogMessage.FilterBySeverity),
+                new Func<LogSeverity, object, ProgressingTask, int, LogMessage[]>(global::Log.Log.FilterBySeverity),
                 new List<AssociativeNode>()
                 {
                     MapEnum(LogMinSeverity),

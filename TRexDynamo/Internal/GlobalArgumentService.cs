@@ -1,21 +1,17 @@
-﻿using Autodesk.DesignScript.Runtime;
-using Microsoft.Extensions.Logging;
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
+using Microsoft.Extensions.Logging;
+
 namespace Internal
 {
-#pragma warning disable CS1591
-
-    [IsVisibleInDynamoLibrary(false)]
     public class GlobalArgumentService
     {
         #region Internals
 
-        private static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<GlobalArgumentService>();
+        private static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<GlobalArgumentService>();
 
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 
@@ -35,6 +31,7 @@ namespace Internal
         }
 
         #endregion
+
 
         /// <summary>
         /// Will try to cast a serialized enum as int or string to it's object instance representation.
@@ -185,6 +182,8 @@ namespace Internal
             var comparer = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             return values.Where(v => -1 < Array.FindIndex(selected, s => String.Equals(v?.ToString(), s, comparer))).ToArray();
         }
+
+#pragma warning disable CS1591
 
         public static string PutArguments()
         {

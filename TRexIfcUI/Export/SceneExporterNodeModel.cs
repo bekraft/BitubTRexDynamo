@@ -17,7 +17,7 @@ namespace Export
     /// <summary>
     /// Scene exporter node model.
     /// </summary>
-    [NodeName("Scene Export")]
+    [NodeName("Build scene")]
     [NodeCategory("TRexIfc.Export")]
     [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel), nameof(String), nameof(String)})]
     [OutPortTypes(typeof(IfcModel))]

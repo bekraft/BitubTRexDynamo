@@ -14,7 +14,14 @@ TRexAssimp::TRexAssimpExport::TRexAssimpExport()
 
 TRexAssimp::TRexAssimpExport::~TRexAssimpExport()
 {
-    delete exporter;
+    if (exporter) delete exporter;
+}
+
+TRexAssimp::TRexAssimpExport::!TRexAssimpExport()
+{
+    if (exporter)
+        delete exporter;
+    exporter = nullptr;
 }
 
 // Gets all available extensions
@@ -273,7 +280,7 @@ const uint TRexAssimp::TRexAssimpExport::CreateMaterialMesh(std::vector<aiMesh*>
     auto it_material_map = it_mesh_map->second.find(idxMaterial);
     if (it_material_map == it_mesh_map->second.end())
     {   // create new material mesh using next index in buffer
-        auto it_inserted = it_mesh_map->second.insert(std::pair<uint, uint>(idxMaterial, vMaterialMeshes.size()));
+        auto it_inserted = it_mesh_map->second.insert(std::pair<uint, uint>(idxMaterial, (uint)vMaterialMeshes.size()));
         it_material_map = it_inserted.first;
         aiMesh* materialMesh = new aiMesh(*vRawMeshes[idxRawMesh]);
         materialMesh->mMaterialIndex = idxMaterial;
