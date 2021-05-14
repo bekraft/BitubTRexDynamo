@@ -16,15 +16,19 @@ namespace TRexAssimp
 	public ref class TRexAssimpExport
 	{
 		Assimp::Exporter* exporter;
+		String^ statusMessage;
 	public:
 		TRexAssimpExport();
 		virtual ~TRexAssimpExport();
 		!TRexAssimpExport();
 
 		property array<String^>^ Extensions { array<String^>^ get(); }
-		bool ExportTo(String^ filePathName, String^ ext, ComponentScene^ componentScene);
+		property String^ StatusMessage { String^ get() { return statusMessage; } }
+		bool ExportTo(ComponentScene^ componentScene, String^ filePathName, String^ ext);
 
 	private:
+		array<String^>^ GetAvailableExtensions(Assimp::Exporter* exporter);
+
 		const uint GetOrCreateNodeAndParent(Component^ c, 
 			std::vector<aiNode*>& nodes, 
 			std::map<int, std::vector<uint>>& children, 

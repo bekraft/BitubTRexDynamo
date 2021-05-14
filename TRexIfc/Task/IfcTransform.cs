@@ -93,7 +93,7 @@ namespace Task
                 canonicalFrag = transform.Mark;
 
             LogReason filterMask;
-            if (!GlobalArgumentService.TryCastEnum(objFilterMask, out filterMask))
+            if (!DynamicArgumentDelegation.TryCastEnum(objFilterMask, out filterMask))
                 Log.LogInformation("Unable to cast '{0}' of type {1}. Using '{2}'.", objFilterMask, nameof(LogReason), filterMask);
 
             if (null == transform.CancellationSource)
@@ -181,7 +181,7 @@ namespace Task
         public static IfcTransform NewTransformPlacementRequest(Logger logInstance, IfcAuthorMetadata newMetadata, Alignment alignment, object placementStrategy)
         {
             IfcPlacementStrategy strategy = default(IfcPlacementStrategy);
-            if (!GlobalArgumentService.TryCastEnum(placementStrategy, out strategy))
+            if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out strategy))
                 Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(IfcPlacementStrategy), strategy);
 
             return new IfcTransform(new IfcPlacementTransformRequest(logInstance.LoggerFactory)

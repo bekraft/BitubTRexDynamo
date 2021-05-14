@@ -19,8 +19,6 @@ using Log;
 // Disable comment warning
 #pragma warning disable CS1591
 
-[assembly: InternalsVisibleTo("TRexIfc")]
-
 namespace Task
 {
     public abstract class CancelableProgressingNodeModel : BaseNodeModel, ICancelableTaskNode
@@ -161,6 +159,7 @@ namespace Task
         {
             ClearErrorsAndWarnings();
             ClearActiveTaskList();
+            ResetState();
         }
 
         [JsonIgnore]
@@ -249,7 +248,6 @@ namespace Task
 
         public void ResetState()
         {
-            ClearErrorsAndWarnings();
             lock (_mutex)
             {
                 ProgressPercentage = 0;

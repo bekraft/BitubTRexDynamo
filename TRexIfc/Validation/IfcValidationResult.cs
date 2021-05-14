@@ -38,7 +38,7 @@ namespace Validation
         public IfcValidationMessage[] Messages(object reportFilter)
         {
             IfcReportDomain domainFilter;
-            if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
                 Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;
@@ -56,7 +56,7 @@ namespace Validation
         public static IfcValidationMessage[] Messages(IfcValidationTask validationTask, object reportFilter)
         {
             IfcReportDomain domainFilter;
-            if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
                 Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;

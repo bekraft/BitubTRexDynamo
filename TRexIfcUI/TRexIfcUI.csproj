@@ -106,6 +106,7 @@
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <None Remove="UI\FilterMatchTypeControl.xaml" />
+    <None Remove="UI\SelectableOptionControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -137,6 +138,9 @@
 
   <ItemGroup>
     <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="UI\SelectableOptionControl.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>

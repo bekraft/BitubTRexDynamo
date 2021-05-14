@@ -15,23 +15,22 @@ using Log;
 namespace Export
 {
     /// <summary>
-    /// Saves the component scene to the requested format extension. Currently supports JSON and binary
-    /// formats of protobuf specification.
+    /// Exports the scene to an 3rd party custom format indicated by extension.
     /// </summary>
     [NodeName("Save scene")]
     [NodeCategory("TRexIfc.Export")]
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
-    public class SceneSaveNodeModel : CancelableProgressingOptionNodeModel
+    public class SceneExportNodeModel : CancelableProgressingOptionNodeModel
     {
         /// <summary>
-        /// New scene save model.
+        /// New scene export node model.
         /// </summary>
-        public SceneSaveNodeModel()
+        public SceneExportNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("scene", "Component scene model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator", AstFactory.BuildStringNode(""))));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene model")));
 
@@ -40,7 +39,7 @@ namespace Export
 
             IsCancelable = false;
 
-            SelectedOption = ComponentScene.saveAsExtensions[0];
+            SelectedOption = ComponentScene.exportAsExtensions[0];
         }
 
 #pragma warning disable CS1591
@@ -48,14 +47,14 @@ namespace Export
         #region Internals
 
         [JsonConstructor]
-        SceneSaveNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        SceneExportNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             InitOptions();
         }
 
         private void InitOptions()
         {
-            foreach (var ext in ComponentScene.saveAsExtensions)
+            foreach (var ext in ComponentScene.exportAsExtensions)
                 AvailableOptions.Add(ext);
 
             LogReasonMask = LogReason.Saved;
@@ -90,9 +89,9 @@ namespace Export
                 }
             }
 
-            // Create functional AST to save the given scene to file
-            var astRunSaveScene = AstFactory.BuildFunctionCall(
-                new Func<ComponentScene, string, string, ComponentScene>(ComponentScene.Save),
+            // Create functional AST to export the given scene to file
+            var astRunExportScene = AstFactory.BuildFunctionCall(
+                new Func<ComponentScene, string, string, ComponentScene>(ComponentScene.Export),
                 new List<AssociativeNode>()
                 {
                     inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
@@ -102,7 +101,7 @@ namespace Export
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), astRunSaveScene)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), astRunExportScene)
             };
         }
 

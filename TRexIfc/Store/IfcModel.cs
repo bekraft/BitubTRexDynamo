@@ -105,11 +105,12 @@ namespace Store
             }
         }
 
-        internal static void CacheClear()
+        [IsVisibleInDynamoLibrary(false)]
+        public static void CacheClear()
         {
             lock (typeof(IfcModel))
                 cache.Clear();
-
+            
             GlobalLogging.log.Information("Cleared IFC model qualifier cache.");
         }
 

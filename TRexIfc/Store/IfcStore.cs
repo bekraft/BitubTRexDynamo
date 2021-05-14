@@ -55,11 +55,6 @@ namespace Store
             Logger = logger;
         }
 
-        private IfcStore(Func<IModel> producerDelegate)
-        {
-            Producer = producerDelegate;
-        }
-
         private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName, ICollection<LogMessage> log)
         {
             var logger = theModel.Store.Logger;
@@ -158,9 +153,12 @@ namespace Store
         /// <returns>This instance</returns>
         public static IfcModel ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs, bool cancelBefore = false)
         {
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException(nameof(fileName));
+
             InitLogging(logger);
 
-            var qualifier = ProgressingModelTask<IfcModel>.BuildQualifier(fileName);
+            var qualifier = ProgressingModelTask<IfcModel>.BuildQualifierByFilePathName(fileName);
             IfcModel ifcModel;
             if (!IfcModel.CacheTryGet(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
             {
@@ -170,7 +168,7 @@ namespace Store
                 if (cancelBefore)
                 {
                     ifcModel.CancelAll();
-                    ifcModel.Logger.LogWarning("Loading '{0}' has been canceled.", fileName);
+                    ifcModel.Logger?.LogWarning("Loading '{0}' has been canceled.", fileName);
                 }
             }
 
@@ -201,7 +199,7 @@ namespace Store
         internal static IfcModel ByTransform(IfcModel source, Func<IModel, IfcModel, IModel> transform, string canoncialName)
         {
             IfcModel ifcModel;
-            var qualifier = ProgressingModelTask<IfcModel>.BuildQualifier(source.Qualifier, canoncialName);
+            var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
             if (!IfcModel.CacheTryGet(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
             {
                 ifcModel.Store.Producer = () =>

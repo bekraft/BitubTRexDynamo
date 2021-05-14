@@ -5,19 +5,25 @@ using System.Linq;
 
 using Microsoft.Extensions.Logging;
 
+using Autodesk.DesignScript.Runtime;
+
 namespace Internal
 {
-    public class GlobalArgumentService
+    [IsVisibleInDynamoLibrary(false)]
+    public sealed class DynamicArgumentDelegation
     {
+
+#pragma warning disable CS1591
+
         #region Internals
 
-        private static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<GlobalArgumentService>();
+        private static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<DynamicArgumentDelegation>();
 
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 
         private static readonly IDictionary<string, string> RootNamespaceAssemblyResolver;
 
-        static GlobalArgumentService()
+        static DynamicArgumentDelegation()
         {
             RootNamespaceAssemblyResolver = new Dictionary<string, string>()
             {
@@ -26,12 +32,58 @@ namespace Internal
             };
         }
 
-        private GlobalArgumentService()
+        private DynamicArgumentDelegation()
         {
         }
 
         #endregion
 
+        public static string PutArguments()
+        {
+            return Guid.Empty.ToString();
+        }
+
+        public static string PutArguments(params object[] args)
+        {
+            string guid;
+            do
+            {
+                guid = Guid.NewGuid().ToString();
+            } while (!ArgumentCache.TryAdd(guid, args));
+            return guid;
+        }
+
+        public static object[] GetArgs(string guid)
+        {
+            if (Guid.Empty.ToString().Equals(guid))
+                return Array.Empty<object>();
+
+            object[] args = null;
+            if (!ArgumentCache.TryRemove(guid, out args))
+                Log.LogWarning("Argument ID '{0}' not found.", guid);
+            return args;
+        }
+
+        public static object GetArg(string guid)
+        {
+            return GetArg<object>(guid);
+        }
+
+        public static T GetArg<T>(string guid)
+        {
+            var args = GetArgs(guid);
+            return args.Length > 0 ? (T)args[0] : default(T);
+        }
+
+        public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
+        {
+            var args = GetArgs(guid);
+            if (null != args)
+                return new Tuple<T1, T2, T3>((T1)args[0], (T2)args[1], (T3)args[2]);
+            return null;
+        }
+
+#pragma warning restore CS1591
 
         /// <summary>
         /// Will try to cast a serialized enum as int or string to it's object instance representation.
@@ -182,54 +234,5 @@ namespace Internal
             var comparer = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             return values.Where(v => -1 < Array.FindIndex(selected, s => String.Equals(v?.ToString(), s, comparer))).ToArray();
         }
-
-#pragma warning disable CS1591
-
-        public static string PutArguments()
-        {
-            return Guid.Empty.ToString();
-        }
-
-        public static string PutArguments(params object[] args)
-        {
-            string guid;
-            do
-            {
-                guid = Guid.NewGuid().ToString();
-            } while (!ArgumentCache.TryAdd(guid, args));
-            return guid;
-        }
-
-        public static object[] GetArgs(string guid)
-        {
-            if (Guid.Empty.ToString().Equals(guid))
-                return Array.Empty<object>();
-
-            object[] args = null;
-            if (!ArgumentCache.TryRemove(guid, out args))
-                Log.LogWarning("Argument ID '{0}' not found.", guid);
-            return args;
-        }
-
-        public static object GetArg(string guid)
-        {
-            return GetArg<object>(guid);
-        }
-
-        public static T GetArg<T>(string guid)
-        {
-            var args = GetArgs(guid);
-            return args.Length > 0 ? (T)args[0] : default(T);
-        }
-
-        public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
-        {
-            var args = GetArgs(guid);
-            if (null != args)
-                return new Tuple<T1, T2, T3>((T1)args[0], (T2)args[1], (T3)args[2]);
-            return null;
-        }
     }
-
-#pragma warning restore CS1591
 }

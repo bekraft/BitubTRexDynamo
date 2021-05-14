@@ -34,7 +34,7 @@ namespace Data
         [IsVisibleInDynamoLibrary(false)]
         public static CanonicalFilter ByCanonicals(object matchingTypeEnum, Canonical[] canonicals)
         {
-            var matchingType = GlobalArgumentService.TryCastEnumOrDefault<Bitub.Dto.Concept.FilterMatchingType>(matchingTypeEnum);
+            var matchingType = DynamicArgumentDelegation.TryCastEnumOrDefault<Bitub.Dto.Concept.FilterMatchingType>(matchingTypeEnum);
 
             var filter = new Bitub.Dto.Concept.CanonicalFilter(matchingType, StringComparison.OrdinalIgnoreCase);
             if (null != canonicals)

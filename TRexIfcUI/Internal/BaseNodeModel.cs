@@ -38,7 +38,7 @@ namespace Internal
         protected AssociativeNode MapEnum(Enum value)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<string, string, object>(GlobalArgumentService.TryParseEnum),
+                new Func<string, string, object>(DynamicArgumentDelegation.TryParseEnum),
                 new List<AssociativeNode>() 
                 { 
                     AstFactory.BuildStringNode(value.GetType().FullName), 
@@ -49,20 +49,20 @@ namespace Internal
         protected AssociativeNode CacheObjects(params object[] args)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object[]>(GlobalArgumentService.GetArgs),
+                        new Func<string, object[]>(DynamicArgumentDelegation.GetArgs),
                         new List<AssociativeNode>() 
                         { 
-                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(args)) 
+                            AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(args)) 
                         });
         }
 
         protected AssociativeNode CacheObject(object arg)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object>(GlobalArgumentService.GetArg),
+                        new Func<string, object>(DynamicArgumentDelegation.GetArg),
                         new List<AssociativeNode>() 
                         { 
-                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(arg)) 
+                            AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(arg)) 
                         });
         }
 

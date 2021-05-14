@@ -50,7 +50,7 @@ namespace UI.Customization
 
         private void TryRestoreSelection(string[] serializedSelection)
         {
-            var restored = GlobalArgumentService.FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false).Cast<AstReference>();
+            var restored = DynamicArgumentDelegation.FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false).Cast<AstReference>();
             DispatchUI(() =>
             {
                 if (0 == _control?.SelectionListBox.SelectedItems.Count)

@@ -79,7 +79,7 @@ namespace Store
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
                     var fileName1 = $"{Path.GetTempPath()}{Path.DirectorySeparatorChar}{qualifier.Anonymous.ToBase64String()}";
-                    return withExtension ? fileName1 + ".ifc" : fileName1;
+                    return fileName1;
                 case Qualifier.GuidOrNameOneofCase.Named:
                     var fileName2 = string.IsNullOrEmpty(canonicalSep) ? qualifier.Named.Frags[1] : qualifier.Named.ToLabel(canonicalSep, 1, 1);
                     var fullFileName2 = $"{qualifier.Named.Frags[0]}{Path.DirectorySeparatorChar}{fileName2}";
@@ -89,17 +89,17 @@ namespace Store
             }
         }
 
-        internal static Qualifier BuildQualifier(string pathName, string fileName, string format)
+        internal static Qualifier BuildQualifier(params string[] pathNameFileNameAndExtension)
         {
             var name = new Name();
-            name.Frags.AddRange(new string[] { pathName, fileName, format });
+            name.Frags.AddRange(pathNameFileNameAndExtension);
             return new Qualifier
             {
                 Named = name
             };
         }
 
-        internal static Qualifier BuildQualifier(string filePathName)
+        internal static Qualifier BuildQualifierByFilePathName(string filePathName)
         {
             return BuildQualifier(
                 Path.GetDirectoryName(filePathName),
@@ -107,10 +107,10 @@ namespace Store
                 Path.GetExtension(filePathName).Substring(1));
         }
 
-        internal static Qualifier BuildQualifier(Qualifier sourceQualifier, string canonicalName)
+        internal static Qualifier BuildCanonicalQualifier(Qualifier sourceQualifier, string canonicalName)
         {
             if (null == sourceQualifier)
-                return BuildQualifier(canonicalName);
+                return BuildQualifierByFilePathName(canonicalName);
 
             Qualifier newQualifier;
             switch (sourceQualifier.GuidOrNameCase)
@@ -118,7 +118,7 @@ namespace Store
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
                     throw new ArgumentException($"Source is temporary model qualifier");
                 case Qualifier.GuidOrNameOneofCase.None:
-                    newQualifier = BuildQualifier(canonicalName);
+                    newQualifier = BuildQualifierByFilePathName(canonicalName);
                     break;
                 case Qualifier.GuidOrNameOneofCase.Named:
                     newQualifier = new Qualifier(sourceQualifier);
@@ -128,6 +128,21 @@ namespace Store
                     throw new NotImplementedException();
             }
             return newQualifier;
+        }
+
+        internal static Qualifier BuildQualifierByFilePathName(string filePathName, string newExtension)
+        {
+            return BuildQualifier(Path.GetDirectoryName(filePathName), Path.GetFileNameWithoutExtension(filePathName), newExtension);
+        }
+
+        internal static Qualifier BuildQualifierByExtension(Qualifier existing, string newExtension)
+        {
+            var qualifier = new Qualifier(existing);
+            if (qualifier.GuidOrNameCase == Qualifier.GuidOrNameOneofCase.Anonymous)
+                throw new NotSupportedException();
+
+            qualifier.Named.Frags[qualifier.Named.Frags.Count - 1] = newExtension;
+            return qualifier;
         }
 
 #pragma warning restore CS1591
@@ -149,7 +164,7 @@ namespace Store
                 switch (Qualifier.GuidOrNameCase)
                 {
                     case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return $"{Qualifier.Anonymous.ToBase64String()}.ifc";
+                        return Qualifier.Anonymous.ToBase64String();
                     case Qualifier.GuidOrNameOneofCase.Named:
                         return $"{Qualifier.Named.Frags[1]}.{Qualifier.Named.Frags.Last()}";
                     default:
@@ -185,7 +200,7 @@ namespace Store
                 switch (Qualifier.GuidOrNameCase)
                 {
                     case Qualifier.GuidOrNameOneofCase.Anonymous:
-                        return "ifc";
+                        return null;
                     case Qualifier.GuidOrNameOneofCase.Named:
                         return Qualifier.Named.Frags.Last();
                     default:
@@ -242,8 +257,8 @@ namespace Store
             Qualifier qualifier;
             if (IsTemporaryModel)
             {
-                Logger?.LogInfo($"Relocating temporary store '{Qualifier.Anonymous.ToBase64String()}'");
-                qualifier = BuildQualifier(newPathName, Qualifier.Anonymous.ToBase64String(), "ifc");
+                Logger?.LogInfo($"Relocating temporary model '{Qualifier.Anonymous.ToBase64String()}'");
+                qualifier = BuildQualifier(newPathName, Qualifier.Anonymous.ToBase64String());
             }
             else
             {
@@ -257,7 +272,8 @@ namespace Store
 
         /// <summary>
         /// Renames the current model's physical name. Does not rename the original
-        /// physical resource. The change will only have effect when saving this store.
+        /// physical resource. The change will only have effect when saving this model to store.
+        /// <para>Renaming temporary model will locate the new model relatively to the user's home directory.</para>
         /// </summary>
         /// <param name="fileNameWithoutExt">The new file name without format extension</param>
         public TModel Rename(string fileNameWithoutExt)
@@ -265,8 +281,8 @@ namespace Store
             Qualifier qualifier;
             if (IsTemporaryModel)
             {
-                Logger?.LogInfo($"Renaming temporary store '{Qualifier.Anonymous.ToBase64String()}'");
-                qualifier = BuildQualifier("~", fileNameWithoutExt, "ifc");
+                Logger?.LogInfo($"Renaming temporary model '{Qualifier.Anonymous.ToBase64String()}'");
+                qualifier = BuildQualifier("~", fileNameWithoutExt);
             }
             else
             {
@@ -278,7 +294,8 @@ namespace Store
         }
 
         /// <summary>
-        /// Replaces fragments of the file name (without extension) by given fragments
+        /// Replaces fragments of the file name (without extension) by given fragments.
+        /// <para>Temporary models cannot be renamed by pattern since they don't have a meaningful name.</para>
         /// </summary>
         /// <param name="replacePattern">Regular expression identifiying the replacement</param>
         /// <param name="replaceWith">Fragments to insert</param>
@@ -292,16 +309,18 @@ namespace Store
         }
 
         /// <summary>
-        /// Renames the current model's physical name append the given suffix.
+        /// Renames the current model's physical name append the given canonical suffix. The suffix
+        /// is put between name and format extension identifier.
+        /// <para>A temporary model cannot have canonical extensions (suffixes)</para>
         /// </summary>
-        /// <param name="suffix">A suffix</param>
-        public TModel RenameWithSuffix(string suffix)
+        /// <param name="fragment">A fragment in last position (suffix)</param>
+        public TModel RenameWithSuffix(string fragment)
         {
             if (IsTemporaryModel)
                 throw new NotSupportedException("Not allowed for temporary models");
 
             var qualifier = new Qualifier(Qualifier);
-            qualifier.Named.Frags.Insert(qualifier.Named.Frags.Count - 1, suffix);
+            qualifier.Named.Frags.Insert(qualifier.Named.Frags.Count - 1, fragment);
             return RequalifiyModel(qualifier);
         }
     }

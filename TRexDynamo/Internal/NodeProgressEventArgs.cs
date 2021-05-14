@@ -4,10 +4,6 @@ using Bitub.Dto;
 
 using Log;
 
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("TRexIfcUI")]
-
 namespace Internal
 {
     /// <summary>

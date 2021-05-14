@@ -103,6 +103,9 @@ namespace UI.Customization
                     lock (GlobalLogging.DiagnosticStopWatch)
                         GlobalLogging.DiagnosticStopWatch.Stop();
 
+
+                    Store.IfcModel.CacheClear();
+
                     break;
             }            
         }

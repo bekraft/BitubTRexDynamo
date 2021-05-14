@@ -60,7 +60,6 @@ namespace Store
             BeforeBuildOutputAst();
 
             AssociativeNode[] inputs = inputAstNodes.ToArray();
-
             if (IsPartiallyApplied)
             {
                 foreach (PortModel port in InPorts.Where(p => !p.IsConnected))

@@ -146,7 +146,7 @@ namespace Data
             ClearErrorsAndWarnings();
             // Get current logging data from event source
             AssociativeNode dataReturn = AstFactory.BuildFunctionCall(
-                new Func<List<object>, int, object[][]>(GlobalArgumentService.DecomposeArray),
+                new Func<List<object>, int, object[][]>(DynamicArgumentDelegation.DecomposeArray),
                 new List<AssociativeNode>()
                 {
                     inputAstNodes[0],

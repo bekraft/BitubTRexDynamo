@@ -19,44 +19,31 @@ namespace Export
     /// </summary>
     [NodeName("Build scene")]
     [NodeCategory("TRexIfc.Export")]
-    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel), nameof(String), nameof(String)})]
-    [OutPortTypes(typeof(IfcModel))]
+    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel)})]
+    [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
-    public class SceneExporterNodeModel : CancelableProgressingOptionNodeModel
+    public class SceneBuildNodeModel : CancelableProgressingNodeModel
     {
         /// <summary>
         /// New scene exporter node model
         /// </summary>
-        public SceneExporterNodeModel()
+        public SceneBuildNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("settings", "Export settings")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("pathName", "Export path name")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene")));
 
             RegisterAllPorts();
-            InitOptions();
 
             IsCancelable = true;
-            SelectedOption = SceneExport.Extensions[0];
         }
 
         #region Internals
 
         [JsonConstructor]
-        SceneExporterNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        SceneBuildNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InitOptions();
-        }
-
-        private void InitOptions()
-        {
-            foreach (var ext in SceneExport.Extensions)
-                AvailableOptions.Add(ext);
-
-            LogReasonMask = LogReason.Saved;
         }
 
         #endregion
@@ -74,9 +61,6 @@ namespace Export
                 {
                     switch (port.Index)
                     {
-                        case 3:
-                            // Canonical separator is optional
-                            break;
                         default:
                             WarnForMissingInputs();
                             ResetState();
@@ -90,7 +74,8 @@ namespace Export
                 }
             }
 
-            var callCreateSceneExport = AstFactory.BuildFunctionCall(
+            // Create functional AST to create a new scene builder
+            var astCreateSceneExport = AstFactory.BuildFunctionCall(
                 new Func<SceneExportSettings, IfcModel, SceneExport>(SceneExport.BySettingsAndModel),
                 new List<AssociativeNode>() 
                 { 
@@ -98,26 +83,18 @@ namespace Export
                     inputs[1]
                 });
 
-            var callSetExtension = AstFactory.BuildFunctionCall(
-                new Func<SceneExport, string, SceneExport>(SceneExport.ExportAs),
-                new List<AssociativeNode>()
-                {
-                    callCreateSceneExport,
-                    AstFactory.BuildStringNode(SelectedOption.ToString())
-                });
-
-            var callRunSceneExport = AstFactory.BuildFunctionCall(
-                new Func<SceneExport, string, string, IfcModel>(SceneExport.RunSceneExport),
+            // Create a functional AST to run the final builder wrapping the progressing information
+            var astRunBuildComponentScene = AstFactory.BuildFunctionCall(
+                new Func<SceneExport, TimeSpan?, ComponentScene>(SceneExport.RunBuildComponentScene),
                 new List<AssociativeNode>() 
                 {
-                    callSetExtension.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    inputs[2],
-                    inputs[3]
+                    astCreateSceneExport.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
+                    AstFactory.BuildNullNode()
                 });
 
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callRunSceneExport)
+                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), astRunBuildComponentScene)
             };
         }
 

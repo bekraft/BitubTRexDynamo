@@ -9,14 +9,14 @@ using Bitub.Dto;
 
 namespace Internal
 {
-#pragma warning disable CS1591   
-
     /// <summary>
     /// Invisible helper which should be public since Dynamo has to reach it.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
     public sealed class DynamicDelegation
     {
+#pragma warning disable CS1591
+
         [IsVisibleInDynamoLibrary(false)]
         public static Qualifier Put<T1>(Func<T1, object> f1)
         {

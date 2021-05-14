@@ -123,7 +123,7 @@ namespace Log
             ClearOnActionLogChanged(_timeStamp);
             _timeStamp = DateTime.Now.ToBinary();
             var callFilter = AstFactory.BuildFunctionCall(
-                new Func<LogSeverity, object, ProgressingTask, int, LogMessage[]>(global::Log.Log.FilterBySeverity),
+                new Func<LogSeverity, object, ProgressingTask, int, LogMessage[]>(LogMessage.FilterBySeverity),
                 new List<AssociativeNode>()
                 {
                     MapEnum(LogMinSeverity),

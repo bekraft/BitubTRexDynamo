@@ -27,6 +27,12 @@ TRexAssimp::TRexAssimpExport::!TRexAssimpExport()
 // Gets all available extensions
 array<String^>^ TRexAssimp::TRexAssimpExport::Extensions::get()
 {
+    return GetAvailableExtensions(this->exporter);
+}
+
+// Gets all available extensions
+array<String^>^ TRexAssimp::TRexAssimpExport::GetAvailableExtensions(Assimp::Exporter* exporter)
+{
     array<String^>^ extensions = gcnew array<String^>((uint)exporter->GetExportFormatCount());
     for (uint i = 0, end = extensions->Length; i < end; ++i) {
         const aiExportFormatDesc* const e = exporter->GetExportFormatDescription(i);
@@ -37,9 +43,9 @@ array<String^>^ TRexAssimp::TRexAssimpExport::Extensions::get()
 }
 
 // Exports the given scene to Assimp and finally to a file
-bool TRexAssimp::TRexAssimpExport::ExportTo(String^ filePathName, 
-    String^ ext,
-    ComponentScene^ componentScene)
+bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
+    String^ filePathName,
+    String^ ext)
 {
     std::string stdFileName = marshal_as<std::string>(filePathName);
     aiScene scene;
@@ -160,11 +166,13 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(String^ filePathName,
             filePathName = System::IO::Path::ChangeExtension(filePathName, fileExt);
 
         const aiReturn res = exporter->Export(&scene, formatDesc->id, marshal_as<std::string>(filePathName));
+        this->statusMessage = gcnew String(exporter->GetErrorString());
         return AI_SUCCESS == res;
     }
     else
     {
-        throw gcnew System::ArgumentException(gcnew String("Unknown file format extension"));
+        this->statusMessage = gcnew String("Unknown file format extension");
+        throw gcnew System::ArgumentException(this->statusMessage);
     }
 }
 

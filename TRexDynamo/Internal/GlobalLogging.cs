@@ -14,6 +14,7 @@ namespace Internal
     /// <summary>
     /// Global logging configuration.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public sealed class GlobalLogging
     {
         internal static readonly Stopwatch DiagnosticStopWatch;

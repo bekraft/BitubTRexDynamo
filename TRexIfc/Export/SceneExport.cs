@@ -1,11 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
+using System.Collections.Concurrent;
 
 using Bitub.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
-using Google.Protobuf;
 
 using Log;
 using Store;
@@ -24,22 +22,22 @@ namespace Export
     {
         #region Internals
 
-        internal readonly ComponentModelExporter exporter;
-        internal readonly IfcModel ifcModel;
+        internal ComponentModelExporter Exporter { get; private set; }
+        internal IfcModel IfcModel { get; private set; }
 
         internal SceneExport(IfcModel ifcModel, ILoggerFactory loggerFactory)
         {
-            this.exporter = new ComponentModelExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
-            this.ifcModel = ifcModel;
+            Exporter = new ComponentModelExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
+            IfcModel = ifcModel;
         }
 
-        protected override LogReason DefaultReason => LogReason.Saved;
+        protected override LogReason DefaultReason => LogReason.Transformed;
 
         #endregion
 
         internal override string Name
         {
-            get => $"{ifcModel?.Name}";
+            get => $"{IfcModel?.Name}";
             set => throw new NotSupportedException();
         }
 
@@ -56,7 +54,7 @@ namespace Export
                 throw new ArgumentNullException(nameof(settings));
 
             var sceneExport = new SceneExport(ifcModel, ifcModel.Store.Logger?.LoggerFactory);
-            sceneExport.exporter.Preferences = settings.Preferences;
+            sceneExport.Exporter.Preferences = settings.Preferences;
             return sceneExport;
         }
 
@@ -64,53 +62,52 @@ namespace Export
         /// Run the scene export as binary protobuf.
         /// </summary>
         /// <param name="sceneExport">The export</param>
+        /// <param name="timeout">The task timeout</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static ComponentScene BuildScene(SceneExport sceneExport)
+        public static ComponentScene RunBuildComponentScene(SceneExport sceneExport, TimeSpan? timeout = null)
         {
             if (null == sceneExport)
                 throw new ArgumentNullException(nameof(sceneExport));
 
-            string fileName = sceneExport.ifcModel.CanonicalName(canonicalSeparator);
-            string sceneFileName = $@"{filePath}{Path.DirectorySeparatorChar}{fileName}.{sceneExport.Extension}";
+            var model = sceneExport.IfcModel?.XbimModel;
+            if (null == model)
+                throw new ArgumentNullException(nameof(IfcModel));
 
-            if (sceneExport.ifcModel.IsCanceled)
-            {
-                sceneExport.ifcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                    sceneExport.ifcModel.FileName, LogSeverity.Info, LogReason.Saved, "Export canceled of '{0}'.", sceneFileName));
-                return sceneExport.ifcModel;
-            }
-
+            ComponentScene componentScene = null;
             using (var monitor = sceneExport.CreateProgressMonitor(LogReason.Saved))
-            {
+            {                
                 try
                 {
-                    var internalModel = sceneExport.ifcModel?.XbimModel;
-                    if (null == internalModel)
-                        throw new ArgumentNullException(nameof(ifcModel));
-
-                    using (var sceneTask = sceneExport.exporter.RunExport(internalModel, monitor))
+                    using (var sceneBuildTask = sceneExport.Exporter.RunExport(model, monitor))
                     {
-                        sceneTask.Wait();
+                        if (timeout.HasValue)
+                            sceneBuildTask.Wait((int)timeout.Value.TotalMilliseconds);
+                        else
+                            sceneBuildTask.Wait();
+                        
                         if (!monitor.State.IsCanceled && !monitor.State.IsBroken)
                         {
                             monitor.State.MarkTerminated();
-                            sceneExport.ifcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                sceneExport.ifcModel.FileName, LogSeverity.Info, LogReason.Saved, "Exported as file '{0}'", sceneFileName));
+                            sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                sceneExport.Name, LogSeverity.Info, LogReason.Transformed, "Scene has been built."));
                         }
                         else
                         {
+                            componentScene = new ComponentScene(sceneBuildTask.Result, sceneExport.IfcModel.Logger);
+                            componentScene.Qualifier = sceneExport.IfcModel.Qualifier;
+
                             monitor.State.MarkTerminated();
-                            sceneExport.ifcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                sceneExport.ifcModel.FileName, LogSeverity.Critical, LogReason.Saved, "Failed/canceled: Exporting as file '{0}'", sceneFileName));
+                            sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                sceneExport.Name, LogSeverity.Critical, LogReason.Transformed, "Failed/canceled: Scene build failed."));
                         }
                     }
                 }
                 catch (Exception e)
                 {
                     monitor.State.MarkBroken();
-                    sceneExport.ifcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                        sceneExport.ifcModel.FileName, LogSeverity.Critical, LogReason.Saved, "Export failure ({0}) '{1}'", e.Message, sceneFileName));
+                    sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                        sceneExport.Name, LogSeverity.Error, LogReason.Transformed, "Scene build failed by exception: {0}", e.Message));
                 }
                 finally
                 {
@@ -118,7 +115,7 @@ namespace Export
                 }
             }
 
-            return sceneExport.ifcModel;
+            return componentScene;
         }
     }
 

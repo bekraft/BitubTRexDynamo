@@ -56,7 +56,7 @@ namespace Task
             if (Selected?.Any(v => v.IsTransient) ?? true)
             {   // Build from persistent selection
                 selectedNode = AstFactory.BuildFunctionCall(
-                    new Func<object[], string[], bool, object[]>(GlobalArgumentService.FilterBySerializationValue),
+                    new Func<object[], string[], bool, object[]>(DynamicArgumentDelegation.FilterBySerializationValue),
                     new List<AssociativeNode>()
                     {
                          inputAstNodes[0],
