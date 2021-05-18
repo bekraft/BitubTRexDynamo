@@ -21,7 +21,7 @@ namespace Log
     [NodeDescription("Log filtering node")]
     [InPortTypes(nameof(ProgressingTask))]
     [OutPortTypes(typeof(LogMessage))]
-    [NodeCategory("TRexIfc.Log")]
+    [NodeCategory("TRex.Log")]
     [IsDesignScriptCompatible]
     public class LogFilterNodeModel : BaseNodeModel
     {

@@ -160,7 +160,7 @@ namespace Store
 
             var qualifier = ProgressingModelTask<IfcModel>.BuildQualifierByFilePathName(fileName);
             IfcModel ifcModel;
-            if (!IfcModel.CacheTryGet(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
             {
                 ifcModel.Store.Producer = () => LoadFromFile(ifcModel, tessellationPrefs, fileName, ifcModel.ActionLog);
                 tessellationPrefs?.ApplyToModel(ifcModel);
@@ -185,7 +185,7 @@ namespace Store
         public static IfcModel ByXbimModel(IModel model, Qualifier qualifier, Logger logger)
         {
             IfcModel ifcModel;
-            IfcModel.CacheTryGet(qualifier, q => new IfcModel(new IfcStore(model, logger), qualifier), out ifcModel);
+            ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(model, logger), qualifier), out ifcModel);
             return ifcModel;
         }
 
@@ -200,7 +200,7 @@ namespace Store
         {
             IfcModel ifcModel;
             var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
-            if (!IfcModel.CacheTryGet(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
             {
                 ifcModel.Store.Producer = () =>
                 {

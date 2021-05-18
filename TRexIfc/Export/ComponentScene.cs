@@ -23,9 +23,9 @@ namespace Export
         public readonly static string[] saveAsExtensions = new string[] { "json", "scene" };
 
         /// <summary>
-        /// Allowed extensions for <see cref="Export(ComponentScene, string, string)"/>.
+        /// Allowed extensions for <see cref="Export(ComponentScene, Format, string)"/>.
         /// </summary>
-        public readonly static string[] exportAsExtensions;
+        public readonly static TRexDynamo.Export.Format[] exportAsFormats;
 
 #pragma warning disable CS1591
 
@@ -33,23 +33,24 @@ namespace Export
 
         internal Bitub.Dto.Scene.ComponentScene SceneModel { get; private set; }
 
-        internal ComponentScene(Bitub.Dto.Scene.ComponentScene componentScene, Logger logger) : base(logger)
+        internal ComponentScene(Bitub.Dto.Scene.ComponentScene componentScene, Qualifier qualifier, Logger logger) : base(qualifier, logger)
+        {
+            SceneModel = componentScene;            
+        }
+
+        internal ComponentScene(Bitub.Dto.Scene.ComponentScene componentScene, Logger logger) : base(System.Guid.NewGuid().ToQualifier(), logger)
         {
             SceneModel = componentScene;
-            Qualifier = System.Guid.NewGuid().ToQualifier();
         }
 
         static ComponentScene() 
         {
-            exportAsExtensions = new TRexAssimp.TRexAssimpExport().Extensions;
+            exportAsFormats = new TRexAssimp.TRexAssimpExport().Formats;
         }
 
-        protected override ComponentScene RequalifiyModel(Qualifier qualifier)
+        protected override ComponentScene RequalifyModel(Qualifier qualifier)
         {
-            return new ComponentScene(SceneModel, Logger)
-            {
-                Qualifier = qualifier
-            };
+            return new ComponentScene(SceneModel, qualifier, Logger);
         }
 
         protected override LogReason DefaultReason => LogReason.Saved;
@@ -100,7 +101,7 @@ namespace Export
                             scene.ActionLog.Add(LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, msg));
                             monitor.State.MarkBroken();
 
-                            throw new NotImplementedException(msg);
+                            throw new ArgumentException(msg);
                     }
 
                     scene.ActionLog.Add(
@@ -126,15 +127,19 @@ namespace Export
         /// Exports the current component scene to the given format indicated by the extension.
         /// </summary>
         /// <param name="scene">The scene</param>
-        /// <param name="extension">The format extension (one of <see cref="exportAsExtensions"/></param>
+        /// <param name="formatID">The format ID (one of <see cref="exportAsFormats"/>)</param>
         /// <param name="canonicalSeparator">The canonical fragment separator</param>
         /// <returns>The exported scene</returns>
-        public static ComponentScene Export(ComponentScene scene, string extension, string canonicalSeparator)
+        public static ComponentScene Export(ComponentScene scene, string formatID, string canonicalSeparator)
         {
             if (null == scene)
                 throw new ArgumentNullException(nameof(scene));
 
-            var qualifier = BuildQualifierByExtension(scene.Qualifier, extension);
+            var format = exportAsFormats.FirstOrDefault(f => f.ID == formatID);
+            if (null == format)
+                throw new ArgumentException($"Unknown format ID {formatID}.");
+
+            var qualifier = BuildQualifierByExtension(scene.Qualifier, format.Extension);
             var fileName = GetFilePathName(qualifier, canonicalSeparator, true);
 
             using (var monitor = scene.CreateProgressMonitor(LogReason.Saved))
@@ -145,7 +150,7 @@ namespace Export
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start exporting");
 
-                    if (!exp.ExportTo(scene.SceneModel, fileName, extension))
+                    if (!exp.ExportTo(scene.SceneModel, fileName, format))
                     {
                         monitor.NotifyOnProgressChange(1, "Exported");
                         scene.ActionLog.Add(

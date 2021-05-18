@@ -27,34 +27,22 @@ namespace Store
 
         #region Internals
 
-        private readonly static Dictionary<Qualifier, IfcModel> cache = new Dictionary<Qualifier, IfcModel>();
-
-        internal protected IfcModel(IfcModel ifcModel) : base(ifcModel.Logger)
+        internal protected IfcModel(IfcModel ifcModel) : base(ifcModel.Qualifier, ifcModel.Logger)
         {
-            Store = ifcModel.Store;
-            Qualifier = ifcModel.Qualifier;
+            Store = ifcModel.Store;            
         }
 
-        internal protected IfcModel(IfcStore store, Qualifier qualifier) : base(store.Logger)
+        internal protected IfcModel(IfcStore store, Qualifier qualifier) : base(qualifier, store.Logger)
+        {
+            Store = store;            
+        }
+
+        internal protected IfcModel(IfcStore store) : base(System.Guid.NewGuid().ToQualifier(), store.Logger)
         {
             Store = store;
-            if (null == qualifier)
-            {
-                Qualifier = new Qualifier
-                {
-                    Anonymous = new GlobalUniqueId
-                    {
-                        Guid = new Bitub.Dto.Guid { Raw = System.Guid.NewGuid().ToByteArray().ToByteString() }
-                    }
-                };
-            }
-            else
-            {
-                Qualifier = qualifier;
-            }
         }
 
-        protected override IfcModel RequalifiyModel(Qualifier qualifier)
+        protected override IfcModel RequalifyModel(Qualifier qualifier)
         {
             return new IfcModel(Store, qualifier);
         }
@@ -72,46 +60,6 @@ namespace Store
         internal IModel XbimModel
         {
             get => IsCanceled ? null : Store.XbimModel;
-        }
-
-        internal static bool CacheTryGet(Qualifier qualifier, Func<Qualifier, IfcModel> storeProducer, out IfcModel ifcStore)
-        {
-            lock (typeof(IfcModel))
-            {
-                if (cache.ContainsKey(qualifier))
-                {
-                    ifcStore = cache[qualifier];
-                    GlobalLogging.log.Information("Reusing existing IFC model qualifier '{0}'.", qualifier.ToLabel("/"));
-                    return true;
-                }
-                else
-                {
-                    ifcStore = storeProducer?.Invoke(qualifier);
-                    cache[qualifier] = ifcStore;
-                    GlobalLogging.log.Information("Registered new IFC model qualifier '{0}'.", qualifier.ToLabel("/"));
-                    return false;
-                }
-            }
-        }
-
-        internal static void CacheDrop(Qualifier qualifier)
-        {
-            lock (typeof(IfcModel))
-            {
-                if (cache.Remove(qualifier))
-                    GlobalLogging.log.Information("Dropped IFC model qualifier '{0}'.", qualifier.ToLabel("/"));
-                else
-                    GlobalLogging.log.Warning("Haven't found IFC model qualifier '{0}'.", qualifier.ToLabel("/"));
-            }
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static void CacheClear()
-        {
-            lock (typeof(IfcModel))
-                cache.Clear();
-            
-            GlobalLogging.log.Information("Cleared IFC model qualifier cache.");
         }
 
         #endregion

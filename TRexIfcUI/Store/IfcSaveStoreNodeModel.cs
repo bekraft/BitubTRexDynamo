@@ -18,7 +18,7 @@ namespace Store
     /// Saves an IFC model instance to physical file.
     /// </summary>
     [NodeName("Ifc Save")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
     [InPortTypes(typeof(IfcModel))]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]

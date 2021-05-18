@@ -17,7 +17,7 @@ namespace Task
     /// Excludes multiple items from a list of available items using its string representation.
     /// </summary>
     [NodeName("Exclude items from")]
-    [NodeCategory("TRexIfc.Utils")]
+    [NodeCategory("TRex.Utils")]
     [NodeDescription("Excludes multiple items from a list of available items using its string representation.")]
     [InPortTypes(typeof(object[]))]
     [OutPortTypes(typeof(object[]))]

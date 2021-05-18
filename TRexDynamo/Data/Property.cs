@@ -14,28 +14,25 @@ namespace Data
     /// <summary>
     /// Model property wrapper.
     /// </summary>
-    public class Property
+    public sealed class Property
     {
-        #region Internals
-
 #pragma warning disable CS1591
 
-        [IsVisibleInDynamoLibrary(false)]
-        public Property(FeatureConcept featureConcept)
+        #region Internals
+
+        internal Property(FeatureConcept featureConcept)
         {
             Feature = featureConcept;
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public FeatureConcept Feature { get; private set; }
+        internal FeatureConcept Feature { get; private set; }
 
         public override string ToString()
         {
             return $"{Feature.Canonical.ToLabel()}";
         }
 
-        [IsVisibleInDynamoLibrary(false)]
-        public static Property ByData(Canonical canonical, DataType dataType, object value)
+        internal static Property ByData(Canonical canonical, DataType dataType, object value)
         {
             throw new NotImplementedException();
         }
@@ -52,24 +49,21 @@ namespace Data
 
 #pragma warning restore CS1591
 
-        [IsVisibleInDynamoLibrary(false)]
         public string QualifiedName
         {
             get => Feature.Canonical.ToLabel(":");
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public string PropertySetName
         {
             get => Feature.Canonical.Named.GetFragment(0);
-            set => Feature.Canonical.Named.SetFragment(0, value);
+            internal set => Feature.Canonical.Named.SetFragment(0, value);
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public string PropertyName
         {
             get => Feature.Canonical.Named.GetFragment(1);
-            set => Feature.Canonical.Named.SetFragment(1, value);
+            internal set => Feature.Canonical.Named.SetFragment(1, value);
         }
 
         #endregion

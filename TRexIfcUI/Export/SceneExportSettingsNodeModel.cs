@@ -19,13 +19,15 @@ namespace Export
     /// <summary>
     /// UI Node model wrapping scene export settings.
     /// </summary>
-    [NodeName("Scene Export Settings")]
-    [NodeCategory("TRexIfc.Export")]
+    [NodeName("Export settings")]
+    [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String), nameof(CanonicalFilter) })]
     [OutPortTypes(new string[] { nameof(SceneExportSettings) })]
     [IsDesignScriptCompatible]
     public class SceneExportSettingsNodeModel : BaseNodeModel
     {
+#pragma warning disable CS1591
+
         #region Internals
 
         private SceneTransformationStrategy _transformationStrategy = SceneTransformationStrategy.Quaternion;
@@ -38,9 +40,6 @@ namespace Export
 
         #endregion 
 
-        /// <summary>
-        /// New Scene Exporting Settings model.
-        /// </summary>
         public SceneExportSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
@@ -53,9 +52,6 @@ namespace Export
             RegisterAllPorts();
         }
 
-        /// <summary>
-        /// Transformation strategy property.
-        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public SceneTransformationStrategy TransformationStrategy
         {
@@ -69,9 +65,6 @@ namespace Export
             }
         }
 
-        /// <summary>
-        /// Export position strategy property
-        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public ScenePositioningStrategy PositioningStrategy
         {
@@ -84,8 +77,6 @@ namespace Export
                 OnNodeModified(false);
             }
         }
-
-#pragma warning disable CS1591
 
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

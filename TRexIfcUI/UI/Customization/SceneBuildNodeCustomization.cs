@@ -9,9 +9,9 @@ namespace UI.Customization
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class SceneExporterNodeCustomization : CancelableCommandCustomization<SceneBuildNodeModel>
+    public class SceneBuildNodeCustomization : CancelableCommandCustomization<SceneBuildNodeModel>
     {
-        public SceneExporterNodeCustomization(): base(ProgressOnPortType.InPorts)
+        public SceneBuildNodeCustomization(): base(ProgressOnPortType.InPorts)
         {
         }
     }

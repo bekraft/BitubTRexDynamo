@@ -25,7 +25,7 @@ namespace Task
     /// </summary>
     [NodeName("Ifc Axis Alignment")]
     [NodeDescription("Changes the model coordinate system alignment by offset and rotation.")]
-    [NodeCategory("TRexIfc.Task")]
+    [NodeCategory("TRex.Task")]
     [InPortTypes(new string[] { nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]

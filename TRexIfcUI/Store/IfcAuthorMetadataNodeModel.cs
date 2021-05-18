@@ -14,7 +14,7 @@ namespace Store
     /// </summary>
     [NodeName("Ifc AuthorMetadata")]
     [NodeDescription("Configure authoring editor name and organisation details")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
     [OutPortTypes(typeof(IfcAuthorMetadata))]    
     [IsDesignScriptCompatible]
     public class IfcAuthorMetadataNodeModel : NodeModel

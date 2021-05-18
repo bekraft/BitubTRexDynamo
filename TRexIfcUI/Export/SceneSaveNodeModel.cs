@@ -19,15 +19,14 @@ namespace Export
     /// formats of protobuf specification.
     /// </summary>
     [NodeName("Save scene")]
-    [NodeCategory("TRexIfc.Export")]
+    [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
     public class SceneSaveNodeModel : CancelableProgressingOptionNodeModel
     {
-        /// <summary>
-        /// New scene save model.
-        /// </summary>
+#pragma warning disable CS1591
+
         public SceneSaveNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("scene", "Component scene model")));
@@ -42,8 +41,6 @@ namespace Export
 
             SelectedOption = ComponentScene.saveAsExtensions[0];
         }
-
-#pragma warning disable CS1591
 
         #region Internals
 

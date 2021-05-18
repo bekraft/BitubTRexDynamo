@@ -22,18 +22,18 @@ namespace Store
 
         #region Internals
 
-        /// <summary>
-        /// The logger instance (or null if there is no).
-        /// </summary>
         protected internal Logger Logger { get; private set; }
 
-        protected internal ProgressingModelTask(Logger log)
+        protected internal Qualifier Qualifier { get; private set; }
+
+        protected internal ProgressingModelTask(Qualifier qualifier, Logger logger)
         {
-            Logger = log;
+            Logger = logger;
+            Qualifier = qualifier;
             ActionLog.CollectionChanged += ActionLog_CollectionChanged;
         }
 
-        protected abstract TModel RequalifiyModel(Qualifier qualifier);
+        protected abstract TModel RequalifyModel(Qualifier qualifier);
 
         /// <summary>
         /// Forwards action log changes to logging instance.
@@ -66,7 +66,7 @@ namespace Store
 
         #endregion
 
-        #region Internal helpers
+        #region Internal helpers        
 
         internal string GetFilePathName(string canonicalSep = "-", bool withExtension = true)
         {
@@ -148,12 +148,6 @@ namespace Store
 #pragma warning restore CS1591
 
         #endregion
-
-        /// <summary>
-        /// THe qualifier of this model.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public virtual Qualifier Qualifier { get; protected internal set; }
 
         /// <summary>
         /// The assembled file name.
@@ -267,7 +261,7 @@ namespace Store
 
             qualifier.Named.Frags[0] = Path.GetDirectoryName($"{newPathName}{Path.DirectorySeparatorChar}");
 
-            return RequalifiyModel(qualifier);
+            return RequalifyModel(qualifier);
         }
 
         /// <summary>
@@ -290,7 +284,7 @@ namespace Store
             }
 
             qualifier.Named.Frags[1] = fileNameWithoutExt;
-            return RequalifiyModel(qualifier);
+            return RequalifyModel(qualifier);
         }
 
         /// <summary>
@@ -321,7 +315,7 @@ namespace Store
 
             var qualifier = new Qualifier(Qualifier);
             qualifier.Named.Frags.Insert(qualifier.Named.Frags.Count - 1, fragment);
-            return RequalifiyModel(qualifier);
+            return RequalifyModel(qualifier);
         }
     }
 }

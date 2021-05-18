@@ -17,6 +17,9 @@
     <Reference Include="Google.Protobuf">
       <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
     </Reference>
+    <Reference Include="TRexDynamo">
+      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\TRexDynamo.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\assimp\aabb.h" />

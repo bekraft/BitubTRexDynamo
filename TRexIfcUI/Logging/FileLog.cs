@@ -17,7 +17,7 @@ namespace Log
     /// </summary>
     [NodeName("File Logger")]
     [NodeDescription("Creates a new file logger with given template name.")]
-    [NodeCategory("TRexIfc.Log")]
+    [NodeCategory("TRex.Log")]    
     [InPortTypes(typeof(string))]
     [OutPortTypes(typeof(Logger))]
     [IsDesignScriptCompatible]

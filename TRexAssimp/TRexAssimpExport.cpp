@@ -25,19 +25,18 @@ TRexAssimp::TRexAssimpExport::!TRexAssimpExport()
 }
 
 // Gets all available extensions
-array<String^>^ TRexAssimp::TRexAssimpExport::Extensions::get()
+array<Format^>^ TRexAssimp::TRexAssimpExport::Formats::get()
 {
-    return GetAvailableExtensions(this->exporter);
+    return GetAvailableFormats(this->exporter);
 }
 
 // Gets all available extensions
-array<String^>^ TRexAssimp::TRexAssimpExport::GetAvailableExtensions(Assimp::Exporter* exporter)
+array<Format^>^ TRexAssimp::TRexAssimpExport::GetAvailableFormats(Assimp::Exporter* exporter)
 {
-    array<String^>^ extensions = gcnew array<String^>((uint)exporter->GetExportFormatCount());
+    array<Format^>^ extensions = gcnew array<Format^>((uint)exporter->GetExportFormatCount());
     for (uint i = 0, end = extensions->Length; i < end; ++i) {
         const aiExportFormatDesc* const e = exporter->GetExportFormatDescription(i);
-        String^ str = gcnew String(e->fileExtension);
-        extensions[i] = str;
+        extensions[i] = gcnew Format(gcnew String(e->id), gcnew String(e->fileExtension), gcnew String(e->description));
     }
     return extensions;
 }
@@ -45,7 +44,7 @@ array<String^>^ TRexAssimp::TRexAssimpExport::GetAvailableExtensions(Assimp::Exp
 // Exports the given scene to Assimp and finally to a file
 bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
     String^ filePathName,
-    String^ ext)
+    Format^ format)
 {
     std::string stdFileName = marshal_as<std::string>(filePathName);
     aiScene scene;
@@ -153,27 +152,14 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
     scene.mRootNode->mChildren = new aiNode * [scene.mRootNode->mNumChildren];
     std::copy(vTopLevelNodes.begin(), vTopLevelNodes.end(), scene.mRootNode->mChildren);
 
-    // Try to save scene to file by given file format extension
-    String^ fileExt = ext->ToLower();
-    const int idx_ext = System::Array::IndexOf(Extensions, fileExt);
-     
-    if (0 <= idx_ext)
-    { 
-        const aiExportFormatDesc* formatDesc = exporter->GetExportFormatDescription(idx_ext);
+    String^ givenExt = System::IO::Path::GetExtension(filePathName)->ToLower();
+    if (!givenExt->Equals(format->Extension->ToLower()))
+        filePathName = System::IO::Path::ChangeExtension(filePathName, format->Extension);
 
-        String^ givenExt = System::IO::Path::GetExtension(filePathName)->ToLower();
-        if (!givenExt->Equals(fileExt))
-            filePathName = System::IO::Path::ChangeExtension(filePathName, fileExt);
-
-        const aiReturn res = exporter->Export(&scene, formatDesc->id, marshal_as<std::string>(filePathName));
-        this->statusMessage = gcnew String(exporter->GetErrorString());
-        return AI_SUCCESS == res;
-    }
-    else
-    {
-        this->statusMessage = gcnew String("Unknown file format extension");
-        throw gcnew System::ArgumentException(this->statusMessage);
-    }
+    auto formatID = marshal_as<std::string>(format->ID);
+    const aiReturn res = exporter->Export(&scene, formatID.c_str(), marshal_as<std::string>(filePathName));
+    this->statusMessage = gcnew String(exporter->GetErrorString());
+    return AI_SUCCESS == res;
 }
 
 // Get or create a node and its parent by ID reference

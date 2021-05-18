@@ -17,7 +17,7 @@ namespace Validation
     /// A IfcGUID validation node model.
     /// </summary>
     [NodeName("IfcGUID Validation")]
-    [NodeCategory("TRexIfc.Validation")]
+    [NodeCategory("TRex.Validation")]
     [NodeDescription("Prepares a IfcGUID validation task to check uniqueness of model GUIDs.")]
     [InPortTypes(new string[] { nameof(IfcModel), nameof(IfcGuidStore) })]
     [OutPortTypes(typeof(IfcValidationTask))]

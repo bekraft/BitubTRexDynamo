@@ -18,7 +18,7 @@ namespace Data
     [NodeDescription("Interactive table grid displaying incoming data with a given count threshold.")]
     [InPortTypes(typeof(List<object>))]
     [OutPortTypes(typeof(object[][]))]
-    [NodeCategory("TRexIfc.Data")]
+    [NodeCategory("TRex.Data")]
     [IsDesignScriptCompatible]
     public class DataTablePreviewNodeModel : BaseNodeModel
     {

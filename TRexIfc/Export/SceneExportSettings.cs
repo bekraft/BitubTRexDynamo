@@ -65,7 +65,7 @@ namespace Export
                 UserModelCenter = offset.TheXYZ,
                 UnitsPerMeter = unitPerMeter,                
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
-                FeatureToClassifierFilter = featureClassificationFilter?.filter
+                FeatureToClassifierFilter = featureClassificationFilter?.Filter
             });
 
             return settings;

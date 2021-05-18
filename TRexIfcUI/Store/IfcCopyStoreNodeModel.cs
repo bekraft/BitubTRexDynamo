@@ -20,7 +20,7 @@ namespace Store
     /// Loads an IFC model from physical file.
     /// </summary>
     [NodeName("Ifc Filter")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
     [InPortTypes(new string[] { nameof(IfcModel), nameof(Int32), nameof(String), nameof(Boolean) })]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]

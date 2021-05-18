@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <assembly>
+    <name>TRexDynamo</name>
+  </assembly>
+  <namespaces>
+    <namespace name="Log">
+      <category>TRex.Log</category>
+    </namespace>
+    <namespace name="Utils">
+      <category>TRex.Utils</category>
+    </namespace>
+    <namespace name="Data">
+      <category>TRex.Data</category>
+    </namespace>
+  </namespaces>
+</doc>

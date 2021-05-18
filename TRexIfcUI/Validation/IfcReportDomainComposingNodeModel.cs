@@ -19,7 +19,7 @@ namespace Validation
     [NodeName("IfcReport Domain")]
     [NodeDescription("Composing reporting validation failures for filtering reports")]
     [OutPortTypes(typeof(IfcReportDomain))]
-    [NodeCategory("TRexIfc.Validation")]
+    [NodeCategory("TRex.Validation")]
     [IsDesignScriptCompatible]
     public class IfcReportDomainComposingNodeModel : BaseNodeModel
     {

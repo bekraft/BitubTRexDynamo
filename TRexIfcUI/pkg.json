@@ -1,10 +1,10 @@
 {
   "license": "Apache-2.0",
   "file_hash": null,
-  "name": "TRexIfc",
+  "name": "TRex",
   "version": "1.0.0.0",
-  "description": "Bitub Model Transformation",
-  "group": "TRexIFC",
+  "description": "Model transformation libraries, reading, transforming and writing IFC files.",
+  "group": "TRex",
   "keywords": [ "bitub", "ifc", "import", "export", "xbim", "transform" ],
   "dependencies": [],
   "contents": "IFC Xbim wrapper, IFC transformation pipelines, IFC export pipelines",
@@ -12,7 +12,7 @@
   "engine": "dynamo",
   "engine_metadata": "",
   "site_url": "https://www.github.com/bekraft/BitubTRexDynamo",
-  "repository_url": "",
+  "repository_url": "https://www.github.com/bekraft/BitubTRexDynamo",
   "contains_binaries": true,
   "node_libraries": [
     "TRexDynamo, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",

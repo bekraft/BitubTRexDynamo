@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 
+using Dynamo.Graph.Nodes;
+
 using Serilog;
 using Serilog.Core;
 
@@ -21,7 +23,7 @@ namespace Log
         /// <summary>
         /// Logger factory
         /// </summary>
-        public ILoggerFactory LoggerFactory { get; private set; }
+        internal ILoggerFactory LoggerFactory { get; private set; }
 
         /// <summary>
         /// The default log.
@@ -36,29 +38,27 @@ namespace Log
             LoggerFactory = new LoggerFactory();
         }
 
-        public void LogInfo(string message, params object[] args)
+        internal void LogInfo(string message, params object[] args)
         {
             DefaultLog.Information(message, args);
         }
 
-        public void LogWarning(string message, params object[] args)
+        internal void LogWarning(string message, params object[] args)
         {
             DefaultLog.Warning(message, args);
         }
 
-        public void LogError(string message, params object[] args)
+        internal void LogError(string message, params object[] args)
         {
             DefaultLog.Error(message, args);
         }
 
-        public void LogError(Exception e, string message, params object[] args)
+        internal void LogError(Exception e, string message, params object[] args)
         {
             DefaultLog.Error(e, message, args);
         }
 
 #pragma warning restore CS1591
-
-        #endregion
 
         /// <summary>
         /// New logging instance.
@@ -66,8 +66,7 @@ namespace Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
+        internal static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
         {
             var instance = new Logger();
             
@@ -98,8 +97,7 @@ namespace Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        [IsVisibleInDynamoLibrary(false)]
-        public static Logger ByLogAsyncFileName(string fileName, LoggingLevelSwitch levelSwitch)
+        internal static Logger ByLogAsyncFileName(string fileName, LoggingLevelSwitch levelSwitch)
         {
             var instance = new Logger();
 
@@ -124,6 +122,28 @@ namespace Log
         }
 
         /// <summary>
+        /// New logging instance writing by async background thread to file.
+        /// </summary>
+        /// <param name="fileName">The file name to write to</param>
+        /// <param name="levelSwitch">The minimum level switch</param>
+        /// <returns>The bound logger instance</returns>
+        internal static Logger ByLogAsyncFileName(string fileName, string levelSwitch = "Debug")
+        {
+            Serilog.Events.LogEventLevel level;
+            try
+            {
+                level = (Serilog.Events.LogEventLevel)Enum.Parse(typeof(Serilog.Events.LogEventLevel), levelSwitch);
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
+            }
+            return Logger.ByLogAsyncFileName(fileName, new LoggingLevelSwitch(level));
+        }
+
+        #endregion
+
+        /// <summary>
         /// New logging instance.
         /// </summary>
         /// <param name="fileName">The file name to write to</param>
@@ -141,26 +161,6 @@ namespace Log
                 throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
             }
             return Logger.ByLogFileName(fileName, new LoggingLevelSwitch(level));
-        }
-
-        /// <summary>
-        /// New logging instance writing by async background thread to file.
-        /// </summary>
-        /// <param name="fileName">The file name to write to</param>
-        /// <param name="levelSwitch">The minimum level switch</param>
-        /// <returns>The bound logger instance</returns>
-        public static Logger ByLogAsyncFileName(string fileName, string levelSwitch = "Debug")
-        {
-            Serilog.Events.LogEventLevel level;
-            try
-            {
-                level = (Serilog.Events.LogEventLevel)Enum.Parse(typeof(Serilog.Events.LogEventLevel), levelSwitch);
-            }
-            catch (Exception e)
-            {
-                throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
-            }
-            return Logger.ByLogAsyncFileName(fileName, new LoggingLevelSwitch(level));
         }
     }
 }

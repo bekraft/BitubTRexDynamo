@@ -37,7 +37,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
+    <DeployDynamoProjectName>TRex</DeployDynamoProjectName>
     <DeployDynamoVersion>2.10</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>

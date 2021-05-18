@@ -10,16 +10,34 @@ namespace Data
     /// <summary>
     /// A canonical name qualifier.
     /// </summary>
-    public class Canonical
+    public sealed class Canonical
     {
+#pragma warning disable CS1591
+
         #region Internals
 
         internal Canonical(Qualifier q)
         {
-            qualifier = q;
+            Qualifier = q;
         }
 
         #endregion
+
+        internal Qualifier Qualifier { get; private set; }
+
+        public override string ToString()
+        {
+            switch (Qualifier.GuidOrNameCase)
+            {
+                case Qualifier.GuidOrNameOneofCase.Anonymous:
+                    return $"{Qualifier.Anonymous.GuidOrStringCase} ({Qualifier.ToLabel()})";
+                default:
+                    return $"{Qualifier.GuidOrNameCase} ({Qualifier.ToLabel()})";
+            }
+
+        }
+
+#pragma warning restore CS1591
 
         /// <summary>
         /// A new canonical by given candidate GUID.
@@ -48,7 +66,7 @@ namespace Data
         /// </summary>
         /// <param name="separator"></param>
         /// <returns>A string</returns>
-        public string ToLabel(string separator = ".") => qualifier.ToLabel(separator);
+        public string ToLabel(string separator = ".") => Qualifier.ToLabel(separator);
 
         /// <summary>
         /// Returns the parts of the canonical name.
@@ -56,36 +74,17 @@ namespace Data
         /// <returns>An array of strings</returns>
         public string[] ToParts()
         {
-            switch (qualifier.GuidOrNameCase)
+            switch (Qualifier.GuidOrNameCase)
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
-                    return new[] { qualifier.Anonymous.ToBase64String() };
+                    return new[] { Qualifier.Anonymous.ToBase64String() };
                 case Qualifier.GuidOrNameOneofCase.Named:
-                    return qualifier.Named.Frags.ToArray();
+                    return Qualifier.Named.Frags.ToArray();
                 case Qualifier.GuidOrNameOneofCase.None:
                     return new string[0];
                 default:
-                    throw new NotSupportedException($"Option '{qualifier.GuidOrNameCase}' not supported");
+                    throw new NotSupportedException($"Option '{Qualifier.GuidOrNameCase}' not supported");
             }
         }
-
-#pragma warning disable CS1591
-
-        [IsVisibleInDynamoLibrary(false)]
-        public readonly Qualifier qualifier;
-
-        public override string ToString()
-        {
-            switch (qualifier.GuidOrNameCase)
-            {
-                case Qualifier.GuidOrNameOneofCase.Anonymous:
-                    return $"{qualifier.Anonymous.GuidOrStringCase} ({qualifier.ToLabel()})";
-                default:
-                    return $"{qualifier.GuidOrNameCase} ({qualifier.ToLabel()})";
-            }
-            
-        }
-
-#pragma warning restore CS1591
     }
 }

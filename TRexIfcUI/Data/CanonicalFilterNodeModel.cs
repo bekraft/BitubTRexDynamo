@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Bitub.Dto.Concept;
+
 using Dynamo.Graph.Nodes;
-using Internal;
+
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+
+using Internal;
 
 namespace Data
 {
@@ -15,7 +16,7 @@ namespace Data
     /// Canonical filter node model with match type selector.
     /// </summary>
     [NodeName("Canonical Filter")]
-    [NodeCategory("TRexIfc.Data")]
+    [NodeCategory("TRex.Data")]
     [InPortTypes(new [] { nameof(Canonical) })]
     [OutPortTypes(nameof(CanonicalFilter))]
     [IsDesignScriptCompatible]

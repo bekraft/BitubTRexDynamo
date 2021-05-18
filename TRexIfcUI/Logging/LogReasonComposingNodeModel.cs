@@ -19,7 +19,7 @@ namespace Log
     [NodeName("Log Reason")]
     [NodeDescription("Composing log reasons for filtering logs")]
     [OutPortTypes(typeof(LogReason))]
-    [NodeCategory("TRexIfc.Log")]
+    [NodeCategory("TRex.Log")]
     [IsDesignScriptCompatible]
     public class LogReasonComposingNodeModel : BaseNodeModel
     {

@@ -18,7 +18,7 @@ namespace Export
     /// Scene exporter node model.
     /// </summary>
     [NodeName("Build scene")]
-    [NodeCategory("TRexIfc.Export")]
+    [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel)})]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
@@ -76,7 +76,7 @@ namespace Export
 
             // Create functional AST to create a new scene builder
             var astCreateSceneExport = AstFactory.BuildFunctionCall(
-                new Func<SceneExportSettings, IfcModel, SceneExport>(SceneExport.BySettingsAndModel),
+                new Func<SceneExportSettings, IfcModel, ComponentSceneBuild>(ComponentSceneBuild.BySettingsAndModel),
                 new List<AssociativeNode>() 
                 { 
                     inputs[0], 
@@ -85,7 +85,7 @@ namespace Export
 
             // Create a functional AST to run the final builder wrapping the progressing information
             var astRunBuildComponentScene = AstFactory.BuildFunctionCall(
-                new Func<SceneExport, TimeSpan?, ComponentScene>(SceneExport.RunBuildComponentScene),
+                new Func<ComponentSceneBuild, TimeSpan?, ComponentScene>(ComponentSceneBuild.RunBuildComponentScene),
                 new List<AssociativeNode>() 
                 {
                     astCreateSceneExport.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),

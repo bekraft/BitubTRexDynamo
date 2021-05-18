@@ -6,6 +6,8 @@ using namespace Bitub::Dto;
 using namespace Bitub::Dto::Spatial;
 using namespace Bitub::Dto::Scene;
 
+using namespace TRexDynamo::Export;
+
 #include <assimp/scene.h>
 #include <assimp/Exporter.hpp>
 
@@ -22,12 +24,12 @@ namespace TRexAssimp
 		virtual ~TRexAssimpExport();
 		!TRexAssimpExport();
 
-		property array<String^>^ Extensions { array<String^>^ get(); }
+		property array<Format^>^ Formats { array<Format^>^ get(); }
 		property String^ StatusMessage { String^ get() { return statusMessage; } }
-		bool ExportTo(ComponentScene^ componentScene, String^ filePathName, String^ ext);
+		bool ExportTo(ComponentScene^ componentScene, String^ filePathName, Format^ format);
 
 	private:
-		array<String^>^ GetAvailableExtensions(Assimp::Exporter* exporter);
+		array<Format^>^ GetAvailableFormats(Assimp::Exporter* exporter);
 
 		const uint GetOrCreateNodeAndParent(Component^ c, 
 			std::vector<aiNode*>& nodes, 

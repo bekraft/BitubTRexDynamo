@@ -22,7 +22,7 @@ namespace Task
     /// </summary>
     [NodeName("Ifc PSet Filter")]
     [NodeDescription("Removal task which drops entire property sets by their name")]
-    [NodeCategory("TRexIfc.Task")]
+    [NodeCategory("TRex.Task")]
     [InPortTypes(new string[] { nameof(String), nameof(String), nameof(Boolean), nameof(IfcAuthorMetadata), nameof(String), nameof(IfcModel), nameof(LogReason) })]
     [OutPortTypes(typeof(IfcModel))]
     [NodeSearchTags("ifc", "pset", "filter")]

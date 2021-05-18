@@ -16,6 +16,8 @@ namespace Log
     /// </summary>
     public sealed class LogMessage : IComparable<LogMessage>
     {
+#pragma warning disable CS1591
+
         #region Internals
 
         private static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<LogMessage>();
@@ -46,6 +48,31 @@ namespace Log
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
+        public int CompareTo(LogMessage other)
+        {
+            return -(int)(timeStamp - other.timeStamp);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static LogMessage BySeverityAndMessage(string source, LogSeverity severity, LogReason reason, string messageTemplate, params object[] args)
+        {
+            return new LogMessage(source, severity, reason, messageTemplate, args);
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static LogMessage ByErrorMessage(string source, LogReason reason, string messageTemplate, params object[] args)
+        {
+            return BySeverityAndMessage(source, LogSeverity.Error, reason, messageTemplate, args);
+        }
+
+        public override string ToString()
+        {
+            return string.Format($"@'{Source}' {Severity} ({Reason}): {messageTemplate}", args);
+        }
+
+#pragma warning restore CS1591
+
         /// <summary>
         /// The source.
         /// </summary>
@@ -70,34 +97,6 @@ namespace Log
         /// The time stamp.
         /// </summary>
         public DateTime TimeStamp { get => DateTime.FromBinary(timeStamp); }
-
-#pragma warning disable CS1591
-
-        [IsVisibleInDynamoLibrary(false)]
-        public int CompareTo(LogMessage other)
-        {
-            return -(int)(timeStamp - other.timeStamp);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage BySeverityAndMessage(string source, LogSeverity severity, LogReason reason, string messageTemplate, params object[] args)
-        {
-            return new LogMessage(source, severity, reason, messageTemplate, args);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage ByErrorMessage(string source, LogReason reason, string messageTemplate, params object[] args)
-        {
-            return BySeverityAndMessage(source, LogSeverity.Error, reason, messageTemplate, args);
-        }
-        
-        public override string ToString()
-        {
-            return string.Format($"@'{Source}' {Severity} ({Reason}): {messageTemplate}", args);
-        }
-
-#pragma warning restore CS1591
-
 
         /// <summary>
         /// Splits the log message into severity, action and message.

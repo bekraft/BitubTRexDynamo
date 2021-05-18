@@ -7,13 +7,13 @@ using System.Text;
 namespace Utils
 {
     /// <summary>
-    /// A collection of simple tasks
+    /// A collection of general TRex tasks.
     /// </summary>
-    public class Utils
+    public sealed class TRex
     {
         #region Internals
 
-        private Utils()
+        private TRex()
         {
         }
 

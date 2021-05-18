@@ -19,7 +19,7 @@ namespace Store
     /// Loads an IFC model from physical file.
     /// </summary>
     [NodeName("Ifc Load")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
     [InPortTypes(new string[] { nameof(String), nameof(Logger), nameof(IfcTessellationPrefs) })]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]

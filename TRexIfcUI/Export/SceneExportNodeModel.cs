@@ -18,15 +18,14 @@ namespace Export
     /// Exports the scene to an 3rd party custom format indicated by extension.
     /// </summary>
     [NodeName("Save scene")]
-    [NodeCategory("TRexIfc.Export")]
+    [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
     public class SceneExportNodeModel : CancelableProgressingOptionNodeModel
     {
-        /// <summary>
-        /// New scene export node model.
-        /// </summary>
+#pragma warning disable CS1591
+
         public SceneExportNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("scene", "Component scene model")));
@@ -39,10 +38,8 @@ namespace Export
 
             IsCancelable = false;
 
-            SelectedOption = ComponentScene.exportAsExtensions[0];
+            SelectedOption = ComponentScene.exportAsFormats.FirstOrDefault();
         }
-
-#pragma warning disable CS1591
 
         #region Internals
 
@@ -54,7 +51,7 @@ namespace Export
 
         private void InitOptions()
         {
-            foreach (var ext in ComponentScene.exportAsExtensions)
+            foreach (var ext in ComponentScene.exportAsFormats)
                 AvailableOptions.Add(ext);
 
             LogReasonMask = LogReason.Saved;

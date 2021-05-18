@@ -104,7 +104,7 @@ namespace UI.Customization
                         GlobalLogging.DiagnosticStopWatch.Stop();
 
 
-                    Store.IfcModel.CacheClear();
+                    Store.ModelCache.Instance.ClearCompleteCache();
 
                     break;
             }            

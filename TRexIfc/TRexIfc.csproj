@@ -121,6 +121,12 @@
     <ProjectReference Include="..\TRexDynamo\TRexDynamo.csproj" />
   </ItemGroup>
   
+  <ItemGroup>
+    <None Update="TRexIfc_DynamoCustomization.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
   <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">    
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />    

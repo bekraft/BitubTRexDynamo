@@ -16,16 +16,16 @@ namespace Export
 #pragma warning disable CS1591
 
     /// <summary>
-    /// Scene export utility.
+    /// Scene builder utility.
     /// </summary>   
-    public class SceneExport : ProgressingTask
+    public class ComponentSceneBuild : ProgressingTask
     {
         #region Internals
 
         internal ComponentModelExporter Exporter { get; private set; }
         internal IfcModel IfcModel { get; private set; }
 
-        internal SceneExport(IfcModel ifcModel, ILoggerFactory loggerFactory)
+        internal ComponentSceneBuild(IfcModel ifcModel, ILoggerFactory loggerFactory)
         {
             Exporter = new ComponentModelExporter(new XbimTesselationContext(loggerFactory), loggerFactory);
             IfcModel = ifcModel;
@@ -48,12 +48,12 @@ namespace Export
         /// <param name="ifcModel">The model about to be exported</param>
         /// <returns>A scene export task</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExport BySettingsAndModel(SceneExportSettings settings, IfcModel ifcModel)
+        public static ComponentSceneBuild BySettingsAndModel(SceneExportSettings settings, IfcModel ifcModel)
         {
             if (null == settings)
                 throw new ArgumentNullException(nameof(settings));
 
-            var sceneExport = new SceneExport(ifcModel, ifcModel.Store.Logger?.LoggerFactory);
+            var sceneExport = new ComponentSceneBuild(ifcModel, ifcModel.Store.Logger?.LoggerFactory);
             sceneExport.Exporter.Preferences = settings.Preferences;
             return sceneExport;
         }
@@ -65,7 +65,7 @@ namespace Export
         /// <param name="timeout">The task timeout</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static ComponentScene RunBuildComponentScene(SceneExport sceneExport, TimeSpan? timeout = null)
+        public static ComponentScene RunBuildComponentScene(ComponentSceneBuild sceneExport, TimeSpan? timeout = null)
         {
             if (null == sceneExport)
                 throw new ArgumentNullException(nameof(sceneExport));
@@ -88,15 +88,17 @@ namespace Export
                         
                         if (!monitor.State.IsCanceled && !monitor.State.IsBroken)
                         {
+                            ModelCache.Instance.TryGetOrCreateModel(
+                                sceneExport.IfcModel.Qualifier,
+                                (q) => new ComponentScene(sceneBuildTask.Result, q, sceneExport.IfcModel.Logger),
+                                out componentScene);                            
+                            
                             monitor.State.MarkTerminated();
                             sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
                                 sceneExport.Name, LogSeverity.Info, LogReason.Transformed, "Scene has been built."));
                         }
                         else
                         {
-                            componentScene = new ComponentScene(sceneBuildTask.Result, sceneExport.IfcModel.Logger);
-                            componentScene.Qualifier = sceneExport.IfcModel.Qualifier;
-
                             monitor.State.MarkTerminated();
                             sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
                                 sceneExport.Name, LogSeverity.Critical, LogReason.Transformed, "Failed/canceled: Scene build failed."));

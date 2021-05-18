@@ -14,16 +14,27 @@ namespace Data
     /// <summary>
     /// A filtering node for canonical qualifiers.
     /// </summary>
-    public class CanonicalFilter
+    public sealed class CanonicalFilter
     {
+#pragma warning disable CS1591
+
         #region Internals
 
         internal CanonicalFilter(Bitub.Dto.Concept.CanonicalFilter canonicalFilter)
         {
-            filter = canonicalFilter;
+            Filter = canonicalFilter;
         }
 
         #endregion
+
+        internal Bitub.Dto.Concept.CanonicalFilter Filter { get; private set; }
+
+        public override string ToString()
+        {
+            return $"[{Filter.MatchingType}] filter with ({Filter.Filter?.Count}) entries";
+        }
+
+#pragma warning restore CS1591
 
         /// <summary>
         /// Build a new filter by given matcher type and canoncials.
@@ -38,7 +49,7 @@ namespace Data
 
             var filter = new Bitub.Dto.Concept.CanonicalFilter(matchingType, StringComparison.OrdinalIgnoreCase);
             if (null != canonicals)
-                filter.Filter.AddRange(canonicals.Select(c => c.qualifier.ToClassifier()));
+                filter.Filter.AddRange(canonicals.Select(c => c.Qualifier.ToClassifier()));
             return new CanonicalFilter(filter); 
         }
 
@@ -50,7 +61,7 @@ namespace Data
         public static CanonicalFilter ByExisting(params Canonical[] canonicals)
         {
             var filter = new Bitub.Dto.Concept.CanonicalFilter(Bitub.Dto.Concept.FilterMatchingType.SubOrEquiv, StringComparison.OrdinalIgnoreCase);
-            filter.Filter.AddRange(canonicals.Select(c => c.qualifier.ToClassifier()));
+            filter.Filter.AddRange(canonicals.Select(c => c.Qualifier.ToClassifier()));
             return new CanonicalFilter(filter);
         }
 
@@ -62,7 +73,7 @@ namespace Data
         public Canonical[] FilterMatches(Canonical probe)
         {
             Classifier[] matches;
-            filter.IsPassedBy(probe.qualifier, out matches);
+            Filter.IsPassedBy(probe.Qualifier, out matches);
             return matches.Select(c => new Canonical(c.Path.First())).ToArray();
         }
 
@@ -73,20 +84,7 @@ namespace Data
         /// <returns>Matches of the filter</returns>
         public Canonical[] ProbeMatches(Canonical[] probes)
         {
-            return probes.Where(p => filter.IsPassedBy(p.qualifier, out _) ?? true).ToArray();
+            return probes.Where(p => Filter.IsPassedBy(p.Qualifier, out _) ?? true).ToArray();
         }
-
-#pragma warning disable CS1591
-
-        [IsVisibleInDynamoLibrary(false)]
-        public readonly Bitub.Dto.Concept.CanonicalFilter filter;
-
-        public override string ToString()
-        {
-            return $"[{filter.MatchingType}] filter with ({filter.Filter?.Count}) entries";
-        }
-
-#pragma warning restore CS1591
-
     }
 }
