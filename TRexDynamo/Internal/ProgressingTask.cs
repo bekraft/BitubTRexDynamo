@@ -4,14 +4,14 @@ using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 using Bitub.Dto;
-using Log;
+using TRex.Log;
 
 using Autodesk.DesignScript.Runtime;
 
 using Microsoft.Extensions.Logging;
 
 
-namespace Internal
+namespace TRex.Internal
 {
     /// <summary>
     /// A progressing task which emits changes, progress end events and logging data.

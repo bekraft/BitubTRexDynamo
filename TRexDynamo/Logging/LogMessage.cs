@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 using System.Data;
 
-using Internal;
+using TRex.Internal;
 
 using Microsoft.Extensions.Logging;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// A logging message of severity and message.

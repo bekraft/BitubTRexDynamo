@@ -8,9 +8,9 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-using Internal;
+using TRex.Internal;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// Canonical filter node model with match type selector.

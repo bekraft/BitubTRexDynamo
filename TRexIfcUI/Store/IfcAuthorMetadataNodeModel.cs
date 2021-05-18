@@ -7,7 +7,7 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.

@@ -2,7 +2,7 @@
 using Bitub.Dto.Spatial;
 //using SpatialXYZ = Bitub.Dto.Spatial.XYZ;
 
-namespace Geom
+namespace TRex.Geom
 {
     /// <summary>
     /// An axis aligned bounding box region with two min and max points and a weigtht.

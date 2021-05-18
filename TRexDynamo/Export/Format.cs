@@ -1,8 +1,10 @@
 ﻿using System;
 
+using TRex.Internal;
+
 using Autodesk.DesignScript.Runtime;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Generic export format description.
@@ -19,6 +21,30 @@ namespace Export
             Extension = extension;
             Description = description;
         }
+
+        public static Format FromDynamic(dynamic format)
+        {
+            try
+            {
+                string id = format.ID;
+                string extension = format.Extension;
+                string description = format.Description;
+                return new Format(id, extension, description);
+            }
+            catch (ArgumentNullException ane)
+            {
+                GlobalLogging.log.Warning("Not allowed {0}: {1}", format, ane.Message);                
+            }
+            catch (Exception e)
+            {
+                GlobalLogging.log.Warning("Unable to parse '{0}' as format: {1}", format, e.Message);
+            }
+            return null;
+        }
+
+        public Format(string idAsExtension, string description)
+            : this(idAsExtension, idAsExtension, description)
+        { }
 
         public string ID { get; private set; }
         public string Extension { get; private set; }

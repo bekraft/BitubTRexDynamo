@@ -9,9 +9,9 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Excludes multiple items from a list of available items using its string representation.

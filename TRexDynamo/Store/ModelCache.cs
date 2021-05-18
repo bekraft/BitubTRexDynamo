@@ -5,9 +5,9 @@ using Bitub.Dto;
 
 using Autodesk.DesignScript.Runtime;
 
-using Internal;
+using TRex.Internal;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// A common model cache.

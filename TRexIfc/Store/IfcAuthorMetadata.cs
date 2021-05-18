@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Bitub.Ifc;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// IFC authoring meta data

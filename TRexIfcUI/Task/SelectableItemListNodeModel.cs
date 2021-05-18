@@ -8,12 +8,12 @@ using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
 
-using Internal;
+using TRex.Internal;
 
-using AstObjectValue = Internal.AstValue<object>;
+using AstObjectValue = TRex.Internal.AstValue<object>;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Task
+namespace TRex.Task
 {
 #pragma warning disable CS1591
 

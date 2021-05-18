@@ -7,12 +7,12 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
-using Store;
-using Log;
+using TRex.Internal;
+using TRex.Task;
+using TRex.Store;
+using TRex.Log;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Scene exporter node model.

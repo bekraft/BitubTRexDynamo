@@ -8,7 +8,7 @@ using Dynamo.Engine;
 using Dynamo.Wpf;
 using Dynamo.Scheduler;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

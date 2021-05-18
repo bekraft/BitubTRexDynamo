@@ -5,11 +5,11 @@ using System.Linq;
 
 using Autodesk.DesignScript.Runtime;
 
-using Internal;
+using TRex.Internal;
 
 using Bitub.Dto;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// A filtering node for canonical qualifiers.

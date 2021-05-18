@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
-namespace Internal
+namespace TRex.Internal
 {
     // Disable comment warning
 #pragma warning disable CS1591

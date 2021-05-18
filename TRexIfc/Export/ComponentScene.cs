@@ -7,10 +7,10 @@ using Bitub.Dto;
 using Autodesk.DesignScript.Runtime;
 using Google.Protobuf;
 
-using Log;
-using Store;
+using TRex.Log;
+using TRex.Store;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Exported component scene model.
@@ -20,12 +20,16 @@ namespace Export
         /// <summary>
         /// Allowed extensions for <see cref="Save(ComponentScene, string, string)"/>.
         /// </summary>
-        public readonly static string[] saveAsExtensions = new string[] { "json", "scene" };
+        public readonly static Format[] saveAsFormats = new Format[] 
+        { 
+            new Format("json", "json", "JSON Text"), 
+            new Format("scene", "scene", "Binary File")
+        };
 
         /// <summary>
-        /// Allowed extensions for <see cref="Export(ComponentScene, Format, string)"/>.
+        /// Allowed extensions for <see cref="Export(ComponentScene, string, string)"/>.
         /// </summary>
-        public readonly static TRexDynamo.Export.Format[] exportAsFormats;
+        public readonly static Format[] exportAsFormats;
 
 #pragma warning disable CS1591
 
@@ -63,15 +67,19 @@ namespace Export
         /// Saves the current component model as it is to JSON or binary format.
         /// </summary>
         /// <param name="scene">The scene to save</param>
-        /// <param name="extension">The desired extension to use</param>
+        /// <param name="formatID">The desired format ID (<see cref="saveAsFormats"/>) to use</param>
         /// <param name="canonicalSeparator">Canonical fragment seperator.</param>
         /// <returns>The saved scene</returns>
-        public static ComponentScene Save(ComponentScene scene, string extension, string canonicalSeparator)
+        public static ComponentScene Save(ComponentScene scene, string formatID, string canonicalSeparator)
         {
             if (null == scene)
                 throw new ArgumentNullException(nameof(scene));
 
-            var qualifier = BuildQualifierByExtension(scene.Qualifier, extension);
+            var format = saveAsFormats.FirstOrDefault(f => f.ID == formatID);
+            if (null == format)
+                throw new ArgumentException($"Unknown format ID {formatID}.");
+
+            var qualifier = BuildQualifierByExtension(scene.Qualifier, format.Extension);
             var fileName = GetFilePathName(qualifier, canonicalSeparator, true);
 
             using (var monitor = scene.CreateProgressMonitor(LogReason.Saved))
@@ -80,7 +88,7 @@ namespace Export
                 {
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start saving");
-                    switch (extension.ToLower())
+                    switch (format.Extension)
                     {
                         case "scene":
                             using (var binStream = File.Create(fileName))
@@ -97,7 +105,7 @@ namespace Export
                             }
                             break;
                         default:
-                            var msg = $"Unknown extension format '{extension}'.";
+                            var msg = $"Unknown implementation of format '{format.Extension}'.";
                             scene.ActionLog.Add(LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, msg));
                             monitor.State.MarkBroken();
 

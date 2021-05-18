@@ -1,6 +1,6 @@
-﻿using Validation;
+﻿using TRex.Validation;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 
     // Disable comment warning

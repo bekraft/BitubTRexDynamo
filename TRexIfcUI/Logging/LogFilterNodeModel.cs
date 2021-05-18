@@ -8,11 +8,11 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-using Internal;
+using TRex.Internal;
 
 using Dynamo.Utilities;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// Interactive log filter node to be attached to node progressing implementations.

@@ -2,10 +2,10 @@
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Store;
+using TRex.Store;
 using System.Linq;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

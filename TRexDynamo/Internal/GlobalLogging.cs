@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 
-namespace Internal
+namespace TRex.Internal
 {
     /// <summary>
     /// Global logging configuration.

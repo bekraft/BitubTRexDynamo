@@ -9,11 +9,11 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Task;
-using Log;
-using Internal;
+using TRex.Task;
+using TRex.Log;
+using TRex.Internal;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Loads an IFC model from physical file.

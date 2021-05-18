@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Runtime;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// Severity enumeration

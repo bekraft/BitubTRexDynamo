@@ -10,7 +10,7 @@ using Bitub.Dto.Concept;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// A property group.

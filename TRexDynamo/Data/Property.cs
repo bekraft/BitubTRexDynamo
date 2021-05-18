@@ -9,7 +9,7 @@ using Bitub.Dto.Concept;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// Model property wrapper.

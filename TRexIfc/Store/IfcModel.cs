@@ -13,10 +13,10 @@ using Xbim.Ifc4.Interfaces;
 using Bitub.Ifc;
 using Bitub.Dto;
 
-using Internal;
-using Log;
+using TRex.Internal;
+using TRex.Log;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// IFC model instance

@@ -9,7 +9,7 @@ using Serilog.Core;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// Logger instance capturing logging events to file.

@@ -4,13 +4,13 @@
     <name>TRexDynamo</name>
   </assembly>
   <namespaces>
-    <namespace name="Log">
+    <namespace name="TRex.Log">
       <category>TRex.Log</category>
     </namespace>
-    <namespace name="Utils">
+    <namespace name="TRex.Utils">
       <category>TRex.Utils</category>
     </namespace>
-    <namespace name="Data">
+    <namespace name="TRex.Data">
       <category>TRex.Data</category>
     </namespace>
   </namespaces>

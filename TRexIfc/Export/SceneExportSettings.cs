@@ -7,11 +7,11 @@ using Bitub.Dto.Scene;
 
 using Autodesk.DesignScript.Runtime;
 
-using Geom;
-using Log;
-using Data;
+using TRex.Geom;
+using TRex.Log;
+using TRex.Data;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Scene export settings

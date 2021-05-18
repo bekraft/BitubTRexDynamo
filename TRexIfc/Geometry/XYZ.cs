@@ -5,7 +5,7 @@ using ADPoint = Autodesk.DesignScript.Geometry.Point;
 using Bitub.Dto.Spatial;
 using System;
 
-namespace Geom
+namespace TRex.Geom
 {
     /// <summary>
     /// An analytical 3D point or vector construct.

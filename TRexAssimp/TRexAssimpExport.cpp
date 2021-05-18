@@ -48,6 +48,11 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 {
     std::string stdFileName = marshal_as<std::string>(filePathName);
     aiScene scene;
+    if (nullptr != componentScene->Metadata && nullptr != componentScene->Metadata->Name)
+    {   // Use name of metadata
+        std::string sceneName = marshal_as<std::string>(componentScene->Metadata->Name);
+        scene.mName = aiString(sceneName);
+    }    
 
     // Create raw mesh buffer, material mesh buffer
     std::vector<aiMesh*> vRawMeshes;
@@ -118,7 +123,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 if (contextWcsMap->TryGetValue(shape->Context, t))
                 {   // Get WCS transform
                     aiMatrix4x4 wcs = _aiMatrix4(t);
-                    node->mTransformation = wcs * _aiMatrix4(shape->Transform);
+                    node->mTransformation = wcs * _aiMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
                 }
             }
         }
@@ -157,7 +162,8 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
         filePathName = System::IO::Path::ChangeExtension(filePathName, format->Extension);
 
     auto formatID = marshal_as<std::string>(format->ID);
-    const aiReturn res = exporter->Export(&scene, formatID.c_str(), marshal_as<std::string>(filePathName));
+    auto fileName = marshal_as<std::string>(filePathName);
+    const aiReturn res = exporter->Export(&scene, formatID, fileName);
     this->statusMessage = gcnew String(exporter->GetErrorString());
     return AI_SUCCESS == res;
 }

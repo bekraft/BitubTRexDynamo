@@ -7,11 +7,11 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Task;
-using Store;
-using Log;
+using TRex.Task;
+using TRex.Store;
+using TRex.Log;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// A IfcGUID validation node model.

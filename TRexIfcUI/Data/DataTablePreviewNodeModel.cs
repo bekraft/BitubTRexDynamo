@@ -7,9 +7,9 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-using Internal;
+using TRex.Internal;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// Interactive data grid visualising incoming data.

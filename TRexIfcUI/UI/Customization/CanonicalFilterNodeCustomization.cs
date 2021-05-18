@@ -1,7 +1,7 @@
-﻿using Data;
+﻿using TRex.Data;
 using Dynamo.Controls;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Internal
+namespace TRex.Internal
 {
     [IsVisibleInDynamoLibrary(false)]
     public sealed class DynamicArgumentDelegation

@@ -4,7 +4,7 @@ using Autodesk.DesignScript.Runtime;
 
 [assembly: InternalsVisibleTo("TRexIfcUI"), InternalsVisibleTo("TRexIfc"), InternalsVisibleTo("TRexAssimp")]
 
-namespace Config
+namespace TRex.Config
 {
     [IsVisibleInDynamoLibrary(false)]
     public class GlobalConfig

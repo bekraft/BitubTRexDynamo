@@ -2,9 +2,9 @@
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Export;
+using TRex.Export;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

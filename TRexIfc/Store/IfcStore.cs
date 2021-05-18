@@ -10,9 +10,9 @@ using Xbim.Ifc;
 using Autodesk.DesignScript.Runtime;
 using Microsoft.Extensions.Logging;
 
-using Log;
+using TRex.Log;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Background IFC storage handling.

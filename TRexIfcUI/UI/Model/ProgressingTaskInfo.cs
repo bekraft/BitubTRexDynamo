@@ -6,9 +6,9 @@ using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto;
-using Internal;
+using TRex.Internal;
 
-namespace UI.Model
+namespace TRex.UI.Model
 {
     /// <summary>
     /// Simple information element for visual representation

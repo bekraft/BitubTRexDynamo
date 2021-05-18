@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto;
 
-namespace Internal
+namespace TRex.Internal
 {
     /// <summary>
     /// Invisible helper which should be public since Dynamo has to reach it.

@@ -8,11 +8,11 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
-using Log;
+using TRex.Internal;
+using TRex.Task;
+using TRex.Log;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Saves an IFC model instance to physical file.

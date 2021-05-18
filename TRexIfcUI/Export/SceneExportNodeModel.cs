@@ -7,12 +7,11 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
-using Store;
-using Log;
+using TRex.Internal;
+using TRex.Task;
+using TRex.Log;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Exports the scene to an 3rd party custom format indicated by extension.
@@ -57,6 +56,11 @@ namespace Export
             LogReasonMask = LogReason.Saved;
         }
 
+        private Format SelectedFormat 
+        {
+            get => Format.FromDynamic(SelectedOption);
+        }
+
         #endregion
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -64,6 +68,13 @@ namespace Export
             BeforeBuildOutputAst();
 
             AssociativeNode[] inputs = inputAstNodes.ToArray();
+
+            if (null == SelectedFormat)
+            {
+                Warning("Format must not be null.");
+                return BuildNullResult();
+            }
+
             if (IsPartiallyApplied)
             {
                 foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
@@ -78,10 +89,7 @@ namespace Export
                             ResetState();
 
                             // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
+                            return BuildNullResult();
                     }
                 }
             }
@@ -92,14 +100,11 @@ namespace Export
                 new List<AssociativeNode>()
                 {
                     inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    AstFactory.BuildStringNode(SelectedOption?.ToString()),
+                    AstFactory.BuildStringNode(SelectedFormat?.ID),
                     inputs[1]
                 });
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), astRunExportScene)
-            };
+            return BuildResult(astRunExportScene);           
         }
 
 #pragma warning restore CS1591

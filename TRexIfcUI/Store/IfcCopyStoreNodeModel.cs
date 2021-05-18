@@ -9,12 +9,12 @@ using Dynamo.Graph.Nodes;
 
 using Autodesk.DesignScript.Runtime;
 
-using Log;
-using Internal;
-using Task;
+using TRex.Log;
+using TRex.Internal;
+using TRex.Task;
 using ProtoCore.AST.AssociativeAST;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Loads an IFC model from physical file.

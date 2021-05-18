@@ -10,15 +10,15 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Task;
-using Internal;
+using TRex.Task;
+using TRex.Internal;
 
-using Log;
+using TRex.Log;
 using Bitub.Dto;
 
-using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, Internal.ProgressingTask[]>;
+using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, TRex.Internal.ProgressingTask[]>;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

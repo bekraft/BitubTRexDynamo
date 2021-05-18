@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 using Bitub.Dto;
 
-using Internal;
-using Store;
+using TRex.Internal;
+using TRex.Store;
 using Xbim.Ifc4.Interfaces;
 
 using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Runtime;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// A validation task running as a delayed

@@ -2,9 +2,9 @@
 
 using System.Linq;
 
-using Validation;
+using TRex.Validation;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
 

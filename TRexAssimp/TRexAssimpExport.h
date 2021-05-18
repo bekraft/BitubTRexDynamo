@@ -6,7 +6,7 @@ using namespace Bitub::Dto;
 using namespace Bitub::Dto::Spatial;
 using namespace Bitub::Dto::Scene;
 
-using namespace TRexDynamo::Export;
+using namespace ::TRex::Export;
 
 #include <assimp/scene.h>
 #include <assimp/Exporter.hpp>

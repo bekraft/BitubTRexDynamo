@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace Task
+namespace TRex.Task
 {
     public abstract class CancelableProgressingOptionNodeModel : CancelableProgressingNodeModel
     {

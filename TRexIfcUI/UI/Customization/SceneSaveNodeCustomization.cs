@@ -2,11 +2,11 @@
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Export;
+using TRex.Export;
 
 using System.Linq;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
     public class SceneSaveNodeCustomization : CancelableOptionCommandCustomization<SceneSaveNodeModel>

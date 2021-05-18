@@ -6,7 +6,7 @@ using Autodesk.DesignScript.Runtime;
 using System.Xml.Serialization;
 using Xbim.Common;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Tessellation preferences and tolerances.

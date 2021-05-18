@@ -4,11 +4,11 @@ using System.Linq;
 using System.Windows.Controls;
 
 using Dynamo.Controls;
-using Internal;
+using TRex.Internal;
 
-using Task;
+using TRex.Task;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
 

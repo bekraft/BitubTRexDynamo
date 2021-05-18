@@ -5,13 +5,13 @@ using Bitub.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
 
-using Log;
-using Store;
-using Internal;
+using TRex.Log;
+using TRex.Store;
+using TRex.Internal;
 
 using Microsoft.Extensions.Logging;
 
-namespace Export
+namespace TRex.Export
 {
 #pragma warning disable CS1591
 

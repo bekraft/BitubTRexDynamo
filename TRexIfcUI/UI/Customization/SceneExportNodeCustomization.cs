@@ -4,9 +4,9 @@ using Dynamo.Graph.Connectors;
 
 using System.Linq;
 
-using Export;
+using TRex.Export;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
     public class SceneExportNodeCustomization : CancelableOptionCommandCustomization<SceneExportNodeModel>

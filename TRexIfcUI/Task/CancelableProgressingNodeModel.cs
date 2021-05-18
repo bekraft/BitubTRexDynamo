@@ -11,15 +11,15 @@ using Newtonsoft.Json;
 
 using Bitub.Dto;
 
-using Internal;
-using UI;
-using UI.Model;
-using Log;
+using TRex.Internal;
+using TRex.UI;
+using TRex.UI.Model;
+using TRex.Log;
 
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace Task
+namespace TRex.Task
 {
     public abstract class CancelableProgressingNodeModel : BaseNodeModel, ICancelableTaskNode
     {

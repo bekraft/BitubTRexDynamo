@@ -8,9 +8,9 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
+using TRex.Internal;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// A file logger capturing the logging output and redirected to file.

@@ -5,7 +5,7 @@ using Bitub.Dto;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Data
+namespace TRex.Data
 {
     /// <summary>
     /// A canonical name qualifier.

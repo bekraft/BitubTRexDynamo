@@ -8,13 +8,13 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Geom;
-using Data;
+using TRex.Internal;
+using TRex.Geom;
+using TRex.Data;
 
 using Bitub.Ifc.Export;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// UI Node model wrapping scene export settings.

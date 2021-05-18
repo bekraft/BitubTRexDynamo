@@ -5,9 +5,9 @@ using Autodesk.DesignScript.Runtime;
 using Bitub.Ifc.Transform;
 using Bitub.Dto.Scene;
 
-using Log;
+using TRex.Log;
 
-namespace Geom
+namespace TRex.Geom
 {
     /// <summary>
     /// Affine alignment between two 3D coordinate systems.

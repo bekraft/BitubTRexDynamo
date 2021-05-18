@@ -8,7 +8,7 @@ using Dynamo.Engine;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 
-namespace Internal
+namespace TRex.Internal
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -180,6 +180,22 @@ namespace Internal
         protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
         {
             return AstFactory.BuildStringNode(Enum.GetName(typeof(T), n));
+        }
+
+        protected AssociativeNode[] BuildNullResult()
+        {
+            return Enumerable
+                .Range(0, OutPorts.Count)
+                .Select(i => AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(i), AstFactory.BuildNullNode()))
+                .ToArray();
+        }
+
+        protected AssociativeNode[] BuildResult(params AssociativeNode[] value)
+        {
+            return Enumerable
+                .Range(0, OutPorts.Count)
+                .Select(i => AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(i), (i < value.Length ? value[i] : AstFactory.BuildNullNode())))
+                .ToArray();
         }
     }
 

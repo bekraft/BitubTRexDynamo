@@ -8,10 +8,10 @@ using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto;
 
-using Log;
-using Internal;
+using TRex.Log;
+using TRex.Internal;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Model base implementation using a qualifier as naming approach.
@@ -66,7 +66,7 @@ namespace Store
 
         #endregion
 
-        #region Internal helpers        
+        #region Pure internal helpers
 
         internal string GetFilePathName(string canonicalSep = "-", bool withExtension = true)
         {

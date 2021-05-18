@@ -8,10 +8,10 @@ using Xbim.Ifc4.Interfaces;
 
 using Bitub.Dto;
 
-using Store;
-using Internal;
+using TRex.Store;
+using TRex.Internal;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// IFC GUID Temporary inmemory store.

@@ -8,10 +8,10 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-using Internal;
+using TRex.Internal;
 using Dynamo.Utilities;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// List model with selection of partial <see cref="IfcReportDomain"/> flags.

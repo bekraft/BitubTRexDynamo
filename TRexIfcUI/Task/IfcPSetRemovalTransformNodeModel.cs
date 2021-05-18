@@ -9,11 +9,11 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Log;
-using Store;
-using Internal;
+using TRex.Log;
+using TRex.Store;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// IFC Property set removal transformation. Will remove given property sets

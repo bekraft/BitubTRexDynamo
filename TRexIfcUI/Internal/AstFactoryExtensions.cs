@@ -10,7 +10,7 @@ using Bitub.Dto;
 // Disable comment warning
 #pragma warning disable CS1591
 
-namespace Internal
+namespace TRex.Internal
 {
     [IsVisibleInDynamoLibrary(false)]
     public static class AstFactoryExtensions

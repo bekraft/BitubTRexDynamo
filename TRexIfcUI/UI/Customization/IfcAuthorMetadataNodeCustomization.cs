@@ -1,9 +1,9 @@
 ﻿using Dynamo.Controls;
 using Dynamo.Wpf;
 
-using Store;
+using TRex.Store;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
 

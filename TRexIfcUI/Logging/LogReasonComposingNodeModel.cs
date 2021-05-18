@@ -8,10 +8,10 @@ using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
-using Internal;
+using TRex.Internal;
 using Dynamo.Utilities;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// Node model for composing a <see cref="LogReason"/>.

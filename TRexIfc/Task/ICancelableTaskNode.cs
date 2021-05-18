@@ -2,7 +2,7 @@
 
 using Bitub.Dto;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Progressing task node interface.

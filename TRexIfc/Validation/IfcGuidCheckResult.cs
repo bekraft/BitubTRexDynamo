@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// IFC GUID checking result.

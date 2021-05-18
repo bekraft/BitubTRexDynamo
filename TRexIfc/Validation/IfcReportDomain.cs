@@ -2,7 +2,7 @@
 
 using Autodesk.DesignScript.Runtime;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// Flag of reporting domain.

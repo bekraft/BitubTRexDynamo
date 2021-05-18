@@ -9,14 +9,14 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Log;
-using Store;
+using TRex.Log;
+using TRex.Store;
 
-using Internal;
-using Geom;
+using TRex.Internal;
+using TRex.Geom;
 using Bitub.Ifc.Transform.Requests;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// IFC Property set removal transformation. Will remove given property sets

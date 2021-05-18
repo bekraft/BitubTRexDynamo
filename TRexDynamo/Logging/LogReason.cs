@@ -1,7 +1,7 @@
 ﻿using System;
 using Autodesk.DesignScript.Runtime;
 
-namespace Log
+namespace TRex.Log
 {
     /// <summary>
     /// Action type of message

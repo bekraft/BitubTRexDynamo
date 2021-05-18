@@ -1,10 +1,10 @@
 ﻿using Dynamo.Controls;
 
-using Task;
+using TRex.Task;
 
-using Log;
+using TRex.Log;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

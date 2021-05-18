@@ -8,9 +8,9 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 using System;
-using Internal;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Select multiple items from a list of available items using its string representation.

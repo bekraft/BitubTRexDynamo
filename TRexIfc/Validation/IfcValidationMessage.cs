@@ -5,7 +5,7 @@ using Xbim.Common;
 using XbimValidationFlags = Xbim.Common.Enumerations.ValidationFlags;
 using XbimValidationResult = Xbim.Common.ExpressValidation.ValidationResult;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// Validation result message.

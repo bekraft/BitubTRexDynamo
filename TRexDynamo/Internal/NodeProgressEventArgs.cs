@@ -2,9 +2,9 @@
 
 using Bitub.Dto;
 
-using Log;
+using TRex.Log;
 
-namespace Internal
+namespace TRex.Internal
 {
     /// <summary>
     /// Node progressing event arguments.

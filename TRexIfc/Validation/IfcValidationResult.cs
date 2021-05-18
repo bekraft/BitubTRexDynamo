@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 using Microsoft.Extensions.Logging;
 
-using Internal;
+using TRex.Internal;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// Abstract validation result wrapping a pipe of messages only

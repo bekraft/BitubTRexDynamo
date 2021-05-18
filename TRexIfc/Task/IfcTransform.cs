@@ -11,13 +11,13 @@ using Bitub.Ifc.Transform;
 
 using Autodesk.DesignScript.Runtime;
 
-using Geom;
-using Store;
-using Log;
-using Internal;
+using TRex.Geom;
+using TRex.Store;
+using TRex.Log;
+using TRex.Internal;
 using System.Threading;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Transforming model delegates.

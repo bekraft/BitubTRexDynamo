@@ -7,12 +7,12 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
-using Store;
-using Log;
+using TRex.Internal;
+using TRex.Task;
+using TRex.Store;
+using TRex.Log;
 
-namespace Export
+namespace TRex.Export
 {
     /// <summary>
     /// Saves the component scene to the requested format extension. Currently supports JSON and binary
@@ -39,7 +39,7 @@ namespace Export
 
             IsCancelable = false;
 
-            SelectedOption = ComponentScene.saveAsExtensions[0];
+            SelectedOption = ComponentScene.saveAsFormats.FirstOrDefault();
         }
 
         #region Internals
@@ -52,10 +52,15 @@ namespace Export
 
         private void InitOptions()
         {
-            foreach (var ext in ComponentScene.saveAsExtensions)
+            foreach (var ext in ComponentScene.saveAsFormats)
                 AvailableOptions.Add(ext);
 
             LogReasonMask = LogReason.Saved;
+        }
+
+        private Format SelectedFormat
+        {
+            get => Format.FromDynamic(SelectedOption);
         }
 
         #endregion
@@ -65,6 +70,13 @@ namespace Export
             BeforeBuildOutputAst();
 
             AssociativeNode[] inputs = inputAstNodes.ToArray();
+
+            if (null == SelectedFormat)
+            {
+                Warning("Format must not be null.");
+                return BuildNullResult();
+            }
+
             if (IsPartiallyApplied)
             {
                 foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
@@ -78,11 +90,8 @@ namespace Export
                             WarnForMissingInputs();
                             ResetState();
 
-                            // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
+                            // Not evaluable, cancel here
+                            return BuildNullResult();
                     }
                 }
             }
@@ -93,14 +102,11 @@ namespace Export
                 new List<AssociativeNode>()
                 {
                     inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    AstFactory.BuildStringNode(SelectedOption?.ToString()),
+                    AstFactory.BuildStringNode(SelectedFormat?.ID),
                     inputs[1]
                 });
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), astRunSaveScene)
-            };
+            return BuildResult(astRunSaveScene);
         }
 
 #pragma warning restore CS1591
