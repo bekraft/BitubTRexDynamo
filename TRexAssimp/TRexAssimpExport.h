@@ -33,8 +33,11 @@ namespace TRexAssimp
 
 		const uint GetOrCreateNodeAndParent(Component^ c, 
 			std::vector<aiNode*>& nodes, 
-			std::map<int, std::vector<uint>>& children, 
+			std::map<uint, std::vector<uint>>& children, 
 			Dictionary<GlobalUniqueId^, uint>^ nodeMap);
+
+		std::vector<uint>& GetOrCreateChildIndex(std::map<uint, std::vector<uint>>& mChildren,
+			const uint idx_parent_node);
 
 		const uint GetOrCreateNode(GlobalUniqueId^ id,
 			std::vector<aiNode*>& nodes,

@@ -7,6 +7,10 @@ using namespace msclr::interop;
 
 #include "TRexAssimpExport.h"
 
+// TODO
+// - single mesh per node & transform or multiple transformed meshes in WCS per node
+// - root per context
+
 TRexAssimp::TRexAssimpExport::TRexAssimpExport()
 {
     exporter = new Assimp::Exporter();
@@ -47,7 +51,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
     Format^ format)
 {
     std::string stdFileName = marshal_as<std::string>(filePathName);
-    aiScene scene;
+    aiScene scene = aiScene();
     if (nullptr != componentScene->Metadata && nullptr != componentScene->Metadata->Name)
     {   // Use name of metadata
         std::string sceneName = marshal_as<std::string>(componentScene->Metadata->Name);
@@ -82,7 +86,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 
     auto componentMap = gcnew Dictionary<GlobalUniqueId^, uint>(10);
     std::vector<aiNode*> vNodes;
-    std::map<int, std::vector<uint>> mChildren;
+    std::map<uint, std::vector<uint>> mChildren;
     std::vector<aiNode*> vTopLevelNodes;
 
     int c_index = 0;
@@ -97,42 +101,56 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
             node->mParent = scene.mRootNode;
             vTopLevelNodes.push_back(node);
         }
-
-        node->mNumMeshes = c->Shapes->Count;
-        node->mMeshes = nullptr;
-        if (0 < node->mNumMeshes)
+        
+        if (0 < c->Shapes->Count)
         {   // If there are meshes, process them
-            int m_index = 0;
-            node->mMeshes = new uint[node->mNumMeshes];
+            uint m_index = 0;
 
             for (auto en_shape = c->Shapes->GetEnumerator(); en_shape->MoveNext(); ++m_index)
-            {
+            {   // Build artificial mesh nodes since materialized meshes don't have transforms, only nodes have
+                aiNode * meshNode = new aiNode(std::string("Mesh {}", m_index));
                 Shape^ shape = en_shape->Current;
                 Transform^ t = nullptr;
                 uint idx_raw_mesh;
+
                 if (meshMap->TryGetValue(shape->ShapeBody, idx_raw_mesh))
                 {   // Store global mesh index into local mesh index
                     uint idx_material;
                     if (materialMap->TryGetValue(shape->Material, idx_material))
                     {
                         auto idx_material_mesh = CreateMaterialMesh(vRawMeshes, mRawMaterialMeshes, vMaterialMeshes, idx_raw_mesh, idx_material);
-                        node->mMeshes[m_index] = idx_material_mesh;
+                        meshNode->mNumMeshes = 1;
+                        meshNode->mMeshes = new uint[]{ idx_material_mesh };
                     }
                 }
 
                 if (contextWcsMap->TryGetValue(shape->Context, t))
                 {   // Get WCS transform
                     aiMatrix4x4 wcs = _aiMatrix4(t);
-                    node->mTransformation = wcs * _aiMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
+                    meshNode->mTransformation = wcs * _aiMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
                 }
+
+                // Register mesh node as child of current real scene node
+                auto mChildIndex = GetOrCreateChildIndex(mChildren, idx_node);
+                const uint idx_child = (uint)vNodes.size();
+                vNodes.push_back(meshNode);
+                mChildIndex.push_back(idx_child);
+                meshNode->mParent = node;
             }
         }
     }
 
     // Copy final materialized meshes to scene
     scene.mNumMeshes = (uint)vMaterialMeshes.size();
-    scene.mMeshes = new aiMesh * [scene.mNumMeshes];
-    std::copy(vMaterialMeshes.begin(), vMaterialMeshes.end(), scene.mMeshes);
+    if (0 < scene.mNumMeshes)
+    {
+        scene.mMeshes = new aiMesh * [scene.mNumMeshes];
+        std::copy(vMaterialMeshes.begin(), vMaterialMeshes.end(), scene.mMeshes);
+    }
+    else
+    {
+        scene.mMeshes = nullptr;
+    }
 
     // Create parent-child relationships
     for (int i = 0; i < vNodes.size(); ++i)
@@ -141,37 +159,50 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
         if (it_children != mChildren.end())
         {   // If relations exist
             std::vector<uint>& vChildrenIndex = it_children->second;
-            vNodes[i]->mNumChildren = (uint)vChildrenIndex.size();
-
-            aiNode** childNodes = new aiNode * [vNodes[i]->mNumChildren];
-            vNodes[i]->mChildren = childNodes;
-            for (auto it = vChildrenIndex.begin(); it != vChildrenIndex.end(); ++it)
+            const uint numChildren = (uint)vChildrenIndex.size();
+            vNodes[i]->mNumChildren = numChildren;
+            if (0 < numChildren)
             {
-                childNodes[it - vChildrenIndex.begin()] = vNodes[*it];
-            }                        
+                aiNode** childNodes = new aiNode * [numChildren];
+                vNodes[i]->mChildren = childNodes;
+                for (auto it = vChildrenIndex.begin(); it != vChildrenIndex.end(); ++it)
+                {
+                    childNodes[it - vChildrenIndex.begin()] = vNodes[*it];
+                }
+            }
         }
     }
 
     // Finally set up top level nodes as children of root node
-    scene.mRootNode->mNumChildren = (uint)vTopLevelNodes.size();
-    scene.mRootNode->mChildren = new aiNode * [scene.mRootNode->mNumChildren];
-    std::copy(vTopLevelNodes.begin(), vTopLevelNodes.end(), scene.mRootNode->mChildren);
+    const uint numRootChildren = (uint)vTopLevelNodes.size();
+    scene.mRootNode->mNumChildren = numRootChildren;
+    if (0 < numRootChildren)
+    {
+        scene.mRootNode->mChildren = new aiNode * [numRootChildren];
+        std::copy(vTopLevelNodes.begin(), vTopLevelNodes.end(), scene.mRootNode->mChildren);
+    }
+    else
+    {
+        scene.mRootNode->mChildren = nullptr;
+    }
 
+    // Save the scene to file of requested format
     String^ givenExt = System::IO::Path::GetExtension(filePathName)->ToLower();
     if (!givenExt->Equals(format->Extension->ToLower()))
         filePathName = System::IO::Path::ChangeExtension(filePathName, format->Extension);
 
     auto formatID = marshal_as<std::string>(format->ID);
     auto fileName = marshal_as<std::string>(filePathName);
+    
     const aiReturn res = exporter->Export(&scene, formatID, fileName);
     this->statusMessage = gcnew String(exporter->GetErrorString());
-    return AI_SUCCESS == res;
+    return (bool)(AI_SUCCESS == res);
 }
 
 // Get or create a node and its parent by ID reference
 const uint TRexAssimp::TRexAssimpExport::GetOrCreateNodeAndParent(Component^ c,
     std::vector<aiNode*>& vNodes, // the nodes
-    std::map<int, std::vector<uint>>& mChildren, // parent-children relation per index
+    std::map<uint, std::vector<uint>>& mChildren, // parent-children relation per index
     Dictionary<GlobalUniqueId^, uint>^ nodeMap) // DTO reference to index
 {
     int idx_node = GetOrCreateNode(c->Id, vNodes, nodeMap);
@@ -183,17 +214,24 @@ const uint TRexAssimp::TRexAssimpExport::GetOrCreateNodeAndParent(Component^ c,
     {
         auto idx_parent_node = GetOrCreateNode(c->Parent, vNodes, nodeMap);
         node->mParent = vNodes[idx_parent_node];
-        auto it_children = mChildren.find(idx_parent_node);
-        if (it_children == mChildren.end())
-        {
-            auto it_inserted = mChildren.insert(std::make_pair(idx_parent_node, std::vector<uint>()));
-            it_children = it_inserted.first;
-        }
+        auto mChildIndex = GetOrCreateChildIndex(mChildren, idx_parent_node);
         // add current node as child of referenced parent
-        it_children->second.push_back(idx_node);
+        mChildIndex.push_back(idx_node);
     }
 
     return idx_node;
+}
+
+// Gets or creates an index vector of children indices
+std::vector<uint>& TRexAssimp::TRexAssimpExport::GetOrCreateChildIndex(std::map<uint, std::vector<uint>>& mChildren, const uint idx_parent_node)
+{
+    auto it_children = mChildren.find(idx_parent_node);
+    if (it_children == mChildren.end())
+    {
+        auto it_inserted = mChildren.insert(std::make_pair(idx_parent_node, std::vector<uint>()));
+        it_children = it_inserted.first;
+    }
+    return it_children->second;
 }
 
 // Get or create a node by global ID.
@@ -209,7 +247,7 @@ const uint TRexAssimp::TRexAssimpExport::GetOrCreateNode(GlobalUniqueId^ id,
     }
     else
     {
-        node = new aiNode;
+        node = new aiNode();
         idx_node = (uint)vNodes.size();
         nodeMap->Add(id, idx_node);
         vNodes.push_back(node);
@@ -253,9 +291,11 @@ const uint TRexAssimp::TRexAssimpExport::CreateMesh(ShapeBody^ body,
     }
 
     mesh->mNumFaces = (uint)faces.size();
-    mesh->mFaces = new aiFace[mesh->mNumFaces];
-
-    std::copy(faces.begin(), faces.end(), mesh->mFaces);
+    if (0 < mesh->mNumFaces)
+    {
+        mesh->mFaces = new aiFace[mesh->mNumFaces];
+        std::copy(faces.begin(), faces.end(), mesh->mFaces);
+    }
 
     index = (uint)vRawMeshes.size();
     vRawMeshes.push_back(mesh);
@@ -310,12 +350,22 @@ Dictionary<RefId^, uint>^ TRexAssimp::TRexAssimpExport::CreateMaterials(Componen
     std::vector<aiMaterial*> materials;
     for (auto en_material = componentScene->Materials->GetEnumerator(); en_material->MoveNext();)
     {
-        materials.push_back(CreateMaterial(en_material->Current));
+        auto material = en_material->Current;
+        map->Add(material->Id, materials.size());
+        materials.push_back(CreateMaterial(material));
     }
 
     scene.mNumMaterials = (uint)materials.size();
-    scene.mMaterials = new aiMaterial * [scene.mNumMaterials];
-    std::copy(materials.begin(), materials.end(), scene.mMaterials);
+    if (0 < scene.mNumMaterials)
+    {
+        scene.mMaterials = new aiMaterial * [scene.mNumMaterials];
+        std::copy(materials.begin(), materials.end(), scene.mMaterials);
+    }
+    else
+    {
+        scene.mMaterials = nullptr;
+    }
+
     return map;
 }
 
