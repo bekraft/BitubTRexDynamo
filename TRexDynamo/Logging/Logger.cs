@@ -16,19 +16,9 @@ namespace TRex.Log
     /// </summary>
     public sealed class Logger
     {
-        #region Internals
-
 #pragma warning disable CS1591
 
-        /// <summary>
-        /// Logger factory
-        /// </summary>
-        internal ILoggerFactory LoggerFactory { get; private set; }
-
-        /// <summary>
-        /// The default log.
-        /// </summary>
-        internal Serilog.ILogger DefaultLog { get; private set; }
+        #region Internals
 
         internal string MessageTemplate { get; set; } =         
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId} '{ThreadName}'){NewLine}{Exception}";
@@ -37,6 +27,18 @@ namespace TRex.Log
         {
             LoggerFactory = new LoggerFactory();
         }
+
+        /// <summary>
+        /// Logger factory
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public ILoggerFactory LoggerFactory { get; private set; }
+
+        /// <summary>
+        /// The default log.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        public Serilog.ILogger DefaultLog { get; private set; }
 
         internal void LogInfo(string message, params object[] args)
         {
@@ -57,8 +59,6 @@ namespace TRex.Log
         {
             DefaultLog.Error(e, message, args);
         }
-
-#pragma warning restore CS1591
 
         /// <summary>
         /// New logging instance.
@@ -142,6 +142,8 @@ namespace TRex.Log
         }
 
         #endregion
+
+#pragma warning restore CS1591
 
         /// <summary>
         /// New logging instance.

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 
 using System.Xml.Serialization;
+
 using Xbim.Common;
+using Xbim.Ifc;
 
 namespace TRex.Store
 {
@@ -14,9 +16,29 @@ namespace TRex.Store
     [XmlRoot("IfcTessellationPrefs", Namespace = "https://github.com/bekraft/BitubTRexDynamo/Store")]
     public class IfcTessellationPrefs
     {
+#pragma warning disable CS1591
+
         #region Internals
 
-#pragma warning disable CS1591
+        internal IfcTessellationPrefs()
+        {            
+        }
+
+        internal void ApplyTo(IModel model)
+        {
+            // Rescale to model conversion length unit
+            var mf = model?.ModelFactors;
+
+            mf.DeflectionAngle = DeflectionAngle;
+            mf.DeflectionTolerance = DeflectionTolerance * mf.OneMeter;
+            mf.Precision = Precision * mf.OneMeter;
+            mf.PrecisionMax = PrecisionMax * mf.OneMeter;
+            mf.PrecisionBoolean = PrecisionBoolean * mf.OneMeter;
+            mf.PrecisionBooleanMax = PrecisionBooleanMax * mf.OneMeter;
+            model.GeometryStore?.Dispose();
+        }
+
+        #endregion
 
         /// <summary>
         /// Count of model units to assemble 1.0 SI meter.
@@ -37,27 +59,22 @@ namespace TRex.Store
         [IsVisibleInDynamoLibrary(false)]
         public double PrecisionBooleanMax { get; set; }
 
-        internal IfcTessellationPrefs()
-        {            
-        }
-
-        internal void ApplyTo(IModel model)
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcTessellationPrefs FromModelFactors(IModelFactors mf)
         {
-            // Rescale to model conversion length unit
-            var mf = model.ModelFactors;
-
-            mf.DeflectionAngle = DeflectionAngle;
-            mf.DeflectionTolerance = DeflectionTolerance * mf.OneMeter;
-            mf.Precision = Precision * mf.OneMeter;
-            mf.PrecisionMax = PrecisionMax * mf.OneMeter;
-            mf.PrecisionBoolean = PrecisionBoolean * mf.OneMeter;
-            mf.PrecisionBooleanMax = PrecisionBooleanMax * mf.OneMeter;
-            model.GeometryStore?.Dispose();
+            return new IfcTessellationPrefs
+            {
+                OneMeter = mf.OneMeter,
+                Precision = mf.Precision * mf.LengthToMetresConversionFactor,
+                PrecisionMax = mf.PrecisionMax * mf.LengthToMetresConversionFactor,
+                PrecisionBoolean = mf.PrecisionBoolean * mf.LengthToMetresConversionFactor,
+                PrecisionBooleanMax = mf.PrecisionBooleanMax * mf.LengthToMetresConversionFactor,
+                DeflectionAngle = mf.DeflectionAngle,
+                DeflectionTolerance = mf.DeflectionTolerance * mf.LengthToMetresConversionFactor
+            };
         }
 
 #pragma warning restore CS1591
-
-        #endregion
 
         /// <summary>
         /// Applies the preferences to an IFC model instance.
@@ -84,17 +101,16 @@ namespace TRex.Store
             if (null == internalModel)
                 throw new ArgumentNullException("ifcModel");
 
-            var mf = internalModel.ModelFactors;
-            return new IfcTessellationPrefs
-            {
-                OneMeter = mf.OneMeter,
-                Precision = mf.Precision * mf.LengthToMetresConversionFactor,
-                PrecisionMax = mf.PrecisionMax * mf.LengthToMetresConversionFactor,
-                PrecisionBoolean = mf.PrecisionBoolean * mf.LengthToMetresConversionFactor,
-                PrecisionBooleanMax = mf.PrecisionBooleanMax * mf.LengthToMetresConversionFactor,
-                DeflectionAngle = mf.DeflectionAngle,
-                DeflectionTolerance = mf.DeflectionTolerance * mf.LengthToMetresConversionFactor
-            };
+            return FromModelFactors(internalModel.ModelFactors);
+        }
+
+        /// <summary>
+        /// Using standards defaults.
+        /// </summary>
+        /// <returns>New default IFC tesselation preferences</returns>
+        public static IfcTessellationPrefs ByDefaults()
+        {
+            return FromModelFactors(new XbimModelFactors(Math.PI / 180, 1.0, 0.0001));
         }
 
         /// <summary>

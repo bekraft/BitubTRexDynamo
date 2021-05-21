@@ -90,6 +90,11 @@
   <ItemGroup>
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Resources\extruded-solid.ifc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
   <Target Name="DeployDependencies" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Deploy native dependencies to $(TargetDir)." />

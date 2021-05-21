@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Bitub.Dto.Scene;
-
+using TRex.Log;
+using TRex.Export;
 using TRex.Tests;
 
 using NUnit.Framework;
 
 namespace TRex.Tests.Export
 {
-    public class ExportAssimp : TestBase<ExportAssimp>
+    public class ExportAssimp : ModelTestBase<ExportAssimp>
     {
         private ComponentScene testScene;
 
@@ -21,8 +21,10 @@ namespace TRex.Tests.Export
         }
 
         [SetUp]
-        public void SetUp()
-        { 
+        public override void SetUp()
+        {
+            base.SetUp();
+            testScene = BuildComponentScene();
         }
 
         [Test]
@@ -30,14 +32,34 @@ namespace TRex.Tests.Export
         {
             try
             {
-                var export = new TRexAssimp.TRexAssimpExport();
-                var format3DS = export.Formats.FirstOrDefault(f => f.ID == "3ds");
-                Assert.IsNotNull(format3DS);
+                var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "3ds");
+                Assert.IsNotNull(format3DS, "3DS export module exists");
 
-                var result = export.ExportTo(new ComponentScene(), "test.3ds", format3DS);
-                Assert.IsTrue(result);
+                var exported = ComponentScene.Export(testScene, format3DS.Extension, null);
+                var log = exported.GetActionLog();
+                Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
+                Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
             }
             catch(Exception e)
+            {
+                Assert.Fail(e.Message);
+            }
+        }
+
+        [Test]
+        public void ExportAsFBX()
+        {
+            try
+            {
+                var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "fbx");
+                Assert.IsNotNull(format3DS, "FBX export module exists");
+
+                var exported = ComponentScene.Export(testScene, format3DS.Extension, null);
+                var log = exported.GetActionLog();
+                Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
+                Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
+            }
+            catch (Exception e)
             {
                 Assert.Fail(e.Message);
             }

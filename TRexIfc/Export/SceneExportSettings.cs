@@ -35,6 +35,20 @@ namespace TRex.Export
 
         #endregion
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static SceneExportSettings ByContext(params string[] contexts)
+        {
+            return new SceneExportSettings(new ExportPreferences
+            {
+                Transforming = SceneTransformationStrategy.Quaternion,
+                Positioning = ScenePositioningStrategy.NoCorrection,
+                UserModelCenter = new Bitub.Dto.Spatial.XYZ(),
+                UnitsPerMeter = 1.0f,
+                SelectedContext = contexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
+                FeatureToClassifierFilter = null
+            });
+        }
+
 #pragma warning restore CS1591
 
         /// <summary>

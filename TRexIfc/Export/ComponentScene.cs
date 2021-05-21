@@ -160,14 +160,13 @@ namespace TRex.Export
 
                     if (!exp.ExportTo(scene.SceneModel, fileName, format))
                     {
-                        monitor.NotifyOnProgressChange(1, "Exported");
+                        monitor.State.MarkBroken();
                         scene.ActionLog.Add(
                             LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "An error occured while exporting to '{0}'. {1}", fileName, exp.StatusMessage));
                     }
                     else
-                    {
-                        monitor.State.MarkBroken();
-
+                    {                        
+                        monitor.NotifyOnProgressChange(1, "Exported");
                         scene.ActionLog.Add(
                             LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene exported to '{0}'.", fileName));
                     }

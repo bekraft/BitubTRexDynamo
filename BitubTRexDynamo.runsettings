@@ -8,18 +8,13 @@
     <!-- x86 or x64 -->
     <TargetPlatform>x64</TargetPlatform>
     <!-- Framework35 | [Framework40] | Framework45 -->
-    <TargetFrameworkVersion>Framework45</TargetFrameworkVersion>
+    <TargetFrameworkVersion>Framework48</TargetFrameworkVersion>
     <!-- Set to 30 minutes -->
     <TestSessionTimeout>18000000</TestSessionTimeout>
   </RunConfiguration>
 
-  <MSTest>
-    <MapInconclusiveToFailed>True</MapInconclusiveToFailed>
-    <CaptureTraceOutput>true</CaptureTraceOutput>
-    <DeleteDeploymentDirectoryAfterTestRunIsComplete>False</DeleteDeploymentDirectoryAfterTestRunIsComplete>
-    <!-- Since Xbim.Geometry.Engine DLLs are lazy loaded it is better to keep files in the non-isolated 
-    output directory. Otherwise we have to switch to legacy mode and deploy those seperately -->
-    <DeploymentEnabled>false</DeploymentEnabled>    
-  </MSTest>
+  <NUnit>
+    
+  </NUnit>
   
 </RunSettings>

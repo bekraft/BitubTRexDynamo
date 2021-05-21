@@ -134,7 +134,7 @@ namespace TRex.Log
         /// <returns></returns>
         public static LogMessage[] FilterBySeverity(LogSeverity severity, LogMessage[] messages)
         {
-            return messages.Where(m => SeverityExtensions.AboveOrEqual(m.Severity, severity)).ToArray();
+            return messages.Where(m => SeverityExtensions.IsAboveOrEqual(m.Severity, severity)).ToArray();
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace TRex.Log
             }
 
             return nodeProgressing?.ActionLog
-                .Where(m => SeverityExtensions.AboveOrEqual(m.Severity, severity))
+                .Where(m => SeverityExtensions.IsAboveOrEqual(m.Severity, severity))
                 .Where(m => (m.Reason & reasonFlag) != 0)
                 .OrderBy(m => m)
                 .Take(maxLogCount)

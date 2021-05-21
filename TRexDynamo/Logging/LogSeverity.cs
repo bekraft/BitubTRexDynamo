@@ -35,9 +35,14 @@ namespace TRex.Log
     [IsVisibleInDynamoLibrary(false)]
     public static class SeverityExtensions
     {
-        public static bool AboveOrEqual(this LogSeverity s, LogSeverity baseSeverity)
+        public static bool IsAboveOrEqual(this LogSeverity s, LogSeverity baseSeverity)
         {
             return ((int)s) >= ((int)baseSeverity);
+        }
+
+        public static bool IsLessOrEqual(this LogSeverity s, LogSeverity baseSeverity)
+        {
+            return ((int)s) <= ((int)baseSeverity);
         }
     }
     

@@ -31,7 +31,14 @@ namespace TRex.Internal
 
         internal ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
 
-        internal static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
+        [IsVisibleInDynamoLibrary(false)]
+        public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
+
+        [IsVisibleInDynamoLibrary(false)]
+        public LogMessage[] GetActionLog()
+        {
+            return ActionLog.ToArray();
+        }
 
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {

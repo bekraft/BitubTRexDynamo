@@ -9,7 +9,7 @@ namespace TRex.Tests
 {
     public abstract class TestBase<T>
     {
-        //protected readonly ILogger logger = GlobalLogging.loggingFactory.CreateLogger<T>();
+        protected readonly ILogger logger = GlobalLogging.loggingFactory.CreateLogger<T>();
 
         protected TestBase()
         { }
