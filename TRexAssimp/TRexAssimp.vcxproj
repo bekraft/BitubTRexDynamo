@@ -97,12 +97,16 @@
     <ClInclude Include="include\assimp\XmlParser.h" />
     <ClInclude Include="include\assimp\XMLTools.h" />
     <ClInclude Include="include\assimp\ZipArchiveIOSystem.h" />
+    <ClInclude Include="TRexAssimp.h" />
     <ClInclude Include="TRexAssimpExport.h" />
     <ClInclude Include="TRexAssimpImport.h" />
+    <ClInclude Include="TRexAssimpPreferences.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TRexAssimp.cpp" />
     <ClCompile Include="TRexAssimpExport.cpp" />
     <ClCompile Include="TRexAssimpImport.cpp" />
+    <ClCompile Include="TRexAssimpPreferences.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\assimp\color4.inl" />
@@ -113,8 +117,10 @@
     <None Include="include\assimp\SmoothingGroups.inl" />
     <None Include="include\assimp\vector2.inl" />
     <None Include="include\assimp\vector3.inl" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Platform)' == 'x64' ">
     <CopyFileToFolders Include="x64\assimp-vc142-mt.dll">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent>false</DeploymentContent>
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>

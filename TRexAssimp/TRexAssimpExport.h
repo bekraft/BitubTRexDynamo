@@ -8,6 +8,8 @@ using namespace Bitub::Dto::Scene;
 
 using namespace ::TRex::Export;
 
+#include "TRexAssimpPreferences.h"
+
 #include <assimp/scene.h>
 #include <assimp/Exporter.hpp>
 
@@ -19,8 +21,12 @@ namespace TRexAssimp
 	{
 		Assimp::Exporter* exporter;
 		String^ statusMessage;
+		TRexAssimpPreferences^ preferences;
+
 	public:
 		TRexAssimpExport();
+		TRexAssimpExport(TRexAssimpPreferences^ p);
+
 		virtual ~TRexAssimpExport();
 		!TRexAssimpExport();
 
@@ -70,14 +76,6 @@ namespace TRexAssimp
 			aiMaterial* material, 
 			aiColor3D& color, 
 			float alpha);
-
-		// Simple internal entity converters
-		aiColor3D _aiColor3D(Color^ color, float% alpha);
-		aiMatrix3x3 _aiMatrix3(Rotation^ r);
-		aiMatrix4x4 _aiMatrix4(const aiMatrix3x3& r, const aiVector3D& o);
-		aiMatrix4x4 _aiMatrix4(Transform^ t);
-		aiVector3D _aiVector3D(XYZ^ xyz);
-		aiQuaternion _aiQuaternion(Quaternion^ q);
 
 		// Generic helper methods
 		template<typename T>

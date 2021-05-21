@@ -8,6 +8,7 @@ using namespace Bitub::Dto::Scene;
 using namespace msclr::interop;
 
 #include "TRexAssimpExport.h"
+#include "TRexAssimp.h"
 
 // TODO
 // - single mesh per node & transform or multiple transformed meshes in WCS per node
@@ -17,8 +18,14 @@ using namespace msclr::interop;
 // - axis adaption per format configuration
 
 TRexAssimp::TRexAssimpExport::TRexAssimpExport()
+    : TRexAssimpExport(gcnew TRexAssimpPreferences())
+{    
+}
+
+TRexAssimp::TRexAssimpExport::TRexAssimpExport(TRexAssimpPreferences^ p)    
 {
     exporter = new Assimp::Exporter();
+    preferences = p;
 }
 
 TRexAssimp::TRexAssimpExport::~TRexAssimpExport()
@@ -86,6 +93,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 
     // Create scene root
     scene.mRootNode = new aiNode();
+    scene.mRootNode->mTransformation = preferences->GetTransform();
     if (nullptr != componentScene->Metadata)
     {
         std::string projectName = marshal_as<std::string>(componentScene->Metadata->Name);
@@ -155,8 +163,8 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 // Get WCS and mesh transformation
                 if (contextWcsMap->TryGetValue(shape->Context, t))
                 {
-                    aiMatrix4x4 wcs = _aiMatrix4(t);
-                    meshNode->mTransformation = wcs * _aiMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
+                    aiMatrix4x4 wcs = TRexAssimp::AIMatrix4(t);
+                    meshNode->mTransformation = wcs * TRexAssimp::AIMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
                 }
 
                 // Register mesh node as child of current real scene node
@@ -407,7 +415,7 @@ aiMaterial* TRexAssimp::TRexAssimpExport::CreateMaterial(Material^ material)
             break;
         case ColorOrNormalised::ColorOrValueOneofCase::Color:
             float alpha;
-            c = _aiColor3D(color->Color, alpha);
+            c = TRexAssimp::AIColor3D(color->Color, alpha);
             SetColorChannel(color->Channel, mat, c, alpha);
             break;
         case ColorOrNormalised::ColorOrValueOneofCase::None:
@@ -438,70 +446,8 @@ void TRexAssimp::TRexAssimpExport::SetColorChannel(ColorChannel channel, aiMater
         material->AddProperty(&color, 1, AI_MATKEY_COLOR_REFLECTIVE);
         break;
     case ColorChannel::DiffuseEmmisive:
-    case ColorChannel::Emmisive:
+    case ColorChannel::Emmissive:
         material->AddProperty(&color, 1, AI_MATKEY_COLOR_EMISSIVE);
         break;
     }
-}
-
-// Adapts a color and returns color and alpha (opacity) separately
-aiColor3D TRexAssimp::TRexAssimpExport::_aiColor3D(Color^ color, float % alpha)
-{
-    aiColor3D c;
-    c.r = color->R;
-    c.g = color->G;
-    c.b = color->B;
-    alpha = color->A;
-    return c;
-}
-
-// Adapts a rotation transform to a matrix 3x3
-aiMatrix3x3 TRexAssimp::TRexAssimpExport::_aiMatrix3(Rotation^ r)
-{
-    return aiMatrix3x3(
-        r->Rx->X, r->Rx->Y, r->Rx->Z,
-        r->Ry->X, r->Ry->Y, r->Ry->Z,
-        r->Rz->X, r->Rz->Y, r->Rz->Z
-    );
-}
-
-// Aggregates a rotation matrix and translation vector to a single matrix 4x4
-aiMatrix4x4 TRexAssimp::TRexAssimpExport::_aiMatrix4(const aiMatrix3x3& r, const aiVector3D& o)
-{
-    aiMatrix4x4 m = aiMatrix4x4(r);
-    m.a4 = o.x;
-    m.b4 = o.y;
-    m.c4 = o.z;
-    return m;
-}
-
-// Adapts a full transform to a transform matrix 4x4
-aiMatrix4x4 TRexAssimp::TRexAssimpExport::_aiMatrix4(Transform^ t)
-{
-    switch (t->RotationOrQuaternionCase)
-    {
-    case Transform::RotationOrQuaternionOneofCase::Q:
-        return aiMatrix4x4(aiVector3D(1), _aiQuaternion(t->Q), _aiVector3D(t->T));        
-    case Transform::RotationOrQuaternionOneofCase::R:        
-        return _aiMatrix4(_aiMatrix3(t->R), _aiVector3D(t->T));
-    default:
-        throw gcnew System::NotImplementedException();
-    }
-}
-
-// Adapts a simple XYZ vector
-aiVector3D TRexAssimp::TRexAssimpExport::_aiVector3D(XYZ^ xyz)
-{
-    return aiVector3D(xyz->X, xyz->Y, xyz->Z);
-}
-
-// Adapts a quaternion 
-aiQuaternion TRexAssimp::TRexAssimpExport::_aiQuaternion(Quaternion^ q)
-{
-    aiQuaternion quat;
-    quat.x = q->X;
-    quat.y = q->Y;
-    quat.z = q->Z;
-    quat.w = q->W;
-    return quat;
 }

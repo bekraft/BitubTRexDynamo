@@ -254,12 +254,24 @@
     <ClInclude Include="TRexAssimpExport.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="TRexAssimpPreferences.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="TRexAssimp.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TRexAssimpImport.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="TRexAssimpExport.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TRexAssimpPreferences.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TRexAssimp.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

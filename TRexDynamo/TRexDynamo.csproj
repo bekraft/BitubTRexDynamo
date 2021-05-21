@@ -88,7 +88,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Ifc" Version="1.0.21125-Alpha.8524" />
+    <PackageReference Include="Bitub.Ifc" Version="1.0.21141-Alpha.31188" />
     <PackageReference Include="DynamoVisualProgramming.Core" Version="2.10.1.3976" />
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>5.0.0</Version>
