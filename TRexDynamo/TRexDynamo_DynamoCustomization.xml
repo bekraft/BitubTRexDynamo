@@ -13,5 +13,8 @@
     <namespace name="TRex.Data">
       <category>TRex.Data</category>
     </namespace>
+    <namespace name="TRex.Export">
+      <category>TRex.Export</category>
+    </namespace>
   </namespaces>
 </doc>

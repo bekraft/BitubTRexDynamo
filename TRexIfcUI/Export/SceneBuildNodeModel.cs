@@ -19,7 +19,7 @@ namespace TRex.Export
     /// </summary>
     [NodeName("Build scene")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(SceneExportSettings), nameof(IfcModel)})]
+    [InPortTypes(new string[] { nameof(SceneBuildSettings), nameof(IfcModel)})]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
     public class SceneBuildNodeModel : CancelableProgressingNodeModel
@@ -29,7 +29,7 @@ namespace TRex.Export
         /// </summary>
         public SceneBuildNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("settings", "Export settings")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("settings", "Build settings")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
 
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene")));
@@ -76,7 +76,7 @@ namespace TRex.Export
 
             // Create functional AST to create a new scene builder
             var astCreateSceneExport = AstFactory.BuildFunctionCall(
-                new Func<SceneExportSettings, IfcModel, ComponentSceneBuild>(ComponentSceneBuild.BySettingsAndModel),
+                new Func<SceneBuildSettings, IfcModel, ComponentSceneBuild>(ComponentSceneBuild.BySettingsAndModel),
                 new List<AssociativeNode>() 
                 { 
                     inputs[0], 

@@ -4,16 +4,14 @@ using TRex.Export;
 
 namespace TRex.UI.Customization
 {
-    // Disable comment warning
 #pragma warning disable CS1591
 
-    public class SceneExportSettingsCustomization : BaseNodeViewCustomization<SceneExportSettingsNodeModel>
+    public class UnitScaleNodeCustomization : BaseNodeViewCustomization<UnitScaleNodeModel>
     {
-        public override void CustomizeView(SceneExportSettingsNodeModel model, NodeView nodeView)
+        public override void CustomizeView(UnitScaleNodeModel model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
-
-            var control = new SceneExportSettingsControl();
+            var control = new UnitScaleControl();
             nodeView.inputGrid.Children.Add(control);
             control.DataContext = model;
         }
@@ -25,4 +23,3 @@ namespace TRex.UI.Customization
 
 #pragma warning restore CS1591
 }
-

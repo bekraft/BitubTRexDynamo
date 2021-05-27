@@ -106,7 +106,7 @@
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
     <None Remove="UI\FilterMatchTypeControl.xaml" />
-    <None Remove="UI\SelectableOptionControl.xaml" />
+    <None Remove="UI\SceneExportSettingsControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -140,8 +140,11 @@
     <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="UI\SelectableOptionControl.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="UI\SceneExportSettingsControl.xaml.cs">
+      <DependentUpon>SceneExportSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\SceneBuildSettingsControl.xaml.cs">
+      <DependentUpon>SceneBuildSettingsControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

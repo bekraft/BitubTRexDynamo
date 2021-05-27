@@ -73,6 +73,69 @@ namespace TRex.Store
             return ifcModel.Store.Logger;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new string FileName => base.FileName;
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new string PathName => base.PathName;
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new string FormatExtension => base.FormatExtension;
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new string CanonicalFileName(string seperator = "-")
+        {
+            return base.CanonicalFileName(seperator);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new string CanonicalName(string seperator = "-")
+        {
+            return base.CanonicalName(seperator);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new IfcModel RelocatePath(string newPathName)
+        {
+            return base.RelocatePath(newPathName);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new IfcModel Rename(string fileNameWithoutExt)
+        {
+            return base.Rename(fileNameWithoutExt);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new IfcModel RenameWithReplacePattern(string replacePattern, string replaceWith)
+        {
+            return base.RenameWithReplacePattern(replacePattern, replaceWith);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public new IfcModel RenameWithSuffix(string fragment)
+        {
+            return base.RenameWithSuffix(fragment);
+        }
+
 #pragma warning restore CS1591
 
         /// <summary>
@@ -234,5 +297,6 @@ namespace TRex.Store
                 .Select(c => c.ContextIdentifier?.ToString())
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToArray();
+
     }
 }

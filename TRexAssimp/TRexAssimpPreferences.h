@@ -41,6 +41,12 @@ namespace TRexAssimp
 			void set(XYZ^ right) { transform->R->Rx = right; }
 		}
 
+		property XYZ^ Translation
+		{
+			XYZ^ get() { return transform->T; }
+			void set(XYZ^ t) { transform->T = t; }
+		}
+
 	internal:
 		aiMatrix4x4 GetTransform();
 

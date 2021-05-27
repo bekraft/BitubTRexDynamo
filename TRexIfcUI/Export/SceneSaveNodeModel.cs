@@ -19,6 +19,7 @@ namespace TRex.Export
     /// formats of protobuf specification.
     /// </summary>
     [NodeName("Save scene")]
+    [NodeDescription("Save scene as JSON or binary protobuf.")]
     [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]

@@ -5,7 +5,7 @@ using Bitub.Dto.Spatial;
 
 using Autodesk.DesignScript.Runtime;
 
-namespace TRexDynamo.Export
+namespace TRex.Export
 {
     [IsVisibleInDynamoLibrary(false)]
     public enum GlobalReferenceAxis
@@ -20,15 +20,18 @@ namespace TRexDynamo.Export
     }
 
     [IsVisibleInDynamoLibrary(false)]
-    public sealed class CoordinateReferenceAxis
+    public sealed class CRSTransform
     {
-        public readonly static CoordinateReferenceAxis[] given = new[]
+        public readonly static CRSTransform[] defined = new[]
         {
-            new CoordinateReferenceAxis("Default",
+            new CRSTransform("Default", // None
                 GlobalReferenceAxis.PositiveX, GlobalReferenceAxis.PositiveY, GlobalReferenceAxis.PositiveZ),
 
-            new CoordinateReferenceAxis("Y-Z or Z-Y", 
+            new CRSTransform("Swap Y-Z", // LHS <=> RHS
                 GlobalReferenceAxis.PositiveX, GlobalReferenceAxis.PositiveZ, GlobalReferenceAxis.PositiveY),
+
+            new CRSTransform("Mirror Y", // LHS <=> RHS
+                GlobalReferenceAxis.PositiveX, GlobalReferenceAxis.NegativeY, GlobalReferenceAxis.PositiveZ),
         };
 
         #region Internals
@@ -45,7 +48,7 @@ namespace TRexDynamo.Export
         /// <param name="right">The right direction</param>
         /// <param name="forward">The forward direction</param>
         /// <param name="up">The up direction</param>
-        internal CoordinateReferenceAxis(string name, GlobalReferenceAxis right, GlobalReferenceAxis up, GlobalReferenceAxis forward)
+        internal CRSTransform(string name, GlobalReferenceAxis right, GlobalReferenceAxis up, GlobalReferenceAxis forward)
         {
             matrix3 = new Rotation
             {
@@ -59,7 +62,7 @@ namespace TRexDynamo.Export
             Name = name;
         }
 
-        internal CoordinateReferenceAxis(string name, Rotation reference)
+        internal CRSTransform(string name, Rotation reference)
         {
             Name = name;
 
@@ -67,20 +70,56 @@ namespace TRexDynamo.Export
             globalAxes = new GlobalReferenceAxis[0];
         }
 
+        internal CRSTransform(CRSTransform other)
+        {
+            Name = other.Name;
+            Translation = other.Translation;
+
+            matrix3 = new Rotation(other.matrix3);
+            globalAxes = other.globalAxes;            
+        }
+
         #endregion
 
+        /// <summary>
+        /// Meaningful name.
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Linear translation reference.
+        /// </summary>
+        public XYZ Translation { get; private set; } = new XYZ(0, 0, 0);
+
+        /// <summary>
+        /// Rotation due to reference CRS.
+        /// </summary>
         public Rotation Rotation 
         {
             get => new Rotation(matrix3);
         }
 
+        /// <summary>
+        /// If using global predefined unit axes.
+        /// </summary>
         public bool IsGlobal
         {
             get => globalAxes.Length == 3;
         }
 
+        /// <summary>
+        /// Clone transform having an offset to the existing translation part.
+        /// </summary>
+        /// <param name="theOffset">The addon offset.</param>
+        /// <returns>New transform with same name</returns>
+        public CRSTransform WithOffsetOf(XYZ theOffset)
+        {
+            return new CRSTransform(this) { Translation = Translation.Add(theOffset) };
+        }
+
+        /// <summary>
+        /// Predefined unit axes if set.
+        /// </summary>
         public GlobalReferenceAxis[] GlobalReferenceAxes
         {
             get => globalAxes;

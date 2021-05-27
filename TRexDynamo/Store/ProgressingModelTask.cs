@@ -16,6 +16,7 @@ namespace TRex.Store
     /// <summary>
     /// Model base implementation using a qualifier as naming approach.
     /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
     public abstract class ProgressingModelTask<TModel> : ProgressingTask
     {
 #pragma warning disable CS1591
@@ -25,6 +26,8 @@ namespace TRex.Store
         protected internal Logger Logger { get; private set; }
 
         protected internal Qualifier Qualifier { get; private set; }
+
+        // TODO Copy constructor here => for requalify
 
         protected internal ProgressingModelTask(Qualifier qualifier, Logger logger)
         {
@@ -233,20 +236,20 @@ namespace TRex.Store
         /// Gets the canoncial model file name (depending on preceeding transformations).
         /// </summary>
         /// <param name="seperator">The separator between name fragments</param>
-        public string CanonicalFileName(string seperator = "-") => Path.GetFileName(GetFilePathName(seperator, true));
+        public virtual string CanonicalFileName(string seperator = "-") => Path.GetFileName(GetFilePathName(seperator, true));
 
         /// <summary>
         /// Gets the canoncial model name (depending on preceeding transformations).
         /// </summary>
         /// <param name="seperator">The separator between name fragments</param>
-        public string CanonicalName(string seperator = "-") => Path.GetFileName(GetFilePathName(seperator, false));
+        public virtual string CanonicalName(string seperator = "-") => Path.GetFileName(GetFilePathName(seperator, false));
 
         /// <summary>
         /// Relocates the containing folder.
         /// </summary>
         /// <param name="newPathName">The new path/folder name</param>
         /// <returns>A new reference to the model</returns>
-        public TModel RelocatePath(string newPathName)
+        public virtual TModel RelocatePath(string newPathName)
         {
             Qualifier qualifier;
             if (IsTemporaryModel)
@@ -270,7 +273,7 @@ namespace TRex.Store
         /// <para>Renaming temporary model will locate the new model relatively to the user's home directory.</para>
         /// </summary>
         /// <param name="fileNameWithoutExt">The new file name without format extension</param>
-        public TModel Rename(string fileNameWithoutExt)
+        public virtual TModel Rename(string fileNameWithoutExt)
         {
             Qualifier qualifier;
             if (IsTemporaryModel)
@@ -293,7 +296,7 @@ namespace TRex.Store
         /// </summary>
         /// <param name="replacePattern">Regular expression identifiying the replacement</param>
         /// <param name="replaceWith">Fragments to insert</param>
-        public TModel RenameWithReplacePattern(string replacePattern, string replaceWith)
+        public virtual TModel RenameWithReplacePattern(string replacePattern, string replaceWith)
         {
             if (IsTemporaryModel)
                 throw new NotSupportedException("Not allowed for temporary models");
@@ -308,7 +311,7 @@ namespace TRex.Store
         /// <para>A temporary model cannot have canonical extensions (suffixes)</para>
         /// </summary>
         /// <param name="fragment">A fragment in last position (suffix)</param>
-        public TModel RenameWithSuffix(string fragment)
+        public virtual TModel RenameWithSuffix(string fragment)
         {
             if (IsTemporaryModel)
                 throw new NotSupportedException("Not allowed for temporary models");

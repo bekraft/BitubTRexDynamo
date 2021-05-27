@@ -48,7 +48,7 @@ namespace TRex.Export
         /// <param name="ifcModel">The model about to be exported</param>
         /// <returns>A scene export task</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static ComponentSceneBuild BySettingsAndModel(SceneExportSettings settings, IfcModel ifcModel)
+        public static ComponentSceneBuild BySettingsAndModel(SceneBuildSettings settings, IfcModel ifcModel)
         {
             if (null == settings)
                 throw new ArgumentNullException(nameof(settings));

@@ -33,7 +33,7 @@ namespace TRex.Tests
 
         protected ComponentScene BuildComponentScene()
         {
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneExportSettings.ByContext("Body"), testSimpleSolid);
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSimpleSolid);
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 

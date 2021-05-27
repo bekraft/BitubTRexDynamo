@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="TRex.UI.SceneBuildSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TRex.UI"
+             xmlns:bitubifcexport="clr-namespace:Bitub.Ifc.Export;assembly=Bitub.Ifc"
+             xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="ScenePositioningStrategy"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitubifcexport:ScenePositioningStrategy"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="SceneTransformationStrategy"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitubifcexport:SceneTransformationStrategy"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Grid Margin="5,5,5,5" MinWidth="200" Height="Auto">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Additional settings" x:Name="MetadataGroup" Grid.Row="0" BorderBrush="Black">
+            <Grid x:Name="MetadataGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" FontSize="8" Content="Position strategy"/>
+
+                <ComboBox x:Name="PositioningStrategyComboBox"
+                          VerticalAlignment="Center"
+                          Grid.Row="1"
+                          ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
+                          SelectedItem="{Binding PositioningStrategy}"/>
+
+                <Label Grid.Row="2" FontSize="8" Content="Transformation strategy"/>
+
+                <ComboBox x:Name="TransformationStrategyComboBox"
+                          VerticalAlignment="Center"
+                          Grid.Row="3"
+                          ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
+                          SelectedItem="{Binding TransformationStrategy}"/>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

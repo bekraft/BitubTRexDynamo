@@ -16,7 +16,8 @@ namespace TRex.Export
     /// <summary>
     /// Exports the scene to an 3rd party custom format indicated by extension.
     /// </summary>
-    [NodeName("Assimp export")]
+    [NodeName("Export scene (assimp)")]
+    [NodeDescription("Export scene via Assimp package. For more details see https://github.com/assimp/assimp.")]
     [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]

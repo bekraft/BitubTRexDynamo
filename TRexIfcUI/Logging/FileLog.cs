@@ -23,10 +23,6 @@ namespace TRex.Log
     [IsDesignScriptCompatible]
     public class FileLog : BaseNodeModel
     {
-        #region Internals
-        private Serilog.Events.LogEventLevel _logEventLevel = Serilog.Events.LogEventLevel.Debug;
-        #endregion
-
         /// <summary>
         /// New file logger.
         /// </summary>
@@ -38,10 +34,16 @@ namespace TRex.Log
             RegisterAllPorts();
         }
 
+        #region Internals
+
+        private Serilog.Events.LogEventLevel _logEventLevel = Serilog.Events.LogEventLevel.Debug;
+
         [JsonConstructor]
         FileLog(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
+
+        #endregion
 
         /// <summary>
         /// The minimum log event level.

@@ -19,12 +19,12 @@ namespace TRex.Export
     /// <summary>
     /// UI Node model wrapping scene export settings.
     /// </summary>
-    [NodeName("Export settings")]
+    [NodeName("Build settings")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(XYZ), nameof(Double), nameof(String), nameof(CanonicalFilter) })]
-    [OutPortTypes(new string[] { nameof(SceneExportSettings) })]
+    [InPortTypes(new string[] { nameof(XYZ), nameof(UnitScale), nameof(String), nameof(CanonicalFilter) })]
+    [OutPortTypes(new string[] { nameof(SceneBuildSettings) })]
     [IsDesignScriptCompatible]
-    public class SceneExportSettingsNodeModel : BaseNodeModel
+    public class SceneBuildSettingsNodeModel : BaseNodeModel
     {
 #pragma warning disable CS1591
 
@@ -34,20 +34,20 @@ namespace TRex.Export
         private ScenePositioningStrategy _positioningStrategy = ScenePositioningStrategy.NoCorrection;
 
         [JsonConstructor]
-        SceneExportSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        SceneBuildSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
         }
 
         #endregion 
 
-        public SceneExportSettingsNodeModel()
+        public SceneBuildSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitsPerMeter", "Scaling units per Meter"))); // 1
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitScale", "Scaling units per Meter"))); // 1
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("providedContexts", "Provided representation model contexts"))); // 2
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("featureClassificationFilter", "Feature-2-classification filter"))); // 2
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene export settings")));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene build settings")));
 
             RegisterAllPorts();
         }
@@ -119,7 +119,7 @@ namespace TRex.Export
 
 
             var callCreateSceneExport = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, float, string[], CanonicalFilter, SceneExportSettings>(SceneExportSettings.ByParameters),                
+                new Func<string, string, XYZ, UnitScale, string[], CanonicalFilter, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),

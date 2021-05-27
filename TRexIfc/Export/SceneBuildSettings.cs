@@ -16,29 +16,29 @@ namespace TRex.Export
     /// <summary>
     /// Scene export settings
     /// </summary>
-    public class SceneExportSettings
+    public sealed class SceneBuildSettings
     {
 #pragma warning disable CS1591
 
         #region Internals
 
-        internal SceneExportSettings() : this(new ExportPreferences())
+        internal SceneBuildSettings() : this(new ExportPreferences())
         { }
 
-        internal SceneExportSettings(ExportPreferences preferences)
+        internal SceneBuildSettings(ExportPreferences preferences)
         {
             Preferences = preferences;
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public readonly ExportPreferences Preferences;
+        public ExportPreferences Preferences { get; private set; }
 
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSettings ByContext(params string[] contexts)
+        public static SceneBuildSettings ByContext(params string[] contexts)
         {
-            return new SceneExportSettings(new ExportPreferences
+            return new SceneBuildSettings(new ExportPreferences
             {
                 Transforming = SceneTransformationStrategy.Quaternion,
                 Positioning = ScenePositioningStrategy.NoCorrection,
@@ -49,35 +49,23 @@ namespace TRex.Export
             });
         }
 
-#pragma warning restore CS1591
-
-        /// <summary>
-        /// Creates settings by given arguments.
-        /// </summary>
-        /// <param name="transformationStrategy">See <see cref="SceneTransformationStrategy"/></param>
-        /// <param name="positioningStrategy">See <see cref="PositioningStrategy"/></param>
-        /// <param name="offset">The offset coordinates</param>
-        /// <param name="unitPerMeter">The units per meter</param>
-        /// <param name="sceneContexts">The scene context(s) to be exported</param>
-        /// <param name="featureClassificationFilter">A feature filter passing feature to be classifications</param>
-        /// <returns>New scene export settings</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static SceneExportSettings ByParameters(string transformationStrategy,
+        public static SceneBuildSettings ByParameters(string transformationStrategy,
             string positioningStrategy,
             XYZ offset,
-            float unitPerMeter,
+            UnitScale unitScale,
             string[] sceneContexts,
             CanonicalFilter featureClassificationFilter)
         {
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
 
-            var settings = new SceneExportSettings(new ExportPreferences
+            var settings = new SceneBuildSettings(new ExportPreferences
             {
                 Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
                 Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
                 UserModelCenter = offset.TheXYZ,
-                UnitsPerMeter = unitPerMeter,                
+                UnitsPerMeter = unitScale?.UnitsPerMeter ?? 1,
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
                 FeatureToClassifierFilter = featureClassificationFilter?.Filter
             });
@@ -85,13 +73,15 @@ namespace TRex.Export
             return settings;
         }
 
+#pragma warning restore CS1591
+
         /// <summary>
-        /// Saves the settings as a template file.
+        /// Saves the settings to file as XML.
         /// </summary>
         /// <param name="fileName">The file name</param>
         /// <param name="settings">The settings</param>
         /// <returns>A log message</returns>
-        public static LogMessage SaveAs(SceneExportSettings settings, string fileName)
+        public static LogMessage SaveAs(SceneBuildSettings settings, string fileName)
         {
             try
             {
@@ -107,26 +97,31 @@ namespace TRex.Export
         /// <summary>
         /// The transformation strategy.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), Preferences.Transforming); }
 
         /// <summary>
         /// The positioning strategy.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), Preferences.Positioning); }
 
         /// <summary>
         /// The scaling as units per meter.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public double UnitsPerMeter { get => Preferences.UnitsPerMeter; }
 
         /// <summary>
         /// The model offset in meter.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public XYZ Offset { get => new XYZ { TheXYZ = Preferences.UserModelCenter }; }
 
         /// <summary>
         /// Names of model contexts to be exported.
         /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
         public Canonical[] SceneContexts { get => Preferences.SelectedContext.Select(c => new Canonical(c.Name)).ToArray(); }
     }
 }
