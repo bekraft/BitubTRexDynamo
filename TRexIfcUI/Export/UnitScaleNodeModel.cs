@@ -16,6 +16,7 @@ namespace TRex.Export
     /// Unit scale node.
     /// </summary>
     [NodeName("Unit scale")]
+    [NodeDescription("Unit per meter creation node used by scene build and export.")]
     [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(UnitScale) })]
     [OutPortTypes(typeof(UnitScale))]
@@ -32,7 +33,7 @@ namespace TRex.Export
 
             RegisterAllPorts();
 
-            unitScale = UnitScale.defined.FirstOrDefault();
+            unitScale = UnitScale.defined.Values.FirstOrDefault();
         }
 
         #region Internals
@@ -44,21 +45,28 @@ namespace TRex.Export
         {
         }
 
-        AssociativeNode BuildUnitScaleNode(UnitScale us)
+        internal static AssociativeNode BuildUnitScaleNode(UnitScale us)
         {
-            return AstFactory.BuildFunctionCall(
-                new Func<string, string, float, UnitScale>(UnitScale.ByData),
-                new List<AssociativeNode>()
-                {
+            if (null != us)
+            {
+                return AstFactory.BuildFunctionCall(
+                    new Func<string, string, float, UnitScale>(UnitScale.ByData),
+                    new List<AssociativeNode>()
+                    {
                     AstFactory.BuildStringNode(us.Reference),
                     AstFactory.BuildStringNode(us.Name),
                     AstFactory.BuildDoubleNode(us.UnitsPerMeter)
-                });
+                    });
+            }
+            else
+            {
+                return AstFactory.BuildNullNode();
+            }
         }
 
         #endregion
 
-        public UnitScale UnitScale
+        public UnitScale SelectedUnitScale
         {
             get {
                 return unitScale;
@@ -66,24 +74,23 @@ namespace TRex.Export
             set {
                 unitScale = value;
                 RaisePropertyChanged(nameof(UnitScale));
-                OnNodeModified();
+                OnNodeModified(true);
             }
         }
 
-        public ObservableCollection<UnitScale> ItemsUnitScale { get; } = new ObservableCollection<UnitScale>(UnitScale.defined);
+        [JsonIgnore]
+        public ObservableCollection<UnitScale> ItemsUnitScale { get; } = new ObservableCollection<UnitScale>(UnitScale.defined.Values);
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             ClearErrorsAndWarnings();
-            var inputs = inputAstNodes.ToArray();
-
             return BuildResult(new[]
             {
                 AstFactory.BuildFunctionCall(
                     new Func<UnitScale, UnitScale, UnitScale>(UnitScale.ByModelUnitScale),
                     new List<AssociativeNode>()
                     {
-                        inputs[0],
+                        inputAstNodes[0],
                         BuildUnitScaleNode(unitScale)
                     }
                 )

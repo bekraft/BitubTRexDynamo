@@ -146,7 +146,7 @@ namespace TRex.Log
         /// <param name="maxLogCount">Max log count</param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage[] FilterBySeverity(LogSeverity severity, object reasonFlagObj, ProgressingTask nodeProgressing, int maxLogCount)
+        public static LogMessage[] FilterBySeverity(LogSeverity severity, object reasonFlagObj, ProgressingTask nodeProgressing, long maxLogCount)
         {
             LogReason reasonFlag;
             if (!DynamicArgumentDelegation.TryCastEnum(reasonFlagObj, out reasonFlag))
@@ -159,7 +159,7 @@ namespace TRex.Log
                 .Where(m => SeverityExtensions.IsAboveOrEqual(m.Severity, severity))
                 .Where(m => (m.Reason & reasonFlag) != 0)
                 .OrderBy(m => m)
-                .Take(maxLogCount)
+                .Take(maxLogCount > int.MaxValue ? int.MaxValue : (int)maxLogCount)
                 .ToArray();
         }
 

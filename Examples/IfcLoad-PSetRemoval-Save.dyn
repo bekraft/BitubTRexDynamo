@@ -41,7 +41,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
@@ -62,7 +62,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Out\\IfcLoad-PSetRemoval-Save.log",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-PSetRemoval-Save.log",
       "InputValue": "Out\\IfcLoad-PSetRemoval-Save.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
@@ -131,7 +131,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": ".\\Out",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
       "InputValue": ".\\Out",
       "NodeType": "ExtensionNode",
       "Id": "20b1ab7fb95647cf8d9c573745345082",
@@ -504,38 +504,6 @@
       "Description": "Relocates the containing folder.\n\nIfcModel.RelocatePath (newPathName: string): IfcModel"
     },
     {
-      "ConcreteType": "Task.DataTablePreviewNodeModel, TRexIfcUI",
-      "MinCount": 1,
-      "MaxCount": 100,
-      "Count": 10,
-      "NodeType": "ExtensionNode",
-      "Id": "1fe5f9a2daee4b99bd988abe2d2cc8a0",
-      "Inputs": [
-        {
-          "Id": "8fb07911e68d46e3bca349ca55adf1ee",
-          "Name": "in",
-          "Description": "Input grid data (i.e. LogMessage)",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "1d547f65b9644d6aab17e59fe339dd42",
-          "Name": "out",
-          "Description": "Data property preview",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Interactive table grid displaying incoming data with a given count threshold."
-    },
-    {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
       "FunctionSignature": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
@@ -612,7 +580,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Out\\IfcSampleHouse-Cleanup.xlsx",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcSampleHouse-Cleanup.xlsx",
       "InputValue": "Out\\IfcSampleHouse-Cleanup.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "029cef8d387e4438a6a6c5a26d8ba78c",
@@ -728,6 +696,38 @@
       ],
       "Replication": "Auto",
       "Description": "Lists all property sets by their name.\n\nIfcModel.PropertySetNames ( ): string[]"
+    },
+    {
+      "ConcreteType": "Data.DataTablePreviewNodeModel, TRexIfcUI",
+      "MinCount": 1,
+      "MaxCount": 100,
+      "Count": 10,
+      "NodeType": "ExtensionNode",
+      "Id": "441d57320b454dd18f8c01a2d84df4a0",
+      "Inputs": [
+        {
+          "Id": "2dd2e375992f4f8cbd0196f4a88ebc19",
+          "Name": "in",
+          "Description": "Input grid data (i.e. LogMessage)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9566cf1abd8a4c2a8b4ff0bf062decb3",
+          "Name": "out",
+          "Description": "Data property preview",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Interactive table grid displaying incoming data with a given count threshold."
     }
   ],
   "Connectors": [
@@ -793,8 +793,8 @@
     },
     {
       "Start": "5bfc629943c545429c085ca4c981899f",
-      "End": "8fb07911e68d46e3bca349ca55adf1ee",
-      "Id": "f09277f784674369bd698e8fc8f80089"
+      "End": "2dd2e375992f4f8cbd0196f4a88ebc19",
+      "Id": "acc0a2dfdf004d44b3296f0e61685a1d"
     },
     {
       "Start": "806c5e31bce549a49648870e5233d343",
@@ -827,11 +827,6 @@
       "Id": "c54ee38ce0ef46e78800fc947447619c"
     },
     {
-      "Start": "1d547f65b9644d6aab17e59fe339dd42",
-      "End": "af2d1aa2bffb4934a5b60e7cc7685c25",
-      "Id": "8c95a2c9c8a94a0e8d778cba4947f905"
-    },
-    {
       "Start": "135fbbb5ba3344eb85b7699ffedb942c",
       "End": "58dc9a8ad44f40c48ac8b71ae5bb33a8",
       "Id": "d59ebeabd049494a88ae1f9924639fb0"
@@ -850,6 +845,11 @@
       "Start": "531783e268044780aaf69e05d6c79702",
       "End": "5cdfe3f6873745459df3dbb6cb72c7bc",
       "Id": "2adf78b619934472b3e0389467949be5"
+    },
+    {
+      "Start": "9566cf1abd8a4c2a8b4ff0bf062decb3",
+      "End": "af2d1aa2bffb4934a5b60e7cc7685c25",
+      "Id": "318551a32b83472b8f24929ec1b9b6df"
     }
   ],
   "Dependencies": [],
@@ -869,9 +869,16 @@
         "e29a708451994a388b1ebaa863d2727a",
         "42ea8495fc5144b6a0d8a93488931c1b",
         "b57072777a2a43978b0808ce9c8f1e6d",
-        "1fe5f9a2daee4b99bd988abe2d2cc8a0",
         "60d4357b0b674cf8809a28b7e1a5b78d",
         "a7ec67ded1ab4af18aee4edeb23b1ac4"
+      ]
+    },
+    {
+      "Name": "TRexIfc",
+      "Version": "1.0.21033.4264",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "441d57320b454dd18f8c01a2d84df4a0"
       ]
     }
   ],
@@ -945,8 +952,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2105.7361520772315,
-        "Y": 533.14759970898945
+        "X": 2385.1703861233873,
+        "Y": 373.47089453975741
       },
       {
         "ShowGeometry": true,
@@ -1005,8 +1012,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1925.8130974509588,
-        "Y": 74.207990886989762
+        "X": 1961.2733058566807,
+        "Y": 35.569335579804942
       },
       {
         "ShowGeometry": true,
@@ -1015,8 +1022,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2558.9675070610342,
-        "Y": 636.82169362046875
+        "X": 2838.40174110719,
+        "Y": 477.14498845123671
       },
       {
         "ShowGeometry": true,
@@ -1035,8 +1042,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2725.22589752716,
-        "Y": 508.28654129960944
+        "X": 3004.660131573316,
+        "Y": 348.6098361303774
       },
       {
         "ShowGeometry": true,
@@ -1045,18 +1052,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2388.7467459269537,
-        "Y": 510.01207541037991
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Data Preview",
-        "Id": "1fe5f9a2daee4b99bd988abe2d2cc8a0",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 2260.1511491995184,
-        "Y": -49.018988873386093
+        "X": 2668.1809799731095,
+        "Y": 350.33537024114787
       },
       {
         "ShowGeometry": true,
@@ -1065,8 +1062,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2265.6542778500443,
-        "Y": -274.31582153450108
+        "X": 2301.1144862557662,
+        "Y": -312.9544768416859
       },
       {
         "ShowGeometry": true,
@@ -1075,8 +1072,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1916.80070510825,
-        "Y": -116.4404820455137
+        "X": 1952.2609135139719,
+        "Y": -155.07913735269852
       },
       {
         "ShowGeometry": true,
@@ -1085,8 +1082,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1915.7048975313091,
-        "Y": -245.14310862584
+        "X": 1951.1651059370311,
+        "Y": -283.78176393302482
       },
       {
         "ShowGeometry": true,
@@ -1095,8 +1092,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2143.3973294118359,
-        "Y": -213.57611988808409
+        "X": 2178.8575378175578,
+        "Y": -252.21477519526891
       },
       {
         "ShowGeometry": true,
@@ -1105,8 +1102,18 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2803.4599513526432,
-        "Y": 152.2019175665265
+        "X": 2070.8300317881422,
+        "Y": 454.81924829806007
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data Preview",
+        "Id": "441d57320b454dd18f8c01a2d84df4a0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2289.5937482068025,
+        "Y": -61.305312765868848
       }
     ],
     "Annotations": [
@@ -1122,7 +1129,7 @@
         "Height": 413.0,
         "FontSize": 36.0,
         "InitialTop": 332.27663759942425,
-        "InitialHeight": 346.6,
+        "InitialHeight": 145.0,
         "TextblockHeight": 86.4,
         "Background": "#FFC1D676"
       },
@@ -1139,7 +1146,7 @@
         "Height": 178.02780653712796,
         "FontSize": 36.0,
         "InitialTop": -66.73517451186288,
-        "InitialHeight": 154.82780653712794,
+        "InitialHeight": 146.82780653712794,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
@@ -1156,7 +1163,7 @@
         "Height": 325.54065163859951,
         "FontSize": 36.0,
         "InitialTop": -77.6849565704365,
-        "InitialHeight": 259.14065163859948,
+        "InitialHeight": 147.14065163859951,
         "TextblockHeight": 86.4,
         "Background": "#FFC1D676"
       },
@@ -1169,13 +1176,13 @@
           "42ea8495fc5144b6a0d8a93488931c1b",
           "b57072777a2a43978b0808ce9c8f1e6d"
         ],
-        "Left": 2095.7361520772315,
-        "Top": 455.08654129960945,
+        "Left": 2375.1703861233873,
+        "Top": 295.40983613037741,
         "Width": 993.08974544992873,
         "Height": 297.00000000000011,
         "FontSize": 36.0,
-        "InitialTop": 508.28654129960944,
-        "InitialHeight": 251.13515232085931,
+        "InitialTop": 348.6098361303774,
+        "InitialHeight": 273.53515232085931,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
@@ -1193,7 +1200,7 @@
         "Height": 392.72019361560336,
         "FontSize": 36.0,
         "InitialTop": 286.47779945373134,
-        "InitialHeight": 616.14478387904046,
+        "InitialHeight": 257.52019361560338,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
@@ -1210,34 +1217,34 @@
         "Height": 231.39999999999998,
         "FontSize": 36.0,
         "InitialTop": 163.42684620810189,
-        "InitialHeight": 208.20000000000002,
+        "InitialHeight": 147.77377709381369,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
       {
-        "Id": "f69cc60c7dfe4acb833e57fff457b8d3",
+        "Id": "da0eee8efa914c4db2c93d96c1ba1d2d",
         "Title": "Logging to Excel",
         "Nodes": [
           "2d79ee2c771a4e9ea2c69a2d4ff61f2e",
-          "1fe5f9a2daee4b99bd988abe2d2cc8a0",
           "e49e9db51a9f4a7291149bc3212269ec",
           "029cef8d387e4438a6a6c5a26d8ba78c",
           "60d4357b0b674cf8809a28b7e1a5b78d",
-          "8b2582bd623e4f6998ceb94028394fc4"
+          "8b2582bd623e4f6998ceb94028394fc4",
+          "441d57320b454dd18f8c01a2d84df4a0"
         ],
-        "Left": 1905.7048975313091,
-        "Top": -327.51582153450107,
-        "Width": 730.84625166820956,
-        "Height": 519.92381242149077,
+        "Left": 1941.1651059370311,
+        "Top": -366.15447684168589,
+        "Width": 724.82864226977131,
+        "Height": 553.44916407581707,
         "FontSize": 36.0,
-        "InitialTop": -274.31582153450108,
-        "InitialHeight": 496.72381242149083,
+        "InitialTop": -312.9544768416859,
+        "InitialHeight": 530.249164075817,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       }
     ],
-    "X": -105.58616370104878,
-    "Y": 229.05113652681916,
-    "Zoom": 0.25989285507242277
+    "X": 164.865514697707,
+    "Y": 168.6131293123415,
+    "Zoom": 0.21011680142429054
   }
 }

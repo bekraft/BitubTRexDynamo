@@ -27,8 +27,8 @@
         <ComboBox x:Name="OptionComboBox" 
                   Grid.Row="1"
                   Margin="5,5,5,5"
-                  SelectedItem="{Binding Path=SelectedOption}"
-                  ItemsSource="{Binding Path=AvailableOptions}"/>
+                  SelectedItem="{Binding Path=Selected}"
+                  ItemsSource="{Binding Path=Options}"/>
 
     </Grid>
 </UserControl>

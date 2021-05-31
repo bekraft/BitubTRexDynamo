@@ -123,7 +123,21 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
             uint m_index = 0;
 
             for (auto en_shape = c->Shapes->GetEnumerator(); en_shape->MoveNext(); ++m_index)
-            {   
+            { 
+                Shape^ shape = en_shape->Current;
+                Transform^ t = nullptr;
+                aiMatrix4x4 wcs;
+
+                // Get WCS and mesh transformation
+                if (contextWcsMap->TryGetValue(shape->Context, t))
+                {
+                    aiMatrix4x4 wcs = TRexAssimp::AIMatrix4(t);
+                }
+                else
+                {   // TODO Log
+                    continue;
+                }
+
                 aiNode* meshNode;
                 if (1 < c->Shapes->Count)
                 {   // Build artificial mesh nodes since materialized meshes don't have transforms, only nodes have
@@ -135,9 +149,6 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 {   // If only a single mesh, use the scene node itself
                     meshNode = node;
                 }
-
-                Shape^ shape = en_shape->Current;
-                Transform^ t = nullptr;
 
                 uint idx_material;
                 if (!materialMap->TryGetValue(shape->Material, idx_material))
@@ -159,13 +170,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 
                 meshNode->mNumMeshes = 1;
                 meshNode->mMeshes = new uint[1] { idx_mesh };
-
-                // Get WCS and mesh transformation
-                if (contextWcsMap->TryGetValue(shape->Context, t))
-                {
-                    aiMatrix4x4 wcs = TRexAssimp::AIMatrix4(t);
-                    meshNode->mTransformation = wcs * TRexAssimp::AIMatrix4(shape->Transform); // TODO Sinlge transform per node, have to aggregate transforms
-                }
+                meshNode->mTransformation = TRexAssimp::AIMatrix4(shape->Transform) * wcs; // TODO Sinlge transform per node, have to aggregate transforms
 
                 // Register mesh node as child of current real scene node
                 if (meshNode != node)
@@ -284,6 +289,7 @@ aiMesh* TRexAssimp::TRexAssimpExport::CreateMesh(ShapeBody^ body, const uint mat
     const uint countVertices = body->GetTotalPointCount();
     
     aiMesh* mesh = new aiMesh();
+    mesh->mPrimitiveTypes = aiPrimitiveType::aiPrimitiveType_TRIANGLE;
     mesh->mNumVertices = countVertices;
     mesh->mVertices = new aiVector3D[countVertices];
 

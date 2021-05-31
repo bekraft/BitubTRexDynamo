@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:TRex.UI"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="150">
+             d:DesignHeight="60" d:DesignWidth="150">
         
     <Grid MinHeight="50" MinWidth="100" Margin="3,3,3,3">
         <Grid.RowDefinitions>
@@ -25,7 +25,7 @@
         <ComboBox x:Name="UnitScaleComboBox" 
                   Grid.Row="1" Grid.Column="0"
                   VerticalAlignment="Center"
-                  SelectedItem="{Binding Path=UnitScale}"
+                  SelectedItem="{Binding Path=SelectedUnitScale}"
                   ItemsSource="{Binding Path=ItemsUnitScale}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>

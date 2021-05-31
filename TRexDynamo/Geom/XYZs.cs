@@ -1,61 +1,28 @@
-﻿using Xbim.Common.Geometry;
+﻿using System;
 
-using Autodesk.DesignScript.Runtime;
-using ADPoint = Autodesk.DesignScript.Geometry.Point;
 using Bitub.Dto.Spatial;
-using System;
+
+using Autodesk.DesignScript.Geometry;
+
+using TRex.Internal;
 
 namespace TRex.Geom
 {
     /// <summary>
-    /// An analytical 3D point or vector construct.
+    /// A XYZ factory and library.
     /// </summary>
-    public class XYZ
+    public sealed class XYZs
     {
-        #region Internals
-
 #pragma warning disable CS1591
 
-        /// <summary>
-        /// The internal point reference.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public Bitub.Dto.Spatial.XYZ TheXYZ { get; set; }
+        #region Internals
 
-        internal XYZ() : this(0, 0, 0)
+        private XYZs()
         { }
 
-        internal XYZ(Bitub.Dto.Spatial.XYZ xyz)
-        {
-            TheXYZ = xyz;
-        }
-
-        internal XYZ(float x, float y, float z)
-        {
-            TheXYZ = new Bitub.Dto.Spatial.XYZ { X = x, Y = y, Z = z };
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public XbimPoint3D ToXbimPoint3D()
-        {
-            return new XbimPoint3D(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public XbimVector3D ToXbimVector3D()
-        {
-            return new XbimVector3D(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public override string ToString()
-        {
-            return $"{GetType().FullName} ({TheXYZ.X}; {TheXYZ.Y}; {TheXYZ.Z})";
-        }
+        #endregion
 
 #pragma warning restore CS1591
-
-        #endregion
 
         /// <summary>
         /// A new IFC cartesian point by given coordinates.
@@ -64,7 +31,7 @@ namespace TRex.Geom
         /// <param name="y">Y</param>
         /// <param name="z">Z</param>
         /// <returns>A 3D point</returns>
-        public static XYZ ByCoordinates(float x, float y, float z)
+        public static XYZ ByXYZ(float x, float y, float z)
         {
             return new XYZ(x, y, z);
         }
@@ -93,18 +60,26 @@ namespace TRex.Geom
         /// <param name="origin">The base point of vector</param>
         /// <param name="target">The target point of vector</param>
         /// <returns>A XYZ object as vector</returns>
-        public static XYZ ByVector(XYZ origin, XYZ target)
-        {
-            return new XYZ(target.TheXYZ.X - origin.TheXYZ.X, target.TheXYZ.Y - origin.TheXYZ.Y, target.TheXYZ.Z - origin.TheXYZ.Z);
+        public static XYZ ByDiff(XYZ origin, XYZ target)
+        {            
+            return target.Sub(origin);
         }
 
         /// <summary>
         /// Wraps the analytical XYZ into a visual point.
         /// </summary>
         /// <returns>An AutoDesk design script point structure</returns>
-        public ADPoint ToPoint()
+        public static Point ToPoint(XYZ xyz)
         {
-            return ADPoint.ByCoordinates(TheXYZ.X, TheXYZ.Y, TheXYZ.Z);
+            try
+            {
+                return Point.ByCoordinates(xyz.X, xyz.Y, xyz.Z);
+            }
+            catch(Exception e)
+            {
+                GlobalLogging.log.Error(e, "Point class hasn't been found. Maybe a library reference is missing.");
+                throw new ArgumentException(e.Message);
+            }
         }
 
         /// <summary>
@@ -113,10 +88,10 @@ namespace TRex.Geom
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        /// <returns></returns>
-        public XYZ Translate(float x, float y = 0, float z = 0)
+        /// <returns>A new XYZ</returns>
+        public static XYZ ByAdd(XYZ xyz, float x, float y, float z)
         {
-            return new XYZ(TheXYZ.X + x, TheXYZ.Y + y, TheXYZ.Z + z);
+            return new XYZ(xyz.X + x, xyz.Y + y, xyz.Z + z);
         }
 
         /// <summary>
@@ -124,9 +99,9 @@ namespace TRex.Geom
         /// </summary>
         /// <param name="vector">The vector</param>
         /// <returns>Returns a new translated XYZ</returns>
-        public XYZ Translate(XYZ vector)
+        public static XYZ ByAdd(XYZ xyz, XYZ vector)
         {
-            return new XYZ(TheXYZ.Add(vector.TheXYZ));
+            return xyz.Add(vector);
         }
 
         /// <summary>
@@ -134,14 +109,14 @@ namespace TRex.Geom
         /// </summary>
         /// <param name="points">The points</param>
         /// <returns>A new mean point</returns>
-        public static XYZ Mean(XYZ[] points)
+        public static XYZ ByMean(XYZ[] points)
         {
             float x = 0, y = 0, z = 0;
             foreach (var xyz in points)
             {
-                x += xyz.TheXYZ.X;
-                y += xyz.TheXYZ.Y;
-                z += xyz.TheXYZ.Z;
+                x += xyz.X;
+                y += xyz.Y;
+                z += xyz.Z;
             }
 
             return new XYZ(x / points.Length, y / points.Length, z / points.Length);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -29,26 +28,31 @@ namespace TRex.Task
     [InPortTypes(new string[] { nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel
+    public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel<string>
     {
-        /// <summary>
-        /// New ifc axis alignment.
-        /// </summary>
+#pragma warning disable CS1591
+
         public IfcAxisAlignmentTransformNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("alignment", "Axis alignment")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("authorMetadata", "Credentials of authoring editor")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("canonicalName", "Fragment name of canonical full name")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logReasonFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("alignment", "Axis alignment")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("authorMetadata", "Credentials of authoring editor")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("canonicalName", "Fragment name of canonical full name")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("ifcModel", "IFC input model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("logReasonFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC output model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("ifcModel", "IFC output model")));
 
             RegisterAllPorts();
-            InitStrategyOptions();
+            
             IsCancelable = true;
             LogReasonMask = LogReason.Changed;
-            SelectedOption = PlacementOptions[default(IfcPlacementStrategy)];
+            Selected = PlacementOptions.Keys.First();
         }
 
         #region Internals
@@ -56,26 +60,19 @@ namespace TRex.Task
         [JsonConstructor]
         IfcAxisAlignmentTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {            
-            InitStrategyOptions();
             IsCancelable = true;
             LogReasonMask = LogReason.Changed;
         }
 
-        private IDictionary<object, string> PlacementOptions = new Dictionary<object, string>()
+        private IDictionary<string, IfcPlacementStrategy> PlacementOptions = new Dictionary<string, IfcPlacementStrategy>()
         {
-            { IfcPlacementStrategy.ChangeRootPlacements, "Change existing placements" },
-            { IfcPlacementStrategy.NewRootPlacement, "Insert new root placement" }
+            { "Change existing placements", IfcPlacementStrategy.ChangeRootPlacements },
+            { "Insert new root placement", IfcPlacementStrategy.NewRootPlacement }
         };
 
-        private void InitStrategyOptions()
-        {
-            foreach (var o in Enum.GetValues(typeof(IfcPlacementStrategy)))
-                AvailableOptions.Add(PlacementOptions[o]);
-        }
+        protected override IEnumerable<string> GetInitialOptions() => PlacementOptions.Keys;
 
         #endregion
-
-#pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -110,12 +107,12 @@ namespace TRex.Task
                 new List<AssociativeNode>() { inputs[3] });
 
             // Get current strategy selection as int index
-            var strategyOption = (int)PlacementOptions.First(g => g.Value.Equals(SelectedOption)).Key;
+            var strategyOption = PlacementOptions[Selected];
 
             // Get transform request
             var callCreateRequest = AstFactory.BuildFunctionCall(
                 new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
-                new List<AssociativeNode>() { callGetLogger, inputs[1], inputs[0], AstFactory.BuildIntNode(strategyOption) });
+                new List<AssociativeNode>() { callGetLogger, inputs[1], inputs[0], BuildEnumNameNode(strategyOption) });
 
             // Create transformation delegate
             var callCreateIfcModelDelegate = AstFactory.BuildFunctionCall(

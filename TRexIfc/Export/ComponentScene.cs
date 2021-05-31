@@ -9,6 +9,7 @@ using Google.Protobuf;
 
 using TRex.Log;
 using TRex.Store;
+using TRex.Geom;
 
 namespace TRex.Export
 {
@@ -198,10 +199,12 @@ namespace TRex.Export
         /// Exports the current component scene to the given format indicated by the extension.
         /// </summary>
         /// <param name="scene">The scene</param>
+        /// <param name="unitScale">The scale</param>
+        /// <param name="transform">The axes transform</param>
         /// <param name="formatID">The format ID (one of <see cref="exportAsFormats"/>)</param>
         /// <param name="canonicalSeparator">The canonical fragment separator</param>
         /// <returns>The exported scene</returns>
-        public static ComponentScene Export(ComponentScene scene, string formatID, string canonicalSeparator)
+        public static ComponentScene Export(ComponentScene scene, UnitScale unitScale, CRSTransform transform, string formatID, string canonicalSeparator)
         {
             if (null == scene)
                 throw new ArgumentNullException(nameof(scene));
@@ -217,7 +220,7 @@ namespace TRex.Export
             {
                 try
                 {
-                    var exp = new TRexAssimp.TRexAssimpExport();
+                    var exp = new TRexAssimp.TRexAssimpExport(new TRexAssimp.TRexAssimpPreferences(transform, unitScale));
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start exporting");
 

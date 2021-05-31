@@ -23,19 +23,42 @@ namespace TRex.Internal
         {
         }
 
+        protected bool PrebuildWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode[] runtimeDefaultParams)
+        {
+            if (IsPartiallyApplied)
+            {
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
+                {
+                    if (port.Index < runtimeDefaultParams.Length)
+                    {
+                        if (null == runtimeDefaultParams[port.Index])
+                        {
+                            WarnForMissingInputs();
+                            return false;
+                        }
+                        else
+                        {
+                            inputAstNodes[port.Index] = runtimeDefaultParams[port.Index];
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
         protected void WarnForMissingInputs(bool withDefaults = false)
         {
             Warning(string.Format("Missing connected ports ({0})", 
-                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
         }
 
         protected void ErrorForMissingInputs(bool withDefaults = false)
         {
             Error(string.Format("Missing connected ports ({0})",
-                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
         }
 
-        protected AssociativeNode MapEnum(Enum value)
+        protected static AssociativeNode MapEnum(Enum value)
         {
             return AstFactory.BuildFunctionCall(
                 new Func<string, string, object>(DynamicArgumentDelegation.TryParseEnum),
@@ -46,7 +69,7 @@ namespace TRex.Internal
                 });
         }
 
-        protected AssociativeNode CacheObjects(params object[] args)
+        protected static AssociativeNode CacheObjects(params object[] args)
         {
             return AstFactory.BuildFunctionCall(
                         new Func<string, object[]>(DynamicArgumentDelegation.GetArgs),
@@ -56,7 +79,7 @@ namespace TRex.Internal
                         });
         }
 
-        protected AssociativeNode CacheObject(object arg)
+        protected static AssociativeNode CacheObject(object arg)
         {
             return AstFactory.BuildFunctionCall(
                         new Func<string, object>(DynamicArgumentDelegation.GetArg),
@@ -169,7 +192,7 @@ namespace TRex.Internal
                 return Unwrap<T>(data).Distinct().ToArray();
         }
 
-        protected AssociativeNode NodeToExprList<N>(AssociativeNode n) where N : AssociativeNode
+        protected static AssociativeNode NodeToExprList<N>(AssociativeNode n) where N : AssociativeNode
         {
             if (n is N valueNode)
                 return AstFactory.BuildExprList(new List<AssociativeNode>() { valueNode });
@@ -177,7 +200,7 @@ namespace TRex.Internal
                 return n;
         }
 
-        protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
+        protected static AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
         {
             return AstFactory.BuildStringNode(Enum.GetName(typeof(T), n));
         }

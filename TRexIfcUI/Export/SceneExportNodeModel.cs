@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using TRex.Internal;
 using TRex.Task;
 using TRex.Log;
+using TRex.Geom;
 
 namespace TRex.Export
 {
@@ -19,26 +20,33 @@ namespace TRex.Export
     [NodeName("Export scene (assimp)")]
     [NodeDescription("Export scene via Assimp package. For more details see https://github.com/assimp/assimp.")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
+    [InPortTypes(new string[] { nameof(ComponentScene), nameof(UnitScale), nameof(CRSTransform), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
-    public class SceneExportNodeModel : CancelableProgressingOptionNodeModel
+    public class SceneExportNodeModel : CancelableProgressingOptionNodeModel<Format>
     {
 #pragma warning disable CS1591
 
         public SceneExportNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("scene", "Component scene model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator", AstFactory.BuildStringNode(""))));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("scene", "Component scene model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("unitScale", "Scaling of exported model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("transform", "Axes transform of exported model", AstFactory.BuildNullNode())));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("separator", "If using canonical name, define the separator", AstFactory.BuildStringNode(""))));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("scene", "Component scene model")));
 
             RegisterAllPorts();
-            InitOptions();
 
             IsCancelable = false;
 
-            SelectedOption = ComponentScene.exportAsFormats.FirstOrDefault();
+            Selected = ComponentScene.exportAsFormats.FirstOrDefault();
+            LogReasonMask = LogReason.Saved;
         }
 
         #region Internals
@@ -46,21 +54,10 @@ namespace TRex.Export
         [JsonConstructor]
         SceneExportNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InitOptions();
-        }
-
-        private void InitOptions()
-        {
-            foreach (var ext in ComponentScene.exportAsFormats)
-                AvailableOptions.Add(ext);
-
             LogReasonMask = LogReason.Saved;
         }
 
-        private Format SelectedFormat 
-        {
-            get => Format.FromDynamic(SelectedOption);
-        }
+        protected override IEnumerable<Format> GetInitialOptions() => ComponentScene.exportAsFormats;
 
         #endregion
 
@@ -68,17 +65,12 @@ namespace TRex.Export
         {
             BeforeBuildOutputAst();
 
-            AssociativeNode[] inputs = inputAstNodes.ToArray();
-
-            if (null == SelectedFormat)
-            {
-                Warning("Format must not be null.");
+            if (!IsNotNullSelected())
                 return BuildNullResult();
-            }
 
             if (IsPartiallyApplied)
             {
-                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
                 {
                     switch (port.Index)
                     {
@@ -97,12 +89,14 @@ namespace TRex.Export
 
             // Create functional AST to export the given scene to file
             var astRunExportScene = AstFactory.BuildFunctionCall(
-                new Func<ComponentScene, string, string, ComponentScene>(ComponentScene.Export),
+                new Func<ComponentScene, UnitScale, CRSTransform, string, string, ComponentScene>(ComponentScene.Export),
                 new List<AssociativeNode>()
                 {
-                    inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    AstFactory.BuildStringNode(SelectedFormat?.ID),
-                    inputs[1]
+                    inputAstNodes[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
+                    inputAstNodes[1],
+                    inputAstNodes[2],
+                    AstFactory.BuildStringNode(Selected.ID),
+                    inputAstNodes[3]
                 });
 
             return BuildResult(astRunExportScene);           

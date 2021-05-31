@@ -1,0 +1,944 @@
+{
+  "Uuid": "3a83d19d-44d7-4f10-be3c-6c1ab5d86596",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "IfcLoad-CheckGuids-SaveReport",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "5c2deddc90474d94a0c118efefed883c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8a03116c99fb42a485f0551c8c7063ef",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-CheckGuids-SaveReport.log",
+      "InputValue": "Out\\IfcLoad-CheckGuids-SaveReport.log",
+      "NodeType": "ExtensionNode",
+      "Id": "b018394e431a4d45ad9a7f09a3db392f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23cc6cbb6fad4397848dfb7acc803a24",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "c33a47d291204c3486c281cb081766ce",
+      "Inputs": [
+        {
+          "Id": "c089e9de245b4409a16b809a0e4b758f",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "719bf801dad84225ac97f33392d8cf10",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a new file logger with given template name."
+    },
+    {
+      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "6cdcaa71e3de4f369d2f52689f48b090",
+      "Inputs": [
+        {
+          "Id": "bcfd861a408e4512b0d8052b14b44d48",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cfd77c0766904825b0e3f8c017c23cf1",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2b1536b9770b4ffcabdc17d132985074",
+          "Name": "prefs",
+          "Description": "Tessellation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7da0215dec7b468a8d9c2ecd42f53689",
+          "Name": "ifcModel",
+          "Description": "IFC model instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcGuidStore.ByEmptyStore",
+      "Id": "aba14d76c45a4bbcaa9dece12f132673",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "27402c3d74d34a10aaefd239efd3dc77",
+          "Name": "IfcGuidStore",
+          "Description": "The empty store",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "An initiallly empty GUID store.\n\nIfcGuidStore.ByEmptyStore ( ): IfcGuidStore"
+    },
+    {
+      "ConcreteType": "Validation.IfcGuidCheckValidationNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "0a5ee94d4c494af385e51e399f471f31",
+      "Inputs": [
+        {
+          "Id": "3bab2b363c2942708db258e3a43f3c9b",
+          "Name": "ifcModel",
+          "Description": "IFC model to be checked",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "af480e95b5d0414692ab1e8698d7f937",
+          "Name": "guidStore",
+          "Description": "GUID store instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "75e91aeb820d4e38adaf07e8a2724b79",
+          "Name": "ifcGuidCheckTask",
+          "Description": "The validation task",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Prepares a IfcGUID validation task to check uniqueness of model GUIDs."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcValidationResult.Messages@Validation.IfcValidationTask,var",
+      "Id": "091db39e6e8b411f88ccb293527aaa72",
+      "Inputs": [
+        {
+          "Id": "581d23136aaa4622a44b52747b632a79",
+          "Name": "validationTask",
+          "Description": "The task\n\nIfcValidationTask",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bf263458de584fcf993835700f34e8e9",
+          "Name": "reportFilter",
+          "Description": "The IfcReportDomain filter\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4177bc3b969e4215a38e0ec7a67432d3",
+          "Name": "IfcValidationMessage[]",
+          "Description": "An array of messages",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Directly retrieves the validations messages.\n\nIfcValidationResult.Messages (validationTask: IfcValidationTask, reportFilter: var): IfcValidationMessage[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
+      "Id": "b089acfe112a494e99d6bf445c6035ec",
+      "Inputs": [
+        {
+          "Id": "923aaafa9d614b22b99e5f5e958f2e27",
+          "Name": "filePath",
+          "Description": "Dateipfad der Microsoft Excel-Tabelle.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0fa5dcefeb924787b09bd15bf0d44dfe",
+          "Name": "sheetName",
+          "Description": "Name des Arbeitsblatts, in das Daten geschrieben werden sollen.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f15f382d36734c8089170976aef7ee31",
+          "Name": "startRow",
+          "Description": "Startzeile zum Schreiben von Daten. Geben Sie 0 für Zeile 1, 1 für Zeile 2 usw. ein.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a3695fb31ab245b88f867fd3d4f7d962",
+          "Name": "startCol",
+          "Description": "Startspalte zum Schreiben von Daten. Geben Sie 0 für Spalte A, 1 für Spalte B usw. ein.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a15fc46eccd344bdb66755c2df389a30",
+          "Name": "data",
+          "Description": "Die in die Tabelle zu schreibenden Daten.\n\nvar[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "81e3feb7d43446c9aa7e2449a4fbf4f9",
+          "Name": "overWrite",
+          "Description": "bool\nVorgabewert : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ef58ae9e965b4c1184ed045fd227b166",
+          "Name": "data",
+          "Description": "Die in die Tabelle geschriebenen Daten.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Schreibt Daten in eine Microsoft Excel-Tabelle. Die Daten werden nach Zeilen geschrieben, wobei Unterlisten in aufeinander folgende Zeilen geschrieben werden. Zeilen und Spalten sind nullindiziert. Beispiel: Der Wert an Position [0,0] in der Datenliste wird in Zelle A1 geschrieben. Nullwerte und leere Listen werden als leere Zellen in Excel geschrieben. Für diesen Block muss Microsoft Excel installiert sein.\n\nData.ExportExcel (filePath: string, sheetName: string, startRow: int, startCol: int, data: var[][], overWrite: bool = false): var[][]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
+      "InputValue": "Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "324afdf1e4c74e8aa2cdef6bc95ebca5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e05b9ccfba3b4dd3958f6f5e7e0fbd6f",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;\n0;",
+      "Id": "86a925f7c6bd4f3084547fa888a4eecd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f2f183b98c6f4bceb754ea96fbd61a9c",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1d6747c5d6d04c26858ac5a061f7a18f",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Validation.IfcReportDomainComposingNodeModel, TRexIfcUI",
+      "Selected": [
+        15
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "1de614febdfc49229c86e9cc77b9cef5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c7d224cd8126482aa5f4baeb301435a5",
+          "Name": "ifcReportDomain",
+          "Description": "Reporting domain filter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Composing reporting validation failures for filtering reports"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Now",
+      "Id": "ff7305a0815746d5b43bf20d58a6144d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "435ba8b1b4a445a1ba1dad035b152806",
+          "Name": "var",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DateTime.Now: var"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.DateTime.Format@var,string",
+      "Id": "6f15389d20714127be97844bd664c9bc",
+      "Inputs": [
+        {
+          "Id": "a20069f53c784e2d8be177b9dda77929",
+          "Name": "dateTime",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2faf6ec1a2e74743bb3f875233e6145f",
+          "Name": "format",
+          "Description": "string\nVorgabewert : \"F\"",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b7253df34b8b4aa2a65171b9f38476c3",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DateTime.Format (dateTime: var, format: string = \"F\"): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"yyyy-MM-dd-HHmmss\";",
+      "Id": "268a59cc372841f99a2bb95eeef53470",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "be90ac84f2ca4fbc941864bc4306f31f",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcValidationMessage.ToData",
+      "Id": "2e7e948e187748ac890a68ca3ae7a8ab",
+      "Inputs": [
+        {
+          "Id": "10f02c7a4cb04f108ec9af99089464c3",
+          "Name": "ifcValidationMessage",
+          "Description": "Validation.IfcValidationMessage",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1319e3d049eb456ca89ef70d2afa9879",
+          "Name": "var[]",
+          "Description": "An array of all informations",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Wraps the partial information into an array dump.\n\nIfcValidationMessage.ToData ( ): var[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcGuidStore.CountInstances",
+      "Id": "76e885a949214a1abb7ede0393e7434e",
+      "Inputs": [
+        {
+          "Id": "159eb1d2424d40efb6b2f9c4fd046fb9",
+          "Name": "ifcGuidStore",
+          "Description": "Validation.IfcGuidStore",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf45280d00cf4cb18ad8647ac7048801",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "IfcGuidStore.CountInstances ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcGuidCheckResult.IfcGuidStore@Validation.IfcValidationTask",
+      "Id": "859afc3699d144b9851082e1ff427d9e",
+      "Inputs": [
+        {
+          "Id": "26ba39bce68446f89695e8559f9997d7",
+          "Name": "validationTask",
+          "Description": "An IFC GUID validation task\n\nIfcValidationTask",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2f7054df31354d05ae0be4e9beffd1da",
+          "Name": "IfcGuidStore",
+          "Description": "The store or an exception",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Gets the GUID store from given IFC validation task.\n\nIfcGuidCheckResult.IfcGuidStore (validationTask: IfcValidationTask): IfcGuidStore"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcGuidStore.DuplicateUsageCountInstances",
+      "Id": "3337f0eeef8f4846a62c807d7075a9e3",
+      "Inputs": [
+        {
+          "Id": "87e085d6289d41309c6a7dc6650ecec2",
+          "Name": "ifcGuidStore",
+          "Description": "Validation.IfcGuidStore",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "872829cc3bfa47b59ddb32d7fab039e9",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "IfcGuidStore.DuplicateUsageCountInstances ( ): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Validation.IfcGuidStore.ToDataOfDuplicateUsage",
+      "Id": "05dc8827032f40b8b8ae17177fd8e4f5",
+      "Inputs": [
+        {
+          "Id": "0c789f98e9db498b8d8361ab1b541fe8",
+          "Name": "ifcGuidStore",
+          "Description": "Validation.IfcGuidStore",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f5510edc8233411296f93acbd746dfea",
+          "Name": "var[][]",
+          "Description": "A matrix of rows holding (IfcGUID, filename, label index and entity type)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a table of duplicate úsages of IfcGUIDs by model source, index label and EXPRESS type.\n\nIfcGuidStore.ToDataOfDuplicateUsage ( ): var[][]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8a03116c99fb42a485f0551c8c7063ef",
+      "End": "bcfd861a408e4512b0d8052b14b44d48",
+      "Id": "116ce5d140e54240be064b2f12a6d43b"
+    },
+    {
+      "Start": "23cc6cbb6fad4397848dfb7acc803a24",
+      "End": "c089e9de245b4409a16b809a0e4b758f",
+      "Id": "fc1c842c71674af4bbdbbbeb043477d9"
+    },
+    {
+      "Start": "719bf801dad84225ac97f33392d8cf10",
+      "End": "cfd77c0766904825b0e3f8c017c23cf1",
+      "Id": "81b50f690f224d0a90142b88fe17e743"
+    },
+    {
+      "Start": "7da0215dec7b468a8d9c2ecd42f53689",
+      "End": "3bab2b363c2942708db258e3a43f3c9b",
+      "Id": "350869b7063f45a5b0130d1e45f02f11"
+    },
+    {
+      "Start": "27402c3d74d34a10aaefd239efd3dc77",
+      "End": "af480e95b5d0414692ab1e8698d7f937",
+      "Id": "02f26e98b7854be1b97f358aeb5e708c"
+    },
+    {
+      "Start": "75e91aeb820d4e38adaf07e8a2724b79",
+      "End": "581d23136aaa4622a44b52747b632a79",
+      "Id": "ece3bf1651b548d3b1dcab8d1a22f4a2"
+    },
+    {
+      "Start": "75e91aeb820d4e38adaf07e8a2724b79",
+      "End": "26ba39bce68446f89695e8559f9997d7",
+      "Id": "1846fa40a38445f4bb7abf023ee4ed59"
+    },
+    {
+      "Start": "4177bc3b969e4215a38e0ec7a67432d3",
+      "End": "10f02c7a4cb04f108ec9af99089464c3",
+      "Id": "2a096ce68b95476388498a3f22df28ed"
+    },
+    {
+      "Start": "e05b9ccfba3b4dd3958f6f5e7e0fbd6f",
+      "End": "923aaafa9d614b22b99e5f5e958f2e27",
+      "Id": "8fc0592886ac4b229f80c433b128bd5e"
+    },
+    {
+      "Start": "f2f183b98c6f4bceb754ea96fbd61a9c",
+      "End": "f15f382d36734c8089170976aef7ee31",
+      "Id": "396dd8147edc475b844d78342a2d705b"
+    },
+    {
+      "Start": "1d6747c5d6d04c26858ac5a061f7a18f",
+      "End": "a3695fb31ab245b88f867fd3d4f7d962",
+      "Id": "e67203e04ce8477e9bbf2cfa787dab7e"
+    },
+    {
+      "Start": "c7d224cd8126482aa5f4baeb301435a5",
+      "End": "bf263458de584fcf993835700f34e8e9",
+      "Id": "1dcea310297844908ff1e359c1576559"
+    },
+    {
+      "Start": "435ba8b1b4a445a1ba1dad035b152806",
+      "End": "a20069f53c784e2d8be177b9dda77929",
+      "Id": "49ed5f6b20f34fc0988fb5e486817cbc"
+    },
+    {
+      "Start": "b7253df34b8b4aa2a65171b9f38476c3",
+      "End": "0fa5dcefeb924787b09bd15bf0d44dfe",
+      "Id": "39f37719af4d4825a47adcb8e605bf0c"
+    },
+    {
+      "Start": "be90ac84f2ca4fbc941864bc4306f31f",
+      "End": "2faf6ec1a2e74743bb3f875233e6145f",
+      "Id": "7e2a9dd03b1b490dbdf5bf75ccbf6ced"
+    },
+    {
+      "Start": "1319e3d049eb456ca89ef70d2afa9879",
+      "End": "a15fc46eccd344bdb66755c2df389a30",
+      "Id": "fac7f36b2ea740caaad0562d77daa9d3"
+    },
+    {
+      "Start": "2f7054df31354d05ae0be4e9beffd1da",
+      "End": "159eb1d2424d40efb6b2f9c4fd046fb9",
+      "Id": "d11b916c97024313b94648a3d25f8e3e"
+    },
+    {
+      "Start": "2f7054df31354d05ae0be4e9beffd1da",
+      "End": "87e085d6289d41309c6a7dc6650ecec2",
+      "Id": "983bb02cfc80410dbf5d0bff39fe225c"
+    },
+    {
+      "Start": "2f7054df31354d05ae0be4e9beffd1da",
+      "End": "0c789f98e9db498b8d8361ab1b541fe8",
+      "Id": "3e4cf5e5d3594fc79925f8d5f89c2bab"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRexIfc",
+      "Version": "0.1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "c33a47d291204c3486c281cb081766ce",
+        "6cdcaa71e3de4f369d2f52689f48b090",
+        "aba14d76c45a4bbcaa9dece12f132673",
+        "0a5ee94d4c494af385e51e399f471f31",
+        "091db39e6e8b411f88ccb293527aaa72",
+        "1de614febdfc49229c86e9cc77b9cef5",
+        "2e7e948e187748ac890a68ca3ae7a8ab",
+        "76e885a949214a1abb7ede0393e7434e",
+        "859afc3699d144b9851082e1ff427d9e",
+        "3337f0eeef8f4846a62c807d7075a9e3",
+        "05dc8827032f40b8b8ae17177fd8e4f5"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.8481",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "5c2deddc90474d94a0c118efefed883c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 276.27215937922057,
+        "Y": 129.10087141298283
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "b018394e431a4d45ad9a7f09a3db392f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 270.40000000000003,
+        "Y": 266.263421486041
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Logger",
+        "Id": "c33a47d291204c3486c281cb081766ce",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 607.40573913376215,
+        "Y": 266.21024313637304
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "6cdcaa71e3de4f369d2f52689f48b090",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 966.81512666901926,
+        "Y": 224.797348674602
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGuidStore.ByEmptyStore",
+        "Id": "aba14d76c45a4bbcaa9dece12f132673",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1060.1434140169329,
+        "Y": 430.22829459335367
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGUID Validation",
+        "Id": "0a5ee94d4c494af385e51e399f471f31",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1404.763740267392,
+        "Y": 245.35924451478155
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcValidationResult.Messages",
+        "Id": "091db39e6e8b411f88ccb293527aaa72",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1958.8680799358099,
+        "Y": 430.55553065335238
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Data.ExportExcel",
+        "Id": "b089acfe112a494e99d6bf445c6035ec",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2732.0371448437863,
+        "Y": 368.75060383361074
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "324afdf1e4c74e8aa2cdef6bc95ebca5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 272.62580094575958,
+        "Y": 409.41229623313041
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "86a925f7c6bd4f3084547fa888a4eecd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2346.8408174043489,
+        "Y": 293.62621269107439
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcReport Domain",
+        "Id": "1de614febdfc49229c86e9cc77b9cef5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1511.3301076720593,
+        "Y": 474.54316185750247
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Now",
+        "Id": "ff7305a0815746d5b43bf20d58a6144d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2064.4078512518413,
+        "Y": 174.66596833263014
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DateTime.Format",
+        "Id": "6f15389d20714127be97844bd664c9bc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2221.5937058770864,
+        "Y": 174.6659683326302
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "268a59cc372841f99a2bb95eeef53470",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1961.9055551799802,
+        "Y": 268.8792967874756
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcValidationMessage.ToData",
+        "Id": "2e7e948e187748ac890a68ca3ae7a8ab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2330.5809190278446,
+        "Y": 609.81064481792544
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGuidStore.CountInstances",
+        "Id": "76e885a949214a1abb7ede0393e7434e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2333.0083037207933,
+        "Y": 726.27645172896337
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGuidCheckResult.IfcGuidStore",
+        "Id": "859afc3699d144b9851082e1ff427d9e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1965.4605456038671,
+        "Y": 585.01742528850275
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGuidStore.DuplicateUsageCountInstances",
+        "Id": "3337f0eeef8f4846a62c807d7075a9e3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2325.6303972744595,
+        "Y": 835.16135899386768
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcGuidStore.ToDataOfDuplicateUsage",
+        "Id": "05dc8827032f40b8b8ae17177fd8e4f5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2326.5305858591123,
+        "Y": 932.43999782846447
+      }
+    ],
+    "Annotations": [],
+    "X": 65.484890252240973,
+    "Y": 68.190293400893637,
+    "Zoom": 0.41343795266433625
+  }
+}

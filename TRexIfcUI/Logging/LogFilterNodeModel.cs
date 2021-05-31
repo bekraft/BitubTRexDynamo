@@ -31,7 +31,6 @@ namespace TRex.Log
         private LogSeverity _logMinSeverity;
         private IDictionary<ObservableCollection<LogMessage>, long> _runtimeStamp = new Dictionary<ObservableCollection<LogMessage>, long>();
         private long _timeStamp = long.MinValue;
-        //private string _sCallQualifier;
         
         [JsonConstructor]
         LogFilterNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -123,13 +122,13 @@ namespace TRex.Log
             ClearOnActionLogChanged(_timeStamp);
             _timeStamp = DateTime.Now.ToBinary();
             var callFilter = AstFactory.BuildFunctionCall(
-                new Func<LogSeverity, object, ProgressingTask, int, LogMessage[]>(LogMessage.FilterBySeverity),
+                new Func<LogSeverity, object, ProgressingTask, long, LogMessage[]>(LogMessage.FilterBySeverity),
                 new List<AssociativeNode>()
                 {
                     MapEnum(LogMinSeverity),
                     inputAstNodes[1],
                     inputAstNodes[0].ToDynamicTaskProgressingFunc(RegisterOnActionLogChangedName),
-                    AstFactory.BuildIntNode(LogCount)
+                    AstFactory.BuildIntNode((long)LogCount)
                 });
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callFilter) };
         }

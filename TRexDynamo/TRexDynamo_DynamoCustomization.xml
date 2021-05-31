@@ -16,5 +16,8 @@
     <namespace name="TRex.Export">
       <category>TRex.Export</category>
     </namespace>
+    <namespace name="TRex.Geom">
+      <category>TRex.Geom</category>
+    </namespace>
   </namespaces>
 </doc>

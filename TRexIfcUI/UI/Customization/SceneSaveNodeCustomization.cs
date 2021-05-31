@@ -9,7 +9,7 @@ using System.Linq;
 namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
-    public class SceneSaveNodeCustomization : CancelableOptionCommandCustomization<SceneSaveNodeModel>
+    public class SceneSaveNodeCustomization : CancelableOptionCommandCustomization<SceneSaveNodeModel, Format>
     {
         public SceneSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
         { }

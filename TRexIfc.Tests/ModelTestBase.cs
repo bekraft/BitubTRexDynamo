@@ -14,26 +14,31 @@ namespace TRex.Tests
 {
     public class ModelTestBase<T> : TestBase<T>
     {
-        protected IfcModel testSimpleSolid;
         protected readonly Logger testLogger;
+
+        protected Func<Logger, IfcModel> testSimpleSolid = (testLogger) => IfcStore.ByIfcModelFile(
+                @$"{TestContext.CurrentContext.TestDirectory}\Resources\extruded-solid.ifc",
+                testLogger,
+                IfcTessellationPrefs.ByDefaults());
+        protected Func<Logger, IfcModel> testSampleHouse = (testLogger) => IfcStore.ByIfcModelFile(
+                @$"{TestContext.CurrentContext.TestDirectory}\Resources\IfcSampleHouse.ifc",
+                testLogger,
+                IfcTessellationPrefs.ByDefaults());        
 
         protected ModelTestBase() : base()
         {
             testLogger = Logger.ByLogFileName($"{typeof(T).Name}");
         }
 
-        [SetUp]
-        public virtual void SetUp()
-        {            
-            testSimpleSolid = IfcStore.ByIfcModelFile(
-                @$"{TestContext.CurrentContext.TestDirectory}\Resources\extruded-solid.ifc", 
-                testLogger, 
-                IfcTessellationPrefs.ByDefaults());
+        protected ComponentScene BuildComponentSimpleScene()
+        {
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSimpleSolid(testLogger));
+            return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 
-        protected ComponentScene BuildComponentScene()
+        protected ComponentScene BuildComponentSampleScene()
         {
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSimpleSolid);
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSampleHouse(testLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 

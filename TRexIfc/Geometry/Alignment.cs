@@ -2,8 +2,8 @@
 
 using Autodesk.DesignScript.Runtime;
 
+using Bitub.Dto.Spatial;
 using Bitub.Ifc.Transform;
-using Bitub.Dto.Scene;
 
 using TRex.Log;
 
@@ -69,8 +69,8 @@ namespace TRex.Geom
         {
             return new Alignment(new IfcAxisAlignment
             {
-                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, offsetA.Translate(1.0f).TheXYZ),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, offsetB.Translate(1.0f).TheXYZ)
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA, XYZs.ByAdd(offsetA, 1, 0, 0)),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB, XYZs.ByAdd(offsetB, 1, 0, 0))
             });
         }
 
@@ -84,7 +84,7 @@ namespace TRex.Geom
             return new Alignment(new IfcAxisAlignment
             {
                 SourceReferenceAxis = new IfcAlignReferenceAxis(),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(new Bitub.Dto.Spatial.XYZ(), xAxis.TheXYZ)
+                TargetReferenceAxis = new IfcAlignReferenceAxis(new Bitub.Dto.Spatial.XYZ(), xAxis)
             });
         }
 
@@ -102,8 +102,8 @@ namespace TRex.Geom
         {
             return new Alignment(new IfcAxisAlignment
             {
-                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA.TheXYZ, axisRefA?.TheXYZ ?? offsetA.Translate(1).TheXYZ),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB.TheXYZ, axisRefB?.TheXYZ ?? offsetB.Translate(1).TheXYZ)
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA, axisRefA ?? XYZs.ByAdd(offsetA, 1, 0, 0)),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB, axisRefB ?? XYZs.ByAdd(offsetB, 1, 0, 0))
             });
         }
     }

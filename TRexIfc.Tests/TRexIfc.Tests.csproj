@@ -94,6 +94,9 @@
     <None Update="Resources\extruded-solid.ifc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\IfcSampleHouse.ifc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   
   <Target Name="DeployDependencies" AfterTargets="CopyXbimInteropFiles">

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 
-using Bitub.Ifc.Export;
 using Bitub.Dto;    
 using Bitub.Dto.Scene;
+using Bitub.Dto.Spatial;
+
+using Bitub.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
 
@@ -42,7 +44,7 @@ namespace TRex.Export
             {
                 Transforming = SceneTransformationStrategy.Quaternion,
                 Positioning = ScenePositioningStrategy.NoCorrection,
-                UserModelCenter = new Bitub.Dto.Spatial.XYZ(),
+                UserModelCenter = new XYZ(),
                 UnitsPerMeter = 1.0f,
                 SelectedContext = contexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
                 FeatureToClassifierFilter = null
@@ -64,7 +66,7 @@ namespace TRex.Export
             {
                 Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
                 Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
-                UserModelCenter = offset.TheXYZ,
+                UserModelCenter = offset,
                 UnitsPerMeter = unitScale?.UnitsPerMeter ?? 1,
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
                 FeatureToClassifierFilter = featureClassificationFilter?.Filter
@@ -93,35 +95,5 @@ namespace TRex.Export
                 return LogMessage.BySeverityAndMessage(fileName, LogSeverity.Error, LogReason.Saved, "{0}: {1} ({2})", e, e.Message, fileName);
             }
         }
-
-        /// <summary>
-        /// The transformation strategy.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public string TransformationStrategy { get => Enum.GetName(typeof(SceneTransformationStrategy), Preferences.Transforming); }
-
-        /// <summary>
-        /// The positioning strategy.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public string PositioningStrategy { get => Enum.GetName(typeof(ScenePositioningStrategy), Preferences.Positioning); }
-
-        /// <summary>
-        /// The scaling as units per meter.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public double UnitsPerMeter { get => Preferences.UnitsPerMeter; }
-
-        /// <summary>
-        /// The model offset in meter.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public XYZ Offset { get => new XYZ { TheXYZ = Preferences.UserModelCenter }; }
-
-        /// <summary>
-        /// Names of model contexts to be exported.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public Canonical[] SceneContexts { get => Preferences.SelectedContext.Select(c => new Canonical(c.Name)).ToArray(); }
     }
 }

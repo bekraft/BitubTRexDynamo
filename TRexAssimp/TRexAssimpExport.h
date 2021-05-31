@@ -13,7 +13,7 @@ using namespace ::TRex::Export;
 #include <assimp/scene.h>
 #include <assimp/Exporter.hpp>
 
-typedef unsigned int uint;
+typedef ai_uint uint;
 
 namespace TRexAssimp
 {

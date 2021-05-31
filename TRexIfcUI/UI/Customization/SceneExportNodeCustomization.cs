@@ -9,7 +9,7 @@ using TRex.Export;
 namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
-    public class SceneExportNodeCustomization : CancelableOptionCommandCustomization<SceneExportNodeModel>
+    public class SceneExportNodeCustomization : CancelableOptionCommandCustomization<SceneExportNodeModel, Format>
     {
         public SceneExportNodeCustomization() : base(ProgressOnPortType.InPorts)
         { }

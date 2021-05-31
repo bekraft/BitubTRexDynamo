@@ -19,43 +19,38 @@ namespace TRex.Store
     /// </summary>
     [NodeName("Ifc Save")]
     [NodeCategory("TRex.Store")]
+    [NodeDescription("Saves an IFC model to file by selected format extension.")]
     [InPortTypes(typeof(IfcModel))]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcSaveStoreNodeModel : CancelableProgressingOptionNodeModel
+    public class IfcSaveStoreNodeModel : CancelableProgressingOptionNodeModel<string>
     {
-        /// <summary>
-        /// New save store model.
-        /// </summary>
+#pragma warning disable CS1591
+
         public IfcSaveStoreNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "Input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("ifcModel", "Input model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("separator", "If using canonical name, define the separator")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "Saved model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("ifcModel", "Saved model")));
 
             RegisterAllPorts();
             IsCancelable = true;
 
-            InitOptions();
-            SelectedOption = IfcStore.Extensions[0];
+            LogReasonMask = LogReason.Saved;
+            Selected = IfcStore.Extensions[0];
         }
 
         [JsonConstructor]
         IfcSaveStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InitOptions();
-        }
-
-        private void InitOptions()
-        {
-            foreach (var ext in IfcStore.Extensions)
-                AvailableOptions.Add(ext);
-
             LogReasonMask = LogReason.Saved;
         }
 
-#pragma warning disable CS1591
+        protected override IEnumerable<string> GetInitialOptions() => IfcStore.Extensions;
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
@@ -94,7 +89,7 @@ namespace TRex.Store
                         new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
                         new List<AssociativeNode>() {
                             inputAstNodes[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                            AstFactory.BuildStringNode(SelectedOption as string),
+                            AstFactory.BuildStringNode(Selected),
                             inputAstNodes[1]
                         }))
             };

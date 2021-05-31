@@ -1,32 +1,56 @@
-﻿using Autodesk.DesignScript.Runtime;
+﻿using System.Collections.Generic;
+
+using Autodesk.DesignScript.Runtime;
+
+using Newtonsoft.Json;
 
 namespace TRex.Export
 {
     /// <summary>
     /// Fundamental concept of scaling model unit factor.
-    /// </summary>    
+    /// </summary>
+    [JsonObject(MemberSerialization.OptIn)]
     public sealed class UnitScale
     {
         /// <summary>
         /// Given unit factors
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public readonly static UnitScale[] defined =
+        public readonly static IDictionary<string, UnitScale> defined = new Dictionary<string, UnitScale>()
         {
-            new UnitScale { Reference = "m", Name = "Meter", UnitsPerMeter = 1.0f },
-            new UnitScale { Reference = "mm", Name = "Millimeter", UnitsPerMeter = 1000.0f },
-            new UnitScale { Reference = "cm", Name = "Centimeter", UnitsPerMeter = 100.0f },
-            new UnitScale { Reference = "in", Name = "Inch", UnitsPerMeter = 1000.0f / 25.4f }, // 25.4mm per inch
-            new UnitScale { Reference = "ft", Name = "Feet", UnitsPerMeter = 1000.0f / (12 * 25.4f) } // 12 inch per foot                                                   
+            { "m", new UnitScale { Reference = "m", Name = "Meter", UnitsPerMeter = 1.0f } },
+            { "mm", new UnitScale { Reference = "mm", Name = "Millimeter", UnitsPerMeter = 1000.0f } },
+            { "cm", new UnitScale { Reference = "cm", Name = "Centimeter", UnitsPerMeter = 100.0f } },
+            { "in", new UnitScale { Reference = "in", Name = "Inch", UnitsPerMeter = 1000.0f / 25.4f } }, // 25.4mm per inch
+            { "ft", new UnitScale { Reference = "ft", Name = "Feet", UnitsPerMeter = 1000.0f /(12 * 25.4f) } }// 12 inch per foot                                                   
         };
 
-        #region Internals
-
-        private UnitScale()
+        [IsVisibleInDynamoLibrary(false)]
+        [JsonConstructor]
+        public UnitScale()
         {
         }
 
-        #endregion
+        /// <summary>
+        /// Gets the scale of this unit per meter.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        [JsonProperty]
+        public float UnitsPerMeter { get; set; }
+
+        /// <summary>
+        /// The name of unit.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        [JsonProperty]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// The reference/identifier.
+        /// </summary>
+        [IsVisibleInDynamoLibrary(false)]
+        [JsonProperty]
+        public string Reference { get; set; }
 
         /// <summary>
         /// A new unit scale by data.
@@ -74,27 +98,26 @@ namespace TRex.Export
             }
         }
 
-        /// <summary>
-        /// Gets the scale of this unit per meter.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public float UnitsPerMeter { get; set; }
-
-        /// <summary>
-        /// The name of unit.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// The reference/identifier.
-        /// </summary>
-        [IsVisibleInDynamoLibrary(false)]
-        public string Reference { get; set; }
-
         public override string ToString()
         {
             return $"{UnitsPerMeter}/E ({Name})";
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UnitScale scale &&
+                   UnitsPerMeter == scale.UnitsPerMeter &&
+                   Name == scale.Name &&
+                   Reference == scale.Reference;
+        }
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1668436232;
+            hashCode = hashCode * -1521134295 + UnitsPerMeter.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Reference);
+            return hashCode;
         }
     }
 }

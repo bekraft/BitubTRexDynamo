@@ -10,7 +10,7 @@ namespace TRex.UI.Customization
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcSaveNodeCustomization : CancelableOptionCommandCustomization<IfcSaveStoreNodeModel>
+    public class IfcSaveNodeCustomization : CancelableOptionCommandCustomization<IfcSaveStoreNodeModel, string>
     {
         public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
         {            
@@ -30,7 +30,7 @@ namespace TRex.UI.Customization
                     var ifcModels = NodeModel.GetCachedInput<IfcModel>(portModel.Index, ModelEngineController);
                     // Autofix extension if unique
                     if (1 == ifcModels.Length)
-                        NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.FormatExtension;
+                        NodeModel.Selected = ifcModels.FirstOrDefault()?.FormatExtension;
                     break;
                 case PortType.Output:
                     break;

@@ -2,6 +2,7 @@
 
 using TRex.Internal;
 
+using Newtonsoft.Json;
 using Autodesk.DesignScript.Runtime;
 
 namespace TRex.Export
@@ -10,8 +11,13 @@ namespace TRex.Export
     /// Generic export format description.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
+    [JsonObject(MemberSerialization.OptIn)]
     public sealed class Format
     {
+        [JsonConstructor]
+        public Format()
+        { }
+
         public Format(string id, string extension, string description)
         {
             if (null == id)
@@ -22,6 +28,33 @@ namespace TRex.Export
             Description = description;
         }
 
+        public Format(string idAsExtension, string description)
+            : this(idAsExtension, idAsExtension, description)
+        { }
+
+        /// <summary>
+        /// The format identifier.
+        /// </summary>
+        [JsonProperty]
+        public string ID { get; set; }
+
+        /// <summary>
+        /// The file extension identifier.
+        /// </summary>
+        [JsonProperty]
+        public string Extension { get; set; }
+
+        /// <summary>
+        /// The description of format.
+        /// </summary>
+        [JsonProperty]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// A new format specification by dynamic object.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <returns>A format specification</returns>
         public static Format FromDynamic(dynamic format)
         {
             try
@@ -33,7 +66,7 @@ namespace TRex.Export
             }
             catch (ArgumentNullException ane)
             {
-                GlobalLogging.log.Warning("Not allowed {0}: {1}", format, ane.Message);                
+                GlobalLogging.log.Warning("Not allowed {0}: {1}", format, ane.Message);
             }
             catch (Exception e)
             {
@@ -41,14 +74,6 @@ namespace TRex.Export
             }
             return null;
         }
-
-        public Format(string idAsExtension, string description)
-            : this(idAsExtension, idAsExtension, description)
-        { }
-
-        public string ID { get; private set; }
-        public string Extension { get; private set; }
-        public string Description { get; private set; }
 
         public override int GetHashCode()
         {

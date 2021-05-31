@@ -105,8 +105,8 @@
 
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <None Remove="UI\CRSTransformControl.xaml" />
     <None Remove="UI\FilterMatchTypeControl.xaml" />
-    <None Remove="UI\SceneExportSettingsControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -140,8 +140,8 @@
     <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Update="UI\SceneExportSettingsControl.xaml.cs">
-      <DependentUpon>SceneExportSettingsControl.xaml</DependentUpon>
+    <Compile Update="UI\CRSTransformControl.xaml.cs">
+      <DependentUpon>CRSTransformControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="UI\SceneBuildSettingsControl.xaml.cs">
       <DependentUpon>SceneBuildSettingsControl.xaml</DependentUpon>
@@ -165,7 +165,9 @@
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
-      <SourceDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
+      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll"/>
+      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
+      <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
       <SourceXmls Include="$(TargetDir)*.xml" />
       <SourcePkg Include="pkg.json" />
@@ -175,7 +177,9 @@
     <Message Importance="High" Text="Will copy @(SourceDlls)´..." />
 
     <!-- Copying to deploy folder-->
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SystemDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />

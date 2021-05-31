@@ -8,6 +8,8 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
+using Bitub.Dto.Spatial;
+
 using TRex.Internal;
 using TRex.Geom;
 using TRex.Data;
@@ -17,9 +19,10 @@ using Bitub.Ifc.Export;
 namespace TRex.Export
 {
     /// <summary>
-    /// UI Node model wrapping scene export settings.
+    /// Scene build settings
     /// </summary>
     [NodeName("Build settings")]
+    [NodeDescription("Assembles all build settings for scene generation")]
     [NodeCategory("TRex.Export")]
     [InPortTypes(new string[] { nameof(XYZ), nameof(UnitScale), nameof(String), nameof(CanonicalFilter) })]
     [OutPortTypes(new string[] { nameof(SceneBuildSettings) })]
@@ -42,12 +45,17 @@ namespace TRex.Export
 
         public SceneBuildSettingsNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("offset", "Model offset as XYZ"))); // 0
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("unitScale", "Scaling units per Meter"))); // 1
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("providedContexts", "Provided representation model contexts"))); // 2
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("featureClassificationFilter", "Feature-2-classification filter"))); // 2
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("offset", "Model offset as XYZ"))); // 0
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); // 1
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("providedContexts", "Provided representation model contexts"))); // 2
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("featureClassificationFilter", "Feature-2-classification filter"))); // 2
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("settings", "Scene build settings")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("settings", "Scene build settings")));
 
             RegisterAllPorts();
         }
@@ -82,57 +90,42 @@ namespace TRex.Export
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             ClearErrorsAndWarnings();
-            AssociativeNode[] inputs = inputAstNodes.ToArray();
-
             if (IsPartiallyApplied)
             {
-                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
                 {
                     switch (port.Index)
                     {
                         case 0:
                             break;
-                        case 1:
-                            // Default units per meter = 1.0
-                            inputs[1] = AstFactory.BuildDoubleNode(1.0);
-                            break;
                         case 3:
                             break;
                         default:
                             WarnForMissingInputs();
-
-                            // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
+                            return BuildNullResult();
                     }
                 }
             }
 
             // Wrap into list
             // Wrap pset names into list if not already done
-            if (inputs[2] is StringNode)
+            if (inputAstNodes[2] is StringNode)
             {   // Rewrite input AST 
-                inputs[2] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputs[2] });
+                inputAstNodes[2] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[2] });
             }
 
-
-            var callCreateSceneExport = AstFactory.BuildFunctionCall(
+            var astBuildSettings = AstFactory.BuildFunctionCall(
                 new Func<string, string, XYZ, UnitScale, string[], CanonicalFilter, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
-                    inputs[0],
-                    inputs[1],
-                    inputs[2],
-                    inputs[3]
+                    inputAstNodes[0],
+                    inputAstNodes[1],
+                    inputAstNodes[2],
+                    inputAstNodes[3]
                 });
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateSceneExport)
-            };
+            return BuildResult(astBuildSettings);            
         }
 
 #pragma warning restore CS1591

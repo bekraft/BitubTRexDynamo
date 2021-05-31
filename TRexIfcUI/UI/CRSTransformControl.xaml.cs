@@ -4,9 +4,9 @@ namespace TRex.UI
 {
 #pragma warning disable CS1591
 
-    public partial class SceneExportSettingsControl : UserControl
+    public partial class CRSTransformControl : UserControl
     {
-        public SceneExportSettingsControl()
+        public CRSTransformControl()
         {
             InitializeComponent();
         }

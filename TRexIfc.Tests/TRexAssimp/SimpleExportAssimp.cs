@@ -7,24 +7,24 @@ using System.Threading.Tasks;
 using TRex.Log;
 using TRex.Export;
 using TRex.Tests;
+using TRex.Geom;
 
 using NUnit.Framework;
 
 namespace TRex.Tests.Export
 {
-    public class ExportAssimp : ModelTestBase<ExportAssimp>
+    public class SimpleExportAssimp : ModelTestBase<SimpleExportAssimp>
     {
         private ComponentScene testScene;
 
-        public ExportAssimp() : base()
+        public SimpleExportAssimp() : base()
         {
         }
 
         [SetUp]
-        public override void SetUp()
+        public void SetUp()
         {
-            base.SetUp();
-            testScene = BuildComponentScene();
+            testScene = BuildComponentSampleScene();
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace TRex.Tests.Export
                 var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "3ds");
                 Assert.IsNotNull(format3DS, "3DS export module exists");
 
-                var exported = ComponentScene.Export(testScene, format3DS.Extension, null);
+                var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByRighthandZUp(), format3DS.Extension, null);
                 var log = exported.GetActionLog();
                 Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
                 Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
@@ -54,7 +54,7 @@ namespace TRex.Tests.Export
                 var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "fbx");
                 Assert.IsNotNull(format3DS, "FBX export module exists");
 
-                var exported = ComponentScene.Export(testScene, format3DS.Extension, null);
+                var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByLefthandYUp(), format3DS.Extension, null);
                 var log = exported.GetActionLog();
                 Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
                 Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");

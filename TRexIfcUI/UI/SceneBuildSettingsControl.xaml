@@ -7,7 +7,7 @@
              xmlns:bitubifcexport="clr-namespace:Bitub.Ifc.Export;assembly=Bitub.Ifc"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="120" d:DesignWidth="300">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ScenePositioningStrategy"

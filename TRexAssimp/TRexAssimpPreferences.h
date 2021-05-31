@@ -3,6 +3,8 @@
 using namespace Bitub::Dto::Spatial;
 using namespace Bitub::Dto::Scene;
 
+using namespace ::TRex::Export;
+
 #include <assimp/scene.h>
 
 namespace TRexAssimp
@@ -16,6 +18,7 @@ namespace TRexAssimp
 		
 	public:
 		TRexAssimpPreferences();
+		TRexAssimpPreferences(::TRex::Geom::CRSTransform ^ t, UnitScale ^ s);
 		
 		property float Scale 
 		{ 

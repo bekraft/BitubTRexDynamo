@@ -52,7 +52,7 @@ namespace TRex.Geom
         /// <returns>A new region</returns>
         public static AABBRegion ByExtent(XYZ min, XYZ max, double weight = 1.0)
         {
-            return new AABBRegion(new ABox { Min = min.TheXYZ, Max = max.TheXYZ }) { Weight = weight };
+            return new AABBRegion(new ABox { Min = min, Max = max }) { Weight = weight };
         }
     }
 }

@@ -24,23 +24,26 @@ namespace TRex.Export
     [InPortTypes(new string[] { nameof(ComponentScene), nameof(String) })]
     [OutPortTypes(typeof(ComponentScene))]
     [IsDesignScriptCompatible]
-    public class SceneSaveNodeModel : CancelableProgressingOptionNodeModel
+    public class SceneSaveNodeModel : CancelableProgressingOptionNodeModel<Format>
     {
 #pragma warning disable CS1591
 
         public SceneSaveNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("scene", "Component scene model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("scene", "Component scene model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("separator", "If using canonical name, define the separator")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("scene", "Component scene model")));
 
             RegisterAllPorts();
-            InitOptions();
-
+            
             IsCancelable = false;
 
-            SelectedOption = ComponentScene.saveAsFormats.FirstOrDefault();
+            Selected = ComponentScene.saveAsFormats.FirstOrDefault();
+            LogReasonMask = LogReason.Saved;
         }
 
         #region Internals
@@ -48,21 +51,10 @@ namespace TRex.Export
         [JsonConstructor]
         SceneSaveNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InitOptions();
-        }
-
-        private void InitOptions()
-        {
-            foreach (var ext in ComponentScene.saveAsFormats)
-                AvailableOptions.Add(ext);
-
             LogReasonMask = LogReason.Saved;
         }
 
-        private Format SelectedFormat
-        {
-            get => Format.FromDynamic(SelectedOption);
-        }
+        protected override IEnumerable<Format> GetInitialOptions() => ComponentScene.saveAsFormats;
 
         #endregion
 
@@ -70,17 +62,12 @@ namespace TRex.Export
         {
             BeforeBuildOutputAst();
 
-            AssociativeNode[] inputs = inputAstNodes.ToArray();
-
-            if (null == SelectedFormat)
-            {
-                Warning("Format must not be null.");
+            if (!IsNotNullSelected())
                 return BuildNullResult();
-            }
 
             if (IsPartiallyApplied)
             {
-                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
                 {
                     switch (port.Index)
                     {
@@ -102,9 +89,9 @@ namespace TRex.Export
                 new Func<ComponentScene, string, string, ComponentScene>(ComponentScene.Save),
                 new List<AssociativeNode>()
                 {
-                    inputs[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
-                    AstFactory.BuildStringNode(SelectedFormat?.ID),
-                    inputs[1]
+                    inputAstNodes[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
+                    AstFactory.BuildStringNode(Selected.ID),
+                    inputAstNodes[1]
                 });
 
             return BuildResult(astRunSaveScene);
