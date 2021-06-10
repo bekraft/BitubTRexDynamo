@@ -44,6 +44,8 @@ namespace TRexAssimp
 			std::map<uint, std::vector<uint>>& children, 
 			Dictionary<GlobalUniqueId^, uint>^ nodeMap);
 
+		const void LocalizeSceneTransforms(aiNode* parent, const aiMatrix4x4 transform);
+
 		std::vector<uint>& GetOrCreateChildIndex(
 			std::map<uint, std::vector<uint>>& mChildren,
 			const uint idx_parent_node);

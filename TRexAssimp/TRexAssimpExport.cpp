@@ -93,7 +93,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 
     // Create scene root
     scene.mRootNode = new aiNode();
-    scene.mRootNode->mTransformation = preferences->GetTransform();
+        
     if (nullptr != componentScene->Metadata)
     {
         std::string projectName = marshal_as<std::string>(componentScene->Metadata->Name);
@@ -131,6 +131,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 // Get WCS and mesh transformation
                 if (contextWcsMap->TryGetValue(shape->Context, t))
                 {
+                    // TODO
                     aiMatrix4x4 wcs = TRexAssimp::AIMatrix4(t);
                 }
                 else
@@ -167,10 +168,13 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 {
                     idx_mesh = CreateMaterialMesh(nullptr, v_meshes, m_mesh_materialmesh, idx_material, idx_mesh);
                 }
+                
+                v_meshes[idx_mesh]->mName = aiString(meshNode->mName);
 
                 meshNode->mNumMeshes = 1;
                 meshNode->mMeshes = new uint[1] { idx_mesh };
-                meshNode->mTransformation = TRexAssimp::AIMatrix4(shape->Transform) * wcs; // TODO Sinlge transform per node, have to aggregate transforms
+                // Global transformations
+                meshNode->mTransformation = TRexAssimp::AIMatrix4(shape->Transform);
 
                 // Register mesh node as child of current real scene node
                 if (meshNode != node)
@@ -203,6 +207,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 v_nodes[i]->mChildren = childNodes;
                 for (auto it = vChildrenIndex.begin(); it != vChildrenIndex.end(); ++it)
                 {
+                    // Create relative local transformations
                     childNodes[it - vChildrenIndex.begin()] = v_nodes[*it];
                 }
             }
@@ -211,6 +216,10 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 
     // Finally set up top level nodes as children of root node
     scene.mRootNode->mChildren = push_to(v_top_nodes, scene.mRootNode->mNumChildren);
+
+    LocalizeSceneTransforms(scene.mRootNode, aiMatrix4x4());
+    // Setup the global transform
+    scene.mRootNode->mTransformation = preferences->GetTransform();
 
     // Save the scene to file of requested format
     String^ givenExt = System::IO::Path::GetExtension(filePathName)->ToLower()->Substring(1);
@@ -246,6 +255,26 @@ const uint TRexAssimp::TRexAssimpExport::GetOrCreateNodeAndParent(Component^ c,
     }
 
     return idx_node;
+}
+
+// Will crawl down the scene and replace/remap all transforms by their localized representation
+const void TRexAssimp::TRexAssimpExport::LocalizeSceneTransforms(aiNode* node, const aiMatrix4x4 tGlobalParent)
+{
+    // Build inverse transformation in order to localize children's transform
+    aiMatrix4x4 tGlobalInverseParent = aiMatrix4x4(tGlobalParent).Inverse();
+    aiMatrix4x4 tParent = tGlobalParent;
+
+    if (!node->mTransformation.IsIdentity())
+    {   // Any node having a transform (and global transform therefore since compnent scene only defines global transforms)
+        // Leave parents within the hierarchy without meshes as they are, since they already have I as local transform
+        tParent = node->mTransformation;
+        node->mTransformation = tGlobalInverseParent * node->mTransformation;        
+    }
+
+    for (uint k = 0; k < node->mNumChildren; ++k)
+    {
+        LocalizeSceneTransforms(node->mChildren[k], tParent);
+    }
 }
 
 // Gets or creates an index vector of children indices

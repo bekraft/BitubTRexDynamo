@@ -2,7 +2,7 @@
 #include "TRexAssimp.h"
 
 TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences() 
-	: scale(1.0f), separateContextScenes(false)
+	: fScale(1.0f), bSeparateContextScenes(false), bExportSceneWCS(false)
 {
 	transform = gcnew Transform();
 	transform->R = Rotation::NewIdentity();
@@ -15,12 +15,19 @@ TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences(::TRex::Geom::CRSTransf
 	if (nullptr != t)
 		transform = t->Transform;
 	if (nullptr != s)
-		scale = s->UnitsPerMeter;
+		fScale = s->UnitsPerMeter;
 }
 
 aiMatrix4x4 TRexAssimp::TRexAssimpPreferences::GetTransform()
 {
 	aiMatrix4x4 scaled;
-	aiMatrix4x4::Scaling(aiVector3D(scale), scaled);
+	aiMatrix4x4::Scaling(aiVector3D(fScale), scaled);
 	return TRexAssimp::AIMatrix4(transform) * scaled;
+}
+
+aiMetadata* TRexAssimp::TRexAssimpPreferences::CreateMetadata()
+{
+	aiMetadata* metadata = new aiMetadata();
+
+	return metadata;
 }

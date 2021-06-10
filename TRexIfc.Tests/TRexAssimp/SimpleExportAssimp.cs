@@ -24,7 +24,7 @@ namespace TRex.Tests.Export
         [SetUp]
         public void SetUp()
         {
-            testScene = BuildComponentSampleScene();
+            testScene = BuildComponentSampleScene(new Bitub.Dto.Spatial.XYZ());
         }
 
         [Test]

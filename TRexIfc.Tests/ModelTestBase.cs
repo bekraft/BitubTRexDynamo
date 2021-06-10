@@ -10,6 +10,8 @@ using TRex.Store;
 using TRex.Log;
 using TRex.Export;
 
+using Bitub.Dto.Spatial;
+
 namespace TRex.Tests
 {
     public class ModelTestBase<T> : TestBase<T>
@@ -30,15 +32,26 @@ namespace TRex.Tests
             testLogger = Logger.ByLogFileName($"{typeof(T).Name}");
         }
 
-        protected ComponentScene BuildComponentSimpleScene()
+        protected SceneBuildSettings NewBuildSettings(XYZ offset)
         {
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSimpleSolid(testLogger));
+            var settings = SceneBuildSettings.ByContext("Body");
+            settings.Preferences.UserModelCenter = offset;
+            settings.Preferences.Transforming = Bitub.Ifc.Export.SceneTransformationStrategy.Quaternion;
+            settings.Preferences.Positioning = Bitub.Ifc.Export.ScenePositioningStrategy.UserCorrection;
+            return settings;
+        }
+
+        protected ComponentScene BuildComponentSimpleScene(XYZ offset)
+        {
+            var settings = NewBuildSettings(offset);            
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, testSimpleSolid(testLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 
-        protected ComponentScene BuildComponentSampleScene()
+        protected ComponentScene BuildComponentSampleScene(XYZ offset)
         {
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(SceneBuildSettings.ByContext("Body"), testSampleHouse(testLogger));
+            var settings = NewBuildSettings(offset);
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, testSampleHouse(testLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 

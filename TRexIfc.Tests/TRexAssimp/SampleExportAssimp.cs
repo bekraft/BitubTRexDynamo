@@ -24,7 +24,7 @@ namespace TRex.Tests.Export
         [SetUp]
         public void SetUp()
         {
-            testScene = BuildComponentSampleScene();
+            testScene = BuildComponentSampleScene(new Bitub.Dto.Spatial.XYZ(10, 0, 0));
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace TRex.Tests.Export
                 var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "fbx");
                 Assert.IsNotNull(format3DS, "FBX export module exists");
 
-                var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByLefthandYUp(), format3DS.Extension, null);
+                var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByRighthandZUp(), format3DS.Extension, null);
                 var log = exported.GetActionLog();
                 Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
                 Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
