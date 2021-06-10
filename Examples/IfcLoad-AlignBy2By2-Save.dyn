@@ -12,7 +12,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "FunctionSignature": "TRex.Geom.XYZs.ByXYZ@double,double,double",
       "Id": "c9e4333a2ba44a76bf55918d219a0e6f",
       "Inputs": [
         {
@@ -55,7 +55,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): XYZ"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -98,7 +98,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Geom.Alignment.SaveTo@string",
+      "FunctionSignature": "TRex.Geom.Alignment.SaveTo@string",
       "Id": "a615d33197c744f8a500127d78a4b4d4",
       "Inputs": [
         {
@@ -198,7 +198,7 @@
       "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
     },
     {
-      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "ConcreteType": "TRex.Log.FileLog, TRexIfcUI",
       "LogEventLevel": 1,
       "NodeType": "ExtensionNode",
       "Id": "2cac8a0f7e8346f391ae269ed9b75283",
@@ -228,7 +228,7 @@
       "Description": "Creates a new file logger with given template name."
     },
     {
-      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "8763f8100cd04a91b957f0d2b7029180",
@@ -278,7 +278,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcAuthorMetadata.ByAuthor@string,string",
+      "FunctionSignature": "TRex.Store.IfcAuthorMetadata.ByAuthor@string,string",
       "Id": "c8f5663e36a04f8b9506931c7a0fd465",
       "Inputs": [
         {
@@ -364,7 +364,7 @@
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     },
     {
-      "ConcreteType": "Log.LogReasonComposingNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Log.LogReasonComposingNodeModel, TRexIfcUI",
       "Selected": [
         16,
         64
@@ -387,7 +387,7 @@
       "Description": "Composing log reasons for filtering logs"
     },
     {
-      "ConcreteType": "Task.IfcAxisAlignmentTransformNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Task.IfcAxisAlignmentTransformNodeModel, TRexIfcUI",
       "SelectedOption": "Change existing placements",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
@@ -454,8 +454,8 @@
       "Description": "Changes the model coordinate system alignment by offset and rotation."
     },
     {
-      "ConcreteType": "Store.IfcSaveStoreNodeModel, TRexIfcUI",
-      "SelectedOption": "ifc",
+      "ConcreteType": "TRex.Store.IfcSaveStoreNodeModel, TRexIfcUI",
+      "Selected": "ifc",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "ae7119a6033a495d96d0bea537606384",
@@ -496,7 +496,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.RelocatePath@string",
+      "FunctionSignature": "TRex.Store.IfcModel.RelocatePath@string",
       "Id": "02dcb5b405ed442981907e6554a064af",
       "Inputs": [
         {
@@ -554,7 +554,7 @@
       "Description": "Ermöglicht die Auswahl einen Verzeichnisses auf dem System, um seinen Pfad abzurufen."
     },
     {
-      "ConcreteType": "Log.LogFilterNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Log.LogFilterNodeModel, TRexIfcUI",
       "LogCount": 10,
       "LogMinSeverity": 0,
       "NodeType": "ExtensionNode",
@@ -594,7 +594,7 @@
       "Description": "Log filtering node"
     },
     {
-      "ConcreteType": "Task.DataTablePreviewNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Data.DataTablePreviewNodeModel, TRexIfcUI",
       "MinCount": 1,
       "MaxCount": 100,
       "Count": 10,
@@ -628,7 +628,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Geom.Alignment.By2x2Reference@Geom.XYZ,Geom.XYZ,Geom.XYZ,Geom.XYZ",
+      "FunctionSignature": "TRex.Geom.Alignment.ByPointReference@Geom.XYZ,Geom.XYZ,Geom.XYZ,Geom.XYZ",
       "Id": "15f66807e475408d9daf48a6a8b2e48f",
       "Inputs": [
         {
@@ -723,7 +723,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "FunctionSignature": "TRex.Geom.XYZs.ByXYZ@double,double,double",
       "Id": "4db58f5e5cd64e51ba6e69dfdbdc6927",
       "Inputs": [
         {
@@ -766,7 +766,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): XYZ"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -809,7 +809,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Geom.XYZ.ByCoordinates@double,double,double",
+      "FunctionSignature": "TRex.Geom.XYZs.ByXYZ@double,double,double",
       "Id": "769e9bec8a944369aabfd95cd4872e2d",
       "Inputs": [
         {
@@ -852,7 +852,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZ.ByCoordinates (x: double, y: double, z: double): XYZ"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): XYZ"
     }
   ],
   "Connectors": [
@@ -1051,7 +1051,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "XYZ.ByCoordinates",
+        "Name": "XYZs.ByXYZ",
         "Id": "c9e4333a2ba44a76bf55918d219a0e6f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1251,7 +1251,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "XYZ.ByCoordinates",
+        "Name": "XYZs.ByXYZ",
         "Id": "4db58f5e5cd64e51ba6e69dfdbdc6927",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1271,7 +1271,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "XYZ.ByCoordinates",
+        "Name": "XYZs.ByXYZ",
         "Id": "769e9bec8a944369aabfd95cd4872e2d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

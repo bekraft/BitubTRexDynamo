@@ -10,7 +10,7 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "ConcreteType": "TRex.Log.FileLog, TRexIfcUI",
       "LogEventLevel": 1,
       "NodeType": "ExtensionNode",
       "Id": "dd916e2863e54995b204e9437e1000be",
@@ -62,8 +62,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
-      "InputValue": "C:\\Workspace\\Git\\BitubTRexDynamo\\BitubIfc.Examples\\Out\\Log.log",
+      "HintPath": ".\\Out\\Log-Evaluate.log",
+      "InputValue": ".\\Out\\Log-Evaluate.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
       "Inputs": [],
@@ -84,7 +84,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.ProductTypes",
+      "FunctionSignature": "TRex.Store.IfcModel.ProductTypes",
       "Id": "dc25e1ae214e4b1488cce4f1dcc3262a",
       "Inputs": [
         {
@@ -114,7 +114,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.PropertySetsPerProductType",
+      "FunctionSignature": "TRex.Store.IfcModel.PropertySetsPerProductType",
       "Id": "63222987c58844da903509355d4c709a",
       "Inputs": [
         {
@@ -142,7 +142,7 @@
       "Description": "Lists all property sets by declaring product type.\n\nIfcModel.PropertySetsPerProductType ( ): var[]..[]"
     },
     {
-      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "08d1ed8f1cd746a0bb701b30ce4e15ba",
@@ -192,7 +192,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.Schema",
+      "FunctionSignature": "TRex.Store.IfcModel.Schema",
       "Id": "74ad7d6a1814494b8a654b5cad4753c7",
       "Inputs": [
         {

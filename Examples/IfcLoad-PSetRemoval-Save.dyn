@@ -10,7 +10,7 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "ConcreteType": "TRex.Log.FileLog, TRexIfcUI",
       "LogEventLevel": 1,
       "NodeType": "ExtensionNode",
       "Id": "dd916e2863e54995b204e9437e1000be",
@@ -41,7 +41,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
@@ -62,7 +62,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-PSetRemoval-Save.log",
+      "HintPath": "Out\\IfcLoad-PSetRemoval-Save.log",
       "InputValue": "Out\\IfcLoad-PSetRemoval-Save.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
@@ -82,7 +82,7 @@
       "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
     },
     {
-      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "df4087d7f09c49e0baae87f6697500e1",
@@ -131,7 +131,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "HintPath": ".\\Out",
       "InputValue": ".\\Out",
       "NodeType": "ExtensionNode",
       "Id": "20b1ab7fb95647cf8d9c573745345082",
@@ -153,7 +153,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.PropertySetNames",
+      "FunctionSignature": "TRex.Store.IfcModel.PropertySetNames",
       "Id": "f56850ef5df342b7aff03308283424f2",
       "Inputs": [
         {
@@ -181,7 +181,7 @@
       "Description": "Lists all property sets by their name.\n\nIfcModel.PropertySetNames ( ): string[]"
     },
     {
-      "ConcreteType": "Store.IfcAuthorMetadataNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Store.IfcAuthorMetadataNodeModel, TRexIfcUI",
       "OrganisationId": "Self employed",
       "OrganisationName": "The unknown",
       "AuthorName": "Nobody",
@@ -225,7 +225,7 @@
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     },
     {
-      "ConcreteType": "Log.LogReasonComposingNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Log.LogReasonComposingNodeModel, TRexIfcUI",
       "Selected": [
         16,
         32,
@@ -249,7 +249,7 @@
       "Description": "Composing log reasons for filtering logs"
     },
     {
-      "ConcreteType": "Task.ExcludingItemListNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Task.ExcludingItemListNodeModel, TRexIfcUI",
       "SelectedValue": [
         "Identity Data"
       ],
@@ -281,7 +281,7 @@
       "Description": "Excludes multiple items from a list of available items using its string representation."
     },
     {
-      "ConcreteType": "Log.LogFilterNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Log.LogFilterNodeModel, TRexIfcUI",
       "LogCount": 55,
       "LogMinSeverity": 0,
       "NodeType": "ExtensionNode",
@@ -341,7 +341,7 @@
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     },
     {
-      "ConcreteType": "Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "e29a708451994a388b1ebaa863d2727a",
@@ -425,8 +425,8 @@
       "Description": "Removal task which drops entire property sets by their name"
     },
     {
-      "ConcreteType": "Store.IfcSaveStoreNodeModel, TRexIfcUI",
-      "SelectedOption": "ifc",
+      "ConcreteType": "TRex.Store.IfcSaveStoreNodeModel, TRexIfcUI",
+      "Selected": "ifc",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "42ea8495fc5144b6a0d8a93488931c1b",
@@ -467,7 +467,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.RelocatePath@string",
+      "FunctionSignature": "TRex.Store.IfcModel.RelocatePath@string",
       "Id": "b57072777a2a43978b0808ce9c8f1e6d",
       "Inputs": [
         {
@@ -580,7 +580,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcSampleHouse-Cleanup.xlsx",
+      "HintPath": "Out\\IfcSampleHouse-Cleanup.xlsx",
       "InputValue": "Out\\IfcSampleHouse-Cleanup.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "029cef8d387e4438a6a6c5a26d8ba78c",
@@ -602,7 +602,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.CanonicalName@string",
+      "FunctionSignature": "TRex.Store.IfcModel.CanonicalName@string",
       "Id": "60d4357b0b674cf8809a28b7e1a5b78d",
       "Inputs": [
         {
@@ -670,7 +670,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Store.IfcModel.PropertySetNames",
+      "FunctionSignature": "TRex.Store.IfcModel.PropertySetNames",
       "Id": "a7ec67ded1ab4af18aee4edeb23b1ac4",
       "Inputs": [
         {
@@ -698,7 +698,7 @@
       "Description": "Lists all property sets by their name.\n\nIfcModel.PropertySetNames ( ): string[]"
     },
     {
-      "ConcreteType": "Data.DataTablePreviewNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Data.DataTablePreviewNodeModel, TRexIfcUI",
       "MinCount": 1,
       "MaxCount": 100,
       "Count": 10,

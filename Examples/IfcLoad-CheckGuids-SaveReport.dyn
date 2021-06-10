@@ -52,7 +52,7 @@
       "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
     },
     {
-      "ConcreteType": "Log.FileLog, TRexIfcUI",
+      "ConcreteType": "TRex.Log.FileLog, TRexIfcUI",
       "LogEventLevel": 1,
       "NodeType": "ExtensionNode",
       "Id": "c33a47d291204c3486c281cb081766ce",
@@ -82,7 +82,7 @@
       "Description": "Creates a new file logger with given template name."
     },
     {
-      "ConcreteType": "Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "6cdcaa71e3de4f369d2f52689f48b090",
@@ -132,7 +132,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcGuidStore.ByEmptyStore",
+      "FunctionSignature": "TRex.Validation.IfcGuidStore.ByEmptyStore",
       "Id": "aba14d76c45a4bbcaa9dece12f132673",
       "Inputs": [],
       "Outputs": [
@@ -150,7 +150,7 @@
       "Description": "An initiallly empty GUID store.\n\nIfcGuidStore.ByEmptyStore ( ): IfcGuidStore"
     },
     {
-      "ConcreteType": "Validation.IfcGuidCheckValidationNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Validation.IfcGuidCheckValidationNodeModel, TRexIfcUI",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "0a5ee94d4c494af385e51e399f471f31",
@@ -191,13 +191,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcValidationResult.Messages@Validation.IfcValidationTask,var",
+      "FunctionSignature": "TRex.Validation.IfcValidationResult.Messages@var",
       "Id": "091db39e6e8b411f88ccb293527aaa72",
       "Inputs": [
         {
           "Id": "581d23136aaa4622a44b52747b632a79",
-          "Name": "validationTask",
-          "Description": "The task\n\nIfcValidationTask",
+          "Name": "ifcValidationResult",
+          "Description": "TRex.Validation.IfcValidationResult",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -217,7 +217,7 @@
         {
           "Id": "4177bc3b969e4215a38e0ec7a67432d3",
           "Name": "IfcValidationMessage[]",
-          "Description": "An array of messages",
+          "Description": "The validation messages",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -225,7 +225,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Directly retrieves the validations messages.\n\nIfcValidationResult.Messages (validationTask: IfcValidationTask, reportFilter: var): IfcValidationMessage[]"
+      "Description": "Retrieve all messages of given type.\n\nIfcValidationResult.Messages (reportFilter: var): IfcValidationMessage[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -353,9 +353,9 @@
       "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     },
     {
-      "ConcreteType": "Validation.IfcReportDomainComposingNodeModel, TRexIfcUI",
+      "ConcreteType": "TRex.Validation.IfcReportDomainComposingNodeModel, TRexIfcUI",
       "Selected": [
-        15
+        14
       ],
       "NodeType": "ExtensionNode",
       "Id": "1de614febdfc49229c86e9cc77b9cef5",
@@ -456,13 +456,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcValidationMessage.ToData",
+      "FunctionSignature": "TRex.Validation.IfcValidationMessage.ToData",
       "Id": "2e7e948e187748ac890a68ca3ae7a8ab",
       "Inputs": [
         {
           "Id": "10f02c7a4cb04f108ec9af99089464c3",
           "Name": "ifcValidationMessage",
-          "Description": "Validation.IfcValidationMessage",
+          "Description": "TRex.Validation.IfcValidationMessage",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -486,13 +486,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcGuidStore.CountInstances",
+      "FunctionSignature": "TRex.Validation.IfcGuidStore.CountInstances",
       "Id": "76e885a949214a1abb7ede0393e7434e",
       "Inputs": [
         {
           "Id": "159eb1d2424d40efb6b2f9c4fd046fb9",
           "Name": "ifcGuidStore",
-          "Description": "Validation.IfcGuidStore",
+          "Description": "TRex.Validation.IfcGuidStore",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -516,13 +516,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcGuidCheckResult.IfcGuidStore@Validation.IfcValidationTask",
+      "FunctionSignature": "TRex.Validation.IfcGuidCheckResult.IfcGuidStore",
       "Id": "859afc3699d144b9851082e1ff427d9e",
       "Inputs": [
         {
           "Id": "26ba39bce68446f89695e8559f9997d7",
-          "Name": "validationTask",
-          "Description": "An IFC GUID validation task\n\nIfcValidationTask",
+          "Name": "ifcGuidCheckResult",
+          "Description": "TRex.Validation.IfcGuidCheckResult",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -533,7 +533,7 @@
         {
           "Id": "2f7054df31354d05ae0be4e9beffd1da",
           "Name": "IfcGuidStore",
-          "Description": "The store or an exception",
+          "Description": "IfcGuidStore",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -541,18 +541,18 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Gets the GUID store from given IFC validation task.\n\nIfcGuidCheckResult.IfcGuidStore (validationTask: IfcValidationTask): IfcGuidStore"
+      "Description": "Returns the current IFC GUID store.\n\nIfcGuidCheckResult.IfcGuidStore ( ): IfcGuidStore"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcGuidStore.DuplicateUsageCountInstances",
+      "FunctionSignature": "TRex.Validation.IfcGuidStore.DuplicateUsageCountInstances",
       "Id": "3337f0eeef8f4846a62c807d7075a9e3",
       "Inputs": [
         {
           "Id": "87e085d6289d41309c6a7dc6650ecec2",
           "Name": "ifcGuidStore",
-          "Description": "Validation.IfcGuidStore",
+          "Description": "TRex.Validation.IfcGuidStore",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -576,13 +576,13 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Validation.IfcGuidStore.ToDataOfDuplicateUsage",
+      "FunctionSignature": "TRex.Validation.IfcGuidStore.ToDataOfDuplicateUsage",
       "Id": "05dc8827032f40b8b8ae17177fd8e4f5",
       "Inputs": [
         {
           "Id": "0c789f98e9db498b8d8361ab1b541fe8",
           "Name": "ifcGuidStore",
-          "Description": "Validation.IfcGuidStore",
+          "Description": "TRex.Validation.IfcGuidStore",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -728,7 +728,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.6.0.8481",
+      "Version": "2.10.1.3976",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -746,199 +746,199 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "File Path",
         "Id": "5c2deddc90474d94a0c118efefed883c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 276.27215937922057,
         "Y": 129.10087141298283
       },
       {
-        "ShowGeometry": true,
-        "Name": "File Path",
         "Id": "b018394e431a4d45ad9a7f09a3db392f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 270.40000000000003,
         "Y": 266.263421486041
       },
       {
-        "ShowGeometry": true,
-        "Name": "File Logger",
         "Id": "c33a47d291204c3486c281cb081766ce",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Logger",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 607.40573913376215,
         "Y": 266.21024313637304
       },
       {
-        "ShowGeometry": true,
-        "Name": "Ifc Load",
         "Id": "6cdcaa71e3de4f369d2f52689f48b090",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Ifc Load",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 966.81512666901926,
         "Y": 224.797348674602
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGuidStore.ByEmptyStore",
         "Id": "aba14d76c45a4bbcaa9dece12f132673",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGuidStore.ByEmptyStore",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1060.1434140169329,
-        "Y": 430.22829459335367
+        "X": 1136.3872186954779,
+        "Y": 444.61391811760745
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGUID Validation",
         "Id": "0a5ee94d4c494af385e51e399f471f31",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGUID Validation",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 1404.763740267392,
         "Y": 245.35924451478155
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcValidationResult.Messages",
         "Id": "091db39e6e8b411f88ccb293527aaa72",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcValidationResult.Messages",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1958.8680799358099,
-        "Y": 430.55553065335238
+        "X": 2165.8915054224467,
+        "Y": 529.81408266257085
       },
       {
-        "ShowGeometry": true,
-        "Name": "Data.ExportExcel",
         "Id": "b089acfe112a494e99d6bf445c6035ec",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Data.ExportExcel",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2732.0371448437863,
-        "Y": 368.75060383361074
+        "X": 2920.3628157415465,
+        "Y": 216.52068652458792
       },
       {
-        "ShowGeometry": true,
-        "Name": "File Path",
         "Id": "324afdf1e4c74e8aa2cdef6bc95ebca5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "File Path",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 272.62580094575958,
         "Y": 409.41229623313041
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "86a925f7c6bd4f3084547fa888a4eecd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2346.8408174043489,
-        "Y": 293.62621269107439
+        "X": 2804.1904489245962,
+        "Y": 277.29499713980289
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcReport Domain",
         "Id": "1de614febdfc49229c86e9cc77b9cef5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcReport Domain",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1511.3301076720593,
-        "Y": 474.54316185750247
+        "X": 1792.9007215100175,
+        "Y": 524.61622886021928
       },
       {
-        "ShowGeometry": true,
-        "Name": "DateTime.Now",
         "Id": "ff7305a0815746d5b43bf20d58a6144d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "DateTime.Now",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2064.4078512518413,
-        "Y": 174.66596833263014
+        "X": 2472.326786590248,
+        "Y": 24.432353427613236
       },
       {
-        "ShowGeometry": true,
-        "Name": "DateTime.Format",
         "Id": "6f15389d20714127be97844bd664c9bc",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "DateTime.Format",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2221.5937058770864,
-        "Y": 174.6659683326302
+        "X": 2643.4867580435343,
+        "Y": 42.399075063666146
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "268a59cc372841f99a2bb95eeef53470",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1961.9055551799802,
-        "Y": 268.8792967874756
+        "X": 2366.7974655158209,
+        "Y": 115.7238827287174
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcValidationMessage.ToData",
         "Id": "2e7e948e187748ac890a68ca3ae7a8ab",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcValidationMessage.ToData",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2330.5809190278446,
-        "Y": 609.81064481792544
+        "X": 2593.1320535672089,
+        "Y": 527.10771295786571
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGuidStore.CountInstances",
         "Id": "76e885a949214a1abb7ede0393e7434e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGuidStore.CountInstances",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2333.0083037207933,
-        "Y": 726.27645172896337
+        "X": 2357.6996921043133,
+        "Y": 871.709451785844
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGuidCheckResult.IfcGuidStore",
         "Id": "859afc3699d144b9851082e1ff427d9e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGuidCheckResult.IfcGuidStore",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 1965.4605456038671,
-        "Y": 585.01742528850275
+        "X": 1913.0116448348058,
+        "Y": 997.15205143330741
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGuidStore.DuplicateUsageCountInstances",
         "Id": "3337f0eeef8f4846a62c807d7075a9e3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGuidStore.DuplicateUsageCountInstances",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2325.6303972744595,
-        "Y": 835.16135899386768
+        "X": 2354.6778064142195,
+        "Y": 985.29482977990051
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcGuidStore.ToDataOfDuplicateUsage",
         "Id": "05dc8827032f40b8b8ae17177fd8e4f5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "IfcGuidStore.ToDataOfDuplicateUsage",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 2326.5305858591123,
-        "Y": 932.43999782846447
+        "X": 2350.7797476463784,
+        "Y": 1101.679811497992
       }
     ],
     "Annotations": [],
-    "X": 65.484890252240973,
-    "Y": 68.190293400893637,
-    "Zoom": 0.41343795266433625
+    "X": -418.19432457022015,
+    "Y": 11.337465357626542,
+    "Zoom": 0.55611075783487607
   }
 }

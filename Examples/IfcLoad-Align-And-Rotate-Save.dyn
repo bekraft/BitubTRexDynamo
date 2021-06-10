@@ -347,7 +347,7 @@
     },
     {
       "ConcreteType": "TRex.Store.IfcSaveStoreNodeModel, TRexIfcUI",
-      "Selected": null,
+      "Selected": "ifc",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "ae7119a6033a495d96d0bea537606384",
