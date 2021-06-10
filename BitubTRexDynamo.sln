@@ -32,8 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IFC4", "IFC4", "{85EF93C9-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dynamo", "Dynamo", "{63BE753D-CD78-4895-A07A-2C73125EA3A0}"
 	ProjectSection(SolutionItems) = preProject
-		Examples\IfcLoad-Align-Save.dyn = Examples\IfcLoad-Align-Save.dyn
+		Examples\IfcLoad-Align-And-Rotate-Save.dyn = Examples\IfcLoad-Align-And-Rotate-Save.dyn
+		Examples\IfcLoad-AlignBy2By2-Save.dyn = Examples\IfcLoad-AlignBy2By2-Save.dyn
 		Examples\IfcLoad-CheckGuids-SaveReport.dyn = Examples\IfcLoad-CheckGuids-SaveReport.dyn
+		Examples\IfcLoad-Evaluate.dyn = Examples\IfcLoad-Evaluate.dyn
 		Examples\IfcLoad-PSetRemoval-Save.dyn = Examples\IfcLoad-PSetRemoval-Save.dyn
 		Examples\IfcLoad-SceneExport.dyn = Examples\IfcLoad-SceneExport.dyn
 	EndProjectSection

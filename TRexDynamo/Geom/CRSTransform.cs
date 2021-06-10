@@ -55,19 +55,14 @@ namespace TRex.Geom
         private GlobalReferenceAxis forward = GlobalReferenceAxis.UserDefined;
 
         internal CRSTransform(string name, GlobalReferenceAxis right, GlobalReferenceAxis up, GlobalReferenceAxis forward)
-        {
-            this.global.R = new Rotation
-            {
-                Rx = GetUnitAxis(right),
-                Ry = GetUnitAxis(forward),
-                Rz = GetUnitAxis(up),
-            };
-
+        {            
             Right = right;
             Up = up;
             Forward = forward;
 
             Name = name;
+
+            CompileTransform();
 
             if (!IsGloballyValid)
                 throw new ArgumentException("Transform is not valid by given reference axis.");
@@ -134,8 +129,7 @@ namespace TRex.Geom
         public CRSTransform()
         { }
 
-        [OnDeserialized]
-        public void OnDeserialized(StreamingContext sc)
+        private void CompileTransform()
         {
             this.global.R = new Rotation
             {
@@ -143,6 +137,12 @@ namespace TRex.Geom
                 Ry = GetUnitAxis(forward),
                 Rz = GetUnitAxis(up),
             };
+        }
+
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext sc)
+        {
+            CompileTransform();
         }
 
         /// <summary>
