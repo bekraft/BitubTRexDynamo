@@ -4,6 +4,7 @@ using namespace Bitub::Dto::Spatial;
 using namespace Bitub::Dto::Scene;
 
 using namespace ::TRex::Export;
+using namespace ::TRex::Geom;
 
 #include <assimp/scene.h>
 
@@ -15,11 +16,14 @@ namespace TRexAssimp
 		bool bSeparateContextScenes;
 		bool bExportSceneWCS;
 
-		Transform^ transform;		
+		Transform^ transform;
+
+		aiMetadata* metadata;
 		
 	public:
 		TRexAssimpPreferences();
-		TRexAssimpPreferences(::TRex::Geom::CRSTransform ^ t, UnitScale ^ s);
+		TRexAssimpPreferences(CRSTransform ^ t, UnitScale ^ s);
+		virtual ~TRexAssimpPreferences();
 
 		property bool IsExportingSceneWCS
 		{
@@ -58,8 +62,13 @@ namespace TRexAssimp
 		}
 
 	internal:
+		void InitMetadata(GlobalReferenceAxis up, GlobalReferenceAxis forward, GlobalReferenceAxis right);
 		aiMatrix4x4 GetTransform();
 		aiMetadata* CreateMetadata();
+
+		template <typename T> int sgn(T val) {
+			return (T(0) < val) - (val < T(0));
+		}
 	};
 }
 

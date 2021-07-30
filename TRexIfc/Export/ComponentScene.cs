@@ -21,14 +21,14 @@ namespace TRex.Export
         /// <summary>
         /// Allowed extensions for <see cref="Save(ComponentScene, string, string)"/>.
         /// </summary>
-        public readonly static Format[] saveAsFormats = new Format[] 
-        { 
-            new Format("json", "json", "JSON Text"), 
+        public readonly static Format[] saveAsFormats = new Format[]
+        {
+            new Format("json", "json", "JSON Text"),
             new Format("scene", "scene", "Binary File")
         };
 
         /// <summary>
-        /// Allowed extensions for <see cref="Export(ComponentScene, string, string)"/>.
+        /// Allowed extensions for <see cref="Export(ComponentScene, UnitScale, CRSTransform, string, string)"/>.
         /// </summary>
         public readonly static Format[] exportAsFormats;
 
@@ -40,7 +40,7 @@ namespace TRex.Export
 
         internal ComponentScene(Bitub.Dto.Scene.ComponentScene componentScene, Qualifier qualifier, Logger logger) : base(qualifier, logger)
         {
-            SceneModel = componentScene;            
+            SceneModel = componentScene;
         }
 
         internal ComponentScene(Bitub.Dto.Scene.ComponentScene componentScene, Logger logger) : base(System.Guid.NewGuid().ToQualifier(), logger)
@@ -48,7 +48,7 @@ namespace TRex.Export
             SceneModel = componentScene;
         }
 
-        static ComponentScene() 
+        static ComponentScene()
         {
             exportAsFormats = new TRexAssimp.TRexAssimpExport().Formats;
         }
@@ -231,7 +231,7 @@ namespace TRex.Export
                             LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "An error occured while exporting to '{0}'. {1}", fileName, exp.StatusMessage));
                     }
                     else
-                    {                        
+                    {
                         monitor.NotifyOnProgressChange(1, "Exported");
                         scene.ActionLog.Add(
                             LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene exported to '{0}'.", fileName));
@@ -247,7 +247,7 @@ namespace TRex.Export
                 }
 
                 monitor.State.MarkTerminated();
-                monitor.NotifyOnProgressEnd();                
+                monitor.NotifyOnProgressEnd();
             }
 
             return scene;

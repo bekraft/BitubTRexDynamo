@@ -7,7 +7,7 @@
              xmlns:bitubifcexport="clr-namespace:Bitub.Ifc.Export;assembly=Bitub.Ifc"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
-             d:DesignHeight="120" d:DesignWidth="300">
+             d:DesignHeight="150" d:DesignWidth="300">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ScenePositioningStrategy"
@@ -39,6 +39,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -48,7 +50,7 @@
                           VerticalAlignment="Center"
                           Grid.Row="1"
                           ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
-                          SelectedItem="{Binding PositioningStrategy}"/>
+                          SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}"/>
 
                 <Label Grid.Row="2" FontSize="8" Content="Transformation strategy"/>
 
@@ -56,7 +58,18 @@
                           VerticalAlignment="Center"
                           Grid.Row="3"
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
-                          SelectedItem="{Binding TransformationStrategy}"/>
+                          SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}"/>
+
+                <Label Grid.Row="4" FontSize="8" Content="Other options"/>
+
+                <CheckBox x:Name="RegenerateGuidsCheckBox"
+                          Grid.Row="5"
+                          Background="AliceBlue"
+                          Foreground="Black"
+                          VerticalAlignment="Center"
+                          VerticalContentAlignment="Center"
+                          Content="enable regeneration of GUIDs in case of trouble" FontSize="8"                          
+                          IsChecked="{Binding Path=IsUsingEntityLabelsAsID, Mode=TwoWay}"/>
 
             </Grid>
         </GroupBox>

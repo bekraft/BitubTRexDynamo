@@ -10,3 +10,6 @@
 *.3ds
 *.fbx
 *.obj
+*.gltf
+*.glb
+*.bin

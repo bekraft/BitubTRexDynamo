@@ -24,7 +24,7 @@ namespace TRex.Export
     [NodeName("Build settings")]
     [NodeDescription("Assembles all build settings for scene generation")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(XYZ), nameof(UnitScale), nameof(String), nameof(CanonicalFilter) })]
+    [InPortTypes(new string[] { nameof(XYZ), nameof(UnitScale), nameof(String)})]
     [OutPortTypes(new string[] { nameof(SceneBuildSettings) })]
     [IsDesignScriptCompatible]
     public class SceneBuildSettingsNodeModel : BaseNodeModel
@@ -33,8 +33,9 @@ namespace TRex.Export
 
         #region Internals
 
-        private SceneTransformationStrategy _transformationStrategy = SceneTransformationStrategy.Quaternion;
-        private ScenePositioningStrategy _positioningStrategy = ScenePositioningStrategy.NoCorrection;
+        private SceneTransformationStrategy transformationStrategy = SceneTransformationStrategy.Quaternion;
+        private ScenePositioningStrategy positioningStrategy = ScenePositioningStrategy.NoCorrection;
+        private bool isRegeneratingGUIDs = false;
 
         [JsonConstructor]
         SceneBuildSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -46,13 +47,11 @@ namespace TRex.Export
         public SceneBuildSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("offset", "Model offset as XYZ"))); // 0
+                new PortData("offset", "Model offset as XYZ")));
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); // 1
+                new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); 
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("providedContexts", "Provided representation model contexts"))); // 2
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("featureClassificationFilter", "Feature-2-classification filter"))); // 2
+                new PortData("providedContexts", "Provided representation model contexts"))); 
 
             OutPorts.Add(new PortModel(PortType.Output, this, 
                 new PortData("settings", "Scene build settings")));
@@ -60,33 +59,48 @@ namespace TRex.Export
             RegisterAllPorts();
         }
 
-        [IsVisibleInDynamoLibrary(false)]
+        public bool IsUsingEntityLabelsAsID
+        {
+            get
+            {
+                return isRegeneratingGUIDs;
+            }
+            set
+            {
+                isRegeneratingGUIDs = value;
+                RaisePropertyChanged(nameof(IsUsingEntityLabelsAsID));
+                OnNodeModified(true);
+            }
+        }
+
         public SceneTransformationStrategy TransformationStrategy
         {
-            get {
-                return _transformationStrategy;
+            get 
+            {
+                return transformationStrategy;
             }
-            set {
-                _transformationStrategy = value;
+            set 
+            {
+                transformationStrategy = value;
                 RaisePropertyChanged(nameof(TransformationStrategy));
-                OnNodeModified(false);
+                OnNodeModified(true);
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public ScenePositioningStrategy PositioningStrategy
         {
-            get {
-                return _positioningStrategy;
+            get 
+            {
+                return positioningStrategy;
             }
-            set {
-                _positioningStrategy = value;
+            set 
+            {
+                positioningStrategy = value;
                 RaisePropertyChanged(nameof(PositioningStrategy));
-                OnNodeModified(false);
+                OnNodeModified(true);
             }
         }
 
-        [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             ClearErrorsAndWarnings();
@@ -96,10 +110,6 @@ namespace TRex.Export
                 {
                     switch (port.Index)
                     {
-                        case 0:
-                            break;
-                        case 3:
-                            break;
                         default:
                             WarnForMissingInputs();
                             return BuildNullResult();
@@ -107,22 +117,21 @@ namespace TRex.Export
                 }
             }
 
-            // Wrap into list
-            // Wrap pset names into list if not already done
+            // Wrap single string into list
             if (inputAstNodes[2] is StringNode)
             {   // Rewrite input AST 
                 inputAstNodes[2] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[2] });
             }
 
             var astBuildSettings = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, UnitScale, string[], CanonicalFilter, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
+                new Func<string, string, XYZ, UnitScale, string[], bool, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
                     inputAstNodes[0],
                     inputAstNodes[1],
                     inputAstNodes[2],
-                    inputAstNodes[3]
+                    AstFactory.BuildBooleanNode(IsUsingEntityLabelsAsID)
                 });
 
             return BuildResult(astBuildSettings);            

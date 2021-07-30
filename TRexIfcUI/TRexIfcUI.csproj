@@ -115,7 +115,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21141-Alpha.31188</Version>
+      <Version>1.0.21211-Alpha.44011</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.10.1.3976</Version>
@@ -165,7 +165,7 @@
   <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
-      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll"/>
+      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
       <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />

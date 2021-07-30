@@ -63,6 +63,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 {
     std::string stdFileName = marshal_as<std::string>(filePathName);
     aiScene scene = aiScene();
+    scene.mMetaData = preferences->CreateMetadata();
     if (nullptr != componentScene->Metadata && nullptr != componentScene->Metadata->Name)
     {   // Use name of metadata
         std::string sceneName = marshal_as<std::string>(componentScene->Metadata->Name);
@@ -100,7 +101,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
         scene.mRootNode->mName = aiString(projectName);
     }
 
-    auto componentMap = gcnew Dictionary<GlobalUniqueId^, uint>(10);
+    auto componentMap = gcnew Dictionary<RefId^, uint>(10);
     std::vector<aiNode*> v_nodes;
     std::map<uint, std::vector<uint>> m_parent_child;
     std::vector<aiNode*> v_top_nodes;
@@ -238,7 +239,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
 const uint TRexAssimp::TRexAssimpExport::GetOrCreateNodeAndParent(Component^ c,
     std::vector<aiNode*>& vNodes, // the nodes
     std::map<uint, std::vector<uint>>& mChildren, // parent-children relation per index
-    Dictionary<GlobalUniqueId^, uint>^ nodeMap) // DTO reference to index
+    Dictionary<RefId^, uint>^ nodeMap) // DTO reference to index
 {
     int idx_node = GetOrCreateNode(c->Id, vNodes, nodeMap);
     aiNode* node = vNodes[idx_node];
@@ -258,7 +259,8 @@ const uint TRexAssimp::TRexAssimpExport::GetOrCreateNodeAndParent(Component^ c,
 }
 
 // Will crawl down the scene and replace/remap all transforms by their localized representation
-const void TRexAssimp::TRexAssimpExport::LocalizeSceneTransforms(aiNode* node, const aiMatrix4x4 tGlobalParent)
+const void TRexAssimp::TRexAssimpExport::LocalizeSceneTransforms(aiNode* node, 
+    const aiMatrix4x4 tGlobalParent)
 {
     // Build inverse transformation in order to localize children's transform
     aiMatrix4x4 tGlobalInverseParent = aiMatrix4x4(tGlobalParent).Inverse();
@@ -278,7 +280,9 @@ const void TRexAssimp::TRexAssimpExport::LocalizeSceneTransforms(aiNode* node, c
 }
 
 // Gets or creates an index vector of children indices
-std::vector<uint>& TRexAssimp::TRexAssimpExport::GetOrCreateChildIndex(std::map<uint, std::vector<uint>>& mChildren, const uint idx_parent_node)
+std::vector<uint>& TRexAssimp::TRexAssimpExport::GetOrCreateChildIndex(std::map<uint, 
+    std::vector<uint>>& mChildren, 
+    const uint idx_parent_node)
 {
     auto it_children = mChildren.find(idx_parent_node);
     if (it_children == mChildren.end())
@@ -290,9 +294,9 @@ std::vector<uint>& TRexAssimp::TRexAssimpExport::GetOrCreateChildIndex(std::map<
 }
 
 // Get or create a node by global ID.
-const uint TRexAssimp::TRexAssimpExport::GetOrCreateNode(GlobalUniqueId^ id, 
+const uint TRexAssimp::TRexAssimpExport::GetOrCreateNode(RefId^ id, 
     std::vector<aiNode*>& vNodes, // Node buffer of scene
-    Dictionary<GlobalUniqueId^, uint>^ nodeMap) // Reference cache of ID to node index
+    Dictionary<RefId^, uint>^ nodeMap) // Reference cache of ID to node index
 {
     aiNode* node;
     uint idx_node;
@@ -480,7 +484,6 @@ void TRexAssimp::TRexAssimpExport::SetColorChannel(ColorChannel channel, aiMater
     case ColorChannel::Reflective:
         material->AddProperty(&color, 1, AI_MATKEY_COLOR_REFLECTIVE);
         break;
-    case ColorChannel::DiffuseEmmisive:
     case ColorChannel::Emmissive:
         material->AddProperty(&color, 1, AI_MATKEY_COLOR_EMISSIVE);
         break;

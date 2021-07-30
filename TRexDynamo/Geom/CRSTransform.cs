@@ -43,8 +43,8 @@ namespace TRex.Geom
 
         private Transform global = new Transform 
         { 
-            R = Rotation.NewIdentity(), 
-            T = new XYZ(0, 0, 0) 
+            R = Rotation.Identity, 
+            T = XYZ.Zero
         };
 
         [JsonProperty("Right"), JsonConverter(typeof(StringEnumConverter))]
@@ -233,7 +233,7 @@ namespace TRex.Geom
 
         public static CRSTransform ByRighthandYUp(string name = null)
         {
-            return new CRSTransform(name ?? "RHS Z-Up", GlobalReferenceAxis.PositiveX, GlobalReferenceAxis.PositiveY, GlobalReferenceAxis.NegativeZ);
+            return new CRSTransform(name ?? "RHS Y-Up", GlobalReferenceAxis.PositiveX, GlobalReferenceAxis.PositiveY, GlobalReferenceAxis.NegativeZ);
         }
 
         public static CRSTransform ByLefthandYUp(string name = null)

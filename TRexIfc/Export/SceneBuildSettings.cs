@@ -47,7 +47,7 @@ namespace TRex.Export
                 UserModelCenter = new XYZ(),
                 UnitsPerMeter = 1.0f,
                 SelectedContext = contexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
-                FeatureToClassifierFilter = null
+                IsUsingEntityLabelAsID = false
             });
         }
 
@@ -57,7 +57,7 @@ namespace TRex.Export
             XYZ offset,
             UnitScale unitScale,
             string[] sceneContexts,
-            CanonicalFilter featureClassificationFilter)
+            bool isUsingEntityLabelsAsID)
         {
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy");
@@ -69,7 +69,7 @@ namespace TRex.Export
                 UserModelCenter = offset,
                 UnitsPerMeter = unitScale?.UnitsPerMeter ?? 1,
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
-                FeatureToClassifierFilter = featureClassificationFilter?.Filter
+                IsUsingEntityLabelAsID = isUsingEntityLabelsAsID
             });
 
             return settings;
