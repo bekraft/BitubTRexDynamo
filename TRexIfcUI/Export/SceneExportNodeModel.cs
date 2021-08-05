@@ -34,7 +34,7 @@ namespace TRex.Export
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("unitScale", "Scaling of exported model")));
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("transform", "Axes transform of exported model", AstFactory.BuildNullNode())));
+                new PortData("crs", "CRS transform of exported model", AstFactory.BuildNullNode())));
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("separator", "If using canonical name, define the separator", AstFactory.BuildStringNode(""))));
 

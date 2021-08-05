@@ -24,6 +24,13 @@
                 <x:Type TypeName="bitubifcexport:SceneTransformationStrategy"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <ObjectDataProvider x:Key="SceneComponentIdentificationStrategy"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type mscore:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="bitubifcexport:SceneComponentIdentificationStrategy"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </UserControl.Resources>
 
     <Grid Margin="5,5,5,5" MinWidth="200" Height="Auto">
@@ -60,17 +67,13 @@
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
                           SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}"/>
 
-                <Label Grid.Row="4" FontSize="8" Content="Other options"/>
+                <Label Grid.Row="4" FontSize="8" Content="Object identification"/>
 
-                <CheckBox x:Name="RegenerateGuidsCheckBox"
-                          Grid.Row="5"
-                          Background="AliceBlue"
-                          Foreground="Black"
+                <ComboBox x:Name="ComponentIdentificationComboBox"
                           VerticalAlignment="Center"
-                          VerticalContentAlignment="Center"
-                          Content="enable regeneration of GUIDs in case of trouble" FontSize="8"                          
-                          IsChecked="{Binding Path=IsUsingEntityLabelsAsID, Mode=TwoWay}"/>
-
+                          Grid.Row="5"
+                          ItemsSource="{Binding Source={StaticResource SceneComponentIdentificationStrategy}}"
+                          SelectedItem="{Binding Path=IdentificationStrategy, Mode=TwoWay}"/>
             </Grid>
         </GroupBox>
     </Grid>

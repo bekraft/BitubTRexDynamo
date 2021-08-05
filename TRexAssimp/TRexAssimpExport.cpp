@@ -106,6 +106,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
     std::map<uint, std::vector<uint>> m_parent_child;
     std::vector<aiNode*> v_top_nodes;
 
+    auto crsTransform = preferences->GetTransform();
     int idxComponent = 0;
     // Create scene nodes, collect parent-child relationships and materialize meshes
     for (auto en = componentScene->Components->GetEnumerator(); en->MoveNext(); ++idxComponent)
@@ -175,7 +176,7 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 meshNode->mNumMeshes = 1;
                 meshNode->mMeshes = new uint[1] { idx_mesh };
                 // Global transformations
-                meshNode->mTransformation = TRexAssimp::AIMatrix4(shape->Transform);
+                meshNode->mTransformation = crsTransform * TRexAssimp::AIMatrix4(shape->Transform);
 
                 // Register mesh node as child of current real scene node
                 if (meshNode != node)
@@ -219,8 +220,6 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
     scene.mRootNode->mChildren = push_to(v_top_nodes, scene.mRootNode->mNumChildren);
 
     LocalizeSceneTransforms(scene.mRootNode, aiMatrix4x4());
-    // Setup the global transform
-    scene.mRootNode->mTransformation = preferences->GetTransform();
 
     // Save the scene to file of requested format
     String^ givenExt = System::IO::Path::GetExtension(filePathName)->ToLower()->Substring(1);

@@ -15,7 +15,7 @@ namespace TRex.Internal
     public class AstReference
     {
         public string AstId { get; set; }
-        public int[] ArrayIndex { get; set; }
+        public long[] ArrayIndex { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -28,7 +28,7 @@ namespace TRex.Internal
         {
             int hashCode = -2051493648;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(AstId);
-            hashCode = hashCode * -1521134295 + EqualityComparer<int[]>.Default.GetHashCode(ArrayIndex);
+            hashCode = hashCode * -1521134295 + EqualityComparer<long[]>.Default.GetHashCode(ArrayIndex);
             return hashCode;
         }
 
@@ -70,7 +70,7 @@ namespace TRex.Internal
         public AstValue(T value) : this(null, value)
         { }
 
-        public AstValue(string astId, T value, params int[] arrayIndex)
+        public AstValue(string astId, T value, params long[] arrayIndex)
         {
             AstId = astId;
             Value = value;

@@ -24,7 +24,7 @@ namespace TRex.Export
     [NodeName("Build settings")]
     [NodeDescription("Assembles all build settings for scene generation")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(XYZ), nameof(UnitScale), nameof(String)})]
+    [InPortTypes(new string[] { nameof(CRSTransform), nameof(UnitScale), nameof(String)})]
     [OutPortTypes(new string[] { nameof(SceneBuildSettings) })]
     [IsDesignScriptCompatible]
     public class SceneBuildSettingsNodeModel : BaseNodeModel
@@ -35,6 +35,7 @@ namespace TRex.Export
 
         private SceneTransformationStrategy transformationStrategy = SceneTransformationStrategy.Quaternion;
         private ScenePositioningStrategy positioningStrategy = ScenePositioningStrategy.NoCorrection;
+        private SceneComponentIdentificationStrategy identificationStrategy = SceneComponentIdentificationStrategy.UseGloballyUniqueID;
         private bool isRegeneratingGUIDs = false;
 
         [JsonConstructor]
@@ -47,7 +48,7 @@ namespace TRex.Export
         public SceneBuildSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("offset", "Model offset as XYZ")));
+                new PortData("crs", "Model CRS")));
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); 
             InPorts.Add(new PortModel(PortType.Input, this, 
@@ -57,20 +58,6 @@ namespace TRex.Export
                 new PortData("settings", "Scene build settings")));
 
             RegisterAllPorts();
-        }
-
-        public bool IsUsingEntityLabelsAsID
-        {
-            get
-            {
-                return isRegeneratingGUIDs;
-            }
-            set
-            {
-                isRegeneratingGUIDs = value;
-                RaisePropertyChanged(nameof(IsUsingEntityLabelsAsID));
-                OnNodeModified(true);
-            }
         }
 
         public SceneTransformationStrategy TransformationStrategy
@@ -83,6 +70,20 @@ namespace TRex.Export
             {
                 transformationStrategy = value;
                 RaisePropertyChanged(nameof(TransformationStrategy));
+                OnNodeModified(true);
+            }
+        }
+
+        public SceneComponentIdentificationStrategy IdentificationStrategy
+        {
+            get
+            {
+                return identificationStrategy;
+            }
+            set
+            {
+                identificationStrategy = value;
+                RaisePropertyChanged(nameof(IdentificationStrategy));
                 OnNodeModified(true);
             }
         }
@@ -124,14 +125,14 @@ namespace TRex.Export
             }
 
             var astBuildSettings = AstFactory.BuildFunctionCall(
-                new Func<string, string, XYZ, UnitScale, string[], bool, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
+                new Func<string, string, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
                     inputAstNodes[0],
                     inputAstNodes[1],
                     inputAstNodes[2],
-                    AstFactory.BuildBooleanNode(IsUsingEntityLabelsAsID)
+                    BuildEnumNameNode(IdentificationStrategy)
                 });
 
             return BuildResult(astBuildSettings);            

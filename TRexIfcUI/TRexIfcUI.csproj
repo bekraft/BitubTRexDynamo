@@ -115,18 +115,18 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21211-Alpha.44011</Version>
+      <Version>1.0.21217-Alpha.8150</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.10.1.3976</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
-      <Version>2.10.1.3976</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.10.1.3976</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20213.31545" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
   </ItemGroup>
 
   <ItemGroup>

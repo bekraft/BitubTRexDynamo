@@ -24,10 +24,10 @@ namespace TRex.Data
     {
         #region Internals
 
-        private ObservableCollection<object> _dataTable;
-        private int _count;
-        private int _minCount;
-        private int _maxCount;
+        private ObservableCollection<object> dataTable;
+        private long count;
+        private long minCount;
+        private long maxCount;
 
         [JsonConstructor]
         DataTablePreviewNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -43,9 +43,9 @@ namespace TRex.Data
 
         private void Init()
         {
-            _minCount = 1;
-            _maxCount = 100;
-            _count = 10;
+            minCount = 1;
+            maxCount = 100;
+            count = 10;
         }
 
         #endregion
@@ -65,19 +65,19 @@ namespace TRex.Data
 
 #pragma warning disable CS1591
 
-        public int MinCount
+        public long MinCount
         {
             get {
-                return _minCount;
+                return minCount;
             }
             set {
-                var old = _minCount;
-                _minCount = value;
-                if (old != _minCount)
+                var old = minCount;
+                minCount = value;
+                if (old != minCount)
                 {
                     RaisePropertyChanged(nameof(MinCount));
-                    var newCount = Math.Max(_minCount, _count);
-                    if (newCount != _count)
+                    var newCount = Math.Max(minCount, count);
+                    if (newCount != count)
                         Count = newCount;
                     else                    
                         OnNodeModified(true);
@@ -85,19 +85,19 @@ namespace TRex.Data
             }
         }
 
-        public int MaxCount
+        public long MaxCount
         {
             get {
-                return _maxCount;
+                return maxCount;
             }
             set {
-                var old = _maxCount;
-                _maxCount = value;
-                if (old != _maxCount)
+                var old = maxCount;
+                maxCount = value;
+                if (old != maxCount)
                 {
                     RaisePropertyChanged(nameof(MaxCount));
-                    var newCount = Math.Min(_maxCount, _count);
-                    if (newCount != _count)
+                    var newCount = Math.Min(maxCount, count);
+                    if (newCount != count)
                         Count = newCount;
                     else
                         OnNodeModified(true);
@@ -106,15 +106,15 @@ namespace TRex.Data
             }
         }
 
-        public int Count
+        public long Count
         {
             get {
-                return _count;
+                return count;
             }
             set {
-                var old = _count;
-                _count = value;
-                if (old != _count)
+                var old = count;
+                count = value;
+                if (old != count)
                 {
                     RaisePropertyChanged(nameof(Count));
                     OnNodeModified(true);
@@ -126,16 +126,16 @@ namespace TRex.Data
         public ObservableCollection<object> DataTable
         {
             get {
-                return _dataTable;
+                return dataTable;
             }
             set {
-                if (null != _dataTable)
-                    _dataTable.CollectionChanged -= DataTable_CollectionChanged;
+                if (null != dataTable)
+                    dataTable.CollectionChanged -= DataTable_CollectionChanged;
 
-                _dataTable = value;
+                dataTable = value;
 
-                if (null != _dataTable)
-                    _dataTable.CollectionChanged += DataTable_CollectionChanged;
+                if (null != dataTable)
+                    dataTable.CollectionChanged += DataTable_CollectionChanged;
 
                 RaisePropertyChanged(nameof(DataTable));
             }

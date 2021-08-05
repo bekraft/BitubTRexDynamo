@@ -100,11 +100,11 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21211-Alpha.44011</Version>
+      <Version>1.0.21217-Alpha.8150</Version>
     </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.10.1.3976" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.12.0.5650" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.10.1.3976</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>5.0.0</Version>
@@ -113,7 +113,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20213.31545" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
   </ItemGroup>
   
   <ItemGroup>

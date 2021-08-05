@@ -6,18 +6,20 @@
              xmlns:local="clr-namespace:TRex.UI"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="150">
+             d:DesignHeight="60" d:DesignWidth="160">
         
-    <Grid MinHeight="50" MinWidth="100" Margin="3,3,3,3">
+    <Grid MinHeight="50" MinWidth="150" Margin="3,3,3,3">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <Label Grid.Row="0" Grid.Column="0" 
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Left"

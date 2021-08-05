@@ -13,7 +13,7 @@ using Autodesk.DesignScript.Runtime;
 namespace TRex.Data
 {
     /// <summary>
-    /// A property group.
+    /// A property group binds a element qualifier filter to a group of properties.
     /// </summary>
     public class PropertyGroup : IEnumerable<Property>
     {
@@ -27,7 +27,7 @@ namespace TRex.Data
 #pragma warning disable CS1591
 
         protected IDictionary<Qualifier, Property> properties;
-        protected CanonicalFilter elementTypeFiler;
+        protected CanonicalFilter elementTypeFilter;
 
         [IsVisibleInDynamoLibrary(false)]
         public string Name { get; set; }
@@ -35,24 +35,24 @@ namespace TRex.Data
         [IsVisibleInDynamoLibrary(false)]
         public virtual CanonicalFilter ElementFilter
         {
-            get => elementTypeFiler;
-            set => elementTypeFiler = value;
+            get => elementTypeFilter;
+            set => elementTypeFilter = value;
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public virtual bool AddProperty(FeatureConcept featureConcept)
+        public virtual bool AddProperty(ELFeature featureConcept)
         {
-            if (properties.ContainsKey(featureConcept.Canonical))
+            if (properties.ContainsKey(featureConcept.Name))
                 return false;
 
-            properties.Add(featureConcept.Canonical, new Property (featureConcept));
+            properties.Add(featureConcept.Name, new Property (featureConcept));
             return true;
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public virtual bool RemoveProperty(FeatureConcept featureConcept)
+        public virtual bool RemoveProperty(ELFeature featureConcept)
         {
-            return properties.Remove(featureConcept.Canonical);
+            return properties.Remove(featureConcept.Name);
         }
 
         [IsVisibleInDynamoLibrary(false)]

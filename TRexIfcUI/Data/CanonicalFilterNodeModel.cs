@@ -73,7 +73,7 @@ namespace TRex.Data
                     AstFactory.BuildFunctionCall(
                         new Func<object, Canonical[], CanonicalFilter>(CanonicalFilter.ByCanonicals),
                         new List<AssociativeNode>() {
-                            AstFactory.BuildIntNode((int)MatchType),
+                            BuildEnumNameNode(MatchType),                            
                             inputs[0]
                         })
                     )

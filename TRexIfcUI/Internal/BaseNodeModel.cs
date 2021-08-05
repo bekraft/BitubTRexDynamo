@@ -146,16 +146,16 @@ namespace TRex.Internal
             return idNodes.SelectMany(idn => UnwrapAstValue<T>(engineController.GetMirror(idn.Name)?.GetData(), idn)).ToArray();
         }
 
-        private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, IdentifierNode idn, params int[] indexes)
+        private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, IdentifierNode idn, params long[] indexes)
         {
             if (data?.IsCollection ?? false)
             {
                 return data.GetElements().SelectMany((e, index) =>
                 {
                     if (e.IsCollection)
-                        return UnwrapAstValue<T>(e, idn, indexes.Concat(new int[] { index }).ToArray());
+                        return UnwrapAstValue<T>(e, idn, indexes.Concat(new long[] { index }).ToArray());
                     else if (e.Data is T obj)
-                        return new AstValue<T>[] { new AstValue<T>(idn.Name, obj, indexes.Concat(new int[] { index }).ToArray()) };
+                        return new AstValue<T>[] { new AstValue<T>(idn.Name, obj, indexes.Concat(new long[] { index }).ToArray()) };
                     else
                         return new AstValue<T>[] { };
                 }).ToArray();

@@ -53,7 +53,7 @@ namespace TRex.Task
         public ICollection<TOption> Options { get; private set; }
 
         /// <summary>
-        /// Reflects & changes the current option.
+        /// Reflects and changes the current option.
         /// </summary>
         [JsonProperty]
         public TOption Selected

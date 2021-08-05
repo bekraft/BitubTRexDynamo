@@ -20,16 +20,16 @@ namespace TRex.Data
 
         #region Internals
 
-        internal Property(FeatureConcept featureConcept)
+        internal Property(ELFeature featureConcept)
         {
             Feature = featureConcept;
         }
 
-        internal FeatureConcept Feature { get; private set; }
+        internal ELFeature Feature { get; private set; }
 
         public override string ToString()
         {
-            return $"{Feature.Canonical.ToLabel()}";
+            return $"{Feature.Name.ToLabel()}";
         }
 
         internal static Property ByData(Canonical canonical, DataType dataType, object value)
@@ -51,19 +51,19 @@ namespace TRex.Data
 
         public string QualifiedName
         {
-            get => Feature.Canonical.ToLabel(":");
+            get => Feature.Name.ToLabel(":");
         }
 
         public string PropertySetName
         {
-            get => Feature.Canonical.Named.GetFragment(0);
-            internal set => Feature.Canonical.Named.SetFragment(0, value);
+            get => Feature.Name.Named.GetFragment(0);
+            internal set => Feature.Name.Named.SetFragment(0, value);
         }
 
         public string PropertyName
         {
-            get => Feature.Canonical.Named.GetFragment(1);
-            internal set => Feature.Canonical.Named.SetFragment(1, value);
+            get => Feature.Name.Named.GetFragment(1);
+            internal set => Feature.Name.Named.SetFragment(1, value);
         }
 
         #endregion

@@ -20,7 +20,7 @@ namespace TRex.Geom
     [NodeName("CRS transform")]
     [NodeDescription("Coordinate reference transform creation node used by build and export nodes.")]
     [NodeCategory("TRex.Geom")]
-    [InPortTypes(nameof(XYZ))]
+    [InPortTypes(nameof(CRSTransform), nameof(XYZ))]
     [OutPortTypes(typeof(CRSTransform))]
     [IsDesignScriptCompatible]
     public class CRSTransformNodeModel : BaseNodeModel
@@ -29,10 +29,12 @@ namespace TRex.Geom
 
         public CRSTransformNodeModel()
         {
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("crs", "Source CRS", AstFactory.BuildNullNode())));
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("offset", "Offset", AstFactory.BuildNullNode())));
             OutPorts.Add(new PortModel(PortType.Output, this, 
-                new PortData("transform", "CRS transform")));
+                new PortData("crs", "Target CRS")));
 
             RegisterAllPorts();
 
@@ -43,10 +45,10 @@ namespace TRex.Geom
 
         internal static readonly CRSTransform[] predefined = new[]
         {
-            CRSTransform.ByRighthandZUp("Default"),
-            CRSTransform.ByRighthandYUp("Righthand Y-Up"),
-            CRSTransform.ByLefthandYUp("Lefthand Y-Up"),
-            CRSTransform.ByLefthandZUp("Lefthand Z-Up")            
+            CRSTransform.ByRighthandZUp(),
+            CRSTransform.ByRighthandYUp(CRSTransform.ByRighthandZUp()),
+            CRSTransform.ByLefthandYUp(CRSTransform.ByRighthandZUp()),
+            CRSTransform.ByLefthandZUp(CRSTransform.ByRighthandZUp())
         };
 
         private CRSTransform crsTransform;
@@ -55,15 +57,16 @@ namespace TRex.Geom
         CRSTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         { }
 
-        static internal AssociativeNode BuildCRSTransformNode(CRSTransform transform)
+        static internal AssociativeNode BuildCRSTransformNode(CRSTransform transform, AssociativeNode sourceTransform)
         {
             if (null != transform)
             {
                 return AstFactory.BuildFunctionCall(
-                    new Func<string, string, string, string, CRSTransform>(CRSTransform.ByData),
+                    new Func<string, CRSTransform, string, string, string, CRSTransform>(CRSTransform.ByData),
                     new List<AssociativeNode>()
                     {
                         AstFactory.BuildStringNode(transform.Name),
+                        sourceTransform,
                         BuildEnumNameNode(transform.Right),
                         BuildEnumNameNode(transform.Up),
                         BuildEnumNameNode(transform.Forward)
@@ -103,11 +106,11 @@ namespace TRex.Geom
             }
 
             return BuildResult(AstFactory.BuildFunctionCall(
-                new Func<CRSTransform, XYZ, CRSTransform>(CRSTransform.ByOffsetTo),
+                new Func<CRSTransform, XYZ, CRSTransform>(CRSTransform.ByOffsetTo), // Use offset if given
                 new List<AssociativeNode>()
                 {
-                    BuildCRSTransformNode(Transform),
-                    inputAstNodes[0]
+                    BuildCRSTransformNode(Transform, inputAstNodes[0]),
+                    inputAstNodes[1]
                 }
             ));
         }

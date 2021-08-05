@@ -12,6 +12,7 @@ using Autodesk.DesignScript.Runtime;
 using TRex.Geom;
 using TRex.Log;
 using TRex.Data;
+using TRex.Internal;
 
 namespace TRex.Export
 {
@@ -45,31 +46,31 @@ namespace TRex.Export
                 Transforming = SceneTransformationStrategy.Quaternion,
                 Positioning = ScenePositioningStrategy.NoCorrection,
                 UserModelCenter = new XYZ(),
-                UnitsPerMeter = 1.0f,
+                CRS = Rotation.Identity,
                 SelectedContext = contexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
-                IsUsingEntityLabelAsID = false
+                ComponentIdentificationStrategy = SceneComponentIdentificationStrategy.UseGloballyUniqueID
             });
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public static SceneBuildSettings ByParameters(string transformationStrategy,
             string positioningStrategy,
-            XYZ offset,
+            CRSTransform crs,
             UnitScale unitScale,
             string[] sceneContexts,
-            bool isUsingEntityLabelsAsID)
+            string identificationStrategy)
         {
-            if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy))
-                throw new ArgumentNullException("transformationStrategy | positioningStrategy");
+            if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy) || string.IsNullOrEmpty(identificationStrategy))
+                throw new ArgumentNullException("transformationStrategy | positioningStrategy | identificationStrategy");
 
             var settings = new SceneBuildSettings(new ExportPreferences
             {
-                Transforming = (SceneTransformationStrategy)Enum.Parse(typeof(SceneTransformationStrategy), transformationStrategy, true),
-                Positioning = (ScenePositioningStrategy)Enum.Parse(typeof(ScenePositioningStrategy), positioningStrategy, true),
-                UserModelCenter = offset,
-                UnitsPerMeter = unitScale?.UnitsPerMeter ?? 1,
+                Transforming = DynamicArgumentDelegation.TryCastEnumOrDefault<SceneTransformationStrategy>(transformationStrategy),
+                Positioning = DynamicArgumentDelegation.TryCastEnumOrDefault<ScenePositioningStrategy>(positioningStrategy),
+                UserModelCenter = crs.Transform.T,
+                CRS = crs.Transform.R * (unitScale?.UnitsPerMeter ?? 1),
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
-                IsUsingEntityLabelAsID = isUsingEntityLabelsAsID
+                ComponentIdentificationStrategy = DynamicArgumentDelegation.TryCastEnumOrDefault<SceneComponentIdentificationStrategy>(identificationStrategy)
             });
 
             return settings;
