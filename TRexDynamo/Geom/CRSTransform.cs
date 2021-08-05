@@ -11,6 +11,7 @@ using Newtonsoft.Json.Converters;
 using Autodesk.DesignScript.Runtime;
 
 using TRex.Export;
+using System.Runtime.Serialization;
 
 namespace TRex.Geom
 {
@@ -110,6 +111,14 @@ namespace TRex.Geom
         }
 
         #endregion
+
+        [OnDeserialized, IsVisibleInDynamoLibrary(false)]
+        public void OnDeserialized(StreamingContext sc)
+        {
+            SetReferenceVector(right, sourceTransform?.right);
+            SetReferenceVector(up, sourceTransform?.up);
+            SetReferenceVector(forward, sourceTransform?.forward);
+        }
 
         /// <summary>
         /// Get the unit axis vector according to given global reference axis.
@@ -327,7 +336,7 @@ namespace TRex.Geom
         public override bool Equals(object obj)
         {
             return obj is CRSTransform transform &&
-                   EqualityComparer<Transform>.Default.Equals(global, transform.global) &&
+                   EqualityComparer<CRSTransform>.Default.Equals(sourceTransform, transform.sourceTransform) &&
                    Name == transform.Name &&
                    Right == transform.Right &&
                    Up == transform.Up &&
@@ -337,7 +346,7 @@ namespace TRex.Geom
         public override int GetHashCode()
         {
             int hashCode = -1324038637;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Transform>.Default.GetHashCode(global);
+            hashCode = hashCode * -1521134295 + EqualityComparer<CRSTransform>.Default.GetHashCode(sourceTransform);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             hashCode = hashCode * -1521134295 + Right.GetHashCode();
             hashCode = hashCode * -1521134295 + Up.GetHashCode();
