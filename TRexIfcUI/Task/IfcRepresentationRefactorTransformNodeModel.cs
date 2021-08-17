@@ -22,73 +22,68 @@ namespace TRex.Task
     /// by their names complete from input model and returns a modifed output model.
     /// Modifications (addings and changes are tagged by editor authoring credentials). 
     /// </summary>
-    [NodeName("Ifc Axis Alignment")]
-    [NodeDescription("Changes the model coordinate system alignment by offset and rotation.")]
+    [NodeName("Ifc ")]
+    [NodeDescription("Refactors representations with multiple items per product within the same context.")]
     [NodeCategory("TRex.Task")]
-    [InPortTypes(new string[] { nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
-    [InPortDescriptions("Axis alignment", "Author metadata", "Canonical name extension", "Log filter flag", "Input model")]
-    [OutPortTypes(typeof(IfcModel))]    
-    [NodeSearchTags("ifc", "placement", "alignment")]
+    [InPortTypes(new string[] { nameof(String), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
+    [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel<string>
+    public class IfcRepresentationRefactorTransformNodeModel : CancelableProgressingOptionNodeModel<string>
     {
 #pragma warning disable CS1591
 
-        public IfcAxisAlignmentTransformNodeModel()
+        public IfcRepresentationRefactorTransformNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("alignment", "Axis alignment")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("author", "Credentials of authoring editor")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("nameAddon", "Fragment name of canonical full name")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("ifcModel", "IFC input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("logFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("context", "Representation context", AstFactory.BuildStringNode("Body"))));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("author", "Author meta data", AstFactory.BuildNullNode())));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("nameAddon", "Fragment name of canonical full name", AstFactory.BuildNullNode())));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("logFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, 
-                new PortData("ifcModel", "IFC output model")));
+            OutPorts.Add(
+                new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC output model")));
 
             RegisterAllPorts();
-           
+
             IsCancelable = true;
             LogReasonMask = LogReason.Changed;
-            Selected = PlacementOptions.Keys.First();
+            Selected = RefactorStrategyOptions.Keys.First();
         }
 
         #region Internals
 
         [JsonConstructor]
-        IfcAxisAlignmentTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {            
+        IfcRepresentationRefactorTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             IsCancelable = true;
             LogReasonMask = LogReason.Changed;
         }
 
-        private IDictionary<string, ModelPlacementStrategy> PlacementOptions = new Dictionary<string, ModelPlacementStrategy>()
+        private IDictionary<string, ProductRepresentationRefactorStrategy> RefactorStrategyOptions = new Dictionary<string, ProductRepresentationRefactorStrategy>()
         {
-            { "Change existing placements", ModelPlacementStrategy.ChangeRootPlacements },
-            { "Insert new root placement", ModelPlacementStrategy.NewRootPlacement }
+            { "Refactor representation items", ProductRepresentationRefactorStrategy.ReplaceMultipleRepresentations },
+            { "Refactor & insert new IfcElementAssembly", ProductRepresentationRefactorStrategy.RefactorWithEntityElementAssembly }
         };
 
-        protected override IEnumerable<string> GetInitialOptions() => PlacementOptions.Keys;
+        protected override IEnumerable<string> GetInitialOptions() => RefactorStrategyOptions.Keys;
 
         #endregion
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAst)
         {
             BeforeBuildOutputAst();
-
             if (!IsAcceptable(inputAst))
             {
-                WarnForMissingInputs();
                 ResetState();
-                // No evalable, cancel here
                 return BuildNullResult();
             }
 
-            // Get logger
+            // AST for logger retrieval
             var astGetLogger = AstFactory.BuildFunctionCall(
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
                 new List<AssociativeNode>() 
@@ -97,15 +92,15 @@ namespace TRex.Task
                 }
             );
 
-            // Get transform request
+            // AST for transform creation
             var astCreateTransform = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
+                new Func<Logger, IfcAuthorMetadata, string[], object, IfcTransform>(IfcTransform.NewRepresentationRefactorTransform),
                 new List<AssociativeNode>() 
                 { 
                     astGetLogger, 
                     inputAst[1], 
                     inputAst[0], 
-                    BuildEnumNameNode(PlacementOptions[Selected]) 
+                    BuildEnumNameNode(RefactorStrategyOptions[Selected]) 
                 }
             );
 
@@ -125,6 +120,5 @@ namespace TRex.Task
         }
 
 #pragma warning restore CS1591
-
     }
 }

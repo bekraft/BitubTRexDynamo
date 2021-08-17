@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Xbim.Ifc4.UtilityResource;
+
 namespace TRex.Utils
 {
     /// <summary>
@@ -112,5 +114,23 @@ namespace TRex.Utils
             }).ToArray();
         }
 
+        /// <summary>
+        /// Rewrites the given GUID as IfcGloballyUniqueId (or also known as IfcGuid base64 representation)
+        /// </summary>
+        /// <param name="guid">A GUID (i.e. "B47EF7FE-BDF4-4504-8A67-DB697D04F659")</param>
+        /// <returns>The IFC Base64 representation</returns>
+        public static string GuidToIfcGuid(string guid)
+        {
+            return IfcGloballyUniqueId.ConvertToBase64(Guid.Parse(guid));
+        }
+
+        /// <summary>
+        /// Generates a IfcGloballyUniqueId (or also known as IfcGuid base64 representation)
+        /// </summary>
+        /// <returns>The IFC Base64 representation</returns>
+        public static string NewIfcGuid()
+        {
+            return IfcGloballyUniqueId.ConvertToBase64(Guid.NewGuid());
+        }
     }
 }

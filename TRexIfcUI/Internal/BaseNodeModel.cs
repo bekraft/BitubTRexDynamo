@@ -16,14 +16,12 @@ namespace TRex.Internal
     public class BaseNodeModel : NodeModel
     {
         protected BaseNodeModel() : base()
-        {
-        }
+        { }
 
         protected BaseNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
-        }
+        { }
 
-        protected bool PrebuildWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode[] runtimeDefaultParams)
+        protected bool IsAcceptableWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode[] runtimeDefaultParams)
         {
             if (IsPartiallyApplied)
             {
@@ -32,30 +30,48 @@ namespace TRex.Internal
                     if (port.Index < runtimeDefaultParams.Length)
                     {
                         if (null == runtimeDefaultParams[port.Index])
-                        {
-                            WarnForMissingInputs();
                             return false;
-                        }
                         else
-                        {
                             inputAstNodes[port.Index] = runtimeDefaultParams[port.Index];
-                        }
                     }
                 }
             }
             return true;
         }
 
+        protected bool IsAcceptable(List<AssociativeNode> inputAstNodes, params int[] acceptablePorts)
+        {
+            if (IsPartiallyApplied)
+            {
+                Array.Sort(acceptablePorts);
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
+                {
+                    if (0 > Array.BinarySearch(acceptablePorts, port.Index))
+                        // If not held by acceptablePorts => not acceptable
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        protected AssociativeNode TryNestStringNodeIntoList(AssociativeNode expectedStringNode)
+        {
+            if (expectedStringNode is StringNode node)
+                return AstFactory.BuildExprList(new List<AssociativeNode>() { node });
+            else
+                return expectedStringNode;
+        }
+
         protected void WarnForMissingInputs(bool withDefaults = false)
         {
             Warning(string.Format("Missing connected ports ({0})", 
-                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
         }
 
         protected void ErrorForMissingInputs(bool withDefaults = false)
         {
             Error(string.Format("Missing connected ports ({0})",
-                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
         }
 
         protected static AssociativeNode MapEnum(Enum value)

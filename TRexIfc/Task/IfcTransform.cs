@@ -29,9 +29,16 @@ namespace TRex.Task
 
         #region Internals
 
-        private readonly static ILogger Log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
+        private static readonly TransformActionResult[] defaultLogFilter = new[]
+        {
+            TransformActionResult.NotTransferred, 
+            TransformActionResult.Modified, 
+            TransformActionResult.Added
+        };
 
-        private readonly IIfcTransformRequest Request;
+        private readonly static ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
+
+        private readonly IModelTransform transformDelegate;
 
         internal int TimeOutMillis { get; set; } = -1;
 
@@ -39,22 +46,22 @@ namespace TRex.Task
 
         internal string Mark { get; set; } = $"{DateTime.Now.ToBinary()}";
 
-        internal IfcTransform(IIfcTransformRequest transformRequest)
+        internal IfcTransform(IModelTransform transform)
         {
-            Request = transformRequest;
+            transformDelegate = transform;
         }
 
-        private static LogReason TransformActionToActionType(TransformAction a)
+        private static LogReason TransformActionToActionType(TransformActionResult a)
         {
             switch (a)
             {
-                case TransformAction.Added:
+                case TransformActionResult.Added:
                     return LogReason.Added | LogReason.Transformed;
-                case TransformAction.Modified:
+                case TransformActionResult.Modified:
                     return LogReason.Modified | LogReason.Transformed;
-                case TransformAction.NotTransferred:
+                case TransformActionResult.NotTransferred:
                     return LogReason.Removed | LogReason.Transformed;
-                case TransformAction.Transferred:
+                case TransformActionResult.Transferred:
                     return LogReason.Copied | LogReason.Transformed;
 
                 default:
@@ -66,15 +73,15 @@ namespace TRex.Task
         {
             foreach (var entry in logEntries)
             {
-                var action = TransformActionToActionType(entry.PerformedAction);
+                var action = TransformActionToActionType(entry.performed);
                 if (filter.HasFlag(action))
                 {
                     yield return LogMessage.BySeverityAndMessage(
                         storeName,
                         LogSeverity.Info,
                         action, "#{0} {1}",
-                        entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
-                        entry.InstanceHandle?.EntityExpressType.Name ?? "(type unknown)");
+                        entry.handle.EntityLabel.ToString() ?? "(not set)",
+                        entry.handle.EntityExpressType.Name ?? "(type unknown)");
                 }
             }
         }
@@ -94,21 +101,21 @@ namespace TRex.Task
 
             LogReason filterMask;
             if (!DynamicArgumentDelegation.TryCastEnum(objFilterMask, out filterMask))
-                Log.LogInformation("Unable to cast '{0}' of type {1}. Using '{2}'.", objFilterMask, nameof(LogReason), filterMask);
+                log.LogInformation("Unable to cast '{0}' of type {1}. Using '{2}'.", objFilterMask, nameof(LogReason), filterMask);
 
             if (null == transform.CancellationSource)
                 transform.CancellationSource = new CancellationTokenSource();
 
             return IfcStore.ByTransform(source, (model, node) =>
             {
-                Log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
+                log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
                 try
                 {
-                    using (var task = transform.Request.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
+                    using (var task = transform.transformDelegate.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
                     {
                         task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
 
-                        Log.LogInformation("Finalized '{1}' ({0}) on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
+                        log.LogInformation("Finalized '{1}' ({0}) on {2}.", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
 
                         if (task.IsCompleted)
                         {
@@ -120,7 +127,7 @@ namespace TRex.Task
                                 switch (result.ResultCode)
                                 {
                                     case TransformResult.Code.Finished:
-                                        var name = $"{transform.Request.Name}({node.Name})";
+                                        var name = $"{transform.transformDelegate.Name}({node.Name})";
                                         foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
                                         {
                                             node.ActionLog.Add(logMessage);
@@ -150,7 +157,7 @@ namespace TRex.Task
                 } 
                 catch(Exception thrownOnExec)
                 {
-                    Log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
+                    log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
                     throw new Exception("Exception while executing task");
                 }
             }, canonicalFrag);
@@ -159,52 +166,53 @@ namespace TRex.Task
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return Request?.Name ?? "Anonymous IfcTransform";
+            return transformDelegate?.Name ?? "Anonymous IfcTransform";
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, 
             string[] removePropertySets, string[] keepPropertySets, bool caseSensitiveMatching)
         {
-            return new IfcTransform(new IfcPropertySetRemovalRequest(logInstance.LoggerFactory)
+            return new IfcTransform(new ModelPropertySetRemovalTransform(logInstance.LoggerFactory, defaultLogFilter)
             {
                 ExludePropertySetByName = removePropertySets,
                 IncludePropertySetByName = keepPropertySets,
                 IsNameMatchingCaseSensitive = caseSensitiveMatching,
                 FilterRuleStrategy = FilterRuleStrategyType.IncludeBeforeExclude,
-                IsLogEnabled = true,
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+                EditorCredentials = newMetadata.MetaData.ToEditorCredentials(),
             });
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewTransformPlacementRequest(Logger logInstance, IfcAuthorMetadata newMetadata, Alignment alignment, object placementStrategy)
         {
-            IfcPlacementStrategy strategy = default(IfcPlacementStrategy);
+            ModelPlacementStrategy strategy = default(ModelPlacementStrategy);
             if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out strategy))
-                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(IfcPlacementStrategy), strategy);
+                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(ModelPlacementStrategy), strategy);
 
-            return new IfcTransform(new IfcPlacementTransformRequest(logInstance.LoggerFactory)
+            return new IfcTransform(new ModelPlacementTransform(logInstance.LoggerFactory, defaultLogFilter)
             {
                 AxisAlignment = alignment.TheAxisAlignment,
-                IsLogEnabled = true,
                 PlacementStrategy = strategy,
                 EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
             });
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcTransform NewRepresentationRefactorTransform(Logger logInstance, IfcAuthorMetadata newMetadata, string[] contexts, object refactorStrategy)
+        {
+            ProductRepresentationRefactorStrategy strategy = default(ProductRepresentationRefactorStrategy);
+            if (!DynamicArgumentDelegation.TryCastEnum(refactorStrategy, out strategy))
+                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRepresentationRefactorStrategy), strategy);
 
-#pragma warning restore CS1591
-
-        /// <summary>
-        /// Rewrites the given GUID as IfcGloballyUniqueId (or also known as IfcGuid base64 representation)
-        /// </summary>
-        /// <param name="guid">A GUID (i.e. "B47EF7FE-BDF4-4504-8A67-DB697D04F659")</param>
-        /// <returns>The IFC Base64 representation</returns>
-        public static string GuidToIfcGuid(string guid)
-        {            
-            return IfcGloballyUniqueId.ConvertToBase64(Guid.Parse(guid));
+            return new IfcTransform(new ProductRepresentationRefactorTransform(logInstance.LoggerFactory, defaultLogFilter)
+            {
+                ContextIdentifiers = contexts,
+                Strategy = strategy,                
+                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+            });
         }
 
+#pragma warning restore CS1591
     }
 }

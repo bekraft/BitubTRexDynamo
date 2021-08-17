@@ -36,7 +36,6 @@ namespace TRex.Export
         private SceneTransformationStrategy transformationStrategy = SceneTransformationStrategy.Quaternion;
         private ScenePositioningStrategy positioningStrategy = ScenePositioningStrategy.NoCorrection;
         private SceneComponentIdentificationStrategy identificationStrategy = SceneComponentIdentificationStrategy.UseGloballyUniqueID;
-        private bool isRegeneratingGUIDs = false;
 
         [JsonConstructor]
         SceneBuildSettingsNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -52,7 +51,7 @@ namespace TRex.Export
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); 
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("providedContexts", "Provided representation model contexts"))); 
+                new PortData("context", "Provided representation model contexts"))); 
 
             OutPorts.Add(new PortModel(PortType.Output, this, 
                 new PortData("settings", "Scene build settings")));

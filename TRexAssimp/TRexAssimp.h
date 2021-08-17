@@ -18,6 +18,6 @@ namespace TRexAssimp
 		static aiVector3D AIVector3D(XYZ^ xyz);
 		static aiQuaternion AIQuaternion(Quaternion^ q);
 	private:
-		TRexAssimp() {}
+		TRexAssimp() {}		
 	};
 }

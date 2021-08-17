@@ -54,7 +54,7 @@ aiMatrix4x4 TRexAssimp::TRexAssimpPreferences::GetTransform()
 {
 	aiMatrix4x4 scaled;
 	aiMatrix4x4::Scaling(aiVector3D(fScale), scaled);
-	return TRexAssimp::AIMatrix4(transform) * scaled;
+	return scaled * TRexAssimp::AIMatrix4(transform);
 }
 
 aiMetadata* TRexAssimp::TRexAssimpPreferences::CreateMetadata()

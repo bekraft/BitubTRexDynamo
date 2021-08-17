@@ -88,6 +88,7 @@ namespace TRex.UI.Customization
                     {
                         ProgressControl.Cancel.IsEnabled = true;
                     });
+                    NodeModel.ClearErrorsAndWarnings();
                     NodeModel.CancellationVisibility = System.Windows.Visibility.Visible;
                     
                     lock (GlobalLogging.DiagnosticStopWatch)

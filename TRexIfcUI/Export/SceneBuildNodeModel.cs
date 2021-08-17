@@ -29,10 +29,13 @@ namespace TRex.Export
         /// </summary>
         public SceneBuildNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("settings", "Build settings")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("settings", "Build settings")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC model")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scene", "Component scene")));
+            OutPorts.Add(
+                new PortModel(PortType.Output, this, new PortData("scene", "Component scene")));
 
             RegisterAllPorts();
 
@@ -50,11 +53,10 @@ namespace TRex.Export
 
 #pragma warning disable CS1591
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAst)
         {
             BeforeBuildOutputAst();
 
-            AssociativeNode[] inputs = inputAstNodes.ToArray();            
             if (IsPartiallyApplied)
             {
                 foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
@@ -64,12 +66,7 @@ namespace TRex.Export
                         default:
                             WarnForMissingInputs();
                             ResetState();
-
-                            // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
+                            return BuildNullResult();
                     }
                 }
             }
@@ -79,8 +76,8 @@ namespace TRex.Export
                 new Func<SceneBuildSettings, IfcModel, ComponentSceneBuild>(ComponentSceneBuild.BySettingsAndModel),
                 new List<AssociativeNode>() 
                 { 
-                    inputs[0], 
-                    inputs[1]
+                    inputAst[0], 
+                    inputAst[1]
                 });
 
             // Create a functional AST to run the final builder wrapping the progressing information
