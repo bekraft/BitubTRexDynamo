@@ -10,25 +10,25 @@ using Newtonsoft.Json;
 
 using TRex.Log;
 using TRex.Store;
-
 using TRex.Internal;
-using TRex.Geom;
-using Bitub.Ifc.Transform.Requests;
+
+using TRex.UI.Customization;
+
+using Bitub.Ifc.Transform;
 
 namespace TRex.Task
 {
     /// <summary>
-    /// IFC Property set removal transformation. Will remove given property sets
-    /// by their names complete from input model and returns a modifed output model.
-    /// Modifications (addings and changes are tagged by editor authoring credentials). 
+    /// IFC representation refactoring. Will unwrap all representations with multiple items by
+    /// cloning the hosting product. Will help if ITO toolchains have problems with geometrical information derivation.
     /// </summary>
-    [NodeName("Ifc ")]
-    [NodeDescription("Refactors representations with multiple items per product within the same context.")]
+    [NodeName("Ifc Representation Refactor")]
+    [NodeDescription("Decomposes representations with multiple items per product within the same context.")]
     [NodeCategory("TRex.Task")]
-    [InPortTypes(new string[] { nameof(String), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
-    [OutPortTypes(typeof(IfcModel))]
+    [InPortTypes(nameof(String), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel))]
+    [OutPortTypes(nameof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcRepresentationRefactorTransformNodeModel : CancelableProgressingOptionNodeModel<string>
+    public class IfcRepresentationRefactorTransformNodeModel : CancelableProgressingOptionNodeModel<IfcProductRefactorOption>
     {
 #pragma warning disable CS1591
 
@@ -52,7 +52,7 @@ namespace TRex.Task
 
             IsCancelable = true;
             LogReasonMask = LogReason.Changed;
-            Selected = RefactorStrategyOptions.Keys.First();
+            Selected = GetInitialOptions().First();
         }
 
         #region Internals
@@ -64,13 +64,24 @@ namespace TRex.Task
             LogReasonMask = LogReason.Changed;
         }
 
-        private IDictionary<string, ProductRepresentationRefactorStrategy> RefactorStrategyOptions = new Dictionary<string, ProductRepresentationRefactorStrategy>()
+        protected override IEnumerable<IfcProductRefactorOption> GetInitialOptions() => new[]
         {
-            { "Refactor representation items", ProductRepresentationRefactorStrategy.ReplaceMultipleRepresentations },
-            { "Refactor & insert new IfcElementAssembly", ProductRepresentationRefactorStrategy.RefactorWithEntityElementAssembly }
+            new IfcProductRefactorOption(
+                "OptionDecompose",
+                "Decompose representations only", 
+                ProductRefactorStrategy.DecomposeMultiItemRepresentations),
+            new IfcProductRefactorOption(
+                "OptionDecomposeWithAssembly",
+                "Decompose representations with IfcElementAssembly",
+                ProductRefactorStrategy.DecomposeMultiItemRepresentations
+                | ProductRefactorStrategy.DecomposeWithEntityElementAssembly),
+            new IfcProductRefactorOption(
+                "OptionDecomposeAllWithAssembly",
+                "Decompose all representations with IfcElementAssembly",
+                ProductRefactorStrategy.DecomposeMultiItemRepresentations 
+                | ProductRefactorStrategy.DecomposeMappedRepresentations
+                | ProductRefactorStrategy.DecomposeWithEntityElementAssembly)
         };
-
-        protected override IEnumerable<string> GetInitialOptions() => RefactorStrategyOptions.Keys;
 
         #endregion
 
@@ -88,7 +99,7 @@ namespace TRex.Task
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
                 new List<AssociativeNode>() 
                 { 
-                    inputAst[3] 
+                    inputAst[4] 
                 }
             );
 
@@ -100,7 +111,7 @@ namespace TRex.Task
                     astGetLogger, 
                     inputAst[1], 
                     inputAst[0], 
-                    BuildEnumNameNode(RefactorStrategyOptions[Selected]) 
+                    BuildEnumNameNode(Selected?.Data ?? default(ProductRefactorStrategy)) 
                 }
             );
 
@@ -109,10 +120,10 @@ namespace TRex.Task
                 new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() 
                 { 
-                    inputAst[3], 
+                    inputAst[4], 
                     astCreateTransform, 
                     inputAst[2], 
-                    inputAst[4] 
+                    inputAst[3] 
                 }
             );
 

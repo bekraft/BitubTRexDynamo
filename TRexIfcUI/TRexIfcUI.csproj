@@ -115,7 +115,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21229-Alpha.25053</Version>
+      <Version>1.0.21232-Alpha.29486</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.12.0.5650</Version>
@@ -137,6 +137,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
@@ -150,7 +153,9 @@
 
   <!-- Local deployment settings and artificact name pattern -->
   <PropertyGroup>
-    <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>    
+    <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
+    <AssemblyName>TRexIfcUI</AssemblyName>
+    <RootNamespace>TRex</RootNamespace>    
   </PropertyGroup>
 
   <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">
@@ -199,5 +204,8 @@
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>
+  <ItemGroup>
+    <_ResxFiles Remove="Properties\Resources.resx" />
+  </ItemGroup>
 
 </Project>

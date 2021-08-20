@@ -37,6 +37,7 @@ namespace TRex.Task
         /// </summary>
         public SelectingItemListNodeModel() : base()
         {
+            RegisterAllPorts();
         }
 
 #pragma warning disable CS1591

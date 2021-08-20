@@ -9,6 +9,7 @@
     <Configurations>Debug;Release;Beta</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU;x64</Platforms>
+    <RootNamespace>TRex</RootNamespace>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -100,7 +101,7 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21229-Alpha.25053</Version>
+      <Version>1.0.21232-Alpha.29486</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.12.0.5650" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">

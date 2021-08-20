@@ -218,7 +218,8 @@ namespace TRex.Internal
 
         protected static AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
         {
-            return AstFactory.BuildStringNode(Enum.GetName(typeof(T), n));
+            var serialized = Enum.GetName(typeof(T), n);            
+            return AstFactory.BuildStringNode(serialized ?? n.ToString());
         }
 
         protected AssociativeNode[] BuildNullResult()

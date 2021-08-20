@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using System.Windows.Controls;
 
 using Dynamo.Controls;
@@ -28,7 +29,9 @@ namespace TRex.UI.Customization
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 
-            UpdateItems(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
+            // TODO Add manually withou UI dispatch?
+            //UpdateItems(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
+            InitSelection(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
@@ -46,6 +49,15 @@ namespace TRex.UI.Customization
             var serializedValues = NodeModel.SelectedValue.ToArray();
             if (NodeModel.SetItems(items.ToArray()))
                 TryRestoreSelection(serializedValues);
+        }
+
+        private void InitSelection(IEnumerable<AstValue<object>> values)
+        {
+            if (NodeModel.SetItems(values.ToArray()))
+            {
+                foreach (var s in values)
+                    _control.SelectionListBox.SelectedItems.Add(s);
+            }
         }
 
         private void TryRestoreSelection(string[] serializedSelection)

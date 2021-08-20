@@ -38,6 +38,7 @@ namespace TRex.Task
         /// </summary>
         public ExcludingItemListNodeModel() : base()
         {
+            RegisterAllPorts();
         }
 
 #pragma warning disable CS1591

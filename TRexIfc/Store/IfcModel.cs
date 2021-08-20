@@ -156,7 +156,7 @@ namespace TRex.Store
         /// <param name="separator">The separator between name fragments</param>
         /// <returns>A log message</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel SaveAs(IfcModel ifcModel, string extension, string separator = "-")
+        public static IfcModel SaveAs(IfcModel ifcModel, string extension, string separator)
         {
             if (null == ifcModel)
                 throw new ArgumentNullException("ifcModel");
@@ -231,11 +231,34 @@ namespace TRex.Store
             .ToArray();
 
         /// <summary>
-        /// Lists all property sets by their name.
+        /// Lists all quantity sets defined by elements by their name.
+        /// </summary>
+        /// <returns>A list of property set names in use</returns>
+        public string[] QuantitySetNames() => XbimModel?.Instances
+            .OfType<IIfcQuantitySet>()
+            .Where(e => e.DefinesType.Count() == 0)
+            .Select(e => e.Name?.ToString())
+            .Distinct()
+            .ToArray();
+
+        /// <summary>
+        /// Lists all property sets defined by elements by their name.
         /// </summary>
         /// <returns>A list of property set names in use</returns>
         public string[] PropertySetNames() => XbimModel?.Instances
-            .OfType<IIfcPropertySetDefinition>()
+            .OfType<IIfcPropertySet>()
+            .Where(e => e.DefinesType.Count() == 0)
+            .Select(e => e.Name?.ToString())
+            .Distinct()
+            .ToArray();
+
+        /// <summary>
+        /// Lists all property sets defined by types by their name.
+        /// </summary>
+        /// <returns>A list of property set names in use</returns>
+        public string[] PropertySetNamesOnTypes() => XbimModel?.Instances
+            .OfType<IIfcPropertySet>()
+            .Where(e => e.DefinesType.Count() > 0)
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();

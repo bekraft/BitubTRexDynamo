@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
@@ -62,7 +65,8 @@ namespace TRex.Task
                 return option;
             }
             set {
-                option = value;
+                var found = Options.FirstOrDefault(o => o?.Equals(value) ?? false);
+                option = found ?? value;
                 RaisePropertyChanged(nameof(Selected));
                 OnNodeModified(true);
             }

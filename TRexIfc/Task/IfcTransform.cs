@@ -3,10 +3,6 @@ using System.Collections.Generic;
 
 using Microsoft.Extensions.Logging;
 
-using Xbim.Ifc4.UtilityResource;
-
-using Bitub.Ifc;
-using Bitub.Ifc.Transform.Requests;
 using Bitub.Ifc.Transform;
 
 using Autodesk.DesignScript.Runtime;
@@ -89,15 +85,15 @@ namespace TRex.Task
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel BySourceAndTransform(IfcModel source, IfcTransform transform, string canonicalFrag, object objFilterMask)
+        public static IfcModel BySourceAndTransform(IfcModel source, IfcTransform transform, string nameAddon, object objFilterMask)
         {
             if (null == source)
                 throw new ArgumentNullException(nameof(source));
             if (null == transform)
                 throw new ArgumentNullException(nameof(transform));
 
-            if (null == canonicalFrag)
-                canonicalFrag = transform.Mark;
+            if (null == nameAddon)
+                nameAddon = transform.Mark;
 
             LogReason filterMask;
             if (!DynamicArgumentDelegation.TryCastEnum(objFilterMask, out filterMask))
@@ -160,7 +156,7 @@ namespace TRex.Task
                     log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
                     throw new Exception("Exception while executing task");
                 }
-            }, canonicalFrag);
+            }, nameAddon);
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -171,15 +167,15 @@ namespace TRex.Task
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, 
-            string[] removePropertySets, string[] keepPropertySets, bool caseSensitiveMatching)
+            string[] removePropertySets, string[] keepPropertySets, bool? caseSensitiveMatching)
         {
-            return new IfcTransform(new ModelPropertySetRemovalTransform(logInstance.LoggerFactory, defaultLogFilter)
+            return new IfcTransform(new ModelPropertySetRemovalTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
                 ExludePropertySetByName = removePropertySets,
                 IncludePropertySetByName = keepPropertySets,
-                IsNameMatchingCaseSensitive = caseSensitiveMatching,
+                IsNameMatchingCaseSensitive = caseSensitiveMatching ?? false,
                 FilterRuleStrategy = FilterRuleStrategyType.IncludeBeforeExclude,
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials(),
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials(),
             });
         }
 
@@ -190,26 +186,26 @@ namespace TRex.Task
             if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out strategy))
                 log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(ModelPlacementStrategy), strategy);
 
-            return new IfcTransform(new ModelPlacementTransform(logInstance.LoggerFactory, defaultLogFilter)
+            return new IfcTransform(new ModelPlacementTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
                 AxisAlignment = alignment.TheAxisAlignment,
                 PlacementStrategy = strategy,
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials()
             });
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewRepresentationRefactorTransform(Logger logInstance, IfcAuthorMetadata newMetadata, string[] contexts, object refactorStrategy)
         {
-            ProductRepresentationRefactorStrategy strategy = default(ProductRepresentationRefactorStrategy);
+            ProductRefactorStrategy strategy = default(ProductRefactorStrategy);
             if (!DynamicArgumentDelegation.TryCastEnum(refactorStrategy, out strategy))
-                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRepresentationRefactorStrategy), strategy);
+                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRefactorStrategy), strategy);
 
-            return new IfcTransform(new ProductRepresentationRefactorTransform(logInstance.LoggerFactory, defaultLogFilter)
+            return new IfcTransform(new ProductRepresentationRefactorTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
                 ContextIdentifiers = contexts,
                 Strategy = strategy,                
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials()
             });
         }
 
