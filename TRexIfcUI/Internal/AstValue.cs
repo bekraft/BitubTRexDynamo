@@ -2,19 +2,22 @@
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
+
 using System;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 namespace TRex.Internal
 {
-    // Disable comment warning
 #pragma warning disable CS1591
 
     [IsVisibleInDynamoLibrary(false)]
+    [JsonObject(MemberSerialization.OptIn)]
     public class AstReference
     {
+        [JsonProperty]
         public string AstId { get; set; }
+
         public long[] ArrayIndex { get; set; }
 
         public override bool Equals(object obj)
@@ -52,12 +55,17 @@ namespace TRex.Internal
                 return AstFactory.BuildIdentifier(AstId);
             }
         }
+
+        public static bool IsEqualTo<T>(IEnumerable<T> arrA, IEnumerable<T> arrB) where T : AstReference
+        {
+            return arrB.All(r => arrA.Contains(r)) && arrA.All(r => arrB.Contains(r));
+        }
     }
 
     [IsVisibleInDynamoLibrary(false)]
+    [JsonObject(MemberSerialization.OptIn)]
     public sealed class AstValue<T> : AstReference
     {        
-        [JsonIgnore]
         public T Value { get; private set; }
 
         public AstValue(AstValue<T> astValue)
@@ -86,7 +94,7 @@ namespace TRex.Internal
         {
             if (obj is AstValue<T> value)
             {
-                if (string.IsNullOrWhiteSpace(value.AstId))
+                if (string.IsNullOrWhiteSpace(value.AstId) || string.IsNullOrWhiteSpace(AstId))
                     return EqualityComparer<T>.Default.Equals(value.Value, Value);
                 else
                     return base.Equals(value);
@@ -94,7 +102,6 @@ namespace TRex.Internal
             return false;
         }
 
-        [JsonIgnore]
         public bool HasValue { get => null != Value; }
 
         public override string ToString()

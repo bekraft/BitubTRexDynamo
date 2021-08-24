@@ -37,7 +37,7 @@ namespace TRex.Task
         /// </summary>
         public SelectingItemListNodeModel() : base()
         {
-            RegisterAllPorts();
+            // Registration done by base
         }
 
 #pragma warning disable CS1591
@@ -54,7 +54,7 @@ namespace TRex.Task
             }
 
             AssociativeNode selectedNode;
-            if (Selected?.Any(v => v.IsTransient) ?? true)
+            if (Selected.Any(v => v.IsTransient) || Selected.Count == 0)
             {   // Build from persistent selection
                 selectedNode = AstFactory.BuildFunctionCall(
                     new Func<object[], string[], bool, object[]>(DynamicArgumentDelegation.FilterBySerializationValue),

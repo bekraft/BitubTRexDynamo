@@ -20,7 +20,7 @@ namespace TRex.Log
     [NodeName("Log Filter")]
     [NodeDescription("Log filtering node")]
     [InPortTypes(nameof(ProgressingTask))]
-    [OutPortTypes(typeof(LogMessage))]
+    [OutPortTypes(nameof(LogMessage))]
     [NodeCategory("TRex.Log")]
     [IsDesignScriptCompatible]
     public class LogFilterNodeModel : BaseNodeModel
@@ -105,6 +105,7 @@ namespace TRex.Log
         private void ActionLog_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnNodeModified(true);
+            //RaisePropertyChanged(nameof(CachedValue));
         }
 
         private void ClearOnActionLogChanged(long clearTime)

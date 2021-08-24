@@ -70,7 +70,7 @@ namespace TRex.Store
         [IsVisibleInDynamoLibrary(false)]
         public static Logger GetLogger(IfcModel ifcModel)
         {
-            return ifcModel.Store.Logger;
+            return ifcModel?.Store.Logger;
         }
 
         /// <summary>

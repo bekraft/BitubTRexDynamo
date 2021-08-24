@@ -9,6 +9,8 @@ using TRex.Internal;
 
 using TRex.Task;
 
+using AstObjectValue = TRex.Internal.AstValue<object>;
+
 namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
@@ -29,9 +31,7 @@ namespace TRex.UI.Customization
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 
-            // TODO Add manually withou UI dispatch?
-            //UpdateItems(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
-            InitSelection(NodeModel.SelectedValue.Select(v => new AstValue<object>(v)));
+            InitSelection(NodeModel.SelectedValue.Select(v => new AstObjectValue(v)));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
@@ -41,28 +41,30 @@ namespace TRex.UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
+            //UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
+            NodeModel.SetItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
         }
 
-        private void UpdateItems(IEnumerable<AstValue<object>> items)
+        private void UpdateItems(IEnumerable<AstObjectValue> items)
         {
-            var serializedValues = NodeModel.SelectedValue.ToArray();
+            var selected = NodeModel.SelectedValue.ToArray();
             if (NodeModel.SetItems(items.ToArray()))
-                TryRestoreSelection(serializedValues);
+                RestoreSelection(selected);
         }
 
-        private void InitSelection(IEnumerable<AstValue<object>> values)
+        private void InitSelection(IEnumerable<AstObjectValue> values)
         {
-            if (NodeModel.SetItems(values.ToArray()))
-            {
-                foreach (var s in values)
-                    _control.SelectionListBox.SelectedItems.Add(s);
-            }
+            NodeModel.Items = new List<AstObjectValue>(values);
+            foreach (var s in values)
+                _control.SelectionListBox.SelectedItems.Add(s);
         }
 
-        private void TryRestoreSelection(string[] serializedSelection)
+        private void RestoreSelection(string[] serializedSelection)
         {
-            var restored = DynamicArgumentDelegation.FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false).Cast<AstReference>();
+            var restored = DynamicArgumentDelegation
+                .FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false)
+                .Cast<AstReference>();
+
             DispatchUI(() =>
             {
                 if (0 == _control?.SelectionListBox.SelectedItems.Count)

@@ -70,7 +70,7 @@ namespace TRex.Task
             foreach (var entry in logEntries)
             {
                 var action = TransformActionToActionType(entry.performed);
-                if (filter.HasFlag(action))
+                if (LogReason.None != (filter & action))
                 {
                     yield return LogMessage.BySeverityAndMessage(
                         storeName,
@@ -124,7 +124,7 @@ namespace TRex.Task
                                 {
                                     case TransformResult.Code.Finished:
                                         var name = $"{transform.transformDelegate.Name}({node.Name})";
-                                        foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
+                                        foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask))
                                         {
                                             node.ActionLog.Add(logMessage);
                                         }

@@ -45,10 +45,12 @@ namespace TRex.Task
         [JsonIgnore]
         public List<AstObjectValue> Items
         {
-            get {
+            get 
+            {
                 return _items;
             }
-            private set {
+            internal protected set 
+            {
                 _items = value;
                 RaisePropertyChanged(nameof(Items));
             }
@@ -62,10 +64,12 @@ namespace TRex.Task
 
         public List<string> SelectedValue 
         { 
-            get {
+            get 
+            {
                 return _persistentSelected;
             }
-            set {
+            set 
+            {
                 _persistentSelected = value;
                 RaisePropertyChanged(nameof(SelectedValue));
             }
@@ -73,11 +77,9 @@ namespace TRex.Task
 
         internal protected bool SetItems(params AstObjectValue[] items)
         {
-            var identical = (items.Length == _items.Count) && items.All(r => _items.Contains(r));
-
-            if (!identical)
+            if (!AstReference.IsEqualTo(items, _items))
             {
-                DispatchOnUIThread(() => Items = new List<AstObjectValue>(items));
+                Items = new List<AstObjectValue>(items);
                 return true;
             }
             else
@@ -88,16 +90,14 @@ namespace TRex.Task
 
         internal protected bool SetSelected(AstReference[] selected, bool forceModified)
         {
-            var identical = (_selected.Count == selected.Length) && (selected.All(r => _selected.Contains(r)));
-            if (!identical)
+            if (!AstReference.IsEqualTo(selected, _selected))
             {
                 _selected = new List<AstReference>(selected);
                 SilentSetPersistentValue();
-                if (forceModified)
-                {
-                    RaisePropertyChanged(nameof(SelectedValue));
-                    OnNodeModified(true);
-                }
+                RaisePropertyChanged(nameof(SelectedValue));
+
+                OnNodeModified(forceModified);
+                
                 return true;
             }
             else

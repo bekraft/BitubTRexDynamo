@@ -38,7 +38,7 @@ namespace TRex.Task
         /// </summary>
         public ExcludingItemListNodeModel() : base()
         {
-            RegisterAllPorts();
+            // Registration done by base
         }
 
 #pragma warning disable CS1591
@@ -53,7 +53,7 @@ namespace TRex.Task
             }
             else
             {
-                if (Selected?.Any(v => v.IsTransient) ?? true)
+                if (Selected.Any(v => v.IsTransient) || Selected.Count == 0)
                 {   // Build from persistent selection
                     resultList = AstFactory.BuildFunctionCall(
                         new Func<object[], string[], bool, object[]>(DynamicArgumentDelegation.ExludeBySerializationValue),

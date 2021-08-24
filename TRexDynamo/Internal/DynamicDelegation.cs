@@ -113,7 +113,7 @@ namespace TRex.Internal
         private static T Get<T>(Qualifier qualifier)
         {
             object f = null;
-            switch(qualifier.GuidOrNameCase)
+            switch(qualifier?.GuidOrNameCase ?? Qualifier.GuidOrNameOneofCase.None)
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
                     if (!FunctionCache.TryRemove(qualifier, out f))
@@ -122,6 +122,9 @@ namespace TRex.Internal
                 case Qualifier.GuidOrNameOneofCase.Named:
                     if (!FunctionCache.TryGetValue(qualifier, out f))
                         Log.LogError("{0}: Key '{1}' is not existing.", typeof(DynamicDelegation), qualifier);
+                    break;
+                default:
+                    Log.LogWarning("{0}: Key '{1}' is not valid.", typeof(DynamicDelegation), qualifier);
                     break;
             }
 

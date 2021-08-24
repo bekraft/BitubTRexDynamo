@@ -39,14 +39,14 @@ namespace TRex.Internal
             return true;
         }
 
-        protected bool IsAcceptable(List<AssociativeNode> inputAstNodes, params int[] acceptablePorts)
+        protected bool IsAcceptable(List<AssociativeNode> inputAstNodes, params int[] nullAcceptablePorts)
         {
             if (IsPartiallyApplied)
             {
-                Array.Sort(acceptablePorts);
+                Array.Sort(nullAcceptablePorts);
                 foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
                 {
-                    if (0 > Array.BinarySearch(acceptablePorts, port.Index))
+                    if (0 > Array.BinarySearch(nullAcceptablePorts, port.Index))
                         // If not held by acceptablePorts => not acceptable
                         return false;
                 }

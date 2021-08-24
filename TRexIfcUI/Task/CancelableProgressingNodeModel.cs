@@ -106,8 +106,11 @@ namespace TRex.Task
 
         public void ClearActiveTaskList()
         {
-            lock (mutex)
-                ActiveTasks.Clear();
+            DispatchOnUIThread(() =>
+            {
+                lock (mutex)
+                    ActiveTasks.Clear();
+            });
         }
 
         public ProgressingTaskInfo FindActiveTaskInfo(ProgressingTask task)

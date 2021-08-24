@@ -72,7 +72,7 @@ namespace TRex.Task
         {
             BeforeBuildOutputAst();
 
-            if (!IsAcceptable(inputAst))
+            if (!IsAcceptable(inputAst, 0, 1))
             {
                 WarnForMissingInputs();
                 ResetState();

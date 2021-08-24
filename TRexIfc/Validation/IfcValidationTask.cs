@@ -12,10 +12,10 @@ using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Runtime;
 
 namespace TRex.Validation
-{
-    /// <summary>
-    /// A validation task running as a delayed
-    /// </summary>
+{ 
+
+#pragma warning disable CS1591
+
     public class IfcValidationTask : ProgressingTask
     {
         #region Internals
@@ -67,8 +67,6 @@ namespace TRex.Validation
                 return null;
             }
         }
-
-#pragma warning disable CS1591
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcValidationTask NewIfcGuidCheckingTask(IfcGuidStore guidStore, IfcModel ifcModel)
