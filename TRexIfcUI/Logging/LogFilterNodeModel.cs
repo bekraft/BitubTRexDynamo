@@ -18,19 +18,23 @@ namespace TRex.Log
     /// Interactive log filter node to be attached to node progressing implementations.
     /// </summary>
     [NodeName("Log Filter")]
-    [NodeDescription("Log filtering node")]
-    [InPortTypes(nameof(ProgressingTask))]
+    [NodeDescription("Log filtering by reason mask and threshold of maximum messages")]
+    [InPortTypes(nameof(ProgressingTask), nameof(LogReason))]
+    [InPortNames("model", "mask")]
+    [InPortDescriptions("Log source (i.e. a model)", "Log filter mask")]
     [OutPortTypes(nameof(LogMessage))]
+    [OutPortNames("messages")]
+    [OutPortDescriptions("Extracted log messages")]
     [NodeCategory("TRex.Log")]
     [IsDesignScriptCompatible]
     public class LogFilterNodeModel : BaseNodeModel
     {
         #region Internals
 
-        private int _logCount = 10;
-        private LogSeverity _logMinSeverity;
-        private IDictionary<ObservableCollection<LogMessage>, long> _runtimeStamp = new Dictionary<ObservableCollection<LogMessage>, long>();
-        private long _timeStamp = long.MinValue;
+        private int logCount = 10;
+        private LogSeverity logMinSeverity;
+        private IDictionary<ObservableCollection<LogMessage>, long> logSourceRegistry = new Dictionary<ObservableCollection<LogMessage>, long>();
+        private long recentTimeStamp = long.MinValue;
         
         [JsonConstructor]
         LogFilterNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
@@ -55,11 +59,6 @@ namespace TRex.Log
         /// </summary>
         public LogFilterNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logSource", "Log source (i.e. IfcModel)")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logReason", "Reason filter flags")));
-            
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("logMessages", "Log events")));
-
             RegisterAllPorts();
             Init();
         }
@@ -69,10 +68,10 @@ namespace TRex.Log
         public int LogCount
         {
             get {
-                return _logCount;
+                return logCount;
             }
             set {
-                _logCount = value;
+                logCount = value;
                 RaisePropertyChanged(nameof(LogCount));
                 OnNodeModified(true);
             }
@@ -81,10 +80,10 @@ namespace TRex.Log
         public LogSeverity LogMinSeverity
         {
             get {
-                return _logMinSeverity;
+                return logMinSeverity;
             }
             set {
-                _logMinSeverity = value;
+                logMinSeverity = value;
                 RaisePropertyChanged(nameof(LogMinSeverity));
                 OnNodeModified(true);
             }
@@ -94,35 +93,42 @@ namespace TRex.Log
         {
             if (null != nodeProgressing)
             {
-                if (!_runtimeStamp.ContainsKey(nodeProgressing.ActionLog))
+                if (!logSourceRegistry.ContainsKey(nodeProgressing.ActionLog))
                     nodeProgressing.ActionLog.CollectionChanged += ActionLog_CollectionChanged;
 
-                _runtimeStamp[nodeProgressing.ActionLog] = _timeStamp;
+                logSourceRegistry[nodeProgressing.ActionLog] = recentTimeStamp;
             }
             return nodeProgressing;
         }
 
         private void ActionLog_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            RaisePropertyChanged(nameof(CachedValue));
             OnNodeModified(true);
-            //RaisePropertyChanged(nameof(CachedValue));
         }
 
         private void ClearOnActionLogChanged(long clearTime)
         {
-            foreach (var logSource in _runtimeStamp.Where(g => g.Value < clearTime).Select(g => g.Key).ToArray())
+            foreach (var logSource in logSourceRegistry.Where(g => g.Value < clearTime).Select(g => g.Key).ToArray())
             {
                 logSource.CollectionChanged -= ActionLog_CollectionChanged;
-                _runtimeStamp.Remove(logSource);
+                logSourceRegistry.Remove(logSource);
             }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {
+        {            
             ClearErrorsAndWarnings();
-            ClearOnActionLogChanged(_timeStamp);
-            _timeStamp = DateTime.Now.ToBinary();
-            var callFilter = AstFactory.BuildFunctionCall(
+            if (!IsAcceptable(inputAstNodes, 1))
+            {
+                WarnForMissingInputs();
+                return BuildNullResult();
+            }
+
+            ClearOnActionLogChanged(recentTimeStamp);
+            recentTimeStamp = DateTime.Now.ToBinary();
+
+            var astFilterBySeverity = AstFactory.BuildFunctionCall(
                 new Func<LogSeverity, object, ProgressingTask, long, LogMessage[]>(LogMessage.FilterBySeverity),
                 new List<AssociativeNode>()
                 {
@@ -131,7 +137,7 @@ namespace TRex.Log
                     inputAstNodes[0].ToDynamicTaskProgressingFunc(RegisterOnActionLogChangedName),
                     AstFactory.BuildIntNode((long)LogCount)
                 });
-            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callFilter) };
+            return BuildResult(astFilterBySeverity);
         }
 
 #pragma warning restore CS1591

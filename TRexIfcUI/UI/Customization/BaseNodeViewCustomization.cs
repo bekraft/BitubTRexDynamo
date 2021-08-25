@@ -34,7 +34,9 @@ namespace TRex.UI.Customization
             NodeModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CachedValue")
-                    OnCachedValueChange(s);
+                {
+                    OnCachedValueChange(s);                    
+                };
             };
         }
 

@@ -91,11 +91,14 @@ namespace TRex.Internal
         /// <typeparam name="T">The type of enum</typeparam>
         /// <param name="serializedEnum">The serialized representation</param>
         /// <returns>The enum or a default</returns>
-        public static T TryCastEnumOrDefault<T>(object serializedEnum) where T : Enum
+        public static T TryCastEnumOrDefault<T>(object serializedEnum, T defaultValue = default(T)) where T : Enum
         {
-            T enumMember = default(T);
+            T enumMember = defaultValue;
             if (!TryCastEnum(serializedEnum, out enumMember))
-                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", serializedEnum, nameof(T), enumMember);
+            {
+                Log.LogWarning("Unable to cast serialized enum '{0}' to type '{1}'. Using default '{2}'.", serializedEnum, nameof(T), enumMember);
+                enumMember = defaultValue;
+            }
             return enumMember;
         }
 

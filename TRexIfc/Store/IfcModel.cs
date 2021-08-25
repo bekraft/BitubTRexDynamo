@@ -27,24 +27,27 @@ namespace TRex.Store
 
         #region Internals
 
-        internal protected IfcModel(IfcModel ifcModel) : base(ifcModel.Qualifier, ifcModel.Logger)
+        internal protected IfcModel(IfcModel ifcModel) 
+            : base(ifcModel.Qualifier, ifcModel.Logger, ifcModel.GetActionLog())
         {
             Store = ifcModel.Store;            
         }
 
-        internal protected IfcModel(IfcStore store, Qualifier qualifier) : base(qualifier, store.Logger)
+        internal protected IfcModel(IfcStore store, Qualifier qualifier, LogMessage[] propagateLog = null) 
+            : base(qualifier, store.Logger, propagateLog)
         {
-            Store = store;            
+            Store = store;                        
         }
 
-        internal protected IfcModel(IfcStore store) : base(System.Guid.NewGuid().ToQualifier(), store.Logger)
+        internal protected IfcModel(IfcStore store) 
+            : base(System.Guid.NewGuid().ToQualifier(), store.Logger)
         {
             Store = store;
         }
 
         protected override IfcModel RequalifyModel(Qualifier qualifier)
         {
-            return new IfcModel(Store, qualifier);
+            return new IfcModel(Store, qualifier, GetActionLog());
         }
 
         internal void NotifySaveProgressChanged(int percentage, object stateObject)
@@ -151,38 +154,40 @@ namespace TRex.Store
         /// <summary>
         /// Save an IFC model to file.
         /// </summary>
-        /// <param name="ifcModel">The IFC model to be saved</param>
+        /// <param name="inModel">The IFC model to be saved</param>
         /// <param name="extension">The format extension to use</param>
         /// <param name="separator">The separator between name fragments</param>
         /// <returns>A log message</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel SaveAs(IfcModel ifcModel, string extension, string separator)
+        public static IfcModel SaveAs(IfcModel inModel, string extension, string separator)
         {
-            if (null == ifcModel)
+            if (null == inModel)
                 throw new ArgumentNullException("ifcModel");
 
-            var logger = ifcModel.Store.Logger;                       
-            var savingModel = ifcModel.ChangeFormat(extension);
-            var filePathName = savingModel.GetFilePathName(separator, true);
-
+            Logger logger = inModel.Store.Logger;
+            IfcModel outModel;
+            string filePathName;
             try
             {
-                var internalModel = ifcModel.XbimModel;
+                var internalModel = inModel.XbimModel;
                 if (null == internalModel)
                     throw new ArgumentNullException("No internal model");
+
+                outModel = inModel.ChangeFormat(extension);
+                filePathName = outModel.GetFilePathName(separator, true);
 
                 using (var fileStream = File.Create(filePathName))
                 {
                     switch (extension.ToLower())
                     {
                         case "ifc":
-                            internalModel.SaveAsIfc(fileStream, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfc(fileStream, inModel.NotifySaveProgressChanged);
                             break;
                         case "ifcxml":
-                            internalModel.SaveAsIfcXml(fileStream, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfcXml(fileStream, inModel.NotifySaveProgressChanged);
                             break;
                         case "ifczip":
-                            internalModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.IfcZip | Xbim.IO.StorageType.Ifc, ifcModel.NotifySaveProgressChanged);
+                            internalModel.SaveAsIfcZip(fileStream, Path.GetFileName(filePathName), Xbim.IO.StorageType.IfcZip | Xbim.IO.StorageType.Ifc, inModel.NotifySaveProgressChanged);
                             break;
                         default:
                             logger?.LogWarning("File extension not known: '{0}'. Use (IFC, IFCXML or IFCZIP)", Path.GetExtension(filePathName));
@@ -192,17 +197,20 @@ namespace TRex.Store
                     fileStream.Close();
                 }
                 
-                ifcModel.NotifyOnProgressEnded(LogReason.Saved, false, false);
-                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", filePathName));
+                inModel.NotifyOnProgressEnded(LogReason.Saved, false, false);
+
+                outModel.ActionLog.Add(new LogMessage(outModel.FileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", filePathName));
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception: {0}", e.Message);
-                ifcModel.NotifyOnProgressEnded(LogReason.Saved, false, true);
-                savingModel.ActionLog.Add(new LogMessage(savingModel.FileName, LogSeverity.Error, LogReason.Saved, "Failure: '{0}'.", filePathName));
+                inModel.NotifyOnProgressEnded(LogReason.Saved, false, true);
+
+                outModel = new IfcModel(inModel);
+                outModel.ActionLog.Add(new LogMessage(outModel.FileName, LogSeverity.Error, LogReason.Saved, "Failure saving model."));
             }
 
-            return savingModel;
+            return outModel;
         }
 
         /// <summary>
@@ -217,7 +225,7 @@ namespace TRex.Store
             var ext = IfcStore.Extensions.First(e => e.Equals(newExtension, StringComparison.OrdinalIgnoreCase));
             var qualifier = new Qualifier(Qualifier);
             qualifier.Named.Frags[Qualifier.Named.Frags.Count - 1] = ext;
-            return new IfcModel(Store, qualifier);
+            return new IfcModel(Store, qualifier, GetActionLog());
         }
 
         /// <summary>

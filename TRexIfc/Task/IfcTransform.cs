@@ -27,7 +27,7 @@ namespace TRex.Task
 
         private static readonly TransformActionResult[] defaultLogFilter = new[]
         {
-            TransformActionResult.NotTransferred, 
+            TransformActionResult.Skipped, 
             TransformActionResult.Modified, 
             TransformActionResult.Added
         };
@@ -40,7 +40,7 @@ namespace TRex.Task
 
         internal CancellationTokenSource CancellationSource { get; private set; }
 
-        internal string Mark { get; set; } = $"{DateTime.Now.ToBinary()}";
+        internal string Mark { get; set; } = $"{DateTime.Now.Ticks}";
 
         internal IfcTransform(IModelTransform transform)
         {
@@ -55,9 +55,9 @@ namespace TRex.Task
                     return LogReason.Added | LogReason.Transformed;
                 case TransformActionResult.Modified:
                     return LogReason.Modified | LogReason.Transformed;
-                case TransformActionResult.NotTransferred:
+                case TransformActionResult.Skipped:
                     return LogReason.Removed | LogReason.Transformed;
-                case TransformActionResult.Transferred:
+                case TransformActionResult.Copied:
                     return LogReason.Copied | LogReason.Transformed;
 
                 default:
@@ -95,9 +95,7 @@ namespace TRex.Task
             if (null == nameAddon)
                 nameAddon = transform.Mark;
 
-            LogReason filterMask;
-            if (!DynamicArgumentDelegation.TryCastEnum(objFilterMask, out filterMask))
-                log.LogInformation("Unable to cast '{0}' of type {1}. Using '{2}'.", objFilterMask, nameof(LogReason), filterMask);
+            LogReason filterMask = DynamicArgumentDelegation.TryCastEnumOrDefault(objFilterMask, LogReason.Any);
 
             if (null == transform.CancellationSource)
                 transform.CancellationSource = new CancellationTokenSource();

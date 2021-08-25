@@ -199,15 +199,19 @@ namespace TRex.Store
         internal static IfcModel ByTransform(IfcModel source, Func<IModel, IfcModel, IModel> transform, string canoncialName)
         {
             IfcModel ifcModel;
+
+            if (string.IsNullOrWhiteSpace(canoncialName))
+                canoncialName = DateTime.Now.Ticks.ToString();
+
             var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
-            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier, source.GetActionLog()), out ifcModel))
             {
                 ifcModel.Store.Producer = () =>
                 {
                     if (source.IsCanceled)
                     {
                         ifcModel.CancelAll();
-                        source.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
+                        ifcModel.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
                         return null;
                     }
                     else

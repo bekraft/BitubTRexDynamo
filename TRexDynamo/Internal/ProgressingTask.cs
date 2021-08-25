@@ -29,7 +29,7 @@ namespace TRex.Internal
 
         private readonly static ILogger<ProgressingTask> Log = GlobalLogging.loggingFactory.CreateLogger<ProgressingTask>();
 
-        internal ObservableCollection<LogMessage> ActionLog { get; } = new ObservableCollection<LogMessage>();
+        internal protected ObservableCollection<LogMessage> ActionLog { get; protected set; } = new ObservableCollection<LogMessage>();
 
         [IsVisibleInDynamoLibrary(false)]
         public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
@@ -173,7 +173,7 @@ namespace TRex.Internal
         /// Gets or creates a new progress monitor.
         /// </summary>
         /// <returns>A cancelable progress monitor reporting to this node model</returns>
-        internal CancelableProgressing CreateProgressMonitor(LogReason logReason)
+        internal protected CancelableProgressing CreateProgressMonitor(LogReason logReason)
         {
             var cp = new CancelableProgressing(true);
             if (!_progressMonitor.TryAdd(cp.State, cp))

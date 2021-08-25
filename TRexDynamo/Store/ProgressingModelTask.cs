@@ -27,12 +27,14 @@ namespace TRex.Store
 
         protected internal Qualifier Qualifier { get; private set; }
 
-        // TODO Copy constructor here => for requalify
-
-        protected internal ProgressingModelTask(Qualifier qualifier, Logger logger)
+        protected internal ProgressingModelTask(Qualifier qualifier, Logger logger, LogMessage[] propagateLog = null)
         {
             Logger = logger;
             Qualifier = qualifier;
+            
+            if (null != propagateLog)
+                ActionLog = new System.Collections.ObjectModel.ObservableCollection<LogMessage>(propagateLog);
+
             ActionLog.CollectionChanged += ActionLog_CollectionChanged;
         }
 

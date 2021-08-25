@@ -26,9 +26,9 @@ namespace TRex.Task
     [NodeName("Ifc Axis Alignment")]
     [NodeDescription("Changes the model coordinate system alignment by offset and rotation.")]
     [NodeCategory("TRex.Task")]
-    [InPortTypes(new string[] { nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel) })]
+    [InPortTypes(nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel))]
     [InPortDescriptions("Axis alignment", "Author metadata", "Canonical name extension", "Log filter flag", "Input model")]
-    [OutPortTypes(typeof(IfcModel))]    
+    [OutPortTypes(nameof(IfcModel))]    
     [NodeSearchTags("ifc", "placement", "alignment")]
     [IsDesignScriptCompatible]
     public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel<string>
@@ -98,6 +98,12 @@ namespace TRex.Task
                 }
             );
 
+            AssociativeNode astPlacementOption;
+            if (null == Selected)
+                astPlacementOption = AstFactory.BuildNullNode();
+            else
+                astPlacementOption = BuildEnumNameNode(PlacementOptions[Selected]);
+
             // Get transform request
             var astCreateTransform = AstFactory.BuildFunctionCall(
                 new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
@@ -106,7 +112,7 @@ namespace TRex.Task
                     astGetLogger, 
                     inputAst[1], 
                     inputAst[0], 
-                    BuildEnumNameNode(PlacementOptions[Selected]) 
+                    astPlacementOption
                 }
             );
 

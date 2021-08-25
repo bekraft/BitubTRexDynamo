@@ -148,12 +148,7 @@ namespace TRex.Log
         [IsVisibleInDynamoLibrary(false)]
         public static LogMessage[] FilterBySeverity(LogSeverity severity, object reasonFlagObj, ProgressingTask nodeProgressing, long maxLogCount)
         {
-            LogReason reasonFlag;
-            if (!DynamicArgumentDelegation.TryCastEnum(reasonFlagObj, out reasonFlag))
-            {
-                reasonFlag = LogReason.Any;
-                GlobalLogging.log.Warning($"Parsing reasonFlag failed in ({nameof(LogMessage.FilterBySeverity)}. Using '{reasonFlag}'.");
-            }
+            LogReason reasonFlag = DynamicArgumentDelegation.TryCastEnumOrDefault(reasonFlagObj, LogReason.Any);
 
             return nodeProgressing?.ActionLog
                 .Where(m => SeverityExtensions.IsAboveOrEqual(m.Severity, severity))
