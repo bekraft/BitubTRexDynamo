@@ -33,7 +33,7 @@ namespace TRex.Log
 
         private int logCount = 10;
         private LogSeverity logMinSeverity;
-        private IDictionary<ObservableCollection<LogMessage>, long> logSourceRegistry = new Dictionary<ObservableCollection<LogMessage>, long>();
+        private IDictionary<ProgressingTask, long> logSourceRegistry = new Dictionary<ProgressingTask, long>();
         private long recentTimeStamp = long.MinValue;
         
         [JsonConstructor]
@@ -93,17 +93,16 @@ namespace TRex.Log
         {
             if (null != nodeProgressing)
             {
-                if (!logSourceRegistry.ContainsKey(nodeProgressing.ActionLog))
-                    nodeProgressing.ActionLog.CollectionChanged += ActionLog_CollectionChanged;
+                if (!logSourceRegistry.ContainsKey(nodeProgressing))
+                    nodeProgressing.OnLogAction += NodeProgressing_OnLogAction;
 
-                logSourceRegistry[nodeProgressing.ActionLog] = recentTimeStamp;
+                logSourceRegistry[nodeProgressing] = recentTimeStamp;
             }
             return nodeProgressing;
         }
 
-        private void ActionLog_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void NodeProgressing_OnLogAction(object sender, IEnumerable<LogMessage> actions)
         {
-            RaisePropertyChanged(nameof(CachedValue));
             OnNodeModified(true);
         }
 
@@ -111,7 +110,7 @@ namespace TRex.Log
         {
             foreach (var logSource in logSourceRegistry.Where(g => g.Value < clearTime).Select(g => g.Key).ToArray())
             {
-                logSource.CollectionChanged -= ActionLog_CollectionChanged;
+                logSource.OnLogAction -= NodeProgressing_OnLogAction;
                 logSourceRegistry.Remove(logSource);
             }
         }

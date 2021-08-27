@@ -27,16 +27,23 @@ namespace TRex.Store
 
         #region Internals
 
-        internal protected IfcModel(IfcModel ifcModel) 
-            : base(ifcModel.Qualifier, ifcModel.Logger, ifcModel.GetActionLog())
+        internal protected IfcModel(IfcModel ifcModel)
+            : base(ifcModel.Qualifier, ifcModel.Logger)
         {
-            Store = ifcModel.Store;            
+            Store = ifcModel.Store;
+            ifcModel.ShareActionLog(this);
         }
 
-        internal protected IfcModel(IfcStore store, Qualifier qualifier, LogMessage[] propagateLog = null) 
-            : base(qualifier, store.Logger, propagateLog)
+        internal protected IfcModel(IfcStore store, Qualifier qualifier) 
+            : base(qualifier, store.Logger)
         {
             Store = store;                        
+        }
+
+        internal protected IfcModel(IfcModel ifcModel, Qualifier qualifier)
+            : this(ifcModel.Store, qualifier)
+        {
+            ifcModel.ShareActionLog(this);
         }
 
         internal protected IfcModel(IfcStore store) 
@@ -47,7 +54,7 @@ namespace TRex.Store
 
         protected override IfcModel RequalifyModel(Qualifier qualifier)
         {
-            return new IfcModel(Store, qualifier, GetActionLog());
+            return new IfcModel(this, qualifier);
         }
 
         internal void NotifySaveProgressChanged(int percentage, object stateObject)
@@ -199,7 +206,7 @@ namespace TRex.Store
                 
                 inModel.NotifyOnProgressEnded(LogReason.Saved, false, false);
 
-                outModel.ActionLog.Add(new LogMessage(outModel.FileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", filePathName));
+                outModel.OnActionLogged(new LogMessage(outModel.FileName, LogSeverity.Info, LogReason.Saved, "Saved '{0}'.", filePathName));
             }
             catch (Exception e)
             {
@@ -207,7 +214,7 @@ namespace TRex.Store
                 inModel.NotifyOnProgressEnded(LogReason.Saved, false, true);
 
                 outModel = new IfcModel(inModel);
-                outModel.ActionLog.Add(new LogMessage(outModel.FileName, LogSeverity.Error, LogReason.Saved, "Failure saving model."));
+                outModel.OnActionLogged(new LogMessage(outModel.FileName, LogSeverity.Error, LogReason.Saved, "Failure saving model."));
             }
 
             return outModel;
@@ -225,7 +232,7 @@ namespace TRex.Store
             var ext = IfcStore.Extensions.First(e => e.Equals(newExtension, StringComparison.OrdinalIgnoreCase));
             var qualifier = new Qualifier(Qualifier);
             qualifier.Named.Frags[Qualifier.Named.Frags.Count - 1] = ext;
-            return new IfcModel(Store, qualifier, GetActionLog());
+            return new IfcModel(this, qualifier);
         }
 
         /// <summary>

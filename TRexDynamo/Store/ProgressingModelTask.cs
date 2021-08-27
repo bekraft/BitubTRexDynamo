@@ -27,47 +27,13 @@ namespace TRex.Store
 
         protected internal Qualifier Qualifier { get; private set; }
 
-        protected internal ProgressingModelTask(Qualifier qualifier, Logger logger, LogMessage[] propagateLog = null)
+        protected internal ProgressingModelTask(Qualifier qualifier, Logger logger)
         {
             Logger = logger;
             Qualifier = qualifier;
-            
-            if (null != propagateLog)
-                ActionLog = new System.Collections.ObjectModel.ObservableCollection<LogMessage>(propagateLog);
-
-            ActionLog.CollectionChanged += ActionLog_CollectionChanged;
         }
 
         protected abstract TModel RequalifyModel(Qualifier qualifier);
-
-        /// <summary>
-        /// Forwards action log changes to logging instance.
-        /// </summary>
-        /// <param name="sender">A sender</param>
-        /// <param name="e">The event args</param>
-        protected void ActionLog_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (LogMessage msg in e.NewItems.Cast<LogMessage>())
-                {
-                    switch (msg.Severity)
-                    {
-                        case LogSeverity.Debug:
-                        case LogSeverity.Info:
-                            Logger?.LogInfo(msg.ToString());
-                            break;
-                        case LogSeverity.Warning:
-                            Logger?.LogWarning(msg.ToString());
-                            break;
-                        case LogSeverity.Critical:
-                        case LogSeverity.Error:
-                            Logger?.LogError(msg.ToString());
-                            break;
-                    }
-                }
-            }
-        }
 
         #endregion
 

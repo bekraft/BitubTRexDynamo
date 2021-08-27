@@ -8,8 +8,9 @@ using TRex.Internal;
 using TRex.Store;
 using Xbim.Ifc4.Interfaces;
 
-using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Runtime;
+
+using TRex.Log;
 
 namespace TRex.Validation
 { 
@@ -82,25 +83,25 @@ namespace TRex.Validation
                 if (null == innerModel)
                     throw new NotSupportedException("No internal model available");
 
-                var cp = t.CreateProgressMonitor(Log.LogReason.Checked);
-                cp.NotifyProgressEstimateUpdate(innerModel.Instances.Count / 50);
+                var monitor = t.CreateProgressMonitor(LogReason.Checked);
+                monitor.NotifyProgressEstimateUpdate(innerModel.Instances.Count / 50);
 
                 List<IfcValidationMessage> failingMessages = new List<IfcValidationMessage>();
                 foreach (var instance in innerModel.Instances.OfType<IIfcRoot>())
                 {
                     var message = guidStore.Put(ifcModel.Qualifier, instance);
 
-                    if (cp.State.Done > 0.90 * cp.State.TotalEstimate)
-                        cp.NotifyProgressEstimateUpdate((long)Math.Floor(cp.State.TotalEstimate * 1.25));
+                    if (monitor.State.Done > 0.90 * monitor.State.TotalEstimate)
+                        monitor.NotifyProgressEstimateUpdate((long)Math.Floor(monitor.State.TotalEstimate * 1.25));
 
-                    cp.NotifyOnProgressChange(1, "Checking unique IfcGUID values...");
+                    monitor.NotifyOnProgressChange(1, "Checking unique IfcGUID values...");
 
                     failingMessages.Add(message);
-                    if (cp.State.IsCanceled)
+                    if (monitor.State.IsCanceled)
                         break;
                 }
 
-                cp.NotifyOnProgressEnd();
+                monitor.NotifyOnProgressEnd();
 
                 return new IfcGuidCheckResult(guidStore) { MessagePipe = failingMessages };
             });

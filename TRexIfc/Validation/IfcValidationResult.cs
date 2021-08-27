@@ -14,7 +14,7 @@ namespace TRex.Validation
     {
         #region Internals
 
-        internal static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<IfcValidationResult>();
+        internal static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcValidationResult>();
 
         /// <summary>
         /// Validation messages as enumerable.
@@ -40,7 +40,7 @@ namespace TRex.Validation
             IfcReportDomain domainFilter;
             if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
-                Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;
             }
 
@@ -58,7 +58,7 @@ namespace TRex.Validation
             IfcReportDomain domainFilter;
             if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
-                Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;
             }
 

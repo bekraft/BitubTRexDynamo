@@ -46,6 +46,46 @@ namespace TRex.Log
             get => messageTemplate; 
         }
 
+        internal void PropagateToLog(ILogger logger)
+        {
+            switch (Severity)
+            {
+                case LogSeverity.Debug:
+                    logger?.LogDebug(ToString());
+                    break;
+                case LogSeverity.Info:
+                    logger?.LogInformation(ToString());
+                    break;
+                case LogSeverity.Warning:
+                    logger?.LogWarning(ToString());
+                    break;
+                case LogSeverity.Critical:
+                    logger?.LogCritical(ToString());
+                    break;
+                case LogSeverity.Error:
+                    logger?.LogError(ToString());
+                    break;
+            }
+        }
+
+        internal void PropagateToLog(Logger logger)
+        {
+            switch (Severity)
+            {
+                case LogSeverity.Debug:
+                case LogSeverity.Info:
+                    logger?.LogInfo(ToString());
+                    break;
+                case LogSeverity.Warning:
+                    logger?.LogWarning(ToString());
+                    break;
+                case LogSeverity.Critical:
+                case LogSeverity.Error:
+                    logger?.LogError(ToString());
+                    break;
+            }
+        }
+
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
@@ -68,7 +108,7 @@ namespace TRex.Log
 
         public override string ToString()
         {
-            return string.Format($"@'{Source}' {Severity} ({Reason}): {messageTemplate}", args);
+            return string.Format($"{messageTemplate} ({Severity}, {Reason} @ '{Source}')", args);
         }
 
 #pragma warning restore CS1591
@@ -150,7 +190,7 @@ namespace TRex.Log
         {
             LogReason reasonFlag = DynamicArgumentDelegation.TryCastEnumOrDefault(reasonFlagObj, LogReason.Any);
 
-            return nodeProgressing?.ActionLog
+            return nodeProgressing?.GetActionLog()
                 .Where(m => SeverityExtensions.IsAboveOrEqual(m.Severity, severity))
                 .Where(m => (m.Reason & reasonFlag) != 0)
                 .OrderBy(m => m)

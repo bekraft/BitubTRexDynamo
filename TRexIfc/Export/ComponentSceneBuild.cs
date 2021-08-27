@@ -94,13 +94,13 @@ namespace TRex.Export
                                 out componentScene);                            
                             
                             monitor.State.MarkTerminated();
-                            sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                            sceneExport.IfcModel.OnActionLogged(LogMessage.BySeverityAndMessage(
                                 sceneExport.Name, LogSeverity.Info, LogReason.Transformed, "Scene has been built."));
                         }
                         else
                         {
                             monitor.State.MarkTerminated();
-                            sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                            sceneExport.IfcModel.OnActionLogged(LogMessage.BySeverityAndMessage(
                                 sceneExport.Name, LogSeverity.Critical, LogReason.Transformed, "Failed/canceled: Scene build failed."));
                         }
                     }
@@ -108,7 +108,7 @@ namespace TRex.Export
                 catch (Exception e)
                 {
                     monitor.State.MarkBroken();
-                    sceneExport.IfcModel.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                    sceneExport.IfcModel.OnActionLogged(LogMessage.BySeverityAndMessage(
                         sceneExport.Name, LogSeverity.Error, LogReason.Transformed, "Scene build failed by exception: {0}", e.Message));
                 }
                 finally

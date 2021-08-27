@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Extensions.Logging;
@@ -122,17 +123,14 @@ namespace TRex.Task
                                 {
                                     case TransformResult.Code.Finished:
                                         var name = $"{transform.transformDelegate.Name}({node.Name})";
-                                        foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask))
-                                        {
-                                            node.ActionLog.Add(logMessage);
-                                        }
+                                        node.OnActionLogged(TransformLogToMessage(name, result.Log, filterMask).ToArray());                                   
                                         return result.Target;
                                     case TransformResult.Code.Canceled:
-                                        node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                        node.OnActionLogged(LogMessage.BySeverityAndMessage(
                                             node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
                                         break;
                                     case TransformResult.Code.ExitWithError:
-                                        node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                                        node.OnActionLogged(LogMessage.BySeverityAndMessage(
                                             node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
                                         break;
                                 }
@@ -143,7 +141,7 @@ namespace TRex.Task
                             if (node is ProgressingTask np)
                                 np.OnProgressEnded(LogReason.Changed, true);
 
-                            node.ActionLog.Add(LogMessage.BySeverityAndMessage(
+                            node.OnActionLogged(LogMessage.BySeverityAndMessage(
                                 node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
                         }
                         return null;

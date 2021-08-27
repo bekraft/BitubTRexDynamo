@@ -9,14 +9,13 @@ using Xbim.Ifc4.Interfaces;
 using Bitub.Dto;
 
 using TRex.Store;
-using TRex.Internal;
 
 namespace TRex.Validation
 {
     /// <summary>
     /// IFC GUID Temporary inmemory store.
     /// </summary>
-    public class IfcGuidStore
+    public sealed class IfcGuidStore
     {
         #region Internals
 

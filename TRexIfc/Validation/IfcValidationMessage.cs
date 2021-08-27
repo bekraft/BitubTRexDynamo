@@ -7,10 +7,10 @@ using XbimValidationResult = Xbim.Common.ExpressValidation.ValidationResult;
 
 namespace TRex.Validation
 {
-    /// <summary>
-    /// Validation result message.
-    /// </summary>
-    public class IfcValidationMessage
+
+#pragma warning disable CS1591
+
+    public sealed class IfcValidationMessage
     {
         #region Internals
 
@@ -89,11 +89,9 @@ namespace TRex.Validation
             return new object[] { Id, Parent, Domain, Source, Reason, Message }.Concat(Arguments).ToArray();
         }
 
-#pragma warning disable CS1591
-
         public override string ToString()
         {
-            return $"({Id}) {Domain} [{Source} - {Reason} says '{Message}']";
+            return $"({Id}) {Domain} [{Source} - {Reason} '{Message}']";
         }
 
 #pragma warning restore CS1591

@@ -2,7 +2,7 @@
   "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "IfcLoad-Evaluate",
+  "Name": "Ifc-EvaluatePropertySets",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -41,7 +41,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
@@ -62,8 +62,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Out\\Log-Evaluate.log",
-      "InputValue": ".\\Out\\Log-Evaluate.log",
+      "HintPath": "Out\\Ifc-EvaluatePropertySets.log",
+      "InputValue": ".\\Out\\Ifc-EvaluatePropertySets.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
       "Inputs": [],
@@ -90,7 +90,7 @@
         {
           "Id": "2af0eccb7e0c46dfa4f088fd111d159a",
           "Name": "ifcModel",
-          "Description": "Store.IfcModel",
+          "Description": "TRex.Store.IfcModel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -120,7 +120,7 @@
         {
           "Id": "3b32272728da4718977399d739340d7f",
           "Name": "ifcModel",
-          "Description": "Store.IfcModel",
+          "Description": "TRex.Store.IfcModel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -198,7 +198,7 @@
         {
           "Id": "5393d5573ae94262a41ffeed79e825ff",
           "Name": "ifcModel",
-          "Description": "Store.IfcModel",
+          "Description": "TRex.Store.IfcModel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -357,25 +357,42 @@
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
-      "Name": "TRexIfc",
-      "Version": "1.0.20304.44022",
+      "Name": "TRex",
+      "Version": "1.0.21239.39970",
       "ReferenceType": "Package",
       "Nodes": [
+        "dd916e2863e54995b204e9437e1000be",
         "dc25e1ae214e4b1488cce4f1dcc3262a",
         "63222987c58844da903509355d4c709a",
         "08d1ed8f1cd746a0bb701b30ce4e15ba",
-        "74ad7d6a1814494b8a654b5cad4753c7",
-        "dd916e2863e54995b204e9437e1000be"
+        "74ad7d6a1814494b8a654b5cad4753c7"
       ]
     }
   ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "Keine",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.6.1.8786",
+      "Version": "2.12.0.5650",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -429,8 +446,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1102.8973465705858,
-        "Y": 161.18094950342004
+        "X": 1115.5543763784051,
+        "Y": 186.49500911905898
       },
       {
         "ShowGeometry": true,
@@ -439,8 +456,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1097.0368574090062,
-        "Y": 295.51709838728277
+        "X": 1109.6938872168255,
+        "Y": 320.83115800292171
       },
       {
         "ShowGeometry": true,
@@ -459,8 +476,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1107.2850645458564,
-        "Y": 30.523444800990262
+        "X": 1119.9420943536757,
+        "Y": 55.8375044166292
       },
       {
         "ShowGeometry": true,
@@ -469,8 +486,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1389.768498250163,
-        "Y": 122.6105553477687
+        "X": 1405.238201348609,
+        "Y": -13.804099247618865
       },
       {
         "ShowGeometry": true,
@@ -479,8 +496,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1639.8970012218183,
-        "Y": 289.36289066220525
+        "X": 1652.5540310296376,
+        "Y": 314.67695027784418
       },
       {
         "ShowGeometry": true,
@@ -489,8 +506,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1387.2796574245745,
-        "Y": 294.34057231338227
+        "X": 1399.9366872323938,
+        "Y": 319.65463192902121
       }
     ],
     "Annotations": [
@@ -507,7 +524,7 @@
         "Height": 177.80000000000013,
         "FontSize": 36.0,
         "InitialTop": 50.758011422670108,
-        "InitialHeight": 154.60000000000014,
+        "InitialHeight": 146.60000000000014,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
@@ -522,15 +539,15 @@
           "cba892b69c59400d963fa4fa0e6b837c",
           "cb3d5b242f4a488f8d3db5b892d4c2de"
         ],
-        "Left": 1087.0368574090062,
-        "Top": -22.676555199009741,
-        "Width": 765.26014381281209,
-        "Height": 687.039445861215,
+        "Left": 1099.6938872168255,
+        "Top": -67.004099247618868,
+        "Width": 772.460143812812,
+        "Height": 664.05873117664009,
         "FontSize": 36.0,
-        "InitialTop": 30.523444800990262,
-        "InitialHeight": 663.83944586121493,
+        "InitialTop": -13.804099247618865,
+        "InitialHeight": 479.63525725054058,
         "TextblockHeight": 43.2,
-        "Background": "#FFC1D676"
+        "Background": "#FFA4E1FF"
       },
       {
         "Id": "99a0d23b86b9485b9960b0b08a9174c6",
@@ -541,17 +558,17 @@
         ],
         "Left": 348.61242446397091,
         "Top": 268.51782139485709,
-        "Width": 658.99374835945616,
-        "Height": 248.19999999999996,
+        "Width": 599.79374835945623,
+        "Height": 231.39999999999998,
         "FontSize": 36.0,
         "InitialTop": 321.71782139485708,
-        "InitialHeight": 224.99999999999997,
+        "InitialHeight": 146.01470009321991,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       }
     ],
-    "X": -7.6753279935462047,
-    "Y": 62.675092037582544,
-    "Zoom": 0.5380462976885706
+    "X": 78.332036154189609,
+    "Y": 108.93632047419035,
+    "Zoom": 0.586672500263676
   }
 }

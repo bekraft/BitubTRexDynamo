@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
 
 using Bitub.Dto;
 using TRex.Log;
@@ -10,35 +10,53 @@ using Autodesk.DesignScript.Runtime;
 
 using Microsoft.Extensions.Logging;
 
-
 namespace TRex.Internal
 {
+#pragma warning disable CS1591
+
     /// <summary>
     /// A progressing task which emits changes, progress end events and logging data.
     /// </summary>
     public abstract class ProgressingTask
     {
         #region Internals
+
+        #region Thread safety
+
         private readonly object _mutex = new object();
 
         private NodeProgressEventArgs __eventArgs;
         private EventHandler<NodeProgressEventArgs> __onProgressChangeEvent;
         private EventHandler<NodeProgressEndEventArgs> __onProgressEndEvent;
+        private EventHandler<IEnumerable<LogMessage>> __onLogActionEvent;
+
+        #endregion
+
+        // Logged messages
+        private ConcurrentQueue<LogMessage> actionLog;
+        // Progress states vs monitor
+        private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> progressMonitor;
         
-        private ConcurrentDictionary<ProgressStateToken, CancelableProgressing> _progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
+        /// <summary>
+        /// The logger reference.
+        /// </summary>
+        protected internal ILogger Log { get; protected set; }
 
-        private readonly static ILogger<ProgressingTask> Log = GlobalLogging.loggingFactory.CreateLogger<ProgressingTask>();
-
-        internal protected ObservableCollection<LogMessage> ActionLog { get; protected set; } = new ObservableCollection<LogMessage>();
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing) => nodeProgressing?.ActionLog.ToArray();
-
-        [IsVisibleInDynamoLibrary(false)]
-        public LogMessage[] GetActionLog()
+        protected internal ProgressingTask(LoggerFactory loggerFactory = null)
         {
-            return ActionLog.ToArray();
+            this.actionLog = new ConcurrentQueue<LogMessage>();
+            this.progressMonitor = new ConcurrentDictionary<ProgressStateToken, CancelableProgressing>();
+
+            Log = loggerFactory?.CreateLogger(GetType());
         }
+
+        protected internal void ShareActionLog(ProgressingTask otherProgressingTask)
+        {
+            lock (otherProgressingTask._mutex)
+                otherProgressingTask.actionLog = this.actionLog;
+        }
+        
+        #region Event handling
 
         internal event EventHandler<NodeProgressEventArgs> OnProgressChange
         {
@@ -52,6 +70,23 @@ namespace TRex.Internal
             remove {
                 lock (_mutex)
                     __onProgressChangeEvent -= value;
+            }
+        }
+
+        internal event EventHandler<IEnumerable<LogMessage>> OnLogAction
+        {
+            add
+            {
+                lock (_mutex)
+                {
+                    if (!__onLogActionEvent?.GetInvocationList().Contains(value) ?? true)
+                        __onLogActionEvent += value;
+                }
+            }
+            remove
+            {
+                lock (_mutex)
+                    __onLogActionEvent -= value;
             }
         }
 
@@ -78,6 +113,21 @@ namespace TRex.Internal
             }
         }
 
+        internal void OnActionLogged(params LogMessage[] messages)
+        {
+            EventHandler<IEnumerable<LogMessage>> eventHandler;
+            lock (_mutex)
+            {
+                eventHandler = __onLogActionEvent;
+            }
+            messages.ForEach(m =>
+            {
+                m.PropagateToLog(Log);
+                actionLog.Enqueue(m);
+            });
+            eventHandler?.Invoke(this, messages);
+        }
+
         internal void OnProgressChanged(NodeProgressEventArgs args)
         {
             EventHandler<NodeProgressEventArgs> eventHandler;
@@ -99,10 +149,10 @@ namespace TRex.Internal
                 __eventArgs = args;
 
                 CancelableProgressing cp;
-                Log.LogInformation($"Detected progress end with for '{args.TaskName}' with logging filter '{args.Reason}'");
-                if ((null != args.InternalState) && _progressMonitor.TryRemove(args.InternalState, out cp))
+                Log?.LogInformation($"Detected progress end for '{args.TaskName}' with logging filter '{args.Reason}'");
+                if ((null != args.InternalState) && progressMonitor.TryRemove(args.InternalState, out cp))
                 {                    
-                    Log.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
+                    Log?.LogInformation($"Progress monitor ended with {cp.State.State} at {cp.State.Percentage}%");
                     cp.Dispose();
                 }
             }
@@ -142,6 +192,8 @@ namespace TRex.Internal
             OnProgressEnded(new NodeProgressEndEventArgs(action, Name, isCanceled, isBroken));
         }
 
+        #endregion
+
         /// <summary>
         /// The name.
         /// </summary>        
@@ -153,12 +205,12 @@ namespace TRex.Internal
         /// <returns>Open progressing</returns>
         internal CancelableProgressing[] GetOpenProgresses()
         {
-            return _progressMonitor.Values.ToArray();
+            return progressMonitor.Values.ToArray();
         }
 
         internal bool IsBusy 
         { 
-            get => _progressMonitor.Count > 0; 
+            get => progressMonitor.Count > 0; 
         }
 
         internal bool IsCanceled { get; private set; } = false;
@@ -176,14 +228,14 @@ namespace TRex.Internal
         internal protected CancelableProgressing CreateProgressMonitor(LogReason logReason)
         {
             var cp = new CancelableProgressing(true);
-            if (!_progressMonitor.TryAdd(cp.State, cp))
+            if (!progressMonitor.TryAdd(cp.State, cp))
                 throw new NotSupportedException("Internal state exception. Progress token already added.");
 
             // Attach forwarding of events
             cp.OnProgressChange += (sender, e) => OnProgressChanged(new NodeProgressEventArgs(logReason, e, Name));
             cp.OnProgressEnd += (sender, e) => OnProgressEnded(new NodeProgressEndEventArgs(logReason, e, Name));
 
-            Log.LogInformation($"Progress monitor started with '{cp.State.State}' at {cp.State.Percentage} % logging for '{logReason}'");
+            Log?.LogInformation($"Progress monitor started with '{cp.State.State}' at {cp.State.Percentage} % logging for '{logReason}'");
 
             return cp;
         }
@@ -195,7 +247,38 @@ namespace TRex.Internal
 
         #endregion
 
-#pragma warning disable CS1591
+        /// <summary>
+        /// Fetches the most recent logged actions from log.
+        /// </summary>
+        /// <returns>A sequence of logged actions</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public IEnumerable<LogMessage> FetchRecentLogActions()
+        {
+            LogMessage message;
+            while (actionLog.TryDequeue(out message))
+                yield return message;
+        }
+
+        /// <summary>
+        /// Retrieve current state of action log.
+        /// </summary>
+        /// <param name="nodeProgressing">The progressing node</param>
+        /// <returns>An array of recent messages</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing)
+        {
+            return nodeProgressing?.GetActionLog();
+        }
+
+        /// <summary>
+        /// Retrieves the current state of action log.
+        /// </summary>
+        /// <returns>An array of recent messages</returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public LogMessage[] GetActionLog()
+        {
+            return actionLog.ToArray();
+        }
 
         public override string ToString()
         {

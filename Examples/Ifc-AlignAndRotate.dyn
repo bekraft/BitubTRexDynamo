@@ -2,7 +2,7 @@
   "Uuid": "3a83d19d-44d7-4f10-be3c-6c1ab5d86596",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "IfcLoad-Align-And-Rotate-Save",
+  "Name": "Ifc-AlignAndRotate",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -49,8 +49,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Out\\IfcLoad-Align-Save.log",
-      "InputValue": "Out\\IfcLoad-Align-Save.log",
+      "HintPath": "Out\\Ifc-AlignAndRotate.log",
+      "InputValue": "Out\\Ifc-AlignAndRotate.log",
       "NodeType": "ExtensionNode",
       "Id": "9a59e502e87c42e8ba2635f348d60770",
       "Inputs": [],
@@ -70,7 +70,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": ".\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "62cb103f98cc4f7e8f1a84abf8e94ec2",
@@ -238,12 +238,12 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "\"Aligned\";",
+      "Code": "\"(Aligned)\";",
       "Id": "856110d361334d4d82488fc1dac36095",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "dacb633fff9e492ea4f105e4ae143352",
+          "Id": "e3937bc850a24e76844c51beea4cfd53",
           "Name": "",
           "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
@@ -280,7 +280,7 @@
     },
     {
       "ConcreteType": "TRex.Task.IfcAxisAlignmentTransformNodeModel, TRexIfcUI",
-      "Selected": null,
+      "Selected": "Change existing placements",
       "IsCancelable": true,
       "NodeType": "ExtensionNode",
       "Id": "fd8437b921ce4617a4c461b3bceaec66",
@@ -296,8 +296,8 @@
         },
         {
           "Id": "5ebc69476321465dbc3d7f8f8317f873",
-          "Name": "authorMetadata",
-          "Description": "Credentials of authoring editor",
+          "Name": "author",
+          "Description": "Author metadata",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -305,8 +305,8 @@
         },
         {
           "Id": "61f3e65dc9744eaf9d126c8dc27eea40",
-          "Name": "canonicalName",
-          "Description": "Fragment name of canonical full name",
+          "Name": "nameAddon",
+          "Description": "Canonical name extension",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -314,8 +314,8 @@
         },
         {
           "Id": "11f55503a86b453d827a18ce852b5523",
-          "Name": "ifcModel",
-          "Description": "IFC input model",
+          "Name": "logFilter",
+          "Description": "Log filter flag",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -323,8 +323,8 @@
         },
         {
           "Id": "edf84a8ebe18407eb7d267a8ad74c737",
-          "Name": "logReasonFilter",
-          "Description": "Log reason type filtering",
+          "Name": "ifcModel",
+          "Description": "Input model",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -335,7 +335,7 @@
         {
           "Id": "f40028badca74f068f9f46f34ed6ed49",
           "Name": "ifcModel",
-          "Description": "IFC output model",
+          "Description": "Transformed model",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -426,7 +426,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": ".\\Out",
+      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
       "InputValue": ".\\Out",
       "NodeType": "ExtensionNode",
       "Id": "ce193b7b5ba345b2a0005a4137a98d1e",
@@ -444,46 +444,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Ermöglicht die Auswahl einen Verzeichnisses auf dem System, um seinen Pfad abzurufen."
-    },
-    {
-      "ConcreteType": "TRex.Log.LogFilterNodeModel, TRexIfcUI",
-      "LogCount": 10,
-      "LogMinSeverity": 0,
-      "NodeType": "ExtensionNode",
-      "Id": "94127fb0790d4490b2ef97acba756714",
-      "Inputs": [
-        {
-          "Id": "8c1ae79f3acf45298025ab38d9b05d13",
-          "Name": "logSource",
-          "Description": "Log source (i.e. IfcModel)",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "dbf8b8a4f24b480782a1f1d87d018aa1",
-          "Name": "logReason",
-          "Description": "Reason filter flags",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "11d904d61e454b6eb5dc8a74a72ea8f8",
-          "Name": "logMessages",
-          "Description": "Log events",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Log filtering node"
     },
     {
       "ConcreteType": "TRex.Data.DataTablePreviewNodeModel, TRexIfcUI",
@@ -594,6 +554,66 @@
       ],
       "Replication": "Auto",
       "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
+    },
+    {
+      "ConcreteType": "TRex.Log.LogFilterNodeModel, TRexIfcUI",
+      "LogCount": 10,
+      "LogMinSeverity": 0,
+      "NodeType": "ExtensionNode",
+      "Id": "aeac3d7ff89b4b08809d8403f533c8a2",
+      "Inputs": [
+        {
+          "Id": "7c4d4afb97104f7cb3219bc8412e092b",
+          "Name": "model",
+          "Description": "Log source (i.e. a model)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d7430fce4e6a491798816ec6091a40ce",
+          "Name": "mask",
+          "Description": "Log filter mask",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "41990604f5e94de88636f9a8af1d2d0a",
+          "Name": "messages",
+          "Description": "Extracted log messages",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Log filtering by reason mask and threshold of maximum messages"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\" \";",
+      "Id": "4bb8a1b388034bf1a351df64372b7506",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3ba80b7729a14be1b1793454fa47075e",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
     }
   ],
   "Connectors": [
@@ -629,8 +649,8 @@
     },
     {
       "Start": "4a27383ca8644ed890b0c4f1621e12d8",
-      "End": "11f55503a86b453d827a18ce852b5523",
-      "Id": "cf1ae72ca8894822909fb26377996e4d"
+      "End": "edf84a8ebe18407eb7d267a8ad74c737",
+      "Id": "e958b8a0aaa2475b9f8b5948b7932ce6"
     },
     {
       "Start": "739fb85f04344423a42272b56c105cba",
@@ -648,14 +668,14 @@
       "Id": "5464db377fc34a13b7189b565fee3cd5"
     },
     {
-      "Start": "dacb633fff9e492ea4f105e4ae143352",
+      "Start": "e3937bc850a24e76844c51beea4cfd53",
       "End": "61f3e65dc9744eaf9d126c8dc27eea40",
-      "Id": "165d0181bef042f49e7beca2659bf5f7"
+      "Id": "de26f310d1fa4d2b99d9f9dec3583786"
     },
     {
       "Start": "f0bcb2fee9924ba9adcea2abde38e391",
-      "End": "edf84a8ebe18407eb7d267a8ad74c737",
-      "Id": "0b9c122a52e44bb4a47992b9b81b0e2c"
+      "End": "11f55503a86b453d827a18ce852b5523",
+      "Id": "bff21d1558264f28bd8172e2f54bbc1f"
     },
     {
       "Start": "f40028badca74f068f9f46f34ed6ed49",
@@ -663,9 +683,9 @@
       "Id": "39ed49ee98a4490d9ba5c9aca7dc01a4"
     },
     {
-      "Start": "f40028badca74f068f9f46f34ed6ed49",
-      "End": "8c1ae79f3acf45298025ab38d9b05d13",
-      "Id": "b287203d74364695aeb5d6a1df2cf613"
+      "Start": "8267663c46454cfaaefe936add77fc68",
+      "End": "7c4d4afb97104f7cb3219bc8412e092b",
+      "Id": "6167486f91e0448787e752a0ed83265f"
     },
     {
       "Start": "8aa8e5e20f7746a5b93ee50e9cf1f9f6",
@@ -678,11 +698,6 @@
       "Id": "228a1202bfab4a97b89005949737b876"
     },
     {
-      "Start": "11d904d61e454b6eb5dc8a74a72ea8f8",
-      "End": "fc67e730df7341b39d275a2d81b5dc82",
-      "Id": "7b7c24a066e64bdc81f16a35a9cd4578"
-    },
-    {
       "Start": "9966fbd00edb48de91066e12ae5f8c17",
       "End": "88d95aaaa46b4d018b66fb27629b9a12",
       "Id": "c6304cc4e0d243fe90a2225f48b7ed50"
@@ -691,13 +706,23 @@
       "Start": "8d737c9b79554eff8a1fcab03af77c01",
       "End": "35003dd687cf4edb92a51b85da946081",
       "Id": "187fb67b433a43b5a37f73c43d051e29"
+    },
+    {
+      "Start": "41990604f5e94de88636f9a8af1d2d0a",
+      "End": "fc67e730df7341b39d275a2d81b5dc82",
+      "Id": "241df4ddc46b44aba970bb60cf03648a"
+    },
+    {
+      "Start": "3ba80b7729a14be1b1793454fa47075e",
+      "End": "cb0ba6c3994349118ad1364ab5116afb",
+      "Id": "e8843d2a92d34a6d88a75c19e4121217"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
-      "Name": "TRexIfc",
-      "Version": "1.0.20304.44022",
+      "Name": "TRex",
+      "Version": "1.0.21239.39945",
       "ReferenceType": "Package",
       "Nodes": [
         "2cac8a0f7e8346f391ae269ed9b75283",
@@ -707,27 +732,37 @@
         "fd8437b921ce4617a4c461b3bceaec66",
         "ae7119a6033a495d96d0bea537606384",
         "02dcb5b405ed442981907e6554a064af",
-        "94127fb0790d4490b2ef97acba756714",
         "07e23328fca04b5f8b0d86c508d5a655",
-        "2752a2a0115a4dc08679054fa649187b"
-      ]
-    },
-    {
-      "Name": "TRex",
-      "Version": "1.0.21151.45191",
-      "ReferenceType": "Package",
-      "Nodes": [
-        "a58e183c96ae4fc3b3dc8df12fb7096d"
+        "2752a2a0115a4dc08679054fa649187b",
+        "a58e183c96ae4fc3b3dc8df12fb7096d",
+        "aeac3d7ff89b4b08809d8403f533c8a2"
       ]
     }
   ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "Keine",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.10.1.3976",
+      "Version": "2.12.0.5650",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -831,8 +866,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 765.4542313315834,
-        "Y": 140.27310639419346
+        "X": 732.73601826987408,
+        "Y": 199.37697515082959
       },
       {
         "ShowGeometry": true,
@@ -862,7 +897,7 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 1579.6980002899145,
-        "Y": -345.79685724269149
+        "Y": -397.9463455983643
       },
       {
         "ShowGeometry": true,
@@ -876,23 +911,13 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Log Filter",
-        "Id": "94127fb0790d4490b2ef97acba756714",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1592.3301735083157,
-        "Y": 105.54429503477837
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Data Preview",
         "Id": "07e23328fca04b5f8b0d86c508d5a655",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 1896.8084065633384,
-        "Y": 104.33490121083014
+        "X": 2124.8158887979926,
+        "Y": -22.308307652594863
       },
       {
         "ShowGeometry": true,
@@ -913,6 +938,26 @@
         "Excluded": false,
         "X": 26.768465564157964,
         "Y": 61.905923347235216
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Log Filter",
+        "Id": "aeac3d7ff89b4b08809d8403f533c8a2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1872.5993347176573,
+        "Y": -23.665473406013632
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4bb8a1b388034bf1a351df64372b7506",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1725.6106005154325,
+        "Y": -270.31886642267904
       }
     ],
     "Annotations": [
@@ -942,12 +987,12 @@
           "ce193b7b5ba345b2a0005a4137a98d1e"
         ],
         "Left": 1290.1034205401033,
-        "Top": -403.94045143359159,
+        "Top": -451.14634559836429,
         "Width": 894.5139282320506,
-        "Height": 262.6,
+        "Height": 309.80589416477267,
         "FontSize": 36.0,
-        "InitialTop": -350.7404514335916,
-        "InitialHeight": 152.01601334439692,
+        "InitialTop": -397.9463455983643,
+        "InitialHeight": 199.22190750916963,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       },
@@ -976,10 +1021,10 @@
           "4db6ba8de50a434f9b1f78ebb1a983c3",
           "fd8437b921ce4617a4c461b3bceaec66"
         ],
-        "Left": 755.4542313315834,
+        "Left": 722.73601826987408,
         "Top": -44.2769733236408,
-        "Width": 656.49783599922432,
-        "Height": 411.55007971783425,
+        "Width": 693.21604906093364,
+        "Height": 470.65394847447038,
         "FontSize": 36.0,
         "InitialTop": 8.9230266763592,
         "InitialHeight": 276.35007971783426,
@@ -1004,23 +1049,6 @@
         "Background": "#FFC1D676"
       },
       {
-        "Id": "5cdd2e1c94ec45578ce186e7cba65cf2",
-        "Title": "Logging output",
-        "Nodes": [
-          "94127fb0790d4490b2ef97acba756714",
-          "07e23328fca04b5f8b0d86c508d5a655"
-        ],
-        "Left": 1582.3301735083157,
-        "Top": 51.134901210830137,
-        "Width": 486.87823305502275,
-        "Height": 172.60939382394821,
-        "FontSize": 36.0,
-        "InitialTop": 104.33490121083014,
-        "InitialHeight": 146.20939382394823,
-        "TextblockHeight": 43.2,
-        "Background": "#FFC1D676"
-      },
-      {
         "Id": "7a2949e26ba7463a839e009f1e2c6444",
         "Title": "Rotation by 45°",
         "Nodes": [
@@ -1034,13 +1062,30 @@
         "Height": 197.0,
         "FontSize": 36.0,
         "InitialTop": 61.905923347235216,
-        "InitialHeight": 173.8,
+        "InitialHeight": 147.37095245241079,
+        "TextblockHeight": 43.2,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "ffac8f179b504acbb4cab6a5b0334ba5",
+        "Title": "Logging",
+        "Nodes": [
+          "07e23328fca04b5f8b0d86c508d5a655",
+          "aeac3d7ff89b4b08809d8403f533c8a2"
+        ],
+        "Left": 1862.5993347176573,
+        "Top": -76.865473406013635,
+        "Width": 434.61655408033539,
+        "Height": 171.4,
+        "FontSize": 36.0,
+        "InitialTop": -23.665473406013632,
+        "InitialHeight": 146.35716575341877,
         "TextblockHeight": 43.2,
         "Background": "#FFC1D676"
       }
     ],
-    "X": 124.54573651471446,
-    "Y": 212.85531729281422,
-    "Zoom": 0.21900079188865026
+    "X": -456.43206022373806,
+    "Y": 198.95334644260217,
+    "Zoom": 0.46110273557142534
   }
 }

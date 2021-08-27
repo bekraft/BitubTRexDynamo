@@ -55,7 +55,7 @@ namespace TRex.Store
             Logger = logger;
         }
 
-        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName, ICollection<LogMessage> log)
+        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName)
         {
             var logger = theModel.Store.Logger;
             logger?.LogInfo("Start loading file '{0}'.", filePathName);
@@ -151,7 +151,7 @@ namespace TRex.Store
         /// <param name="logger">The logger instance</param>   
         /// <param name="tessellationPrefs">Tessellation preferences</param>
         /// <returns>This instance</returns>
-        public static IfcModel ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs, bool cancelBefore = false)
+        public static IfcModel ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs)
         {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException(nameof(fileName));
@@ -162,16 +162,21 @@ namespace TRex.Store
             IfcModel ifcModel;
             if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
             {
-                ifcModel.Store.Producer = () => LoadFromFile(ifcModel, tessellationPrefs, fileName, ifcModel.ActionLog);
+                ifcModel.Store.Producer = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
                 tessellationPrefs?.ApplyToModel(ifcModel);
-
-                if (cancelBefore)
-                {
-                    ifcModel.CancelAll();
-                    ifcModel.Logger?.LogWarning("Loading '{0}' has been canceled.", fileName);
-                }
             }
 
+            return ifcModel;
+        }
+
+        /// <summary>
+        /// Cancels all tasks in progress.
+        /// </summary>
+        /// <param name="ifcModel">The model</param>
+        /// <returns>Model with cancelled task mark</returns>
+        public static IfcModel MarkAsCancelled(IfcModel ifcModel)
+        {
+            ifcModel.CancelAll();
             return ifcModel;
         }
 
@@ -204,7 +209,7 @@ namespace TRex.Store
                 canoncialName = DateTime.Now.Ticks.ToString();
 
             var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
-            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier, source.GetActionLog()), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
             {
                 ifcModel.Store.Producer = () =>
                 {

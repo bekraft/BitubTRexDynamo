@@ -27,8 +27,11 @@ namespace TRex.Task
     [NodeDescription("Changes the model coordinate system alignment by offset and rotation.")]
     [NodeCategory("TRex.Task")]
     [InPortTypes(nameof(Alignment), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel))]
+    [InPortNames("alignment", "author", "nameAddon", "logFilter", "ifcModel")]
     [InPortDescriptions("Axis alignment", "Author metadata", "Canonical name extension", "Log filter flag", "Input model")]
-    [OutPortTypes(nameof(IfcModel))]    
+    [OutPortTypes(nameof(IfcModel))]
+    [OutPortNames("ifcModel")]
+    [OutPortDescriptions("Transformed model")]
     [NodeSearchTags("ifc", "placement", "alignment")]
     [IsDesignScriptCompatible]
     public class IfcAxisAlignmentTransformNodeModel : CancelableProgressingOptionNodeModel<string>
@@ -37,20 +40,6 @@ namespace TRex.Task
 
         public IfcAxisAlignmentTransformNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("alignment", "Axis alignment")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("author", "Credentials of authoring editor")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("nameAddon", "Fragment name of canonical full name")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("ifcModel", "IFC input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("logFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
-
-            OutPorts.Add(new PortModel(PortType.Output, this, 
-                new PortData("ifcModel", "IFC output model")));
-
             RegisterAllPorts();
            
             IsCancelable = true;
@@ -94,7 +83,7 @@ namespace TRex.Task
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
                 new List<AssociativeNode>() 
                 { 
-                    inputAst[3] 
+                    inputAst[4] 
                 }
             );
 
@@ -121,12 +110,12 @@ namespace TRex.Task
                 new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() 
                 { 
-                    inputAst[3], 
+                    inputAst[4], 
                     astCreateTransform, 
                     inputAst[2], 
-                    inputAst[4] 
+                    inputAst[3] 
                 }
-            );
+            );           
 
             return BuildResult(astCreateTransformDelegate.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName));
         }

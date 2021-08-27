@@ -170,13 +170,13 @@ namespace TRex.Export
                             break;
                         default:
                             var msg = $"Unknown implementation of format '{format.Extension}'.";
-                            scene.ActionLog.Add(LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, msg));
+                            scene.OnActionLogged(LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, msg));
                             monitor.State.MarkBroken();
 
                             throw new ArgumentException(msg);
                     }
 
-                    scene.ActionLog.Add(
+                    scene.OnActionLogged(
                         LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene save to '{0}'.", fileName));
                     monitor.NotifyOnProgressChange(1, "Saved file");
                 }
@@ -185,7 +185,7 @@ namespace TRex.Export
                     monitor.State.MarkBroken();
 
                     scene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
-                    scene.ActionLog.Add(
+                    scene.OnActionLogged(
                         LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "Exception '{0}' thrown while saving to '{1}'.", e.Message, fileName));
                 }
 
@@ -227,13 +227,13 @@ namespace TRex.Export
                     if (!exp.ExportTo(scene.SceneModel, fileName, format))
                     {
                         monitor.State.MarkBroken();
-                        scene.ActionLog.Add(
+                        scene.OnActionLogged(
                             LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "An error occured while exporting to '{0}'. {1}", fileName, exp.StatusMessage));
                     }
                     else
                     {
                         monitor.NotifyOnProgressChange(1, "Exported");
-                        scene.ActionLog.Add(
+                        scene.OnActionLogged(
                             LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene exported to '{0}'.", fileName));
                     }
                 }
@@ -242,7 +242,7 @@ namespace TRex.Export
                     monitor.State.MarkBroken();
 
                     scene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
-                    scene.ActionLog.Add(
+                    scene.OnActionLogged(
                         LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "Exception '{0}' thrown while exporting to '{1}'.", e.Message, fileName));
                 }
 

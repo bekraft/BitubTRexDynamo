@@ -11,7 +11,7 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "5c2deddc90474d94a0c118efefed883c",
@@ -32,7 +32,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-CheckGuids-SaveReport.log",
+      "HintPath": "Out\\IfcLoad-CheckGuids-SaveReport.log",
       "InputValue": "Out\\IfcLoad-CheckGuids-SaveReport.log",
       "NodeType": "ExtensionNode",
       "Id": "b018394e431a4d45ad9a7f09a3db392f",
@@ -304,7 +304,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
+      "HintPath": "Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
       "InputValue": "Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "324afdf1e4c74e8aa2cdef6bc95ebca5",
