@@ -3,7 +3,7 @@
 TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
 Internally it's using i.e. [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
-Currently supports [Dynamo 2.10+](https://github.com/DynamoDS/Dynamo).
+Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo).
 
 ## Installation of binary releases
 
@@ -23,7 +23,7 @@ In general, the master branch is the best option to run your own build.
 
 ### Dependencies
 
-   - Xbim 5.1+ via nuget (optionally with some fixes see [bekraft/XbimGeometry]() and [bkraft/XbimEssentials]())
+   - Xbim 5.1+ via nuget.org
    - Assimp 5.0+ (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
 
 ### Build configuration and impacts
