@@ -9,15 +9,15 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Excludes multiple items from a list of available items using its string representation.
     /// </summary>
     [NodeName("Exclude items from")]
-    [NodeCategory("TRexIfc.Task.Tasks")]
+    [NodeCategory("TRex.Utils")]
     [NodeDescription("Excludes multiple items from a list of available items using its string representation.")]
     [InPortTypes(typeof(object[]))]
     [OutPortTypes(typeof(object[]))]
@@ -38,12 +38,14 @@ namespace Task
         /// </summary>
         public ExcludingItemListNodeModel() : base()
         {
+            // Registration done by base
         }
 
 #pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {            
+        {
+            ClearErrorsAndWarnings();
             AssociativeNode resultList;
             if (IsPartiallyApplied)
             {
@@ -51,15 +53,10 @@ namespace Task
             }
             else
             {
-                if (Selected?.Count > 0)
-                {
-                    resultList = AstFactory.BuildExprList(
-                            Items.Where(c => !Selected.Contains(c)).Select(c => c.ToAstNode()).ToList());
-                }
-                else
-                {
+                if (Selected.Any(v => v.IsTransient) || Selected.Count == 0)
+                {   // Build from persistent selection
                     resultList = AstFactory.BuildFunctionCall(
-                        new Func<object[], string[], bool, object[]>(GlobalArgumentService.ExludeBySerializationValue),
+                        new Func<object[], string[], bool, object[]>(DynamicArgumentDelegation.ExludeBySerializationValue),
                         new List<AssociativeNode>()
                         {
                             inputAstNodes[0],
@@ -67,8 +64,13 @@ namespace Task
                             AstFactory.BuildBooleanNode(false)
                         });
                 }
+                else
+                {   // Build from live AST
+                    resultList = AstFactory.BuildExprList(
+                        Items.Where(c => !Selected.Contains(c)).Select(c => c.ToAstNode()).ToList());                    
+                }
             }
-
+            
             return new AssociativeNode[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), resultList)

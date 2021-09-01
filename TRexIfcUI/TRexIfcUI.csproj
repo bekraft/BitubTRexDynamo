@@ -3,34 +3,18 @@
 
   <!-- <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" /> -->
   <PropertyGroup>
-    <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.6</DeployDynamoVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    
-    <TargetFrameworks>net47</TargetFrameworks>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
 
-    <!-- <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids> -->
-    
     <Title>TRexIfc UI</Title>
-    <Description></Description>
     <OutputType>Library</OutputType>
     <StartupObject />
 
-    <Version>0.1.0.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
+    <Configurations>Debug;Release;Beta</Configurations>
+    <LangVersion>8.0</LangVersion>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
-
-  <!-- <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" /> -->
-  
-  <ItemGroup>
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
-    <!-- Removed libs for ease of file -->
-  </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,6 +24,40 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -50,11 +68,25 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DeployDynamoVersion>2.1</DeployDynamoVersion>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
+
+  <!-- <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" /> -->
+
+  <ItemGroup>
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -73,6 +105,8 @@
 
   <ItemGroup>
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" />
+    <None Remove="UI\CRSTransformControl.xaml" />
+    <None Remove="UI\FilterMatchTypeControl.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
     <None Include="pkg.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -81,21 +115,18 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20163-Beta.652</Version>
+      <Version>1.0.21236-Beta.35472</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoServices">
-      <Version>2.6.0.8481</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
-      <Version>2.6.0.8481</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.6.0.8481</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20049.18428" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
   </ItemGroup>
 
   <ItemGroup>
@@ -104,39 +135,77 @@
       <Name>TRexIfc</Name>
     </ProjectReference>
   </ItemGroup>
-  
-  <!-- After build -->
-  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles"> <!-- PostBuildEvent -->
-    <PropertyGroup>
-      <!--Copy to Dynamo sandbox for testing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-      <!--Copy to Dynamo revit for publishing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    </PropertyGroup>
-    <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfcUI package..." />
-    <!--Defining folders to copy-->
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="UI\CRSTransformControl.xaml.cs">
+      <DependentUpon>CRSTransformControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\SceneBuildSettingsControl.xaml.cs">
+      <DependentUpon>SceneBuildSettingsControl.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- Local deployment settings and artificact name pattern -->
+  <PropertyGroup>
+    <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
+    <AssemblyName>TRexIfcUI</AssemblyName>
+    <RootNamespace>TRex</RootNamespace>    
+  </PropertyGroup>
+
+  <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">
+    <!-- Remove before copying -->
+    <Message Importance="High" Text="Removing contents from $(DeployPath)." />
+    <RemoveDir Directories="$(DeployPath)" />
+    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Removing contents from $(DeployDynamoPath)\$(DeployDynamoProjectName)." />
+    <RemoveDir Condition="'$(Configuration)' == 'Debug'" Directories="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
+  </Target>
+
+  <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
+  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
+    <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />
     <ItemGroup>
-      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
+      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
+      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
+      <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
       <SourceXmls Include="$(TargetDir)*.xml" />
       <SourcePkg Include="pkg.json" />
-      <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
+      <SourceDocs Include="$(SolutionDir)Documentations\*.md" />
     </ItemGroup>
-    <!-- Remove before copying -->
-    <Message Importance="High" Text="==&gt; Will remove $(DeployFolder)" />
-    <RemoveDir Directories="$(DeployFolder)" />
-    <!--Copying to Build Folder-->
-    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployFolder)" />
-    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
-    <Message Importance="High" Text="==&gt; Will copy @(SourceDlls)" />
-    <Message Importance="High" Text="==&gt; Built to $(TargetDir)$(ProjectName)" />
+
+    <Message Importance="High" Text="Will copy @(SourceDlls)´..." />
+
+    <!-- Copying to deploy folder-->
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SystemDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
+    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourceDocs)" DestinationFolder="$(DeployPath)\bin\" />
+
+    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg)&quot;" />
+    
+    <Message Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployPath)." />
+    
     <ItemGroup>
-      <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
-    </ItemGroup>
-    <Message Importance="High" Text="==&gt; Deployed to $(DeployFolder)" />
+      <DeployedBinaries Include="$(DeployPath)\**\*.dll;$(DeployPath)\**\*.pdb;$(DeployPath)\**\*.xml" />
+      <DeployedPackage Include="$(DeployPath)\pkg.json" />
+    </ItemGroup>    
+    
+    <!-- Copy to Dynamo app folder if Debug alpha  -->
+    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedPackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
+    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
+    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>
+  <ItemGroup>
+    <_ResxFiles Remove="Properties\Resources.resx" />
+  </ItemGroup>
 
 </Project>

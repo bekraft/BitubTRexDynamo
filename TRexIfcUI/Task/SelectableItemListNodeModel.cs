@@ -8,11 +8,12 @@ using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
 
-using Internal;
+using TRex.Internal;
 
-using AstObjectValue = Internal.AstValue<object>;
+using AstObjectValue = TRex.Internal.AstValue<object>;
+using ProtoCore.AST.AssociativeAST;
 
-namespace Task
+namespace TRex.Task
 {
 #pragma warning disable CS1591
 
@@ -44,10 +45,12 @@ namespace Task
         [JsonIgnore]
         public List<AstObjectValue> Items
         {
-            get {
+            get 
+            {
                 return _items;
             }
-            private set {
+            internal protected set 
+            {
                 _items = value;
                 RaisePropertyChanged(nameof(Items));
             }
@@ -61,10 +64,12 @@ namespace Task
 
         public List<string> SelectedValue 
         { 
-            get {
+            get 
+            {
                 return _persistentSelected;
             }
-            set {
+            set 
+            {
                 _persistentSelected = value;
                 RaisePropertyChanged(nameof(SelectedValue));
             }
@@ -72,11 +77,9 @@ namespace Task
 
         internal protected bool SetItems(params AstObjectValue[] items)
         {
-            var identical = (items.Length == _items.Count) && items.All(r => _items.Contains(r));
-
-            if (!identical)
+            if (!AstReference.IsEqualTo(items, _items))
             {
-                DispatchOnUIThread(() => Items = new List<AstObjectValue>(items));
+                Items = new List<AstObjectValue>(items);
                 return true;
             }
             else
@@ -87,16 +90,14 @@ namespace Task
 
         internal protected bool SetSelected(AstReference[] selected, bool forceModified)
         {
-            var identical = (_selected.Count == selected.Length) && (selected.All(r => _selected.Contains(r)));
-            if (!identical)
+            if (!AstReference.IsEqualTo(selected, _selected))
             {
                 _selected = new List<AstReference>(selected);
-                _persistentSelected = _selected.Select(v => v.ToString()).ToList();
-                if (forceModified)
-                {
-                    RaisePropertyChanged(nameof(SelectedValue));
-                    OnNodeModified(true);
-                }
+                SilentSetPersistentValue();
+                RaisePropertyChanged(nameof(SelectedValue));
+
+                OnNodeModified(forceModified);
+                
                 return true;
             }
             else
@@ -105,14 +106,9 @@ namespace Task
             }
         }
 
-        internal protected AstReference[] SelectByValues(string[] selectedValue)
+        protected void SilentSetPersistentValue()
         {
-            List<AstReference> selected = new List<AstReference>();
-            foreach(var v in GlobalArgumentService.FilterBySerializationValue(Items.ToArray(), selectedValue, false))
-            {
-                selected.Add(v as AstReference);
-            }
-            return selected.ToArray();
+            _persistentSelected = _selected.Select(v => v.ToString()).ToList();
         }
     }
 }

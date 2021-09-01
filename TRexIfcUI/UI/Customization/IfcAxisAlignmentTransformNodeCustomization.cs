@@ -1,13 +1,13 @@
-﻿using Task;
+﻿using TRex.Task;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcAxisAlignmentTransformNodeCustomization : CancelableProgressingOptionNodeCustomization<IfcAxisAlignmentTransformNodeModel>
+    public class IfcAxisAlignmentTransformNodeCustomization : CancelableOptionCommandCustomization<IfcAxisAlignmentTransformNodeModel, string>
     {
-        public IfcAxisAlignmentTransformNodeCustomization(): base(ProgressOnPortType.OutPorts, Log.LogReason.Changed)
+        public IfcAxisAlignmentTransformNodeCustomization(): base(ProgressOnPortType.OutPorts)
         {
         }
     }

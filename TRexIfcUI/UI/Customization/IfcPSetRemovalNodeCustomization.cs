@@ -1,13 +1,12 @@
-﻿using Task;
+﻿using TRex.Task;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
-    // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcPSetRemovalNodeCustomization : CancelableProgressingNodeCustomization<IfcPSetRemovalTransformNodeModel>
+    public class IfcPSetRemovalNodeCustomization : CancelableCommandCustomization<IfcPSetRemovalTransformNodeModel>
     {
-        public IfcPSetRemovalNodeCustomization() : base(ProgressOnPortType.OutPorts, Log.LogReason.Changed)
+        public IfcPSetRemovalNodeCustomization() : base(ProgressOnPortType.OutPorts)
         {
         }
     }

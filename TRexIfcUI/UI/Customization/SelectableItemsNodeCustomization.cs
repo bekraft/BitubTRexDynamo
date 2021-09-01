@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+
 using System.Windows.Controls;
 
 using Dynamo.Controls;
-using Internal;
+using TRex.Internal;
 
-using Task;
+using TRex.Task;
 
-namespace UI.Customization
+using AstObjectValue = TRex.Internal.AstValue<object>;
+
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
 
@@ -27,15 +31,7 @@ namespace UI.Customization
             nodeView.inputGrid.Children.Add(_control);
             _control.DataContext = model;
 
-            UpdateItems();
-
-            var selectedItems = NodeModel.SelectByValues(NodeModel.SelectedValue.ToArray());
-            DispatchUI(() => 
-            {
-                foreach (var s in selectedItems)
-                    _control.SelectionListBox.SelectedItems.Add(s);
-            });
-            AsyncSchedule(() => NodeModel.SetSelected(selectedItems, false));
+            InitSelection(NodeModel.SelectedValue.Select(v => new AstObjectValue(v)));
 
             model.PortDisconnected += Model_PortDisconnected;
             model.PortConnected += Model_PortConnected;
@@ -45,13 +41,38 @@ namespace UI.Customization
 
         protected override void OnCachedValueChange(object sender)
         {
-            UpdateItems();
+            //UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
+            NodeModel.SetItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController));
         }
 
-        private void UpdateItems()
+        private void UpdateItems(IEnumerable<AstObjectValue> items)
         {
-            var items = NodeModel.GetCachedAstInput<object>(0, ModelEngineController);
-            NodeModel.SetItems(items);
+            var selected = NodeModel.SelectedValue.ToArray();
+            if (NodeModel.SetItems(items.ToArray()))
+                RestoreSelection(selected);
+        }
+
+        private void InitSelection(IEnumerable<AstObjectValue> values)
+        {
+            NodeModel.Items = new List<AstObjectValue>(values);
+            foreach (var s in values)
+                _control.SelectionListBox.SelectedItems.Add(s);
+        }
+
+        private void RestoreSelection(string[] serializedSelection)
+        {
+            var restored = DynamicArgumentDelegation
+                .FilterBySerializationValue(NodeModel.Items.ToArray(), serializedSelection, false)
+                .Cast<AstReference>();
+
+            DispatchUI(() =>
+            {
+                if (0 == _control?.SelectionListBox.SelectedItems.Count)
+                {
+                    foreach (var astReference in restored)
+                        _control.SelectionListBox.SelectedItems.Add(astReference);
+                }
+            });
         }
 
         private void SelectionListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -62,12 +83,12 @@ namespace UI.Customization
 
         private void Model_PortConnected(Dynamo.Graph.Nodes.PortModel arg1, Dynamo.Graph.Connectors.ConnectorModel arg2)
         {
-            AsyncSchedule(UpdateItems);
+            AsyncSchedule(() => UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController)));
         }
 
         private void Model_PortDisconnected(Dynamo.Graph.Nodes.PortModel obj)
         {
-            AsyncSchedule(UpdateItems);
+            AsyncSchedule(() => UpdateItems(NodeModel.GetCachedAstInput<object>(0, ModelEngineController)));
         }
 
         public override void Dispose()

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<doc>
+  <assembly>
+    <name>TRexIfc</name>
+  </assembly>
+  <namespaces>
+    <namespace name="TRex.Log">
+      <category>TRex.Log</category>
+    </namespace>
+    <namespace name="TRex.Data">
+      <category>TRex.Data</category>
+    </namespace>
+    <namespace name="TRex.Geom">
+      <category>TRex.Geom</category>
+    </namespace>
+    <namespace name="TRex.Store">
+      <category>TRex.Store</category>
+    </namespace>
+    <namespace name="TRex.Export">
+      <category>TRex.Export</category>
+    </namespace>
+    <namespace name="TRex.Task">
+      <category>TRex.Task</category>
+    </namespace>
+    <namespace name="TRex.Validation">
+      <category>TRex.Validation</category>
+    </namespace>
+  </namespaces>
+</doc>

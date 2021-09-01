@@ -1,0 +1,574 @@
+{
+  "Uuid": "6cfa7f52-d052-4639-9065-320cf1623aea",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Ifc-EvaluatePropertySets",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "TRex.Log.FileLog, TRexIfcUI",
+      "LogEventLevel": 1,
+      "NodeType": "ExtensionNode",
+      "Id": "dd916e2863e54995b204e9437e1000be",
+      "Inputs": [
+        {
+          "Id": "bdb0b11fe68b4480aa3fed5007627aea",
+          "Name": "fileName",
+          "Description": "Log file name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e11cb20b18c741029706e0f80f3116a8",
+          "Name": "logger",
+          "Description": "Logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a new file logger with given template name."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
+      "NodeType": "ExtensionNode",
+      "Id": "c74b9643923945e0b6c6dfda574d2019",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a919f71e82df4facbd07d6569428837e",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "Out\\Ifc-EvaluatePropertySets.log",
+      "InputValue": ".\\Out\\Ifc-EvaluatePropertySets.log",
+      "NodeType": "ExtensionNode",
+      "Id": "daed6c03916046138fa732ea55c25b2d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2e233e6fdc864ae5b58b03b808e1b217",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "TRex.Store.IfcModel.ProductTypes",
+      "Id": "dc25e1ae214e4b1488cce4f1dcc3262a",
+      "Inputs": [
+        {
+          "Id": "2af0eccb7e0c46dfa4f088fd111d159a",
+          "Name": "ifcModel",
+          "Description": "TRex.Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3c3353585acf4ad99b5d96ebece46c43",
+          "Name": "string[]",
+          "Description": "A list of distinct IFC product types held by the collection",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Lists all product types which are present in the model\n\nIfcModel.ProductTypes ( ): string[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "TRex.Store.IfcModel.PropertySetsPerProductType",
+      "Id": "63222987c58844da903509355d4c709a",
+      "Inputs": [
+        {
+          "Id": "3b32272728da4718977399d739340d7f",
+          "Name": "ifcModel",
+          "Description": "TRex.Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6782b7f3da2e417da281a267652c94ab",
+          "Name": "var[]..[]",
+          "Description": "A list of property set names in use",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Lists all property sets by declaring product type.\n\nIfcModel.PropertySetsPerProductType ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "08d1ed8f1cd746a0bb701b30ce4e15ba",
+      "Inputs": [
+        {
+          "Id": "c5f77890d21f44fb9af9fbe60a4c46be",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f092c26b66d4e5ab38ef7fc2c2f788a",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "66b0902177004ed39b95a053aa455339",
+          "Name": "prefs",
+          "Description": "Tessellation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c3aa70ec72e347c494ea78a19b879055",
+          "Name": "ifcModel",
+          "Description": "IFC model instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "TRex.Store.IfcModel.Schema",
+      "Id": "74ad7d6a1814494b8a654b5cad4753c7",
+      "Inputs": [
+        {
+          "Id": "5393d5573ae94262a41ffeed79e825ff",
+          "Name": "ifcModel",
+          "Description": "TRex.Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4e5058bd0c5b4000a0a9702650a6272f",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The current IFC schema version of the element collection.\n\nIfcModel.Schema: string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "16f465c0f2ed4d25aa9cb8ef9c7388fb",
+      "Inputs": [
+        {
+          "Id": "fb759f567dc94d689ccbd2b461ccbcb7",
+          "Name": "",
+          "Description": "Auszuwertender Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "caff669c268543959df05118886624ba",
+          "Name": "",
+          "Description": "Inhalt beobachten",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualisierung der Ausgabe des Blocks"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "cba892b69c59400d963fa4fa0e6b837c",
+      "Inputs": [
+        {
+          "Id": "0bc76679b4f14fdca3871e0eacc404bc",
+          "Name": "",
+          "Description": "Auszuwertender Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b4e3c11f705344bc96d6620e09613899",
+          "Name": "",
+          "Description": "Inhalt beobachten",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualisierung der Ausgabe des Blocks"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "cb3d5b242f4a488f8d3db5b892d4c2de",
+      "Inputs": [
+        {
+          "Id": "7dd439ddb0e145919e6fc4f457e297c0",
+          "Name": "",
+          "Description": "Auszuwertender Block",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "01286e222a634ed1a4d8a8ad2cec894a",
+          "Name": "",
+          "Description": "Inhalt beobachten",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualisierung der Ausgabe des Blocks"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e11cb20b18c741029706e0f80f3116a8",
+      "End": "5f092c26b66d4e5ab38ef7fc2c2f788a",
+      "Id": "72347edb50d84c208ff7c8639ace2c78"
+    },
+    {
+      "Start": "a919f71e82df4facbd07d6569428837e",
+      "End": "c5f77890d21f44fb9af9fbe60a4c46be",
+      "Id": "c78acc1b00a448789345f6ebfa276c69"
+    },
+    {
+      "Start": "2e233e6fdc864ae5b58b03b808e1b217",
+      "End": "bdb0b11fe68b4480aa3fed5007627aea",
+      "Id": "98a45fd538ae449990a5f9669aca4859"
+    },
+    {
+      "Start": "3c3353585acf4ad99b5d96ebece46c43",
+      "End": "0bc76679b4f14fdca3871e0eacc404bc",
+      "Id": "bcc4842b84f34541897446bac9601b6c"
+    },
+    {
+      "Start": "6782b7f3da2e417da281a267652c94ab",
+      "End": "7dd439ddb0e145919e6fc4f457e297c0",
+      "Id": "13238cb17d9e478a9138f793c4397d35"
+    },
+    {
+      "Start": "c3aa70ec72e347c494ea78a19b879055",
+      "End": "2af0eccb7e0c46dfa4f088fd111d159a",
+      "Id": "00f5385897cc4949a7f0bdda1ee79ab1"
+    },
+    {
+      "Start": "c3aa70ec72e347c494ea78a19b879055",
+      "End": "3b32272728da4718977399d739340d7f",
+      "Id": "3b9d822999b444a9bd0ed32fcf0b2dc4"
+    },
+    {
+      "Start": "c3aa70ec72e347c494ea78a19b879055",
+      "End": "5393d5573ae94262a41ffeed79e825ff",
+      "Id": "e9f1c2c8f0494be8ae4afbe394a7571d"
+    },
+    {
+      "Start": "4e5058bd0c5b4000a0a9702650a6272f",
+      "End": "fb759f567dc94d689ccbd2b461ccbcb7",
+      "Id": "fd372247cc704a60b1673f47d95a422e"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRex",
+      "Version": "1.0.21239.39970",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "dd916e2863e54995b204e9437e1000be",
+        "dc25e1ae214e4b1488cce4f1dcc3262a",
+        "63222987c58844da903509355d4c709a",
+        "08d1ed8f1cd746a0bb701b30ce4e15ba",
+        "74ad7d6a1814494b8a654b5cad4753c7"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "Keine",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Hintergrundvorschau",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "File Logger",
+        "Id": "dd916e2863e54995b204e9437e1000be",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 276.21068189689379,
+        "Y": 52.358011422670245
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "c74b9643923945e0b6c6dfda574d2019",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 358.61242446397091,
+        "Y": 322.732521488077
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "daed6c03916046138fa732ea55c25b2d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 20.210681896893675,
+        "Y": 50.758011422670108
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.ProductTypes",
+        "Id": "dc25e1ae214e4b1488cce4f1dcc3262a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1115.5543763784051,
+        "Y": 186.49500911905898
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.PropertySetsPerProductType",
+        "Id": "63222987c58844da903509355d4c709a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1109.6938872168255,
+        "Y": 320.83115800292171
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Ifc Load",
+        "Id": "08d1ed8f1cd746a0bb701b30ce4e15ba",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 589.60617282342707,
+        "Y": 321.71782139485708
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "IfcModel.Schema",
+        "Id": "74ad7d6a1814494b8a654b5cad4753c7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1119.9420943536757,
+        "Y": 55.8375044166292
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "16f465c0f2ed4d25aa9cb8ef9c7388fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1405.238201348609,
+        "Y": -13.804099247618865
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "cba892b69c59400d963fa4fa0e6b837c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1652.5540310296376,
+        "Y": 314.67695027784418
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "cb3d5b242f4a488f8d3db5b892d4c2de",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1399.9366872323938,
+        "Y": 319.65463192902121
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "cf375ad89123460486d89eef7ebfe692",
+        "Title": "File logger",
+        "Nodes": [
+          "dd916e2863e54995b204e9437e1000be",
+          "daed6c03916046138fa732ea55c25b2d"
+        ],
+        "Left": 10.210681896893675,
+        "Top": -2.4419885773298944,
+        "Width": 498.40000000000009,
+        "Height": 177.80000000000013,
+        "FontSize": 36.0,
+        "InitialTop": 50.758011422670108,
+        "InitialHeight": 146.60000000000014,
+        "TextblockHeight": 43.2,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "f2185330775c4b7bad95b5c81351eed2",
+        "Title": "Evaluate IfcPropertySets",
+        "Nodes": [
+          "dc25e1ae214e4b1488cce4f1dcc3262a",
+          "63222987c58844da903509355d4c709a",
+          "74ad7d6a1814494b8a654b5cad4753c7",
+          "16f465c0f2ed4d25aa9cb8ef9c7388fb",
+          "cba892b69c59400d963fa4fa0e6b837c",
+          "cb3d5b242f4a488f8d3db5b892d4c2de"
+        ],
+        "Left": 1099.6938872168255,
+        "Top": -67.004099247618868,
+        "Width": 772.460143812812,
+        "Height": 664.05873117664009,
+        "FontSize": 36.0,
+        "InitialTop": -13.804099247618865,
+        "InitialHeight": 479.63525725054058,
+        "TextblockHeight": 43.2,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "99a0d23b86b9485b9960b0b08a9174c6",
+        "Title": "Load IFC",
+        "Nodes": [
+          "c74b9643923945e0b6c6dfda574d2019",
+          "08d1ed8f1cd746a0bb701b30ce4e15ba"
+        ],
+        "Left": 348.61242446397091,
+        "Top": 268.51782139485709,
+        "Width": 599.79374835945623,
+        "Height": 231.39999999999998,
+        "FontSize": 36.0,
+        "InitialTop": 321.71782139485708,
+        "InitialHeight": 146.01470009321991,
+        "TextblockHeight": 43.2,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 78.332036154189609,
+    "Y": 108.93632047419035,
+    "Zoom": 0.586672500263676
+  }
+}

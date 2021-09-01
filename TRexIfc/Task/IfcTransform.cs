@@ -1,23 +1,20 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Extensions.Logging;
 
-using Xbim.Ifc4.UtilityResource;
-
-using Bitub.Ifc;
-using Bitub.Ifc.Transform.Requests;
 using Bitub.Ifc.Transform;
 
 using Autodesk.DesignScript.Runtime;
 
-using Geom;
-using Store;
-using Log;
-using Internal;
+using TRex.Geom;
+using TRex.Store;
+using TRex.Log;
+using TRex.Internal;
 using System.Threading;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Transforming model delegates.
@@ -29,30 +26,39 @@ namespace Task
 
         #region Internals
 
-        private readonly static ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
+        private static readonly TransformActionResult[] defaultLogFilter = new[]
+        {
+            TransformActionResult.Skipped, 
+            TransformActionResult.Modified, 
+            TransformActionResult.Added
+        };
 
-        private readonly IIfcTransformRequest Request;
+        private readonly static ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
+
+        private readonly IModelTransform transformDelegate;
 
         internal int TimeOutMillis { get; set; } = -1;
 
         internal CancellationTokenSource CancellationSource { get; private set; }
 
-        internal IfcTransform(IIfcTransformRequest transformRequest)
+        internal string Mark { get; set; } = $"{DateTime.Now.Ticks}";
+
+        internal IfcTransform(IModelTransform transform)
         {
-            Request = transformRequest;
+            transformDelegate = transform;
         }
 
-        private static LogReason TransformActionToActionType(TransformAction a)
+        private static LogReason TransformActionToActionType(TransformActionResult a)
         {
             switch (a)
             {
-                case TransformAction.Added:
+                case TransformActionResult.Added:
                     return LogReason.Added | LogReason.Transformed;
-                case TransformAction.Modified:
+                case TransformActionResult.Modified:
                     return LogReason.Modified | LogReason.Transformed;
-                case TransformAction.NotTransferred:
+                case TransformActionResult.Skipped:
                     return LogReason.Removed | LogReason.Transformed;
-                case TransformAction.Transferred:
+                case TransformActionResult.Copied:
                     return LogReason.Copied | LogReason.Transformed;
 
                 default:
@@ -64,15 +70,15 @@ namespace Task
         {
             foreach (var entry in logEntries)
             {
-                var action = TransformActionToActionType(entry.PerformedAction);
-                if (filter.HasFlag(action))
+                var action = TransformActionToActionType(entry.performed);
+                if (LogReason.None != (filter & action))
                 {
                     yield return LogMessage.BySeverityAndMessage(
                         storeName,
                         LogSeverity.Info,
                         action, "#{0} {1}",
-                        entry.InstanceHandle?.EntityLabel.ToString() ?? "(not set)",
-                        entry.InstanceHandle?.EntityExpressType.Name ?? "(type unknown)");
+                        entry.handle.EntityLabel.ToString() ?? "(not set)",
+                        entry.handle.EntityExpressType.Name ?? "(type unknown)");
                 }
             }
         }
@@ -80,116 +86,125 @@ namespace Task
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel BySourceAndTransform(IfcModel source, IfcTransform transform, string canonicalFrag, object objFilterMask)
+        public static IfcModel BySourceAndTransform(IfcModel source, IfcTransform transform, string nameAddon, object objFilterMask)
         {
             if (null == source)
                 throw new ArgumentNullException(nameof(source));
             if (null == transform)
                 throw new ArgumentNullException(nameof(transform));
 
-            if (null == canonicalFrag)
-                canonicalFrag = "new";
+            if (null == nameAddon)
+                nameAddon = transform.Mark;
 
-            LogReason filterMask;
-            if (!GlobalArgumentService.TryCastEnum(objFilterMask, out filterMask))
-                Log.LogInformation("Unable to cast '{0}' of type {1}. Using '{2}'.", objFilterMask, nameof(LogReason), filterMask);
+            LogReason filterMask = DynamicArgumentDelegation.TryCastEnumOrDefault(objFilterMask, LogReason.Any);
 
             if (null == transform.CancellationSource)
                 transform.CancellationSource = new CancellationTokenSource();
 
-            return IfcStore.CreateFromTransform(source, (model, node) =>
+            return IfcStore.ByTransform(source, (model, node) =>
             {
-                Log.LogInformation("({0}) Starting '{1}' on {2} ...", node.GetHashCode(), transform.Request.Name, node.Name);
-                var task = transform.Request.Run(model, node);                
-                task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
-
-                Log.LogInformation("({0}) Finalized '{1}' on {2}.", node.GetHashCode(), transform.Request.Name, node.Name);
-
-                if (task.IsCompleted)
+                log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
+                try
                 {
-                    if (node is NodeProgressing np)
-                        np.NotifyFinish(LogReason.Changed, false);
-
-                    using (var result = task.Result)
+                    using (var task = transform.transformDelegate.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
                     {
-                        switch (result.ResultCode)
-                        {
-                            case TransformResult.Code.Finished:
-                                var name = $"{transform.Request.Name}({node.Name})";
-                                foreach (var logMessage in TransformLogToMessage(name, result.Log, filterMask | LogReason.Transformed))
-                                {
-                                    node.ActionLog.Add(logMessage);
-                                }
-                                return result.Target;
-                            case TransformResult.Code.Canceled:
-                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
-                                break;
-                            case TransformResult.Code.ExitWithError:
-                                node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                                    node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
-                                break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (node is NodeProgressing np)
-                        np.NotifyFinish(LogReason.Changed, true);
+                        task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
 
-                    node.ActionLog.Add(LogMessage.BySeverityAndMessage(
-                        node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        log.LogInformation("Finalized '{1}' ({0}) on {2}.", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
+
+                        if (task.IsCompleted)
+                        {
+                            if (node is ProgressingTask np)
+                                np.OnProgressEnded(LogReason.Changed, false);
+
+                            using (var result = task.Result)
+                            {
+                                switch (result.ResultCode)
+                                {
+                                    case TransformResult.Code.Finished:
+                                        var name = $"{transform.transformDelegate.Name}({node.Name})";
+                                        node.OnActionLogged(TransformLogToMessage(name, result.Log, filterMask).ToArray());                                   
+                                        return result.Target;
+                                    case TransformResult.Code.Canceled:
+                                        node.OnActionLogged(LogMessage.BySeverityAndMessage(
+                                            node.Name, LogSeverity.Error, LogReason.Any, "Canceled by user request ({0}).", node.Name));
+                                        break;
+                                    case TransformResult.Code.ExitWithError:
+                                        node.OnActionLogged(LogMessage.BySeverityAndMessage(
+                                            node.Name, LogSeverity.Error, LogReason.Any, "Caught error ({0}): {1}", node.Name, result.Cause));
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (node is ProgressingTask np)
+                                np.OnProgressEnded(LogReason.Changed, true);
+
+                            node.OnActionLogged(LogMessage.BySeverityAndMessage(
+                                node.Name, LogSeverity.Error, LogReason.Changed, $"Task incompletely terminated (Status {task.Status})."));
+                        }
+                        return null;
+                    }
+                } 
+                catch(Exception thrownOnExec)
+                {
+                    log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
+                    throw new Exception("Exception while executing task");
                 }
-                return null;
-            }, canonicalFrag);
+            }, nameAddon);
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return Request?.Name ?? "Anonymous IfcTransform";
+            return transformDelegate?.Name ?? "Anonymous IfcTransform";
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, string[] blackListPSets, bool caseSensitiveMatching)
+        public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, 
+            string[] removePropertySets, string[] keepPropertySets, bool? caseSensitiveMatching)
         {
-            return new IfcTransform(new IfcPropertySetRemovalRequest(logInstance.LoggerFactory)
+            return new IfcTransform(new ModelPropertySetRemovalTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
-                BlackListNames = blackListPSets,
-                IsNameMatchingCaseSensitive = caseSensitiveMatching,
-                IsLogEnabled = true,
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+                ExludePropertySetByName = removePropertySets,
+                IncludePropertySetByName = keepPropertySets,
+                IsNameMatchingCaseSensitive = caseSensitiveMatching ?? false,
+                FilterRuleStrategy = FilterRuleStrategyType.IncludeBeforeExclude,
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials(),
             });
         }
 
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewTransformPlacementRequest(Logger logInstance, IfcAuthorMetadata newMetadata, Alignment alignment, object placementStrategy)
         {
-            IfcPlacementStrategy strategy = default(IfcPlacementStrategy);
-            if (!GlobalArgumentService.TryCastEnum(placementStrategy, out strategy))
-                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(IfcPlacementStrategy), strategy);
+            ModelPlacementStrategy strategy = default(ModelPlacementStrategy);
+            if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out strategy))
+                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(ModelPlacementStrategy), strategy);
 
-            return new IfcTransform(new IfcPlacementTransformRequest(logInstance.LoggerFactory)
+            return new IfcTransform(new ModelPlacementTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
                 AxisAlignment = alignment.TheAxisAlignment,
-                IsLogEnabled = true,
                 PlacementStrategy = strategy,
-                EditorCredentials = newMetadata.MetaData.ToEditorCredentials()
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials()
             });
         }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static IfcTransform NewRepresentationRefactorTransform(Logger logInstance, IfcAuthorMetadata newMetadata, string[] contexts, object refactorStrategy)
+        {
+            ProductRefactorStrategy strategy = default(ProductRefactorStrategy);
+            if (!DynamicArgumentDelegation.TryCastEnum(refactorStrategy, out strategy))
+                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRefactorStrategy), strategy);
 
-#pragma warning restore CS1591
-
-        /// <summary>
-        /// Rewrites the given GUID as IfcGloballyUniqueId (or also known as IfcGuid base64 representation)
-        /// </summary>
-        /// <param name="guid">A GUID (i.e. "B47EF7FE-BDF4-4504-8A67-DB697D04F659")</param>
-        /// <returns>The IFC Base64 representation</returns>
-        public static string GuidToIfcGuid(string guid)
-        {            
-            return IfcGloballyUniqueId.ConvertToBase64(Guid.Parse(guid));
+            return new IfcTransform(new ProductRepresentationRefactorTransform(logInstance?.LoggerFactory, defaultLogFilter)
+            {
+                ContextIdentifiers = contexts,
+                Strategy = strategy,                
+                EditorCredentials = newMetadata?.MetaData.ToEditorCredentials()
+            });
         }
 
+#pragma warning restore CS1591
     }
 }

@@ -6,17 +6,16 @@ using System.Linq;
 using Xbim.Common;
 using Xbim.Ifc4.Interfaces;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
-using Store;
-using Internal;
+using TRex.Store;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// IFC GUID Temporary inmemory store.
     /// </summary>
-    public class IfcGuidStore
+    public sealed class IfcGuidStore
     {
         #region Internals
 
@@ -83,7 +82,7 @@ namespace Validation
         /// <returns>The modified store</returns>
         public IfcGuidStore Ingest(IfcModel ifcModel)
         {
-            var innerModel = ifcModel.Store.XbimModel;
+            var innerModel = ifcModel.XbimModel;
             if (null == innerModel)
                 throw new ArgumentNullException(nameof(ifcModel));
 

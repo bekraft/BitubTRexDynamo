@@ -1,14 +1,14 @@
-﻿using Validation;
+﻿using TRex.Validation;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcGuidCheckValidationNodeCustomization : CancelableProgressingNodeCustomization<IfcGuidCheckValidationNodeModel>
+    public class IfcGuidCheckValidationNodeCustomization : CancelableCommandCustomization<IfcGuidCheckValidationNodeModel>
     {
-        public IfcGuidCheckValidationNodeCustomization(): base(ProgressOnPortType.OutPorts, Log.LogReason.Checked)
+        public IfcGuidCheckValidationNodeCustomization(): base(ProgressOnPortType.OutPorts)
         {
         }
     }

@@ -1,24 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
-
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
 using Xbim.Common;
 using Xbim.Ifc;
-using Xbim.Ifc4.Interfaces;
 
 using Autodesk.DesignScript.Runtime;
+using Microsoft.Extensions.Logging;
 
-using System.Collections.Generic;
+using TRex.Log;
 
-using Log;
-using Internal;
-
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Background IFC storage handling.
@@ -36,12 +30,13 @@ namespace Store
 
         #region Internals
 
-        // The internal weak reference
-        private WeakReference<IModel> _model;
         // The model producer hook 
-        private ModelDelegate _producer;
-        // Store time stamp
-        private long? _timeStamp;
+        internal Func<IModel> Producer { get; private set; }
+
+        #region Private internals
+
+        private WeakReference<IModel> reference;
+        private readonly object monitor = new object();        
 
         static IfcStore()
         {
@@ -54,123 +49,30 @@ namespace Store
             Logger = logger;
         }
 
-        private IfcStore(IModel model)
+        private IfcStore(IModel model, Logger logger)
         {
             XbimModel = model;
+            Logger = logger;
         }
 
-        private IfcStore(ModelDelegate producerDelegate)
-        {
-            _producer = producerDelegate;
-        }
-
-        internal static Qualifier BuildQualifier(string pathName, string fileName, string format)
-        {
-            var name = new Name();
-            var ext = Extensions.First(e => e.Equals(format.ToLower(), StringComparison.OrdinalIgnoreCase));
-
-            name.Frags.AddRange(new string[] { pathName, fileName, ext });
-            return new Qualifier
-            {
-                Named = name
-            };
-        }
-
-        internal static Qualifier BuildQualifier(string filePathName)
-        {
-            return BuildQualifier(
-                Path.GetDirectoryName(filePathName),
-                Path.GetFileNameWithoutExtension(filePathName),
-                Path.GetExtension(filePathName).Substring(1));
-        }
-
-        internal static Qualifier BuildQualifier(Qualifier sourceQualifier, string canonicalName)
-        {
-            if (null == sourceQualifier)
-                return BuildQualifier(canonicalName);
-
-            Qualifier newQualifier;
-            switch (sourceQualifier.GuidOrNameCase)
-            {
-                case Qualifier.GuidOrNameOneofCase.Anonymous:
-                    throw new ArgumentException($"Source is temporary model qualifier");
-                case Qualifier.GuidOrNameOneofCase.None:
-                    newQualifier = BuildQualifier(canonicalName);
-                    break;
-                case Qualifier.GuidOrNameOneofCase.Named:
-                    newQualifier = new Qualifier(sourceQualifier);
-                    newQualifier.Named.Frags.Insert(newQualifier.Named.Frags.Count - 1, canonicalName);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
-            return newQualifier;
-        }
-
-        internal protected IModel TryGetXbimModel
-        {
-            get {
-                lock (this)
-                {
-                    IModel model = null;
-                    if (_model?.TryGetTarget(out model) ?? false)
-                        return model;
-                    else
-                        return null;
-                }
-            }
-        }
-
-        internal protected IModel XbimModel
-        {
-            get {
-                lock (_producer)
-                {
-                    IModel model = null;
-                    if (_model?.TryGetTarget(out model) ?? false)
-                        return model;
-                    
-                    model = _producer.Invoke();
-                    _model = new WeakReference<IModel>(model);
-
-                    return model;
-                }
-            }
-            private set {
-                lock (_producer)
-                {
-                    if (null != value)
-                    {
-                        _model = new WeakReference<IModel>(value);
-                        _producer = () => value;
-                    }
-                    else
-                    {
-                        _model = null;
-                        _producer = () => null;
-                    }
-                }
-            }
-        }
-
-        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName, ICollection<LogMessage> log)
+        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName)
         {
             var logger = theModel.Store.Logger;
             logger?.LogInfo("Start loading file '{0}'.", filePathName);
             try
-            {                
+            {
                 var model = Xbim.Ifc.IfcStore.Open(filePathName, null, null, theModel.NotifyLoadProgressChanged, Xbim.IO.XbimDBAccess.Read);
                 prefs?.ApplyTo(model);
-                theModel.NotifyOnFinished(LogReason.Loaded, false, false);
+                theModel.NotifyOnProgressEnded(LogReason.Loaded, false, false);
                 logger?.LogInfo("File '{0}' has been loaded successfully.", filePathName);
-                theModel.Store._timeStamp = File.GetCreationTime(filePathName).ToBinary();
+                theModel.Store.TimeStamp = File.GetCreationTime(filePathName);
 
                 return model;
             }
             catch (Exception e)
             {
                 logger?.LogError(e, "Exception while loading '{0}'.", filePathName);
-                theModel.NotifyOnFinished(LogReason.Loaded, false, true);                            
+                theModel.NotifyOnProgressEnded(LogReason.Loaded, false, true);
             }
             return null;
         }
@@ -182,11 +84,53 @@ namespace Store
 
         #endregion
 
-        internal delegate IModel ModelDelegate();
+        internal protected IModel TryGetXbimModel
+        {
+            get {
+                lock (this)
+                {
+                    IModel model = null;
+                    if (reference?.TryGetTarget(out model) ?? false)
+                        return model;
+                    else
+                        return null;
+                }
+            }
+        }
 
-        internal delegate IModel ModelProgressDelegate(NodeProgressing node);
+        internal protected IModel XbimModel
+        {
+            get {
+                lock (monitor)
+                {
+                    IModel model = null;
+                    if (reference?.TryGetTarget(out model) ?? false)
+                        return model;
+                    
+                    model = Producer?.Invoke();
+                    reference = new WeakReference<IModel>(model);
 
-        internal delegate IModel ModelTransformProgressDelegate(IModel sourceModel, NodeProgressing node);        
+                    return model;
+                }
+            }
+            private set {
+                lock (monitor)
+                {
+                    if (null != value)
+                    {
+                        reference = new WeakReference<IModel>(value);
+                        Producer = () => value;
+                    }
+                    else
+                    {
+                        reference = null;
+                        Producer = () => null;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
 #pragma warning restore CS1591
 
@@ -198,55 +142,55 @@ namespace Store
         /// <summary>
         /// Gets the time stamp.
         /// </summary>
-        public DateTime TimeStamp { get => DateTime.FromBinary(_timeStamp ?? DateTime.Now.ToBinary() ); }
+        public DateTime TimeStamp { get; private set; } = DateTime.Now;
 
         /// <summary>
         /// Get or creates a new model store from file and logger instance.
         /// </summary>
         /// <param name="fileName">File name to load</param>
-        /// <param name="logInstance">The logger instance</param>   
+        /// <param name="logger">The logger instance</param>   
         /// <param name="tessellationPrefs">Tessellation preferences</param>
         /// <returns>This instance</returns>
-        public static IfcModel GetOrCreateModelStore(string fileName, Logger logInstance, IfcTessellationPrefs tessellationPrefs)
+        public static IfcModel ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs)
         {
-            InitLogging(logInstance);
-            var store = new IfcStore(logInstance);
-            var model = new IfcModel(store, BuildQualifier(fileName));
-            store._producer = () => LoadFromFile(model, tessellationPrefs, fileName, model.ActionLog);
+            if (string.IsNullOrEmpty(fileName))
+                throw new ArgumentNullException(nameof(fileName));
 
-            tessellationPrefs?.ApplyToModel(model);
+            InitLogging(logger);
 
-            return model;
+            var qualifier = ProgressingModelTask<IfcModel>.BuildQualifierByFilePathName(fileName);
+            IfcModel ifcModel;
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
+            {
+                ifcModel.Store.Producer = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
+                tessellationPrefs?.ApplyToModel(ifcModel);
+            }
+
+            return ifcModel;
+        }
+
+        /// <summary>
+        /// Cancels all tasks in progress.
+        /// </summary>
+        /// <param name="ifcModel">The model</param>
+        /// <returns>Model with cancelled task mark</returns>
+        public static IfcModel MarkAsCancelled(IfcModel ifcModel)
+        {
+            ifcModel.CancelAll();
+            return ifcModel;
         }
 
         /// <summary>
         /// A new IFC model from existing internal model.
         /// </summary>
         /// <param name="model">The model</param>
-        /// <param name="logInstance">The log instance</param>
+        /// <param name="logger">The log instance</param>
         /// <param name="qualifier">The qualifier</param>
         /// <returns></returns>
-        public static IfcModel CreateFromModel(IModel model, Qualifier qualifier, Logger logInstance)
+        public static IfcModel ByXbimModel(IModel model, Qualifier qualifier, Logger logger)
         {
-            var store = new IfcStore(model);
-            store.Logger = logInstance;
-            return new IfcModel(store, qualifier);
-        }
-
-        /// <summary>
-        /// A new IFC model generated by a producer delegate.
-        /// </summary>
-        /// <param name="producerDelegate"></param>
-        /// <param name="ancestor"></param>
-        /// <param name="canonicalAddon"></param>
-        /// <param name="logInstance"></param>
-        /// <returns></returns>
-        internal static IfcModel CreateFromProducer(ModelProgressDelegate producerDelegate, 
-            Qualifier ancestor, string canonicalAddon, Logger logInstance)
-        {
-            var store = new IfcStore(logInstance);
-            var ifcModel = new IfcModel(store, BuildQualifier(ancestor, canonicalAddon));
-            store._producer = () => producerDelegate?.Invoke(ifcModel);
+            IfcModel ifcModel;
+            ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(model, logger), qualifier), out ifcModel);
             return ifcModel;
         }
 
@@ -254,16 +198,33 @@ namespace Store
         /// A new IFC model generated by transformation delegate.
         /// </summary>
         /// <param name="source">The source model</param>
-        /// <param name="transformerDelegate">The delegate</param>
+        /// <param name="transform">A transform expecting an <see cref="IModel"/> and a <see cref="IfcModel"/> to associate the result to.</param>
         /// <param name="canoncialName">The canonical fragment</param>
-        /// <returns></returns>
-        internal static IfcModel CreateFromTransform(IfcModel source, 
-            ModelTransformProgressDelegate transformerDelegate, string canoncialName)
+        /// <returns>A new <see cref="IfcModel"/> with transform delegate</returns>
+        internal static IfcModel ByTransform(IfcModel source, Func<IModel, IfcModel, IModel> transform, string canoncialName)
         {
-            var store = new IfcStore(source.Store.Logger);            
-            var ifcModel = new IfcModel(store, BuildQualifier(source.Qualifier, canoncialName));
-            store._producer = () => transformerDelegate?.Invoke(source.Store.XbimModel, ifcModel);
-            
+            IfcModel ifcModel;
+
+            if (string.IsNullOrWhiteSpace(canoncialName))
+                canoncialName = DateTime.Now.Ticks.ToString();
+
+            var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
+            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
+            {
+                ifcModel.Store.Producer = () =>
+                {
+                    if (source.IsCanceled)
+                    {
+                        ifcModel.CancelAll();
+                        ifcModel.Logger.LogWarning("Transform of '{0}' to '{1}' has been canceled.", source.CanonicalName(), ifcModel.CanonicalName());
+                        return null;
+                    }
+                    else
+                    {
+                        return transform?.Invoke(source.XbimModel, ifcModel);
+                    }
+                };
+            }            
             return ifcModel;
         }
     }

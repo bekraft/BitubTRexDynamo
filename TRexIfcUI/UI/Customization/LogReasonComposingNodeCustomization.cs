@@ -2,9 +2,9 @@
 
 using System.Linq;
 
-using Log;
+using TRex.Log;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
 #pragma warning disable CS1591
 

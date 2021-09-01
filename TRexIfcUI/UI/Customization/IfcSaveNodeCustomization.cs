@@ -2,18 +2,18 @@
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Store;
+using TRex.Store;
 using System.Linq;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
 
-    public class IfcSaveNodeCustomization : CancelableProgressingOptionNodeCustomization<IfcSaveStoreNodeModel>
+    public class IfcSaveNodeCustomization : CancelableOptionCommandCustomization<IfcSaveStoreNodeModel, string>
     {
-        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts, Log.LogReason.Saved)
-        {
+        public IfcSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
+        {            
         }
 
         public override void CustomizeView(IfcSaveStoreNodeModel model, NodeView nodeView)
@@ -28,8 +28,9 @@ namespace UI.Customization
             {
                 case PortType.Input:
                     var ifcModels = NodeModel.GetCachedInput<IfcModel>(portModel.Index, ModelEngineController);
+                    // Autofix extension if unique
                     if (1 == ifcModels.Length)
-                        NodeModel.SelectedOption = ifcModels.FirstOrDefault()?.FormatExtension;
+                        NodeModel.Selected = ifcModels.FirstOrDefault()?.FormatExtension;
                     break;
                 case PortType.Output:
                     break;

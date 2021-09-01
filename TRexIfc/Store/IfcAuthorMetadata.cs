@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Runtime;
 
 using Bitub.Ifc;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// IFC authoring meta data
@@ -34,8 +34,8 @@ namespace Store
         /// <returns>A sorted list with most recent at top</returns>
         public static IfcAuthorMetadata[] OwnerHistory(IfcModel ifcModel)
         {
-            if (null != ifcModel)
-                return new IfcMetadataHistory(ifcModel.Store.XbimModel).Chronically.Select(d => new IfcAuthorMetadata(d)).ToArray();
+            if (null != ifcModel && !ifcModel.IsCanceled)
+                return new IfcMetadataHistory(ifcModel.XbimModel).Chronically.Select(d => new IfcAuthorMetadata(d)).ToArray();
             else
                 return new IfcAuthorMetadata[] { };
         }

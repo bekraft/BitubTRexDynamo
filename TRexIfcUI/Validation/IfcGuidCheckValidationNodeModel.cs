@@ -7,16 +7,17 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Task;
-using Store;
+using TRex.Task;
+using TRex.Store;
+using TRex.Log;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// A IfcGUID validation node model.
     /// </summary>
     [NodeName("IfcGUID Validation")]
-    [NodeCategory("TRexIfc.Validation")]
+    [NodeCategory("TRex.Validation")]
     [NodeDescription("Prepares a IfcGUID validation task to check uniqueness of model GUIDs.")]
     [InPortTypes(new string[] { nameof(IfcModel), nameof(IfcGuidStore) })]
     [OutPortTypes(typeof(IfcValidationTask))]
@@ -28,6 +29,8 @@ namespace Validation
         [JsonConstructor]
         IfcGuidCheckValidationNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Checked;
         }
 
         #endregion
@@ -44,12 +47,14 @@ namespace Validation
 
             RegisterAllPorts();
             IsCancelable = true;
+            LogReasonMask = LogReason.Checked;
         }
 
 #pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             AssociativeNode[] inputs = inputAstNodes.ToArray();
             if (IsPartiallyApplied)
             {

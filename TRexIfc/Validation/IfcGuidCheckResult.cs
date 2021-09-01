@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// IFC GUID checking result.
@@ -9,11 +9,11 @@ namespace Validation
     {
         #region Internals
 
-        internal IfcGuidStore TheStore { get; private set; }
+        internal IfcGuidStore GlobalUniqueIdStore { get; private set; }
 
         internal IfcGuidCheckResult(IfcGuidStore theStore) : base()
         {
-            TheStore = theStore;
+            GlobalUniqueIdStore = theStore;
         }
 
         #endregion
@@ -21,7 +21,7 @@ namespace Validation
         /// <summary>
         /// Returns the current IFC GUID store.
         /// </summary>
-        public IfcGuidStore IfcGuidStore() => TheStore;
+        public IfcGuidStore IfcGuidStore() => GlobalUniqueIdStore;
 
         /// <summary>
         /// Gets the GUID store from given IFC validation task.

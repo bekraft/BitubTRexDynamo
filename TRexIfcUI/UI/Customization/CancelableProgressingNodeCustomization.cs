@@ -1,22 +1,24 @@
-﻿using Dynamo.Wpf;
-using Dynamo.Controls;
+﻿using Dynamo.Controls;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 
 using Autodesk.DesignScript.Runtime;
+
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Connectors;
 
-using Task;
-using Internal;
+using TRex.Task;
+using TRex.Internal;
 
-using Log;
+using TRex.Log;
+using Bitub.Dto;
 
-using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, Internal.NodeProgressing[]>;
+using ProgressingPort = System.Tuple<Dynamo.Graph.Nodes.PortType, int, TRex.Internal.ProgressingTask[]>;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -31,43 +33,87 @@ namespace UI.Customization
         AllPorts = 3
     }
 
-    public abstract class CancelableProgressingNodeCustomization<T> 
-        : BaseNodeViewCustomization<T> where T : CancelableProgressingNodeModel
+    public abstract class CancelableProgressingNodeCustomization<T, V> 
+        : BaseNodeViewCustomization<T> where T : CancelableProgressingNodeModel where V : UserControl
     {
         public ProgressOnPortType ProgressOnPort { get; private set; }
-        public LogReason LogReasonOnPort { get; private set; }
 
-        private List<ProgressingPort> _nodeProgressingPort = new List<ProgressingPort>();
-        private readonly object _monitor = new object();
+        #region Internals
 
-        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort, LogReason actionOnPort)
+        private List<ProgressingPort> _taskProgressingOnPort = new List<ProgressingPort>();
+        private V _control;
+        
+        protected CancelableProgressingNodeCustomization(ProgressOnPortType progressOnPort)
         {
             ProgressOnPort = progressOnPort;
-            LogReasonOnPort = actionOnPort;
         }
 
-        protected virtual void CreateView(T model, NodeView nodeView)
-        {
-            var cancelableControl = new CancelableCommandControl();
-            nodeView.inputGrid.Children.Add(cancelableControl);
-            cancelableControl.DataContext = model;
-            cancelableControl.Cancel.Click += (s, e) => model.IsCanceled = true;            
-        }
+        protected abstract V CreateControl(T model, NodeView nodeView);
+
+        protected virtual V Control { get => _control; }
+
+        protected virtual CancelableCommandControl ProgressControl { get => _control as CancelableCommandControl; }
 
         public override void CustomizeView(T model, NodeView nodeView)
         {
             base.CustomizeView(model, nodeView);
-            CreateView(model, nodeView);
+            _control = CreateControl(model, nodeView);
+
+            var pc = ProgressControl;
+            if (null != pc)
+            {
+                pc.Cancel.IsEnabled = false;
+                pc.Cancel.Click += (s, e) =>
+                {
+                    pc.Cancel.IsEnabled = false;
+                    model.IsCanceled = true;
+                };
+            }
+
             NodeModel.ResetState();
+
+            ModelEngineController.LiveRunnerRuntimeCore.ExecutionEvent += LiveRunnerRuntimeCore_ExecutionEvent;
 
             NodeModel.PortConnected += NodeModel_PortConnected;
             NodeModel.PortDisconnected += NodeModel_PortDisconnected;
             NodeModel.Modified += NodeModel_Modified;
         }
 
+        private void LiveRunnerRuntimeCore_ExecutionEvent(object sender, ProtoCore.ExecutionStateEventArgs e)
+        {
+            switch(e.ExecutionState)
+            {
+                case ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin:
+                    DispatchUI(() =>
+                    {
+                        ProgressControl.Cancel.IsEnabled = true;
+                    });
+                    NodeModel.ClearErrorsAndWarnings();
+                    NodeModel.CancellationVisibility = System.Windows.Visibility.Visible;
+                    
+                    lock (GlobalLogging.DiagnosticStopWatch)
+                    {
+                        if (!GlobalLogging.DiagnosticStopWatch.IsRunning)
+                            GlobalLogging.DiagnosticStopWatch.Restart();
+                    }
+                    break;
+
+                case ProtoCore.ExecutionStateEventArgs.State.ExecutionEnd:
+                    NodeModel.CancellationVisibility = System.Windows.Visibility.Collapsed;
+                    NodeModel.ResetState();
+                    lock (GlobalLogging.DiagnosticStopWatch)
+                        GlobalLogging.DiagnosticStopWatch.Stop();
+
+
+                    Store.ModelCache.Instance.ClearCompleteCache();
+
+                    break;
+            }            
+        }
+
         private void NodeModel_Modified(NodeModel obj)
         {
-            
+            NodeModel.ResetState();
         }
 
         private void NodeModel_PortDisconnected(PortModel pm)
@@ -76,16 +122,13 @@ namespace UI.Customization
             {
                 case PortType.Input:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.InPorts))
-                        RemoveOnProgressChanging(pm.PortType, pm.Index);
+                        RemoveProgressTasks(pm.PortType, pm.Index).ForEach(RemoveEventHandlerFrom);
                     break;
                 case PortType.Output:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.OutPorts))
-                        RemoveOnProgressChanging(pm.PortType, pm.Index);
+                        RemoveProgressTasks(pm.PortType, pm.Index).ForEach(RemoveEventHandlerFrom);
                     break;
             }
-
-            foreach (var eventSource in NodeProgressingMatching())
-                eventSource.ClearState();
 
             NodeModel.ResetState();
         }
@@ -98,16 +141,16 @@ namespace UI.Customization
             {
                 case PortType.Input:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.InPorts))
-                        AddOnProgressChanging(pm.PortType, pm.Index);
+                        GetProgressingTasks(pm.PortType, pm.Index).ForEach(AddEventHandlerTo);
                     break;
                 case PortType.Output:
                     if (ProgressOnPort.HasFlag(ProgressOnPortType.OutPorts))
-                        AddOnProgressChanging(pm.PortType, pm.Index);
+                        GetProgressingTasks(pm.PortType, pm.Index).ForEach(AddEventHandlerTo);
                     break;
             }
         }
 
-        private IEnumerable<ProgressingPort> GetNodeProgressing(ProgressOnPortType progressOnPort, PortType? portType, int? portIndex)
+        private IEnumerable<ProgressingPort> GetProgressingTasksOnPort(ProgressOnPortType progressOnPort, PortType? portType, int? portIndex)
         {
             IEnumerable<ProgressingPort> eventSources = Enumerable.Empty<ProgressingPort>();
             if (progressOnPort.HasFlag(ProgressOnPortType.InPorts))
@@ -116,88 +159,73 @@ namespace UI.Customization
                     .Select(p => new ProgressingPort(
                         p.PortType, 
                         p.Index, 
-                        NodeModel.GetCachedInput<NodeProgressing>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
+                        NodeModel.GetCachedInput<ProgressingTask>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
             if (progressOnPort.HasFlag(ProgressOnPortType.OutPorts))
                 eventSources = eventSources.Concat(NodeModel.OutPorts
                     .Where(p => (!portType.HasValue || portType == p.PortType) && (!portIndex.HasValue || portIndex == p.Index))
                     .Select(p => new ProgressingPort(
                         p.PortType, 
                         p.Index, 
-                        NodeModel.GetCachedOutput<NodeProgressing>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
+                        NodeModel.GetCachedOutput<ProgressingTask>(p.Index, ModelEngineController).Where(n => n != null).ToArray())));
 
             return eventSources.Where(e => e.Item3.Length > 0).ToArray();
         }
 
-        protected NodeProgressing[] AddOnProgressChanging(PortType? portType = null, int? portIndex = null)
+        private void AddEventHandlerTo(ProgressingTask task)
         {
-            List<NodeProgressing> eventSources = new List<NodeProgressing>();
-            lock (_monitor)
+            task.OnProgressChange += NodeModel.OnTaskProgressChanged;
+            task.OnProgressEnd += NodeModel.OnTaskProgessEnded;
+
+            if (task.LatestProgressEventArgs is NodeProgressEndEventArgs endEventArgs)
+                NodeModel.OnTaskProgessEnded(task, endEventArgs);
+        }
+
+        private void RemoveEventHandlerFrom(ProgressingTask task)
+        {
+            task.OnProgressChange -= NodeModel.OnTaskProgressChanged;
+            task.OnProgressEnd -= NodeModel.OnTaskProgessEnded;
+        }
+
+        protected ProgressingTask[] GetProgressingTasks(PortType? portType = null, int? portIndex = null)
+        {
+            List<ProgressingTask> tasks = new List<ProgressingTask>();
+            foreach (var np in GetProgressingTasksOnPort(ProgressOnPort, portType, portIndex))
             {
-                foreach (var np in GetNodeProgressing(ProgressOnPort, portType, portIndex))
-                {
-                    foreach (var eventSource in np.Item3)
-                    {
-                        eventSource.OnProgressChange += OnProgressChanged;
-                        eventSources.Add(eventSource);
-                    }
-                    
-                    _nodeProgressingPort.Add(np);                    
-                }
-            }
-            return eventSources.ToArray();
+                tasks.AddRange(np.Item3);
+                _taskProgressingOnPort.Add(np);                    
+            }            
+            return tasks.ToArray();
         }
 
-        protected IEnumerable<NodeProgressing> NodeProgressingMatching(PortType? portType = null, int? portIndex = null)
+        protected ProgressingTask[] RemoveProgressTasks(PortType? portType = null, int? portIndex = null)
         {
-            return _nodeProgressingPort
-                .Where(n => (!portType.HasValue || portType == n.Item1) && (!portIndex.HasValue || portIndex == n.Item2))
-                .SelectMany(n => n.Item3);
-        }
+            List<ProgressingTask> tasks = new List<ProgressingTask>();
+            var tasksOnPort = _taskProgressingOnPort.ToArray();
 
-        protected NodeProgressing[] RemoveOnProgressChanging(PortType? portType = null, int? portIndex = null)
-        {
-            List<NodeProgressing> eventSources = new List<NodeProgressing>();
-            lock (_monitor)
-            {                
-                foreach (var eventSource in NodeProgressingMatching(portType, portIndex))
+            for (int i=tasksOnPort.Length-1; i>=0; i--)
+            {
+                ProgressingPort pp = tasksOnPort[i];
+                if ((!portType.HasValue || portType == pp.Item1) && (!portIndex.HasValue || portIndex == pp.Item2))
                 {
-                    eventSource.OnProgressChange -= OnProgressChanged;                        
-                    eventSources.Add(eventSource);
+                    tasks.AddRange(pp.Item3);
+                    _taskProgressingOnPort.RemoveAt(i);
                 }
-
-                // Filtering for remaining port connections
-                _nodeProgressingPort = _nodeProgressingPort
-                    .Where(n => (portType.HasValue && portType != n.Item1) || (portIndex.HasValue && portIndex != n.Item2))
-                    .ToList();
             }
-            return eventSources.ToArray();
+            return tasks.ToArray();
         }
 
         protected override void OnCachedValueChange(object sender)
         {
-            // Remove first (since the internal event sources might have changed)
-            foreach (var eventSource in RemoveOnProgressChanging())
-                eventSource.ClearState();
-
-            NodeModel.ResetState();
-
-            // Add any newly attached event source is unknown => clear state before (since it might be changed)
-            AddOnProgressChanging();
+            RemoveProgressTasks().ForEach(RemoveEventHandlerFrom);
+            GetProgressingTasks().ForEach(AddEventHandlerTo);
         }
 
-        private void OnProgressChanged(object sender, NodeProgressingEventArgs e)
-        {
-            if (LogReasonOnPort.HasFlag(e.Reason))
-            {
-                NodeModel.ProgressPercentage = e.Percentage;
-                NodeModel.ProgressState = e.State?.ToString() ?? e.TaskName;
-                NodeModel.TaskName = e.TaskName ?? e.State?.ToString();
-            }
-        }
+        #endregion
 
         public override void Dispose()
         {
-            RemoveOnProgressChanging();            
+            RemoveProgressTasks().ForEach(RemoveEventHandlerFrom);
+            ModelEngineController.LiveRunnerRuntimeCore.ExecutionEvent -= LiveRunnerRuntimeCore_ExecutionEvent;
         }
     }
 

@@ -1,20 +1,14 @@
 ﻿using System;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Progressing task node interface.
     /// </summary>
-    public interface ICancelableTaskNode : IProgress<ICancelableProgressState>
+    public interface ICancelableTaskNode : IProgress<ProgressStateToken>
     {
-        /// <summary>
-        /// Initializes the node with an initial progress token.
-        /// </summary>
-        /// <param name="progressToken">The progress token</param>
-        void InitNode(ICancelableProgressState progressToken);
-
         /// <summary>
         /// Whether the progress has been canceled.
         /// </summary>

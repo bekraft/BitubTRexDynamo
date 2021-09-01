@@ -7,14 +7,14 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Author's meta data. Will be embedded when changing / rewriting contents of IFC models.
     /// </summary>
     [NodeName("Ifc AuthorMetadata")]
     [NodeDescription("Configure authoring editor name and organisation details")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
     [OutPortTypes(typeof(IfcAuthorMetadata))]    
     [IsDesignScriptCompatible]
     public class IfcAuthorMetadataNodeModel : NodeModel
@@ -111,6 +111,7 @@ namespace Store
         
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             var authorNode = AstFactory.BuildStringNode(_authorName);
             var authorGivenNode = AstFactory.BuildStringNode(_authorGivenName);
             var orgIdNode = AstFactory.BuildStringNode(_organisationId);

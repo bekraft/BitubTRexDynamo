@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 using Microsoft.Extensions.Logging;
 
-using Internal;
+using TRex.Internal;
 
-namespace Validation
+namespace TRex.Validation
 {
     /// <summary>
     /// Abstract validation result wrapping a pipe of messages only
@@ -14,7 +14,7 @@ namespace Validation
     {
         #region Internals
 
-        internal static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcValidationResult>();
+        internal static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcValidationResult>();
 
         /// <summary>
         /// Validation messages as enumerable.
@@ -38,9 +38,9 @@ namespace Validation
         public IfcValidationMessage[] Messages(object reportFilter)
         {
             IfcReportDomain domainFilter;
-            if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
-                Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;
             }
 
@@ -56,9 +56,9 @@ namespace Validation
         public static IfcValidationMessage[] Messages(IfcValidationTask validationTask, object reportFilter)
         {
             IfcReportDomain domainFilter;
-            if (!GlobalArgumentService.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
+            if (!DynamicArgumentDelegation.TryCastEnum<IfcReportDomain>(reportFilter, out domainFilter))
             {
-                Log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
+                log.LogWarning($"Parsing reportFilter failed in ({nameof(IfcValidationResult.Messages)}. Using '{domainFilter}'.");
                 domainFilter = IfcReportDomain.AllIssues;
             }
 

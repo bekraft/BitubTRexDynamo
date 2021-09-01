@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="UI.CancelableOptionCommandControl"
+﻿<UserControl x:Class="TRex.UI.CancelableOptionCommandControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:UI"
+             xmlns:local="clr-namespace:TRex.UI"
              xmlns:serilog="clr-namespace:Serilog.Events;assembly=Serilog"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
@@ -27,8 +27,8 @@
         <ComboBox x:Name="OptionComboBox" 
                   Grid.Row="1"
                   Margin="5,5,5,5"
-                  SelectedItem="{Binding Path=SelectedOption}"
-                  ItemsSource="{Binding Path=AvailableOptions}"/>
+                  SelectedItem="{Binding Path=Selected}"
+                  ItemsSource="{Binding Path=Options}"/>
 
     </Grid>
 </UserControl>

@@ -8,7 +8,7 @@ using Dynamo.Engine;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 
-namespace Internal
+namespace TRex.Internal
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -16,29 +16,68 @@ namespace Internal
     public class BaseNodeModel : NodeModel
     {
         protected BaseNodeModel() : base()
-        {
-        }
+        { }
 
         protected BaseNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        { }
+
+        protected bool IsAcceptableWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode[] runtimeDefaultParams)
         {
+            if (IsPartiallyApplied)
+            {
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
+                {
+                    if (port.Index < runtimeDefaultParams.Length)
+                    {
+                        if (null == runtimeDefaultParams[port.Index])
+                            return false;
+                        else
+                            inputAstNodes[port.Index] = runtimeDefaultParams[port.Index];
+                    }
+                }
+            }
+            return true;
+        }
+
+        protected bool IsAcceptable(List<AssociativeNode> inputAstNodes, params int[] nullAcceptablePorts)
+        {
+            if (IsPartiallyApplied)
+            {
+                Array.Sort(nullAcceptablePorts);
+                foreach (PortModel port in InPorts.Where(p => !p.IsConnected && !p.UsingDefaultValue))
+                {
+                    if (0 > Array.BinarySearch(nullAcceptablePorts, port.Index))
+                        // If not held by acceptablePorts => not acceptable
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        protected AssociativeNode TryNestStringNodeIntoList(AssociativeNode expectedStringNode)
+        {
+            if (expectedStringNode is StringNode node)
+                return AstFactory.BuildExprList(new List<AssociativeNode>() { node });
+            else
+                return expectedStringNode;
         }
 
         protected void WarnForMissingInputs(bool withDefaults = false)
         {
             Warning(string.Format("Missing connected ports ({0})", 
-                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
         }
 
         protected void ErrorForMissingInputs(bool withDefaults = false)
         {
             Error(string.Format("Missing connected ports ({0})",
-                string.Join(",", InPorts.Where(p => !p.IsConnected && (withDefaults || p.DefaultValue == null)).Select(p => p.Name))));
+                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
         }
 
-        protected AssociativeNode MapEnum(Enum value)
+        protected static AssociativeNode MapEnum(Enum value)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<string, string, object>(GlobalArgumentService.TryParseEnum),
+                new Func<string, string, object>(DynamicArgumentDelegation.TryParseEnum),
                 new List<AssociativeNode>() 
                 { 
                     AstFactory.BuildStringNode(value.GetType().FullName), 
@@ -46,23 +85,23 @@ namespace Internal
                 });
         }
 
-        protected AssociativeNode CacheObjects(params object[] args)
+        protected static AssociativeNode CacheObjects(params object[] args)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object[]>(GlobalArgumentService.GetArgs),
+                        new Func<string, object[]>(DynamicArgumentDelegation.GetArgs),
                         new List<AssociativeNode>() 
                         { 
-                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(args)) 
+                            AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(args)) 
                         });
         }
 
-        protected AssociativeNode CacheObject(object arg)
+        protected static AssociativeNode CacheObject(object arg)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object>(GlobalArgumentService.GetArg),
+                        new Func<string, object>(DynamicArgumentDelegation.GetArg),
                         new List<AssociativeNode>() 
                         { 
-                            AstFactory.BuildStringNode(GlobalArgumentService.PutArguments(arg)) 
+                            AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(arg)) 
                         });
         }
 
@@ -88,15 +127,23 @@ namespace Internal
             var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
             var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
 
-            var data = ids.Select(id => engineController.GetMirror(id).GetData());
+            var data = ids.Select(id => engineController.GetMirror(id)?.GetData());
             return data.SelectMany(Unwrap<T>).Distinct().ToArray();
         }
 
         private static T[] Unwrap<T>(MirrorData data)
         {
-            if (data.IsCollection)
-                return data.GetElements().Select(e => e.Data).OfType<T>().ToArray();
-            else if (data.Data is T obj)
+            if (data?.IsCollection ?? false)
+                return data.GetElements().SelectMany(e =>
+                {
+                    if (e.IsCollection)
+                        return Unwrap<T>(e);
+                    else if (e.Data is T obj)
+                        return new T[] { obj };
+                    else
+                        return new T[] { };
+                }).ToArray();
+            else if (data?.Data is T obj)
                 return new T[] { obj };
             else
                 return new T[] { };
@@ -111,16 +158,26 @@ namespace Internal
         public AstValue<T>[] GetCachedAstInput<T>(int inPortNo, EngineController engineController)
         {
             var nodes = InPorts[inPortNo].Connectors.Select(c => (c.Start.Index, c.Start.Owner));
-            var ids = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index).Name);
-            return ids.SelectMany(id => UnwrapAstValue<T>(engineController.GetMirror(id).GetData(), id)).ToArray();
+            var idNodes = nodes.Select(n => n.Owner.GetAstIdentifierForOutputIndex(n.Index));
+            return idNodes.SelectMany(idn => UnwrapAstValue<T>(engineController.GetMirror(idn.Name)?.GetData(), idn)).ToArray();
         }
 
-        private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, string astId)
+        private static AstValue<T>[] UnwrapAstValue<T>(MirrorData data, IdentifierNode idn, params long[] indexes)
         {
-            if (data.IsCollection)
-                return data.GetElements().Select(e => e.Data).OfType<T>().Select((d, index) => new AstValue<T>(astId, d, index)).ToArray();
-            else if (data.Data is T obj)
-                return new AstValue<T>[] { new AstValue<T>(astId, obj) };
+            if (data?.IsCollection ?? false)
+            {
+                return data.GetElements().SelectMany((e, index) =>
+                {
+                    if (e.IsCollection)
+                        return UnwrapAstValue<T>(e, idn, indexes.Concat(new long[] { index }).ToArray());
+                    else if (e.Data is T obj)
+                        return new AstValue<T>[] { new AstValue<T>(idn.Name, obj, indexes.Concat(new long[] { index }).ToArray()) };
+                    else
+                        return new AstValue<T>[] { };
+                }).ToArray();
+            }
+            else if (data?.Data is T obj)
+                return new AstValue<T>[] { new AstValue<T>(idn.Name, obj) };
             else
                 return new AstValue<T>[] { };
         }
@@ -151,9 +208,34 @@ namespace Internal
                 return Unwrap<T>(data).Distinct().ToArray();
         }
 
-        protected AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
+        protected static AssociativeNode NodeToExprList<N>(AssociativeNode n) where N : AssociativeNode
         {
-            return AstFactory.BuildStringNode(Enum.GetName(typeof(T), n));
+            if (n is N valueNode)
+                return AstFactory.BuildExprList(new List<AssociativeNode>() { valueNode });
+            else
+                return n;
+        }
+
+        protected static AssociativeNode BuildEnumNameNode<T>(T n) where T : Enum
+        {
+            var serialized = Enum.GetName(typeof(T), n);            
+            return AstFactory.BuildStringNode(serialized ?? n.ToString());
+        }
+
+        protected AssociativeNode[] BuildNullResult()
+        {
+            return Enumerable
+                .Range(0, OutPorts.Count)
+                .Select(i => AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(i), AstFactory.BuildNullNode()))
+                .ToArray();
+        }
+
+        protected AssociativeNode[] BuildResult(params AssociativeNode[] value)
+        {
+            return Enumerable
+                .Range(0, OutPorts.Count)
+                .Select(i => AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(i), (i < value.Length ? value[i] : AstFactory.BuildNullNode())))
+                .ToArray();
         }
     }
 

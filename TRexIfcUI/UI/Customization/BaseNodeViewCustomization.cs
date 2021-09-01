@@ -8,7 +8,7 @@ using Dynamo.Engine;
 using Dynamo.Wpf;
 using Dynamo.Scheduler;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591
@@ -16,25 +16,27 @@ namespace UI.Customization
     public abstract class BaseNodeViewCustomization<T> : INodeViewCustomization<T> where T : NodeModel
     {
         #region Internals
-        private DynamoViewModel _viewModel;
-        private DispatcherSynchronizationContext _syncContext;
-        private NodeView _nodeView;
+        private DynamoViewModel viewModel;
+        private DispatcherSynchronizationContext syncContext;
+        private NodeView nodeView;
 
         protected T NodeModel { get; set; }
         #endregion
 
         public virtual void CustomizeView(T model, NodeView nodeView)
         {
-            _viewModel = nodeView.ViewModel.DynamoViewModel;
-            _nodeView = nodeView;
-            _syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
+            this.viewModel = nodeView.ViewModel.DynamoViewModel;
+            this.nodeView = nodeView;
+            this.syncContext = new DispatcherSynchronizationContext(nodeView.Dispatcher);
             
             NodeModel = model;
 
             NodeModel.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == "CachedValue")
-                    OnCachedValueChange(s);
+                {
+                    OnCachedValueChange(s);                    
+                };
             };
         }
 
@@ -46,18 +48,18 @@ namespace UI.Customization
 
         protected DelegateBasedAsyncTask AsyncThenUI(DelegateBasedAsyncTask task, Action action)
         {
-            task.ThenSend((_) => action?.BeginInvoke(action.EndInvoke, null), _syncContext);
+            task.ThenSend((_) => action?.BeginInvoke(action.EndInvoke, null), syncContext);
             return task;
         }
 
         protected DelegateBasedAsyncTask AsyncTask(Action action)
         {
-            return new DelegateBasedAsyncTask(_viewModel.Model.Scheduler, action);
+            return new DelegateBasedAsyncTask(viewModel.Model.Scheduler, action);
         }
 
         protected void AsyncSchedule(DelegateBasedAsyncTask task)
         {
-            _viewModel.Model.Scheduler.ScheduleForExecution(task);
+            viewModel.Model.Scheduler.ScheduleForExecution(task);
         }
 
         protected void AsyncSchedule(Action action, Action thenUI = null)
@@ -67,12 +69,12 @@ namespace UI.Customization
 
         protected void DispatchUI(Action uiAction)
         {
-            _nodeView?.Dispatcher.BeginInvoke(uiAction, DispatcherPriority.Background);
+            nodeView?.Dispatcher.BeginInvoke(uiAction, DispatcherPriority.Background);
         }
 
-        protected EngineController ModelEngineController { get => _viewModel.Model.EngineController; }
+        protected EngineController ModelEngineController { get => viewModel.Model.EngineController; }
 
-        protected DynamoScheduler ModelScheduler { get => _viewModel.Model.Scheduler; }
+        protected DynamoScheduler ModelScheduler { get => viewModel.Model.Scheduler; }
     }
 
 #pragma warning restore CS1591

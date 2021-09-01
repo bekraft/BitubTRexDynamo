@@ -2,22 +2,53 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <DeployDynamoProjectName>TRexIfc</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.6</DeployDynamoVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <LanguageTargets>$(MSBuildToolsPath)\Microsoft.CSharp.targets</LanguageTargets>
-    <TargetFrameworks>net47</TargetFrameworks>      
     <Title>TRexIfc</Title>
-    <Description />
+    <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Version>0.1.0.0</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Configurations>Debug;Release;Beta</Configurations>
+    <LangVersion>8.0</LangVersion>
+    <Platforms>AnyCPU;x64</Platforms>
+    <RootNamespace>TRex</RootNamespace>
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -37,8 +68,20 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DeployDynamoVersion>2.1</DeployDynamoVersion>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -58,59 +101,62 @@
   
   <ItemGroup>
     <PackageReference Include="Bitub.Ifc">
-      <Version>0.1.20163-Beta.652</Version>
+      <Version>1.0.21236-Beta.35472</Version>
     </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.6.0.8481" />
-    <PackageReference Include="DynamoVisualProgramming.DynamoServices">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.12.0.5650" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.6.0.8481</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Protobuf.Tools">
-      <Version>3.8.0</Version>
+      <Version>2.12.0.5650</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
-      <Version>2.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions">
-      <Version>2.1.1</Version>
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.20049.18428" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
   </ItemGroup>
-
-  <!-- After build -->
-  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">
-    <!-- PostBuildEvent -->
-    <PropertyGroup>
-      <!--Copy to Dynamo sandbox for testing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Debug'">$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-      <!--Copy to Dynamo revit for publishing -->
-      <DeployFolder Condition="'$(Configuration)' == 'Release'">$(AppData)\Dynamo\Dynamo Revit\$(DeployDynamoVersion)\packages\$(DeployDynamoProjectName)</DeployFolder>
-    </PropertyGroup>
-    <Message Importance="High" Text="==&gt; Started deploying the Dynamo TRexIfc package ..." />
-    <!--Defining folders to copy-->
+  
+  <ItemGroup>
+    <ProjectReference Include="..\TRexAssimp\TRexAssimp.vcxproj" />
+    <ProjectReference Include="..\TRexDynamo\TRexDynamo.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="TRexIfc_DynamoCustomization.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+  <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
+  <Target Name="Deploy Dynamo App" AfterTargets="CopyXbimInteropFiles">    
+    <Message Importance="High" Text="Started deploying the Dynamo $(DeployDynamoProjectName) package to $(DeployPath)." />    
     <ItemGroup>
-      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll" />
+      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\$(Platform)\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
+      <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
+      <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
       <SourceXmls Include="$(TargetDir)*.xml" />
-      <!-- <SourceExtension Include="$(TargetDir)*ExtensionDefinition.xml" /> -->
     </ItemGroup>
-    <!--Copying to Build Folder-->
-    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployFolder)\bin\" />
-    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployFolder)\bin\" />
-    <!-- <Copy SourceFiles="@(SourceExtension)" DestinationFolder="$(DeployFolder)\extra" /> -->
-    <Message Importance="High" Text="==&gt; Will copy @(SourceDlls)" />
-    <Message Importance="High" Text="==&gt; Built to $(TargetDir)$(ProjectName)" />
+
+    <Message Importance="High" Text="Will copy @(SourceDlls)´..." />
+
+    <!-- Copying to deploy folder-->
+    <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SystemDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(DeployPath)\bin\" />    
+    <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
+
+    <Message Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployPath)." />
+    
     <ItemGroup>
-      <SourcePackage Include="$(TargetDir)\$(ProjectName)\**\*" />
-    </ItemGroup>
-    <Message Importance="High" Text="==&gt; Deployed to $(DeployFolder)" />
+      <SourcePackage Include="$(DeployPath)\**\*.*" />
+    </ItemGroup>    
+    
+    <!-- Copy to Dynamo app folder if Debug -->
+    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
+    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed $(DeployDynamoProjectName) package to $(DeployDynamoPath)." />
   </Target>
 
 </Project>

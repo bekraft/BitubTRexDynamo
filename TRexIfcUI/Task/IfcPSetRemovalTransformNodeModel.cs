@@ -9,103 +9,112 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Log;
-using Store;
+using TRex.Log;
+using TRex.Store;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// IFC Property set removal transformation. Will remove given property sets
     /// by their names complete from input model and returns a modifed output model.
     /// Modifications (addings and changes are tagged by editor authoring credentials). 
     /// </summary>
-    [NodeName("Ifc PSet Removal")]
-    [NodeDescription("Removal task which drops entire property sets by their name")]
-    [NodeCategory("TRexIfc.Task")]
-    [InPortTypes(new string[] { nameof(String), nameof(Boolean), nameof(IfcAuthorMetadata), nameof(String), nameof(IfcModel), nameof(LogReason) })]
+    [NodeName("Ifc PropertySet Filter")]
+    [NodeDescription("PropertySetRemovalNodeDescription", typeof(Properties.Resources))]
+    [NodeCategory("TRex.Task")]
+    [InPortTypes(nameof(String), nameof(String), nameof(Boolean), nameof(IfcAuthorMetadata), nameof(String), nameof(LogReason), nameof(IfcModel))]
+    [InPortDescriptions("Set names to exclude", "Set names to exclusively include", "Case sensitive matching", "Author metadata", "Canonical name extension", "Log filter flag", "Input model")]
     [OutPortTypes(typeof(IfcModel))]
+    [NodeSearchTags("ifc", "pset", "filter")]
     [IsDesignScriptCompatible]
     public class IfcPSetRemovalTransformNodeModel : CancelableProgressingNodeModel
     {
-        /// <summary>
-        /// New removal node.
-        /// </summary>
+#pragma warning disable CS1591
+
         public IfcPSetRemovalTransformNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("removePSetNames", "Black list of PSets about to be removed")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("caseSensitiveNames", "Enable case sensitive matching", AstFactory.BuildBooleanNode(false))));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("authorMetadata", "Credentials of authoring editor")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("canonicalName", "Fragment name of canonical full name")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logReasonFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("excludeSets", "List of property sets about to be removed")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("includeSets", "List of property sets about to be kept exclusively")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("caseSensitive", "Enable case sensitive matching")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("authorMetadata", "Credentials of authoring editor")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("nameAddon", "Fragment name of canonical full name")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("logFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+            InPorts.Add(new PortModel(PortType.Input, this,
+                new PortData("ifcModel", "IFC input model")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC output model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("ifcModel", "IFC output model")));
 
             RegisterAllPorts();
             IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
         }
+
+        #region Internals
 
         [JsonConstructor]
         IfcPSetRemovalTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Changed;
         }
 
-#pragma warning disable CS1591
+        #endregion
 
-        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAst)
         {
-            AssociativeNode[] inputs = inputAstNodes.ToArray();
+            BeforeBuildOutputAst();
 
-            if (IsPartiallyApplied)
+            if (!IsAcceptable(inputAst, 0, 1))
             {
-                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
-                {
-                    switch (port.Index)
-                    {
-                        case 1:
-                            inputs[port.Index] = AstFactory.BuildBooleanNode(false);
-                            break;
-                        case 5:
-                            inputs[port.Index] = MapEnum(LogReason.Any);
-                            break;
-                        default:
-                            WarnForMissingInputs();
-                            ResetState();
-                            // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
-                    }
-                }
-            }
-
-            // TODO Wrap pset names into list if not already done
-            if (inputs[0] is StringNode n)
-            {   // Rewrite input AST 
-                inputs[0] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputs[0] });
+                WarnForMissingInputs();
+                ResetState();
+                // No evalable, cancel here
+                return BuildNullResult();
             }
 
             // Get logger
-            var callGetLogger = AstFactory.BuildFunctionCall(
+            var astGetLogger = AstFactory.BuildFunctionCall(
                 new Func<IfcModel, Logger>(IfcModel.GetLogger),
-                new List<AssociativeNode>() { inputs[4] });
+                new List<AssociativeNode>() 
+                { 
+                    inputAst[6] 
+                }
+            );
 
             // Get transform request
-            var callCreateRequest = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, string[], bool, IfcTransform>(IfcTransform.NewRemovePropertySetsRequest),
-                new List<AssociativeNode>() { callGetLogger, inputs[2], inputs[0], inputs[1] });
+            var astCreateTransform = AstFactory.BuildFunctionCall(
+                new Func<Logger, IfcAuthorMetadata, string[], string[], bool?, IfcTransform>(IfcTransform.NewRemovePropertySetsRequest),
+                new List<AssociativeNode>() 
+                { 
+                    astGetLogger, 
+                    inputAst[3], 
+                    TryNestStringNodeIntoList(inputAst[0]), 
+                    TryNestStringNodeIntoList(inputAst[1]), 
+                    inputAst[2] 
+                }
+            );
 
             // Create transformation delegate
-            var callCreateIfcModelDelegate = AstFactory.BuildFunctionCall(
+            var astCreateTransformDelegate = AstFactory.BuildFunctionCall(
                 new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
-                new List<AssociativeNode>() { inputs[4], callCreateRequest, inputs[3], inputs[5] });
+                new List<AssociativeNode>() 
+                { 
+                    inputAst[6], 
+                    astCreateTransform, 
+                    inputAst[4], 
+                    inputAst[5] 
+                }
+            );
 
-            return new[]
-            {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callCreateIfcModelDelegate)
-            };
-
+            return BuildResult(astCreateTransformDelegate.ToDynamicTaskProgressingFunc(ProgressingTaskMethodName));
         }
 
 #pragma warning restore CS1591

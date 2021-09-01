@@ -8,15 +8,15 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 using System;
-using Internal;
+using TRex.Internal;
 
-namespace Task
+namespace TRex.Task
 {
     /// <summary>
     /// Select multiple items from a list of available items using its string representation.
     /// </summary>
     [NodeName("Select items from")]
-    [NodeCategory("TRexIfc.Task.Tasks")]
+    [NodeCategory("TRex.Utils")]
     [NodeDescription("Select multiple items from a list of available items using its string representation.")]
     [InPortTypes(typeof(object[]))]
     [OutPortTypes(typeof(object[]))]
@@ -37,12 +37,14 @@ namespace Task
         /// </summary>
         public SelectingItemListNodeModel() : base()
         {
+            // Registration done by base
         }
 
 #pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            ClearErrorsAndWarnings();
             if (IsPartiallyApplied)
             {
                 return new AssociativeNode[]
@@ -52,14 +54,10 @@ namespace Task
             }
 
             AssociativeNode selectedNode;
-            if (Selected?.Count > 0)
-            {
-                selectedNode = AstFactory.BuildExprList(Selected.Select(c => c.ToAstNode()).ToList());
-            }
-            else
-            {
+            if (Selected.Any(v => v.IsTransient) || Selected.Count == 0)
+            {   // Build from persistent selection
                 selectedNode = AstFactory.BuildFunctionCall(
-                    new Func<object[], string[], bool, object[]>(GlobalArgumentService.FilterBySerializationValue),
+                    new Func<object[], string[], bool, object[]>(DynamicArgumentDelegation.FilterBySerializationValue),
                     new List<AssociativeNode>()
                     {
                          inputAstNodes[0],
@@ -67,7 +65,11 @@ namespace Task
                          AstFactory.BuildBooleanNode(false)
                     });
             }
-
+            else 
+            {   // Build from live AST
+                selectedNode = AstFactory.BuildExprList(Selected.Select(c => c.ToAstNode()).ToList());
+            }
+            
             return new AssociativeNode[]
             {
                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), selectedNode)

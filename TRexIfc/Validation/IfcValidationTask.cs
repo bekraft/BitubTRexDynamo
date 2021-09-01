@@ -2,21 +2,22 @@
 using System.Threading;
 using System.Collections.Generic;
 
-using Bitub.Transfer;
+using Bitub.Dto;
 
-using Internal;
-using Store;
+using TRex.Internal;
+using TRex.Store;
 using Xbim.Ifc4.Interfaces;
 
-using System.Runtime.CompilerServices;
 using Autodesk.DesignScript.Runtime;
 
-namespace Validation
-{
-    /// <summary>
-    /// A validation task running as a delayed
-    /// </summary>
-    public class IfcValidationTask : NodeProgressing
+using TRex.Log;
+
+namespace TRex.Validation
+{ 
+
+#pragma warning disable CS1591
+
+    public class IfcValidationTask : ProgressingTask
     {
         #region Internals
 
@@ -68,8 +69,6 @@ namespace Validation
             }
         }
 
-#pragma warning disable CS1591
-
         [IsVisibleInDynamoLibrary(false)]
         public static IfcValidationTask NewIfcGuidCheckingTask(IfcGuidStore guidStore, IfcModel ifcModel)
         {
@@ -80,32 +79,29 @@ namespace Validation
 
             return new IfcValidationTask(ifcModel, (t) =>
             {
-                var innerModel = ifcModel.Store.XbimModel;
+                var innerModel = ifcModel.XbimModel;
                 if (null == innerModel)
                     throw new NotSupportedException("No internal model available");
 
-                var progressToken = new CancelableProgressStateToken(true, innerModel.Instances.Count / 50);
-                List<IfcValidationMessage> failingMessages = new List<IfcValidationMessage>();
-                progressToken.Update(0, "IFC GUID checking");
+                var monitor = t.CreateProgressMonitor(LogReason.Checked);
+                monitor.NotifyProgressEstimateUpdate(innerModel.Instances.Count / 50);
 
+                List<IfcValidationMessage> failingMessages = new List<IfcValidationMessage>();
                 foreach (var instance in innerModel.Instances.OfType<IIfcRoot>())
                 {
                     var message = guidStore.Put(ifcModel.Qualifier, instance);
 
-                    if (progressToken.Done > 0.90 * progressToken.Total)
-                        progressToken.IncreaseTotalEffort((long)Math.Floor(progressToken.Total * 1.25));
+                    if (monitor.State.Done > 0.90 * monitor.State.TotalEstimate)
+                        monitor.NotifyProgressEstimateUpdate((long)Math.Floor(monitor.State.TotalEstimate * 1.25));
 
-                    progressToken.Increment();
-                    t.OnProgressChanged(new NodeProgressingEventArgs(Log.LogReason.Checked, progressToken, ifcModel.FileName));
+                    monitor.NotifyOnProgressChange(1, "Checking unique IfcGUID values...");
 
                     failingMessages.Add(message);
-                    if (progressToken.IsCanceled)
+                    if (monitor.State.IsCanceled)
                         break;
                 }
 
-                progressToken.Update(progressToken.Total);
-                t.OnProgressChanged(new NodeProgressingEventArgs(Log.LogReason.Checked, progressToken, ifcModel.Name));
-                t.OnFinished(new NodeFinishedEventArgs(progressToken, Log.LogReason.Checked, ifcModel.FileName));
+                monitor.NotifyOnProgressEnd();
 
                 return new IfcGuidCheckResult(guidStore) { MessagePipe = failingMessages };
             });

@@ -9,17 +9,18 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Task;
-using Log;
+using TRex.Task;
+using TRex.Log;
+using TRex.Internal;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Loads an IFC model from physical file.
     /// </summary>
     [NodeName("Ifc Load")]
-    [NodeCategory("TRexIfc.Store")]
-    [InPortTypes(new string[] { nameof(String), nameof(Logger), nameof(IfcTessellationPrefs) })]
+    [NodeCategory("TRex.Store")]
+    [InPortTypes(nameof(String), nameof(Logger), nameof(IfcTessellationPrefs))]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
     public class IfcLoadStoreNodeModel : CancelableProgressingNodeModel
@@ -29,6 +30,8 @@ namespace Store
         [JsonConstructor]
         IfcLoadStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            IsCancelable = true;
+            LogReasonMask = LogReason.Loaded;
         }
 
         #endregion
@@ -47,45 +50,43 @@ namespace Store
             RegisterAllPorts();
 
             IsCancelable = true;
+            LogReasonMask = LogReason.Loaded;
         }
 
 #pragma warning disable CS1591
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            AssociativeNode[] inputs = inputAstNodes.ToArray();
-
-            if (IsPartiallyApplied)
+            BeforeBuildOutputAst();
+            if (!IsAcceptable(inputAstNodes, 1, 2))
             {
-                foreach (PortModel port in InPorts.Where(p => !p.IsConnected))
-                {
-                    switch (port.Index)
-                    {
-                        case 1:
-                        case 2:
-                            // Default logging off / no tessellation preferences
-                            inputs[port.Index] = AstFactory.BuildNullNode();
-                            break;
-                        default:
-                            WarnForMissingInputs();
-                            ResetState();
-                            // No evalable, cancel here
-                            return new[]
-                            {
-                                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
-                            };
-                    }
-                }
+                WarnForMissingInputs();
+                ResetState();
+                return BuildNullResult();
             }
 
-            var callGetOrCreateModelStore = AstFactory.BuildFunctionCall(
-                new Func<string, Logger, IfcTessellationPrefs, IfcModel>(IfcStore.GetOrCreateModelStore),
-                new List<AssociativeNode>() { inputs[0], inputs[1], inputs[2] });
+            var astLoadIfcModel = AstFactory.BuildFunctionCall(
+                new Func<string, Logger, IfcTessellationPrefs, IfcModel>(IfcStore.ByIfcModelFile),
+                new List<AssociativeNode>()
+                {
+                    inputAstNodes[0],
+                    inputAstNodes[1],
+                    inputAstNodes[2]
+                }).ToDynamicTaskProgressingFunc(ProgressingTaskMethodName);
 
-            return new[]
+            if (IsCanceled)
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callGetOrCreateModelStore)
-            };
+                return BuildResult(AstFactory.BuildFunctionCall(
+                    new Func<IfcModel, IfcModel>(IfcStore.MarkAsCancelled),
+                    new List<AssociativeNode>()
+                    {
+                        astLoadIfcModel
+                    }));
+            }
+            else
+            {
+                return BuildResult(astLoadIfcModel);
+            }
         }
 
 #pragma warning restore CS1591

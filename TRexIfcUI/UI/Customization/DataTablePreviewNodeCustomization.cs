@@ -6,9 +6,9 @@ using System.Windows.Data;
 
 using Dynamo.Controls;
 
-using Task;
+using TRex.Data;
 
-namespace UI.Customization
+namespace TRex.UI.Customization
 {
     // Disable comment warning
 #pragma warning disable CS1591

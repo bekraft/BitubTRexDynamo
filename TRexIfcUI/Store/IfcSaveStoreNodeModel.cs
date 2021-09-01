@@ -8,55 +8,54 @@ using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
 
-using Internal;
-using Task;
-using Log;
+using TRex.Internal;
+using TRex.Task;
+using TRex.Log;
 
-namespace Store
+namespace TRex.Store
 {
     /// <summary>
     /// Saves an IFC model instance to physical file.
     /// </summary>
     [NodeName("Ifc Save")]
-    [NodeCategory("TRexIfc.Store")]
+    [NodeCategory("TRex.Store")]
+    [NodeDescription("Saves an IFC model to file by selected format extension.")]
     [InPortTypes(typeof(IfcModel))]
     [OutPortTypes(typeof(IfcModel))]
     [IsDesignScriptCompatible]
-    public class IfcSaveStoreNodeModel : CancelableProgressingOptionNodeModel
+    public class IfcSaveStoreNodeModel : CancelableProgressingOptionNodeModel<string>
     {
-        /// <summary>
-        /// New save store model.
-        /// </summary>
+#pragma warning disable CS1591
+
         public IfcSaveStoreNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("ifcModel", "Input model")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("separator", "If using canonical name, define the separator")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("ifcModel", "Input model")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("separator", "If using canonical name, define the separator")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "Saved model")));
+            OutPorts.Add(new PortModel(PortType.Output, this, 
+                new PortData("ifcModel", "Saved model")));
 
             RegisterAllPorts();
             IsCancelable = true;
 
-            InitOptions();
-            SelectedOption = IfcStore.Extensions[0];
+            LogReasonMask = LogReason.Saved;
+            Selected = IfcStore.Extensions[0];
         }
 
         [JsonConstructor]
         IfcSaveStoreNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            InitOptions();
+            LogReasonMask = LogReason.Saved;
         }
 
-        private void InitOptions()
-        {
-            foreach (var ext in IfcStore.Extensions)
-                AvailableOptions.Add(ext);
-        }
-
-#pragma warning disable CS1591
+        protected override IEnumerable<string> GetInitialOptions() => IfcStore.Extensions;
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            BeforeBuildOutputAst();
+
             AssociativeNode[] inputs = inputAstNodes.ToArray();
 
             if (IsPartiallyApplied)
@@ -82,17 +81,17 @@ namespace Store
                 }
             }
 
-            var callIfcModelSave = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
-                new List<AssociativeNode>() { 
-                    inputAstNodes[0], 
-                    AstFactory.BuildStringNode(SelectedOption as string),                    
-                    inputAstNodes[1]
-                });
-
             return new[]
             {
-                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), callIfcModelSave)
+                AstFactory.BuildAssignment(
+                    GetAstIdentifierForOutputIndex(0),
+                    AstFactory.BuildFunctionCall(
+                        new Func<IfcModel, string, string, IfcModel>(IfcModel.SaveAs),
+                        new List<AssociativeNode>() {
+                            inputAstNodes[0].ToDynamicTaskProgressingFunc(ProgressingTaskMethodName),
+                            AstFactory.BuildStringNode(Selected),
+                            inputAstNodes[1]
+                        }))
             };
         }
 

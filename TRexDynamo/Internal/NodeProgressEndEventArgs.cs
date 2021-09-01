@@ -1,0 +1,61 @@
+﻿using Bitub.Dto;
+
+using TRex.Log;
+
+namespace TRex.Internal
+{
+    /// <summary>
+    /// Node finish action event arguments.
+    /// </summary>
+    internal class NodeProgressEndEventArgs : NodeProgressEventArgs
+    {       
+        /// <summary>
+        /// Whether canceled by user.
+        /// </summary>
+        internal readonly bool IsCanceled;
+
+        /// <summary>
+        /// Whether broken by internals.
+        /// </summary>
+        internal readonly bool IsBroken;
+
+        /// <summary>
+        /// New progress end by internal state and task name.
+        /// </summary>
+        /// <param name="endState">The internal state</param>
+        /// <param name="taskName">The task name</param>
+        /// <param name="reason">The log reason type</param>
+        internal NodeProgressEndEventArgs(LogReason reason, ProgressStateToken endState, string taskName = null)
+            : base(reason, endState, taskName)
+        {
+            IsCanceled = endState?.State.HasFlag(ProgressTokenState.IsCanceled) ?? false;
+            IsBroken = endState?.State.HasFlag(ProgressTokenState.IsBroken) ?? false;
+        }
+
+        /// <summary>
+        /// New progress end by giving explicit details.
+        /// </summary>
+        /// <param name="taskName">Taskname</param>
+        /// <param name="isCanceled">Cancellation flag</param>
+        /// <param name="isBroken">Broken flag</param>
+        /// <param name="reason">The action type</param>
+        /// <param name="stateObject">The end state object</param>
+        internal NodeProgressEndEventArgs(LogReason reason, string taskName, object stateObject = null, bool isCanceled = false, bool isBroken = false)
+            : base(reason, 100, taskName, stateObject)
+        {
+            IsCanceled = isCanceled;
+            IsBroken = isBroken;
+        }
+
+        /// <summary>
+        /// The final state of progress
+        /// </summary>
+        /// <returns>The state</returns>
+        internal override ProgressTokenState GetProgressState()
+        {
+            return InternalState?.State ??
+                ProgressTokenState.IsTerminated | (IsBroken ? ProgressTokenState.IsBroken : 0) | (IsCanceled ? ProgressTokenState.IsCanceled : 0);
+        }
+    }
+}
+
