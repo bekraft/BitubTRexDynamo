@@ -4,7 +4,12 @@
   "Description": null,
   "Name": "Ifc-AlignByAxis",
   "ElementResolver": {
-    "ResolutionMap": {}
+    "ResolutionMap": {
+      "XYZs": {
+        "Key": "TRex.Geom.XYZs",
+        "Value": "TRexDynamo.dll"
+      }
+    }
   },
   "Inputs": [],
   "Outputs": [],
@@ -1165,7 +1170,7 @@
       ]
     }
   ],
-  "Thumbnail": null,
+  "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
@@ -1480,7 +1485,7 @@
         "Height": 171.40000000000009,
         "FontSize": 36.0,
         "InitialTop": 644.05601836415462,
-        "InitialHeight": 153.66685751560777,
+        "InitialHeight": 153.66685751560772,
         "TextblockHeight": 43.2,
         "Background": "#FFA4E1FF"
       },
@@ -1498,7 +1503,7 @@
         "Height": 441.08849722687557,
         "FontSize": 36.0,
         "InitialTop": -272.8473873934725,
-        "InitialHeight": 285.08374825035639,
+        "InitialHeight": 305.88849722687559,
         "TextblockHeight": 43.2,
         "Background": "#FFD4B6DB"
       },
@@ -1575,7 +1580,7 @@
         "Height": 822.94040967099045,
         "FontSize": 36.0,
         "InitialTop": -219.57754354360054,
-        "InitialHeight": 799.74040967099052,
+        "InitialHeight": 794.94040967099056,
         "TextblockHeight": 43.2,
         "Background": "#FFA4E1FF"
       },
@@ -1591,16 +1596,16 @@
         "Left": 1834.0392298150682,
         "Top": -170.24355274007905,
         "Width": 969.40652087464969,
-        "Height": 317.35395936341968,
+        "Height": 277.63701722357894,
         "FontSize": 36.0,
         "InitialTop": -117.04355274007906,
-        "InitialHeight": 260.55395936341966,
+        "InitialHeight": 276.83701722357893,
         "TextblockHeight": 43.2,
         "Background": "#FFFFC999"
       }
     ],
-    "X": -175.14098950346039,
-    "Y": 151.1129838515715,
-    "Zoom": 0.25255785976617878
+    "X": 425.54548384623968,
+    "Y": 159.74913699726943,
+    "Zoom": 0.81910584011410781
   }
 }
