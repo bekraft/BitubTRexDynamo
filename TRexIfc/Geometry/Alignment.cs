@@ -10,7 +10,7 @@ using TRex.Log;
 namespace TRex.Geom
 {
     /// <summary>
-    /// Affine alignment between two 3D coordinate systems.
+    /// Affine alignment between two righthand coordinate systems. The alignment assumes an up Z-axis and a horizontal Y-axis.
     /// </summary>
     public class Alignment
     {
@@ -75,7 +75,7 @@ namespace TRex.Geom
         }
 
         /// <summary>
-        /// A new alignment by rotating the target CRS pointing into positive X-axis.
+        /// A new alignment by rotating the target CRS pointing into a new positive X-axis. 
         /// </summary>
         /// <param name="xAxis">The positive target X-axis direction</param>        
         /// <returns>An alignment structure.</returns>
@@ -84,7 +84,7 @@ namespace TRex.Geom
             return new Alignment(new IfcAxisAlignment
             {
                 SourceReferenceAxis = new IfcAlignReferenceAxis(),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(new Bitub.Dto.Spatial.XYZ(), xAxis)
+                TargetReferenceAxis = new IfcAlignReferenceAxis(XYZ.Zero, xAxis)
             });
         }
 
@@ -94,16 +94,33 @@ namespace TRex.Geom
         /// calculations.
         /// </summary>
         /// <param name="offsetA">The offset of A</param>
-        /// <param name="axisRefA">The orientation point of A (or undefined if simpliy shifted along X)</param>
+        /// <param name="referenceA">The orientation point of A (or if undefined, simpliy shifted along X)</param>
         /// <param name="offsetB">The offset of B</param>
-        /// <param name="axisRefB">The orientation point of B (or undefined if simpliy shifted along X)</param>
+        /// <param name="referenceB">The orientation point of B (or if undefined, simpliy shifted along X)</param>
         /// <returns>An alignment structure.</returns>
-        public static Alignment ByPointReference(XYZ offsetA, XYZ axisRefA, XYZ offsetB, XYZ axisRefB)
+        public static Alignment ByPointReference(XYZ offsetA, XYZ referenceA, XYZ offsetB, XYZ referenceB)
         {
             return new Alignment(new IfcAxisAlignment
             {
-                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA, axisRefA ?? XYZs.ByAdd(offsetA, 1, 0, 0)),
-                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB, axisRefB ?? XYZs.ByAdd(offsetB, 1, 0, 0))
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA, referenceA ?? XYZs.ByAdd(offsetA, 1, 0, 0)),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB, referenceB ?? XYZs.ByAdd(offsetB, 1, 0, 0))
+            });
+        }
+
+        /// <summary>
+        /// Gets an alignment based on offset to offset shift and a change in X-axis alignment
+        /// </summary>
+        /// <param name="offsetA">The source offset</param>
+        /// <param name="xAxisA">The source X axis</param>
+        /// <param name="offsetB">The target offset</param>
+        /// <param name="xAxisB">The target X axis</param>
+        /// <returns>An alignment structure.</returns>
+        public static Alignment ByOffsetAndAxis(XYZ offsetA, XYZ xAxisA, XYZ offsetB, XYZ xAxisB)
+        {
+            return new Alignment(new IfcAxisAlignment
+            {
+                SourceReferenceAxis = new IfcAlignReferenceAxis(offsetA, offsetA + (xAxisA ?? new XYZ(1, 0, 0))),
+                TargetReferenceAxis = new IfcAlignReferenceAxis(offsetB, offsetB + (xAxisB ?? new XYZ(1, 0, 0))),
             });
         }
     }
