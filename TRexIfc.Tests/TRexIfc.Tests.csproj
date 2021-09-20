@@ -8,7 +8,7 @@
     
     <Configurations>Debug;Release;Beta</Configurations>
     <LangVersion>8.0</LangVersion>
-    <Platforms>AnyCPU;x64</Platforms>  
+    <Platforms>AnyCPU</Platforms>  
 	</PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,17 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>    
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>    
-  </PropertyGroup>
-    
+      
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
@@ -39,16 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-    
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>  
-  </PropertyGroup>
-  
+      
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Beta|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Beta\</OutputPath>
@@ -58,17 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Beta\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  
+    
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -102,11 +73,11 @@
   <Target Name="DeployDependencies" AfterTargets="CopyXbimInteropFiles">
     <Message Importance="High" Text="Deploy native dependencies to $(TargetDir)." />
     <ItemGroup>
-      <SourceDlls Include="$(SolutionDir)TRexAssimp\$(Platform)\assimp*.dll" />
-      <SourcePdbs Include="$(SolutionDir)TRexAssimp\$(Platform)\assimp*.pdb" />
+      <SourceDlls Include="$(SolutionDir)TRexAssimp\x64\$(Configuration)\assimp*.dll" />
+      <SourcePdbs Include="$(SolutionDir)TRexAssimp\x64\$(Configuration)\assimp*.pdb" />
     </ItemGroup>
 
-    <Message Importance="High" Text="Will copy @(SourceDlls) and @(SourceDlls) ..." />
+    <Message Importance="High" Text="Copying: @(SourceDlls) and @(SourceDlls) ..." />
 
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(TargetDir)" />
