@@ -38,7 +38,7 @@
 
   <PropertyGroup>
     <DeployDynamoProjectName>TRex</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.12</DeployDynamoVersion>
+    <DeployDynamoVersion>2.16</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
   </PropertyGroup>
