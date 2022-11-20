@@ -57,7 +57,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #   include <math.h>
 #endif
 
-#include <assimp/defs.h>
+#include "defs.h"
 
 // ----------------------------------------------------------------------------------
 /** Represents a two-dimensional vector.
