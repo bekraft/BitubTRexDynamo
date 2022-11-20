@@ -47,6 +47,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22323-Beta.28328" />
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
   </ItemGroup>
 
@@ -76,9 +77,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Ifc">
-      <Version>1.0.21236-Beta.35472</Version>
-    </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.Core">
       <Version>2.16.0.2501</Version>
     </PackageReference>

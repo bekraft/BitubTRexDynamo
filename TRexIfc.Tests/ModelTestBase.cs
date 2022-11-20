@@ -36,8 +36,8 @@ namespace TRex.Tests
         {
             var settings = SceneBuildSettings.ByContext("Body");
             settings.Preferences.UserModelCenter = offset;
-            settings.Preferences.Transforming = Bitub.Ifc.Export.SceneTransformationStrategy.Quaternion;
-            settings.Preferences.Positioning = Bitub.Ifc.Export.ScenePositioningStrategy.UserCorrection;
+            settings.Preferences.Transforming = Bitub.Xbim.Ifc.Export.SceneTransformationStrategy.Quaternion;
+            settings.Preferences.Positioning = Bitub.Xbim.Ifc.Export.ScenePositioningStrategy.UserCorrection;
             return settings;
         }
 

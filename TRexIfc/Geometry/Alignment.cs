@@ -3,7 +3,7 @@
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto.Spatial;
-using Bitub.Ifc.Transform;
+using Bitub.Xbim.Ifc.Transform;
 
 using TRex.Log;
 

@@ -27,7 +27,7 @@ namespace TRex.Internal
         {
             RootNamespaceAssemblyResolver = new Dictionary<string, string>()
             {
-                { "Bitub.Ifc", typeof(Bitub.Ifc.IfcAuthoringMetadata).Assembly.FullName }, // Example class name
+                { "Bitub.Ifc", typeof(Bitub.Xbim.Ifc.IfcAuthoringMetadata).Assembly.FullName }, // Example class name
                 { "Bitub.Dto", typeof(Bitub.Dto.ILogging).Assembly.FullName }  // Example class name
             };
         }

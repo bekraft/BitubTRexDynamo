@@ -14,7 +14,7 @@ using TRex.Internal;
 using TRex.Geom;
 using TRex.Data;
 
-using Bitub.Ifc.Export;
+using Bitub.Xbim.Ifc.Export;
 
 namespace TRex.Export
 {

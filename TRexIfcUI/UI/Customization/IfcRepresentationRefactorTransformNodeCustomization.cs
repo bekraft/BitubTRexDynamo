@@ -1,7 +1,7 @@
 ﻿using TRex.Task;
 using TRex.UI.Model;
 
-using Bitub.Ifc.Transform;
+using Bitub.Xbim.Ifc.Transform;
 
 namespace TRex.UI.Customization
 {
