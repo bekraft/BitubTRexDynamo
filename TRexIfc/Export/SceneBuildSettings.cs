@@ -5,7 +5,7 @@ using Bitub.Dto;
 using Bitub.Dto.Scene;
 using Bitub.Dto.Spatial;
 
-using Bitub.Ifc.Export;
+using Bitub.Xbim.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
 
