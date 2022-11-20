@@ -88,7 +88,7 @@
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.12.0.5650</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
   </ItemGroup>
 
   <ItemGroup>
@@ -141,9 +141,9 @@
       <SourceDocs Include="$(SolutionDir)Documentations\*.md" />
     </ItemGroup>
 
-    <Message Importance="High" Text="==> TRex / Xbim   : `@(SourceDlls)`" />
-    <Message Importance="High" Text="==> Dependencies  : `@(DependencyDlls)`" />
-    <Message Importance="High" Text="==> XMLs          : `@(SourceXmls)`" />
+    <Message Importance="High" Text="==&gt; TRex / Xbim   : `@(SourceDlls)`" />
+    <Message Importance="High" Text="==&gt; Dependencies  : `@(DependencyDlls)`" />
+    <Message Importance="High" Text="==&gt; XMLs          : `@(SourceXmls)`" />
 
     <!-- Copying to deploy folder-->
     <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
@@ -164,7 +164,7 @@
     </ItemGroup>    
     
     <!-- Copy to Dynamo app folder if Debug alpha  -->
-    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Starting deployment of `$(DeployDynamoProjectName)` to Dynamo App."/>
+    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Starting deployment of `$(DeployDynamoProjectName)` to Dynamo App." />
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedPackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
     <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
     <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed `$(DeployDynamoProjectName)` package to `$(DeployDynamoPath)`." />

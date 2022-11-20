@@ -56,7 +56,7 @@
     </PackageReference>
     <PackageReference Include="NUnit" Version="3.13.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.403" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj" />
