@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-using Bitub.Ifc.Export;
+using Bitub.Xbim.Ifc.Export;
 
 using Autodesk.DesignScript.Runtime;
 

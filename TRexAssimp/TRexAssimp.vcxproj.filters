@@ -305,8 +305,5 @@
     <CopyFileToFolders Include="x64\assimp-vc142-mt.dll">
       <Filter>Library</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="x64\assimp-vc142-mtd.dll">
-      <Filter>Library</Filter>
-    </CopyFileToFolders>
   </ItemGroup>
 </Project>

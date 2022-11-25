@@ -14,7 +14,7 @@ using TRex.Internal;
 
 using TRex.UI.Customization;
 
-using Bitub.Ifc.Transform;
+using Bitub.Xbim.Ifc.Transform;
 
 namespace TRex.Task
 {

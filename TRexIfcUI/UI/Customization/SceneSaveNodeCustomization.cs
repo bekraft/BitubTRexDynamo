@@ -11,7 +11,7 @@ namespace TRex.UI.Customization
 #pragma warning disable CS1591
     public class SceneSaveNodeCustomization : CancelableOptionCommandCustomization<SceneSaveNodeModel, Format>
     {
-        public SceneSaveNodeCustomization() : base(ProgressOnPortType.InPorts)
+        public SceneSaveNodeCustomization() : base(ProgressOnPortType.OutPorts)
         { }
     }
 #pragma warning restore CS1591

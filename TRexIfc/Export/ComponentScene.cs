@@ -145,8 +145,9 @@ namespace TRex.Export
 
             var qualifier = BuildQualifierByExtension(scene.Qualifier, format.Extension);
             var fileName = GetFilePathName(qualifier, canonicalSeparator, true);
+            var outputScene = new ComponentScene(scene.SceneModel, qualifier, scene.Logger);
 
-            using (var monitor = scene.CreateProgressMonitor(LogReason.Saved))
+            using (var monitor = outputScene.CreateProgressMonitor(LogReason.Saved))
             {
                 try
                 {
@@ -157,42 +158,42 @@ namespace TRex.Export
                         case "scene":
                             using (var binStream = File.Create(fileName))
                             {
-                                var binScene = scene.SceneModel.ToByteArray();
+                                var binScene = outputScene.SceneModel.ToByteArray();
                                 binStream.Write(binScene, 0, binScene.Length);
                             }
                             break;
                         case "json":
                             using (var textStream = File.CreateText(fileName))
                             {
-                                var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(scene.SceneModel);
+                                var json = new JsonFormatter(new JsonFormatter.Settings(false)).Format(outputScene.SceneModel);
                                 textStream.Write(json);
                             }
                             break;
                         default:
                             var msg = $"Unknown implementation of format '{format.Extension}'.";
-                            scene.OnActionLogged(LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, msg));
+                            outputScene.OnActionLogged(LogMessage.ByErrorMessage(outputScene.Name, LogReason.Saved, msg));
                             monitor.State.MarkBroken();
 
                             throw new ArgumentException(msg);
                     }
 
-                    scene.OnActionLogged(
-                        LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene save to '{0}'.", fileName));
+                    outputScene.OnActionLogged(
+                        LogMessage.BySeverityAndMessage(outputScene.Name, LogSeverity.Info, LogReason.Saved, "Scene save to '{0}'.", fileName));
                     monitor.NotifyOnProgressChange(1, "Saved file");
                 }
                 catch (Exception e)
                 {
                     monitor.State.MarkBroken();
 
-                    scene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
-                    scene.OnActionLogged(
+                    outputScene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
+                    outputScene.OnActionLogged(
                         LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "Exception '{0}' thrown while saving to '{1}'.", e.Message, fileName));
                 }
 
                 monitor.State.MarkTerminated();
                 monitor.NotifyOnProgressEnd();
             }
-            return scene;
+            return outputScene;
         }
 
         /// <summary>
@@ -215,8 +216,9 @@ namespace TRex.Export
 
             var qualifier = BuildQualifierByExtension(scene.Qualifier, format.Extension);
             var fileName = GetFilePathName(qualifier, canonicalSeparator, true);
+            var outputScene = new ComponentScene(scene.SceneModel, qualifier, scene.Logger);
 
-            using (var monitor = scene.CreateProgressMonitor(LogReason.Saved))
+            using (var monitor = outputScene.CreateProgressMonitor(LogReason.Saved))
             {
                 try
                 {
@@ -224,33 +226,33 @@ namespace TRex.Export
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start exporting");
 
-                    if (!exp.ExportTo(scene.SceneModel, fileName, format))
+                    if (!exp.ExportTo(outputScene.SceneModel, fileName, format))
                     {
                         monitor.State.MarkBroken();
-                        scene.OnActionLogged(
-                            LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "An error occured while exporting to '{0}'. {1}", fileName, exp.StatusMessage));
+                        outputScene.OnActionLogged(
+                            LogMessage.ByErrorMessage(outputScene.Name, LogReason.Saved, "An error occured while exporting to '{0}'. {1}", fileName, exp.StatusMessage));
                     }
                     else
                     {
                         monitor.NotifyOnProgressChange(1, "Exported");
-                        scene.OnActionLogged(
-                            LogMessage.BySeverityAndMessage(scene.Name, LogSeverity.Info, LogReason.Saved, "Scene exported to '{0}'.", fileName));
+                        outputScene.OnActionLogged(
+                            LogMessage.BySeverityAndMessage(outputScene.Name, LogSeverity.Info, LogReason.Saved, "Scene exported to '{0}'.", fileName));
                     }
                 }
                 catch (Exception e)
                 {
                     monitor.State.MarkBroken();
 
-                    scene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
-                    scene.OnActionLogged(
-                        LogMessage.ByErrorMessage(scene.Name, LogReason.Saved, "Exception '{0}' thrown while exporting to '{1}'.", e.Message, fileName));
+                    outputScene.Logger?.LogError(e, "An exception has been caught: {0}", e.Message);
+                    outputScene.OnActionLogged(
+                        LogMessage.ByErrorMessage(outputScene.Name, LogReason.Saved, "Exception '{0}' thrown while exporting to '{1}'.", e.Message, fileName));
                 }
 
                 monitor.State.MarkTerminated();
                 monitor.NotifyOnProgressEnd();
             }
 
-            return scene;
+            return outputScene;
         }
     }
 }

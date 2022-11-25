@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Autodesk.DesignScript.Runtime;
 
-using Bitub.Ifc;
+using Bitub.Xbim.Ifc;
 
 namespace TRex.Store
 {

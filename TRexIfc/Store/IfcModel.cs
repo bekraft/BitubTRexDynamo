@@ -10,7 +10,7 @@ using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
-using Bitub.Ifc;
+using Bitub.Xbim.Ifc;
 using Bitub.Dto;
 
 using TRex.Internal;

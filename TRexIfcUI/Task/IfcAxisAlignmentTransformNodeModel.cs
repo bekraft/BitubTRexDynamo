@@ -14,7 +14,7 @@ using TRex.Store;
 using TRex.Internal;
 using TRex.Geom;
 
-using Bitub.Ifc.Transform;
+using Bitub.Xbim.Ifc.Transform;
 
 namespace TRex.Task
 {
