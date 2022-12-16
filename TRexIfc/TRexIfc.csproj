@@ -62,7 +62,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22323-Beta.28328" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22328-Beta.35842" />
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.16.0.2501" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.16.0.2501</Version>
