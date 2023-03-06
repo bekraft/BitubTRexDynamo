@@ -15,20 +15,6 @@ using System.Runtime.Serialization;
 
 namespace TRex.Geom
 {
-    /// <summary>
-    /// Global reference axis identifiers.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public enum GlobalReferenceAxis
-    {
-        NegativeX = -1,
-        NegativeY = -2,
-        NegativeZ = -3,
-
-        PositiveX = 1,
-        PositiveY = 2,
-        PositiveZ = 3    
-    }
 
     /// <summary>
     /// Coordinate reference transform which binds globally defined view directions and offset shift.
@@ -38,7 +24,7 @@ namespace TRex.Geom
     {
         #region Internals
 
-        private Transform global = new Transform 
+        private Transform transform = new Transform 
         { 
             R = Rotation.Identity, 
             T = XYZ.Zero
@@ -51,10 +37,10 @@ namespace TRex.Geom
         [JsonProperty("Forward"), JsonConverter(typeof(StringEnumConverter))]
         private GlobalReferenceAxis forward = GlobalReferenceAxis.PositiveY;
         [JsonProperty("SourceCRS")]
-        private CRSTransform sourceTransform = null;
+        private CRSTransform parent = null;
 
         /// <summary>
-        /// New RHS with Z up.
+        /// New default RHS with Z up.
         /// </summary>
         /// <param name="name"></param>
         private CRSTransform(string name)
@@ -62,31 +48,31 @@ namespace TRex.Geom
             Name = name;
         }
 
+        /// <summary>
+        /// New clone from another CRS.
+        /// </summary>
+        /// <param name="toCopy"></param>
         private CRSTransform(CRSTransform toCopy)
         {
             Name = toCopy.Name;
-            sourceTransform = toCopy.sourceTransform;
+            parent = toCopy.parent;
 
             right = toCopy.right;
             up = toCopy.up;
             forward = toCopy.forward;
 
-            global = new Transform(toCopy.global);
+            transform = new Transform(toCopy.transform);
         }
 
-        private CRSTransform(CRSTransform source, string name)
+        /// <summary>
+        /// New default CRS with a source parent CRS upstream.
+        /// </summary>
+        /// <param name="parent">Parent CRS</param>
+        /// <param name="name">Name of new CRS</param>
+        private CRSTransform(CRSTransform parent, string name)
         {
             Name = name;
-            sourceTransform = source;
-
-            if (null != source)
-            {
-                right = source.right;
-                up = source.up;
-                forward = source.forward;
-
-                global = new Transform(source.Transform);
-            }
+            this.parent = parent;
         }
 
         /// <summary>
@@ -99,13 +85,13 @@ namespace TRex.Geom
             switch (Math.Abs((int)targetCRS))
             {
                 case 1:
-                    global.R.Rx = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveX).Scale(Math.Sign((int)targetCRS));
+                    transform.R.Rx = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveX).Scale(Math.Sign((int)targetCRS));
                     break;
                 case 2:
-                    global.R.Ry = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveY).Scale(Math.Sign((int)targetCRS));
+                    transform.R.Ry = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveY).Scale(Math.Sign((int)targetCRS));
                     break;
                 case 3:
-                    global.R.Rz = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveZ).Scale(Math.Sign((int)targetCRS));
+                    transform.R.Rz = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveZ).Scale(Math.Sign((int)targetCRS));
                     break;
             }
         }
@@ -115,9 +101,9 @@ namespace TRex.Geom
         [OnDeserialized, IsVisibleInDynamoLibrary(false)]
         public void OnDeserialized(StreamingContext sc)
         {
-            SetReferenceVector(right, sourceTransform?.right);
-            SetReferenceVector(up, sourceTransform?.up);
-            SetReferenceVector(forward, sourceTransform?.forward);
+            SetReferenceVector(right, parent?.right);
+            SetReferenceVector(up, parent?.up);
+            SetReferenceVector(forward, parent?.forward);
         }
 
         /// <summary>
@@ -149,22 +135,49 @@ namespace TRex.Geom
         public CRSTransform()
         { }
 
+        /// <summary>
+        /// Name of CRS.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         [JsonProperty]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Local transform of CRS.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public Transform Transform
         {
-            get => new Transform(global);
+            get => new Transform(transform);
         }
 
+        /// <summary>
+        /// Expands all parent CRSs left hand.
+        /// </summary>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public IEnumerable<CRSTransform> ExpandLeft()
+        {
+            var crs = this;
+            do
+            {
+                yield return crs;
+            } 
+            while (null != (crs = crs.parent));
+        }
+
+        /// <summary>
+        /// Whether the CRS is valid (when having 3 distinct reference axis).
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public bool IsGloballyValid
         {
             get => (new[] { Right, Up, Forward }.Distinct().Count() == 3);
         }
 
+        /// <summary>
+        /// Right reference axis.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Right
         {
@@ -175,10 +188,13 @@ namespace TRex.Geom
             private set
             {
                 right = value;
-                SetReferenceVector(right, sourceTransform?.right);
+                SetReferenceVector(right, parent?.right);
             }
         }
 
+        /// <summary>
+        /// Up reference axis.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Up
         {
@@ -189,10 +205,13 @@ namespace TRex.Geom
             private set
             {
                 up = value;
-                SetReferenceVector(up, sourceTransform?.up);
+                SetReferenceVector(up, parent?.up);
             }
         }
 
+        /// <summary>
+        /// Forward reference axis.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Forward
         {
@@ -203,7 +222,7 @@ namespace TRex.Geom
             private set
             {
                 forward = value;
-                SetReferenceVector(forward, sourceTransform?.forward);
+                SetReferenceVector(forward, parent?.forward);
             }
         }
 
@@ -249,13 +268,29 @@ namespace TRex.Geom
             if (null != offset)
             {
                 newCrs = new CRSTransform(crs);
-                newCrs.global.T = crs.global.T.Add(offset);
+                newCrs.transform.T = crs.transform.T.Add(offset);
             }
             else
             {
                 newCrs = crs;
             }
             return crs;
+        }
+
+        /// <summary>
+        /// Mirror right axis.
+        /// </summary>
+        /// <param name="sourceTransform">The source transform</param>
+        /// <returns>New transform</returns>
+        public static CRSTransform ByMirrorX(CRSTransform sourceTransform)
+        {
+            return new CRSTransform(sourceTransform, "Mirror Right")
+            {
+                Right = sourceTransform.Right.Invert(),
+                Up = sourceTransform.Up,
+                Forward = sourceTransform.Forward
+
+            };
         }
 
         /// <summary>
@@ -336,7 +371,7 @@ namespace TRex.Geom
         public override bool Equals(object obj)
         {
             return obj is CRSTransform transform &&
-                   EqualityComparer<CRSTransform>.Default.Equals(sourceTransform, transform.sourceTransform) &&
+                   EqualityComparer<CRSTransform>.Default.Equals(parent, transform.parent) &&
                    Name == transform.Name &&
                    Right == transform.Right &&
                    Up == transform.Up &&
@@ -346,7 +381,7 @@ namespace TRex.Geom
         public override int GetHashCode()
         {
             int hashCode = -1324038637;
-            hashCode = hashCode * -1521134295 + EqualityComparer<CRSTransform>.Default.GetHashCode(sourceTransform);
+            hashCode = hashCode * -1521134295 + EqualityComparer<CRSTransform>.Default.GetHashCode(parent);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             hashCode = hashCode * -1521134295 + Right.GetHashCode();
             hashCode = hashCode * -1521134295 + Up.GetHashCode();
