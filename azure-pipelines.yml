@@ -23,8 +23,10 @@ variables:
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     buildConfiguration: 'Release'
   ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
-    buildConfiguration: 'Dev'
+    buildConfiguration: 'Beta'
   ${{ if startsWith(variables['Build.SourceBranchName'], 'feature') }}: 
+    buildConfiguration: 'Debug'
+  ${{ else }}:
     buildConfiguration: 'Debug'
 
 steps:
