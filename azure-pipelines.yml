@@ -8,7 +8,6 @@ trigger:
    include:
      - dev
      - master
-     - feature/*
   paths:
     exclude:
       - .gitignore
@@ -24,10 +23,8 @@ variables:
     buildConfiguration: 'Release'
   ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
     buildConfiguration: 'Beta'
-  ${{ if startsWith(variables['Build.SourceBranchName'], 'feature') }}: 
-    buildConfiguration: 'Debug'
   ${{ else }}:
-    buildConfiguration: 'Debug'
+    buildConfiguration: 'TestOnly'
 
 steps:
 - task: NuGetToolInstaller@1
