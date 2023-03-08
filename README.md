@@ -31,7 +31,7 @@ In general, the master branch is the best option to run your own build.
 Each build will generate a package under ```./DeployedPackages``` (see *DeployPath*).
 
    - *Debug* will run a debug build and copy plugin over to the predefined Dynamo solution directory.
-   - *Beta* will run a debug build
+   - *Dev* will run a debug build (without expecting an installation folder)
    - *Release* will run a release build with documentation extraction added (for Dynamo help)
 
 Currently only x64 is supported for Assimp and Xbim. 

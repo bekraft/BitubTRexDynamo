@@ -6,7 +6,7 @@
     <Title>TRexDynamo</Title>
     <Description>Bitub TRex Dynamo Common Library</Description>
 
-    <Configurations>Debug;Release;Beta</Configurations>
+    <Configurations>Debug;Release;Dev;TestOnly</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
@@ -23,15 +23,26 @@
     <DocumentationFile>bin\Debug\TRexDynamo.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Beta\</OutputPath>
+    <OutputPath>bin\Dev\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Beta\TRexDynamo.xml</DocumentationFile>
+    <DocumentationFile>bin\Dev\TRexDynamo.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|AnyCPU'">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Dev\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Dev\TRexDynamo.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -6,7 +6,7 @@
     <AssemblyName>TRexIfc.Tests</AssemblyName>
     <Title>TRex Tests</Title>
     
-    <Configurations>Debug;Release;Beta</Configurations>
+    <Configurations>Debug;Release;Dev;TestOnly</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>  
 	</PropertyGroup>
@@ -30,12 +30,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
       
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Beta|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Dev|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Beta\</OutputPath>
+    <OutputPath>bin\Dev\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>    
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+      
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Dev\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>

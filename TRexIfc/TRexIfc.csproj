@@ -6,7 +6,7 @@
     <Title>TRexIfc</Title>
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Beta</Configurations>
+    <Configurations>Debug;Release;Dev;TestOnly</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
@@ -24,15 +24,26 @@
     <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
     
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Beta\</OutputPath>
+    <OutputPath>bin\Dev\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Beta\TRexIfc.xml</DocumentationFile>
+    <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
+    
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|AnyCPU'">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Dev\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
