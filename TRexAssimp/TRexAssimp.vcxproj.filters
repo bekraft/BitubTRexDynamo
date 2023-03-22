@@ -302,7 +302,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="x64\assimp-vc142-mtd.dll">
+    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
       <Filter>Library</Filter>
     </CopyFileToFolders>
   </ItemGroup>

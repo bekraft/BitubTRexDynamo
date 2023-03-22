@@ -5,12 +5,16 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Beta|x64">
-      <Configuration>Beta</Configuration>
+    <ProjectConfiguration Include="Dev|x64">
+      <Configuration>Dev</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="TestOnly|x64">
+      <Configuration>TestOnly</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -128,7 +132,13 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
+    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
+      <DeploymentContent>false</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|x64'">
     <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
       <DeploymentContent>false</DeploymentContent>
       <FileType>Document</FileType>
@@ -156,7 +166,13 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
@@ -180,7 +196,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -193,13 +212,21 @@
     </PublicIncludeDirectories>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)x64;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
     <PublicIncludeDirectories>
     </PublicIncludeDirectories>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)x64;$(LibraryPath)</LibraryPath>
+    <AllProjectIncludesArePublic>false</AllProjectIncludesArePublic>
+    <PublicIncludeDirectories />
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -252,7 +279,30 @@
       <AdditionalDependencies>$(ProjectDir)x64\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Beta|x64'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
+      <AdditionalOptions>/Zc:twoPhase-</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(ProjectDir)x64\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
