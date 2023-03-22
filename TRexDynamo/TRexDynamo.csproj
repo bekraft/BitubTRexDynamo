@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22328-Beta.35842" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23078-Debug.65534" />
     <PackageReference Include="DynamoVisualProgramming.Core" Version="2.16.0.2501" />
     <PackageReference Include="GeoJSON" Version="2.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging">

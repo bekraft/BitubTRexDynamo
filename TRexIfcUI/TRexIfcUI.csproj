@@ -57,7 +57,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22328-Beta.35842" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23078-Debug.65534" />
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
   </ItemGroup>
 
@@ -96,7 +96,7 @@
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
       <Version>2.16.0.2501</Version>
     </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
   </ItemGroup>
 
   <ItemGroup>

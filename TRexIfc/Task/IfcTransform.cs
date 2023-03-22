@@ -33,7 +33,7 @@ namespace TRex.Task
             TransformActionResult.Added
         };
 
-        private readonly static ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
+        private static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
 
         private readonly IModelTransform transformDelegate;
 
@@ -165,7 +165,7 @@ namespace TRex.Task
         public static IfcTransform NewRemovePropertySetsRequest(Logger logInstance, IfcAuthorMetadata newMetadata, 
             string[] removePropertySets, string[] keepPropertySets, bool? caseSensitiveMatching)
         {
-            return new IfcTransform(new ModelPropertySetRemovalTransform(logInstance?.LoggerFactory, defaultLogFilter)
+            return new IfcTransform(new PropertySetRemovalTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
                 ExludePropertySetByName = removePropertySets,
                 IncludePropertySetByName = keepPropertySets,

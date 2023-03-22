@@ -47,7 +47,9 @@ namespace TRex.Export
         public SceneBuildSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("crs", "Model CRS")));
+                new PortData("crs", "Exported model CRS")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("offset", "Manual offset before exporting")));
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); 
             InPorts.Add(new PortModel(PortType.Input, this, 
@@ -61,10 +63,7 @@ namespace TRex.Export
 
         public SceneTransformationStrategy TransformationStrategy
         {
-            get 
-            {
-                return transformationStrategy;
-            }
+            get => transformationStrategy;
             set 
             {
                 transformationStrategy = value;
@@ -75,10 +74,7 @@ namespace TRex.Export
 
         public SceneComponentIdentificationStrategy IdentificationStrategy
         {
-            get
-            {
-                return identificationStrategy;
-            }
+            get => identificationStrategy;
             set
             {
                 identificationStrategy = value;
@@ -89,10 +85,7 @@ namespace TRex.Export
 
         public ScenePositioningStrategy PositioningStrategy
         {
-            get 
-            {
-                return positioningStrategy;
-            }
+            get => positioningStrategy;
             set 
             {
                 positioningStrategy = value;
@@ -124,13 +117,14 @@ namespace TRex.Export
             }
 
             var astBuildSettings = AstFactory.BuildFunctionCall(
-                new Func<string, string, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
+                new Func<string, string, XYZ, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
-                    inputAstNodes[0],
                     inputAstNodes[1],
+                    inputAstNodes[0],
                     inputAstNodes[2],
+                    inputAstNodes[3],
                     BuildEnumNameNode(IdentificationStrategy)
                 });
 

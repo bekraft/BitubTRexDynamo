@@ -10,7 +10,6 @@ using Newtonsoft.Json.Converters;
 
 using Autodesk.DesignScript.Runtime;
 
-using TRex.Export;
 using System.Runtime.Serialization;
 
 namespace TRex.Geom
@@ -26,7 +25,7 @@ namespace TRex.Geom
 
         private Transform transform = new Transform 
         { 
-            R = Rotation.Identity, 
+            R = M33.Identity, 
             T = XYZ.Zero
         };
 
@@ -146,10 +145,7 @@ namespace TRex.Geom
         /// Local transform of CRS.
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public Transform Transform
-        {
-            get => new Transform(transform);
-        }
+        public Transform Transform => new Transform(transform);
 
         /// <summary>
         /// Expands all parent CRSs left hand.
@@ -170,10 +166,7 @@ namespace TRex.Geom
         /// Whether the CRS is valid (when having 3 distinct reference axis).
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public bool IsGloballyValid
-        {
-            get => (new[] { Right, Up, Forward }.Distinct().Count() == 3);
-        }
+        public bool IsGloballyValid => (new[] { Right, Up, Forward }.Distinct().Count() == 3);
 
         /// <summary>
         /// Right reference axis.
@@ -181,10 +174,7 @@ namespace TRex.Geom
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Right
         {
-            get
-            {
-                return right;
-            }
+            get => right;
             private set
             {
                 right = value;
@@ -198,10 +188,7 @@ namespace TRex.Geom
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Up
         {
-            get
-            {
-                return up;
-            }
+            get => up;
             private set
             {
                 up = value;
@@ -215,10 +202,7 @@ namespace TRex.Geom
         [IsVisibleInDynamoLibrary(false)]
         public GlobalReferenceAxis Forward
         {
-            get
-            {
-                return forward;
-            }
+            get => forward;
             private set
             {
                 forward = value;
@@ -260,19 +244,19 @@ namespace TRex.Geom
         /// Clones transform having an offset to the existing translation part.
         /// </summary>
         /// <param name="offset">The addon offset.</param>
-        /// <param name="crs">The transform to be offseted</param>
+        /// <param name="crs">The transform to be offset</param>
         /// <returns>New transform with same name</returns>
         public static CRSTransform ByOffsetTo(CRSTransform crs, XYZ offset)
         {
-            CRSTransform newCrs = null;
             if (null != offset)
             {
-                newCrs = new CRSTransform(crs);
-                newCrs.transform.T = crs.transform.T.Add(offset);
-            }
-            else
-            {
-                newCrs = crs;
+                return new CRSTransform(crs)
+                {
+                    transform =
+                    {
+                        T = crs.transform.T.Add(offset)
+                    }
+                };
             }
             return crs;
         }
@@ -289,7 +273,6 @@ namespace TRex.Geom
                 Right = sourceTransform.Right.Invert(),
                 Up = sourceTransform.Up,
                 Forward = sourceTransform.Forward
-
             };
         }
 
