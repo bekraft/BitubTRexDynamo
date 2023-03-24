@@ -12,7 +12,6 @@ using Bitub.Dto.Spatial;
 
 using TRex.Internal;
 using TRex.Geom;
-using TRex.Data;
 
 using Bitub.Xbim.Ifc.Export;
 
