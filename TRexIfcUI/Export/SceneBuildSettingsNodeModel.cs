@@ -102,7 +102,7 @@ namespace TRex.Export
                 {
                     switch (port.Index)
                     {
-                        default:
+                        case 3:
                             WarnForMissingInputs();
                             return BuildNullResult();
                     }
@@ -110,9 +110,9 @@ namespace TRex.Export
             }
 
             // Wrap single string into list
-            if (inputAstNodes[2] is StringNode)
+            if (inputAstNodes[3] is StringNode)
             {   // Rewrite input AST 
-                inputAstNodes[2] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[2] });
+                inputAstNodes[3] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[3] });
             }
 
             var astBuildSettings = AstFactory.BuildFunctionCall(
