@@ -45,13 +45,10 @@ aiMatrix4x4 TRexAssimp::TRexAssimp::AIMatrix4(Transform^ t)
     }
 }
 
-aiMatrix4x4 TRexAssimp::TRexAssimp::AIMatrix4(CRSTransform^ thisCrs)
+// Adapts a CRS transform by its global transform
+aiMatrix4x4 TRexAssimp::TRexAssimp::AIMatrix4(CRSTransform^ crs)
 {
-    auto r = aiMatrix4x4();
-    for (auto enumCrs = thisCrs->ExpandLeft()->GetEnumerator(); enumCrs->MoveNext();)
-    {
-    }
-    return r;
+    return AIMatrix4(crs->GlobalTransform);
 }
 
 // Adapts a simple XYZ vector

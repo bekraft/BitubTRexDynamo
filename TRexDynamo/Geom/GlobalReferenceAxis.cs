@@ -1,4 +1,6 @@
-﻿using Autodesk.DesignScript.Runtime;
+﻿using System;
+using Autodesk.DesignScript.Runtime;
+using Bitub.Dto.Spatial;
 
 namespace TRex.Geom
 {
@@ -8,21 +10,32 @@ namespace TRex.Geom
     [IsVisibleInDynamoLibrary(false)]
     public enum GlobalReferenceAxis
     {
-        NegativeX = -1,
-        NegativeY = -2,
-        NegativeZ = -3,
-
-        PositiveX = 1,
-        PositiveY = 2,
-        PositiveZ = 3    
+        X = 0,
+        Y = 1,
+        Z = 2    
     }
-
+    
+    ///<summary>
+    ///GlobalReferenceAxis extensions.
+    ///</summary>
     public static class GlobalReferenceAxisExtensions
     {
+        /// <summary>
+        /// Get the unit axis vector according to given global reference axis.
+        /// </summary>
+        /// <param name="referenceAxis">The global reference</param>
+        /// <returns>A unit vector</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static GlobalReferenceAxis Invert(this GlobalReferenceAxis axis)
+        public static XYZ ToUnitAxis(GlobalReferenceAxis referenceAxis)
         {
-            return (GlobalReferenceAxis)((int)axis * -1);
+            var axis = (int)referenceAxis;
+            return Math.Abs(axis) switch
+            {
+                1 => new XYZ(Math.Sign(axis), 0, 0),
+                2 => new XYZ(0, Math.Sign(axis), 0),
+                3 => new XYZ(0, 0, Math.Sign(axis)),
+                _ => throw new NotSupportedException()
+            };
         }
     }
 }

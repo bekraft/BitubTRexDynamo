@@ -8,24 +8,24 @@
 #include <assimp/version.h>
 
 TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences() 
-	: fScale(1.0f), bSeparateContextScenes(false), bExportSceneWCS(false), metadata(nullptr)
+	: fScale(1.0f), bSeparateContextScenes(false), bUseSourceWCS(false), metadata(nullptr)
 {
 	transform = gcnew Transform();
 	transform->R = M33::Identity;
 	transform->T = XYZ::Zero;
 
-	InitMetadata(GlobalReferenceAxis::PositiveZ, GlobalReferenceAxis::PositiveY, GlobalReferenceAxis::PositiveX);
+	InitMetadata();
 }
 
 TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences(::TRex::Geom::CRSTransform^ t, UnitScale^ s)
 	: TRexAssimpPreferences()
 {
 	if (nullptr != t)
-		transform = t->Transform;
+		transform = t->GlobalTransform;
 	if (nullptr != s)
 		fScale = s->UnitsPerMeter;
 
-	InitMetadata(t->Up, t->Forward, t->Right);
+	InitMetadata();
 }
 
 TRexAssimp::TRexAssimpPreferences::~TRexAssimpPreferences()
@@ -33,7 +33,7 @@ TRexAssimp::TRexAssimpPreferences::~TRexAssimpPreferences()
 	delete metadata;
 }
 
-void TRexAssimp::TRexAssimpPreferences::InitMetadata(GlobalReferenceAxis up, GlobalReferenceAxis forward, GlobalReferenceAxis right)
+void TRexAssimp::TRexAssimpPreferences::InitMetadata()
 {
 	delete metadata;
 	metadata = aiMetadata::Alloc(2);

@@ -9,10 +9,10 @@ using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
-
+using TRex.Geom;
 using TRex.Internal;
 
-namespace TRex.Geom
+namespace TRex.Export
 {
     /// <summary>
     /// Unit scale node.
@@ -38,17 +38,20 @@ namespace TRex.Geom
 
             RegisterAllPorts();
 
-            crsTransform = predefined.FirstOrDefault();
+            crsTransform = Predefined.FirstOrDefault();
         }
 
         #region Internals
 
-        internal static readonly CRSTransform[] predefined = new[]
+        private static readonly CRSTransform[] Predefined = 
         {
             CRSTransform.ByRighthandZUp(),
-            CRSTransform.ByRighthandYUp(CRSTransform.ByRighthandZUp()),
-            CRSTransform.ByLefthandYUp(CRSTransform.ByRighthandZUp()),
-            CRSTransform.ByLefthandZUp(CRSTransform.ByRighthandZUp())
+            CRSTransform.ByRighthandYUp(),
+            CRSTransform.ByLefthandYUp(),
+            CRSTransform.ByLefthandZUp(),
+            CRSTransform.ByMirrorX(),
+            CRSTransform.ByMirrorY(), 
+            CRSTransform.ByMirrorZ() 
         };
 
         private CRSTransform crsTransform;
@@ -57,19 +60,17 @@ namespace TRex.Geom
         CRSTransformNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         { }
 
-        static internal AssociativeNode BuildCRSTransformNode(CRSTransform transform, AssociativeNode sourceTransform)
+        private static AssociativeNode BuildCRSTransformNode(CRSTransform transform, AssociativeNode sourceTransform)
         {
             if (null != transform)
             {
                 return AstFactory.BuildFunctionCall(
-                    new Func<string, CRSTransform, string, string, string, CRSTransform>(CRSTransform.ByData),
+                    new Func<CRSTransform, string, string, CRSTransform>(CRSTransform.ByData),
                     new List<AssociativeNode>()
                     {
-                        AstFactory.BuildStringNode(transform.Name),
                         sourceTransform,
-                        BuildEnumNameNode(transform.Right),
-                        BuildEnumNameNode(transform.Up),
-                        BuildEnumNameNode(transform.Forward)
+                        AstFactory.BuildStringNode(transform.Name),
+                        AstFactory.BuildStringNode(transform.Serialized)
                     });
             }
             else
@@ -82,9 +83,7 @@ namespace TRex.Geom
 
         public CRSTransform Transform
         {
-            get {
-                return crsTransform;
-            }
+            get => crsTransform;
             set {
                 crsTransform = value;
                 RaisePropertyChanged(nameof(Transform));
@@ -93,7 +92,7 @@ namespace TRex.Geom
         }
 
         [JsonIgnore]
-        public ObservableCollection<CRSTransform> ItemsTransform { get; } = new ObservableCollection<CRSTransform>(predefined);
+        public ObservableCollection<CRSTransform> ItemsTransform { get; } = new ObservableCollection<CRSTransform>(Predefined);
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {            

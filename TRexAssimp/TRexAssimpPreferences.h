@@ -14,9 +14,10 @@ namespace TRexAssimp
 	{
 		float fScale;
 		bool bSeparateContextScenes;
-		bool bExportSceneWCS;
+		bool bUseSourceWCS;
 
 		Transform^ transform;
+		// Logger
 
 		aiMetadata* metadata;
 		
@@ -25,10 +26,11 @@ namespace TRexAssimp
 		TRexAssimpPreferences(CRSTransform ^ t, UnitScale ^ s);
 		virtual ~TRexAssimpPreferences();
 
-		property bool IsExportingSceneWCS
+		/// Indicates that the export shall respect the original scene WCS (if present)
+		property bool IsUsingSourceWCS
 		{
-			bool get() { return bExportSceneWCS; }
-			void set(bool isExportingWCS) { bExportSceneWCS = isExportingWCS; }
+			bool get() { return bUseSourceWCS; }
+			void set(bool isExportingWCS) { bUseSourceWCS = isExportingWCS; }
 		}
 		
 		property float Scale 
@@ -37,19 +39,19 @@ namespace TRexAssimp
 			void set(float s) { fScale = s; }
 		}
 		
-		property XYZ^ Up 
+		property XYZ^ Ry 
 		{ 
 			XYZ^ get() { return transform->R->Ry; }
 			void set(XYZ^ up) { transform->R->Ry = up; }
 		}
 
-		property XYZ^ Forward 
+		property XYZ^ Rz 
 		{ 
 			XYZ^ get() { return transform->R->Rz; }
 			void set(XYZ^ forward) { transform->R->Rz = forward; }
 		}
 
-		property XYZ^ Right 
+		property XYZ^ Rx 
 		{ 
 			XYZ^ get() { return transform->R->Rx; }
 			void set(XYZ^ right) { transform->R->Rx = right; }
@@ -62,7 +64,7 @@ namespace TRexAssimp
 		}
 
 	internal:
-		void InitMetadata(GlobalReferenceAxis up, GlobalReferenceAxis forward, GlobalReferenceAxis right);
+		void InitMetadata();
 		aiMatrix4x4 GetTransform();
 		aiMetadata* CreateMetadata();
 

@@ -15,7 +15,6 @@ using namespace msclr::interop;
 // - root per context
 // - texture coordinates
 // - mesh units per format configuration
-// - axis adaption per format configuration
 
 TRexAssimp::TRexAssimpExport::TRexAssimpExport()
     : TRexAssimpExport(gcnew TRexAssimpPreferences())
@@ -134,10 +133,11 @@ bool TRexAssimp::TRexAssimpExport::ExportTo(ComponentScene^ componentScene,
                 if (contextWcsMap->TryGetValue(shape->Context, t))
                 {
                     // TODO
-                    aiMatrix4x4 wcs = TRexAssimp::AIMatrix4(t);
+                    wcs = TRexAssimp::AIMatrix4(t);
                 }
                 else
-                {   // TODO Log
+                {
+                    // TODO Log
                     continue;
                 }
 
