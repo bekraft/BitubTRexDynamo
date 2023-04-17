@@ -32,7 +32,7 @@
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name, Mode=OneTime}"/>
+                        <TextBlock Text="{Binding Name, Mode=OneWay}" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>

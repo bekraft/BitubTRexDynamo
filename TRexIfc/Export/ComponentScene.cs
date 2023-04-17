@@ -21,7 +21,7 @@ namespace TRex.Export
         /// <summary>
         /// Allowed extensions for <see cref="Save(ComponentScene, string, string)"/>.
         /// </summary>
-        public readonly static Format[] saveAsFormats = new Format[]
+        public static readonly Format[] saveAsFormats = new Format[]
         {
             new Format("json", "json", "JSON Text"),
             new Format("scene", "scene", "Binary File")
@@ -30,7 +30,7 @@ namespace TRex.Export
         /// <summary>
         /// Allowed extensions for <see cref="Export(ComponentScene, UnitScale, CRSTransform, string, string)"/>.
         /// </summary>
-        public readonly static Format[] exportAsFormats;
+        public static readonly Format[] exportAsFormats;
 
 #pragma warning disable CS1591
 
@@ -50,7 +50,7 @@ namespace TRex.Export
 
         static ComponentScene()
         {
-            exportAsFormats = new TRexAssimp.TRexAssimpExport().Formats;
+            exportAsFormats = TRexAssimp.TRexAssimpExport.GetDefaultFormats();
         }
 
         protected override ComponentScene RequalifyModel(Qualifier qualifier)
@@ -63,22 +63,22 @@ namespace TRex.Export
         #endregion
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="Format" />
         /// </summary>
         public new string FileName => base.FileName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="PathName"/>
         /// </summary>
         public new string PathName => base.PathName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="FormatExtension"/>
         /// </summary>
         public new string FormatExtension => base.FormatExtension;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="CanonicalFileName"/>
         /// </summary>
         public new string CanonicalFileName(string seperator = "-")
         {
@@ -86,7 +86,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="CanonicalName"/>
         /// </summary>
         public new string CanonicalName(string seperator = "-")
         {
@@ -94,7 +94,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="RelocatePath"/>
         /// </summary>
         public new ComponentScene RelocatePath(string newPathName)
         {
@@ -222,7 +222,7 @@ namespace TRex.Export
             {
                 try
                 {
-                    var exp = new TRexAssimp.TRexAssimpExport(new TRexAssimp.TRexAssimpPreferences(transform, unitScale));
+                    var exp = new TRexAssimp.TRexAssimpExport(new TRexAssimp.TRexAssimpPreferences(scene.Logger, transform, unitScale));
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start exporting");
 

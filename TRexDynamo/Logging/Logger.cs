@@ -40,22 +40,26 @@ namespace TRex.Log
         [IsVisibleInDynamoLibrary(false)]
         public Serilog.ILogger DefaultLog { get; private set; }
 
-        internal void LogInfo(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogInfo(string message, params object[] args)
         {
             DefaultLog.Information(message, args);
         }
 
-        internal void LogWarning(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogWarning(string message, params object[] args)
         {
             DefaultLog.Warning(message, args);
         }
 
-        internal void LogError(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogError(string message, params object[] args)
         {
             DefaultLog.Error(message, args);
         }
 
-        internal void LogError(Exception e, string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogError(Exception e, string message, params object[] args)
         {
             DefaultLog.Error(e, message, args);
         }

@@ -23,16 +23,11 @@
     <BuildQualifier>-Dev</BuildQualifier>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' != 'Debug' ">
+  <PropertyGroup>
     <ReleaseVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</ReleaseVersion>
     <BuildVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</BuildVersion>
   </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <ReleaseVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).65534</ReleaseVersion>
-    <BuildVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).65534</BuildVersion>
-  </PropertyGroup>
-
+  
   <PropertyGroup>
     <AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyVersionAttribute("$(ReleaseVersion)")];</AssemblyFileVersionAttribute>
     <AssemblyVersion>$(ReleaseVersion)</AssemblyVersion>

@@ -16,10 +16,6 @@ using namespace msclr::interop;
 // - texture coordinates
 // - mesh units per format configuration
 
-TRexAssimp::TRexAssimpExport::TRexAssimpExport()
-    : TRexAssimpExport(gcnew TRexAssimpPreferences())
-{    
-}
 
 TRexAssimp::TRexAssimpExport::TRexAssimpExport(TRexAssimpPreferences^ p)    
 {
@@ -39,15 +35,16 @@ TRexAssimp::TRexAssimpExport::!TRexAssimpExport()
 }
 
 // Gets all available extensions
-array<Format^>^ TRexAssimp::TRexAssimpExport::Formats::get()
+array<Format^>^ TRexAssimp::TRexAssimpExport::GetDefaultFormats()
 {
-    return GetAvailableFormats(this->exporter);
+    const Assimp::Exporter exporter;
+    return GetAvailableFormats(&exporter);
 }
 
 // Gets all available extensions
-array<Format^>^ TRexAssimp::TRexAssimpExport::GetAvailableFormats(Assimp::Exporter* exporter)
+array<Format^>^ TRexAssimp::TRexAssimpExport::GetAvailableFormats(const Assimp::Exporter* exporter)
 {
-    array<Format^>^ extensions = gcnew array<Format^>((uint)exporter->GetExportFormatCount());
+    auto extensions = gcnew array<Format^>(static_cast<uint>(exporter->GetExportFormatCount()));
     for (uint i = 0, end = extensions->Length; i < end; ++i) {
         const aiExportFormatDesc* const e = exporter->GetExportFormatDescription(i);
         extensions[i] = gcnew Format(gcnew String(e->id), gcnew String(e->fileExtension), gcnew String(e->description));

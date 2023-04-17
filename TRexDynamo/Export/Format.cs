@@ -14,20 +14,32 @@ namespace TRex.Export
     [JsonObject(MemberSerialization.OptIn)]
     public sealed class Format
     {
+        /// <summary>
+        /// Default empty constructor.
+        /// </summary>
         [JsonConstructor]
         public Format()
         { }
 
+        /// <summary>
+        /// New format declaration with extension, seperate ID and description.
+        /// </summary>
+        /// <param name="id">The ID</param>
+        /// <param name="extension">The extension</param>
+        /// <param name="description">The description</param>
+        /// <exception cref="ArgumentNullException">If ID is null</exception>
         public Format(string id, string extension, string description)
         {
-            if (null == id)
-                throw new ArgumentNullException(nameof(id));
-            
-            ID = id;
+            ID = id ?? throw new ArgumentNullException(nameof(id));
             Extension = extension;
             Description = description;
         }
 
+        /// <summary>
+        /// New format declaration with extension ID and description.
+        /// </summary>
+        /// <param name="idAsExtension">The extension ID</param>
+        /// <param name="description">The description</param>
         public Format(string idAsExtension, string description)
             : this(idAsExtension, idAsExtension, description)
         { }
@@ -75,6 +87,8 @@ namespace TRex.Export
             return null;
         }
 
+#pragma warning disable CS1591
+        
         public override int GetHashCode()
         {
             return ID?.GetHashCode() ?? 0;
@@ -92,5 +106,7 @@ namespace TRex.Export
         {
             return $"{Description} (*.{Extension})";
         }
+        
+#pragma warning restore CS1591
     }
 }

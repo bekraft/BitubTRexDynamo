@@ -3,6 +3,7 @@
 using namespace Bitub::Dto::Spatial;
 using namespace Bitub::Dto::Scene;
 
+using namespace ::TRex::Log;
 using namespace ::TRex::Export;
 using namespace ::TRex::Geom;
 
@@ -17,15 +18,20 @@ namespace TRexAssimp
 		bool bUseSourceWCS;
 
 		Transform^ transform;
-		// Logger
+		Logger^ logger;
 
 		aiMetadata* metadata;
 		
 	public:
-		TRexAssimpPreferences();
-		TRexAssimpPreferences(CRSTransform ^ t, UnitScale ^ s);
+		TRexAssimpPreferences(Logger^ logger);
+		TRexAssimpPreferences(Logger^ logger, CRSTransform ^ t, UnitScale ^ s);
 		virtual ~TRexAssimpPreferences();
 
+		property Logger^ Logger
+		{
+			TRex::Log::Logger^ get() { return logger; }
+		}
+		
 		/// Indicates that the export shall respect the original scene WCS (if present)
 		property bool IsUsingSourceWCS
 		{

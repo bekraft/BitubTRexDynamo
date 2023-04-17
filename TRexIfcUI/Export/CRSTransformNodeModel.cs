@@ -81,11 +81,14 @@ namespace TRex.Export
 
         #endregion
 
+        /// <summary>
+        /// The current selected transform.
+        /// </summary>
         public CRSTransform Transform
         {
             get => crsTransform;
             set {
-                crsTransform = value;
+                crsTransform = Predefined.FirstOrDefault(t => t.Name == value.Name);
                 RaisePropertyChanged(nameof(Transform));
                 OnNodeModified(true);                
             }

@@ -7,18 +7,17 @@
 #include <assimp/commonMetaData.h>
 #include <assimp/version.h>
 
-TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences() 
+TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences(::TRex::Log::Logger^ logger) 
 	: fScale(1.0f), bSeparateContextScenes(false), bUseSourceWCS(false), metadata(nullptr)
 {
-	transform = gcnew Transform();
-	transform->R = M33::Identity;
-	transform->T = XYZ::Zero;
+	this->transform = Transform::Identity;
+	this->logger = logger;
 
 	InitMetadata();
 }
 
-TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences(::TRex::Geom::CRSTransform^ t, UnitScale^ s)
-	: TRexAssimpPreferences()
+TRexAssimp::TRexAssimpPreferences::TRexAssimpPreferences(::TRex::Log::Logger^ logger, ::TRex::Geom::CRSTransform^ t, UnitScale^ s)
+	: TRexAssimpPreferences(logger)
 {
 	if (nullptr != t)
 		transform = t->GlobalTransform;

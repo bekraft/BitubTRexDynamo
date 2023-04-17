@@ -73,7 +73,7 @@ namespace TRex.Export
             }
             set {
                 unitScale = value;
-                RaisePropertyChanged(nameof(UnitScale));
+                RaisePropertyChanged(nameof(SelectedUnitScale));
                 OnNodeModified(true);
             }
         }
