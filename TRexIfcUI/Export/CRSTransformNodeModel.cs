@@ -88,7 +88,17 @@ namespace TRex.Export
         {
             get => crsTransform;
             set {
-                crsTransform = Predefined.FirstOrDefault(t => t.Name == value.Name);
+                var predefined = Predefined.FirstOrDefault(t => t.Name == value.Name);
+                if (null == predefined)
+                {
+                    ItemsTransform.Add(value);
+                    crsTransform = value;
+                }
+                else
+                {
+                    crsTransform = predefined;
+                }
+
                 RaisePropertyChanged(nameof(Transform));
                 OnNodeModified(true);                
             }

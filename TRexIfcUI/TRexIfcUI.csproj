@@ -57,8 +57,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23083-Dev.31322" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23104-Dev.39859" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,15 +86,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.17.1.4055</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
-      <Version>2.17.1.4055</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.17.1.4055</Version>
-    </PackageReference>
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="2.17.2.4605"/>
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="2.17.2.4605"/>
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="2.17.2.4605" />
     <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
   </ItemGroup>
 

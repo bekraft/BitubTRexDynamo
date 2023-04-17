@@ -71,7 +71,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23104-Dev.39859" />
-    <PackageReference Include="DynamoVisualProgramming.Core" Version="2.17.1.4055" />
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="2.17.2.4605" />
     <PackageReference Include="GeoJSON" Version="2.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>5.0.0</Version>

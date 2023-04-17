@@ -63,22 +63,22 @@ namespace TRex.Export
         #endregion
 
         /// <summary>
-        /// <inheritdoc cref="Format" />
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.Format" />
         /// </summary>
         public new string FileName => base.FileName;
 
         /// <summary>
-        /// <inheritdoc cref="PathName"/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.PathName"/>
         /// </summary>
         public new string PathName => base.PathName;
 
         /// <summary>
-        /// <inheritdoc cref="FormatExtension"/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.FormatExtension"/>
         /// </summary>
         public new string FormatExtension => base.FormatExtension;
 
         /// <summary>
-        /// <inheritdoc cref="CanonicalFileName"/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.CanonicalFileName"/>
         /// </summary>
         public new string CanonicalFileName(string seperator = "-")
         {
@@ -86,7 +86,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc cref="CanonicalName"/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.CanonicalName"/>
         /// </summary>
         public new string CanonicalName(string seperator = "-")
         {
@@ -94,7 +94,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc cref="RelocatePath"/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RelocatePath"/>
         /// </summary>
         public new ComponentScene RelocatePath(string newPathName)
         {
@@ -102,7 +102,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.Rename"/>
         /// </summary>
         public new ComponentScene Rename(string fileNameWithoutExt)
         {
@@ -110,7 +110,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RenameWithReplacePattern" />
         /// </summary>
         public new ComponentScene RenameWithReplacePattern(string replacePattern, string replaceWith)
         {
@@ -118,7 +118,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RenameWithSuffix" />
         /// </summary>
         public new ComponentScene RenameWithSuffix(string fragment)
         {
