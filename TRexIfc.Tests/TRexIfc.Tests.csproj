@@ -6,7 +6,7 @@
     <AssemblyName>TRexIfc.Tests</AssemblyName>
     <Title>TRex Tests</Title>
     
-    <Configurations>Debug;Release;Dev;TestOnly</Configurations>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>  
 	</PropertyGroup>
@@ -40,7 +40,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
       
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Dev\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>

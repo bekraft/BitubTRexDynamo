@@ -11,7 +11,7 @@
 
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Dev;TestOnly</Configurations>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
@@ -37,7 +37,7 @@
     <DocumentationFile>bin\Dev\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='TestOnly|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
     <OutputPath>bin\Dev\</OutputPath>
