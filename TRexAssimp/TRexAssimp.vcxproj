@@ -17,6 +17,10 @@
       <Configuration>Test</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="XbimDev|x64">
+      <Configuration>XbimDev</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bitub.Dto">

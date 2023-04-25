@@ -6,7 +6,7 @@
     <Title>TRexIfc</Title>
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Dev;Test</Configurations>
+    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
@@ -73,7 +73,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23104-Dev.39859" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
     <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="2.17.2.4605" />
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="2.17.2.4605" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />

@@ -41,7 +41,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "c74b9643923945e0b6c6dfda574d2019",
@@ -58,11 +58,11 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System und gibt ihren Dateipfad zurück"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\IfcLoad-SceneExport.log",
+      "HintPath": "Out\\IfcLoad-SceneExport.log",
       "InputValue": "Out\\IfcLoad-SceneExport.log",
       "NodeType": "ExtensionNode",
       "Id": "daed6c03916046138fa732ea55c25b2d",
@@ -79,11 +79,11 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Ermöglicht die Auswahl einer Datei auf dem System, um ihren Dateinamen abzurufen."
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System und gibt ihren Dateipfad zurück"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "HintPath": "Out",
       "InputValue": ".\\Out",
       "NodeType": "ExtensionNode",
       "Id": "20b1ab7fb95647cf8d9c573745345082",
@@ -100,77 +100,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Ermöglicht die Auswahl einen Verzeichnisses auf dem System, um seinen Pfad abzurufen."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "-9.23;\n-2.75;\n-0.47;",
-      "Id": "3d66c164783948d0957caf923dce2ed4",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "29c80788687e46169f2099fcc53bbcfc",
-          "Name": "",
-          "Description": "Wert des Ausdrucks in Zeile 1",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "2cd778667070416c93417d54d46caaa7",
-          "Name": "",
-          "Description": "Wert des Ausdrucks in Zeile 2",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "e28660441902458fbb6edfb39c2ab7aa",
-          "Name": "",
-          "Description": "Wert des Ausdrucks in Zeile 3",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
-    },
-    {
-      "ConcreteType": "TRex.Task.SelectingItemListNodeModel, TRexIfcUI",
-      "SelectedValue": [
-        "Body"
-      ],
-      "NodeType": "ExtensionNode",
-      "Id": "77ab86ab60674fcc8972df31ae5b2d90",
-      "Inputs": [
-        {
-          "Id": "4453463ad5fe451da89b5478c4a3d517",
-          "Name": "items",
-          "Description": "Provided candidates",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "f18d78828fdc4b4f832f3d87c8a6db47",
-          "Name": "selected",
-          "Description": "Selected candidates",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Select multiple items from a list of available items using its string representation."
+      "Description": "Ermöglicht die Auswahl eines Verzeichnisses auf dem System und gibt seinen Pfad zurück"
     },
     {
       "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
@@ -293,75 +223,6 @@
       "Description": "Interactive table grid displaying incoming data with a given count threshold."
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "TRex.Store.IfcModel.GraphicalContexts",
-      "Id": "5018011b48f14019935261e3b20aaf19",
-      "Inputs": [
-        {
-          "Id": "5d1094f3286b41efa33f6b6ed7277b0c",
-          "Name": "ifcModel",
-          "Description": "TRex.Store.IfcModel",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "301d80089b8f4a4dbfbaeb21ef639fa4",
-          "Name": "string[]",
-          "Description": "string[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Graphical contexts\n\nIfcModel.GraphicalContexts ( ): string[]"
-    },
-    {
-      "ConcreteType": "TRex.Export.SceneBuildNodeModel, TRexIfcUI",
-      "IsCancelable": true,
-      "NodeType": "ExtensionNode",
-      "Id": "b2b5f350e0754264bbdd0682c8868aff",
-      "Inputs": [
-        {
-          "Id": "dc40423a4d1b4ba4b886bb50a96eebf8",
-          "Name": "settings",
-          "Description": "Export settings",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "55e3421fb8d742cea8bf16103ededea6",
-          "Name": "ifcModel",
-          "Description": "IFC model",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "b0fa53a8d94d4adf9edbd4fc87fb39be",
-          "Name": "scene",
-          "Description": "Component scene",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Keine Beschreibung verfügbar"
-    },
-    {
       "ConcreteType": "TRex.Export.SceneSaveNodeModel, TRexIfcUI",
       "Selected": {
         "ID": "json",
@@ -452,40 +313,6 @@
         "Reference": "m"
       },
       "NodeType": "ExtensionNode",
-      "Id": "bf8ac338d27c42a3864ee1944be6f389",
-      "Inputs": [
-        {
-          "Id": "573e08df6fc0469c98ebafbbf43ad77e",
-          "Name": "nested",
-          "Description": "Nest an existing model scale",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "4ef8ef01e03340428087aaabca7e1359",
-          "Name": "unitScale",
-          "Description": "Model units per meter",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Unit per meter creation node used by scene build and export."
-    },
-    {
-      "ConcreteType": "TRex.Export.UnitScaleNodeModel, TRexIfcUI",
-      "SelectedUnitScale": {
-        "UnitsPerMeter": 39.37008,
-        "Name": "Inch",
-        "Reference": "in"
-      },
-      "NodeType": "ExtensionNode",
       "Id": "d858c73d723f46dabd4ac44402f77793",
       "Inputs": [
         {
@@ -511,54 +338,6 @@
       ],
       "Replication": "Disabled",
       "Description": "Unit per meter creation node used by scene build and export."
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "TRex.Geom.XYZs.ByXYZ@double,double,double",
-      "Id": "fc918d857f0a4a06898940f384209aa5",
-      "Inputs": [
-        {
-          "Id": "a0240b620f31401fab241da2616fcd5c",
-          "Name": "x",
-          "Description": "double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "603606920ea844f5a8bd62bbf673d744",
-          "Name": "y",
-          "Description": "double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "1fdaef3caba04936ad714918b4ed6cdb",
-          "Name": "z",
-          "Description": "double",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "a21c0ac53ef742c9a28d911652a33bd6",
-          "Name": "var",
-          "Description": "var",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
     },
     {
       "ConcreteType": "TRex.Log.LogFilterNodeModel, TRexIfcUI",
@@ -633,152 +412,6 @@
       "Description": "Interactive table grid displaying incoming data with a given count threshold."
     },
     {
-      "ConcreteType": "TRex.Export.SceneBuildSettingsNodeModel, TRexIfcUI",
-      "TransformationStrategy": 0,
-      "IdentificationStrategy": 0,
-      "PositioningStrategy": 0,
-      "NodeType": "ExtensionNode",
-      "Id": "286b48b4e60945ef9e5fca7b14304aa0",
-      "Inputs": [
-        {
-          "Id": "73fec843f20745b390e1eb5050091c0c",
-          "Name": "crs",
-          "Description": "Model CRS",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "0b5d5cb2dd57419fa9085c1efa7af898",
-          "Name": "unitScale",
-          "Description": "Scaling units per Meter",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "e3cae7d43aaf40839f2298e182e62bf9",
-          "Name": "context",
-          "Description": "Provided representation model contexts",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d14d457e4f4c4070affe8830432a63be",
-          "Name": "settings",
-          "Description": "Scene build settings",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Assembles all build settings for scene generation"
-    },
-    {
-      "ConcreteType": "TRex.Geom.CRSTransformNodeModel, TRexIfcUI",
-      "Transform": {
-        "Right": "PositiveX",
-        "Up": "PositiveY",
-        "Forward": "PositiveZ",
-        "SourceCRS": {
-          "Right": "PositiveX",
-          "Up": "PositiveZ",
-          "Forward": "PositiveY",
-          "SourceCRS": null,
-          "Name": "RHS Z-Up"
-        },
-        "Name": "LHS Y-Up"
-      },
-      "NodeType": "ExtensionNode",
-      "Id": "d45646ff55664f84a4597957560caf50",
-      "Inputs": [
-        {
-          "Id": "5cf21f14b6234a21979e538128a68485",
-          "Name": "crs",
-          "Description": "Source CRS",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "555ce79ee8d64b24940dbb218a2552f4",
-          "Name": "offset",
-          "Description": "Offset",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "fb80386e633f4a3aaeff0a80c5e6767b",
-          "Name": "crs",
-          "Description": "Target CRS",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Coordinate reference transform creation node used by build and export nodes."
-    },
-    {
-      "ConcreteType": "TRex.Geom.CRSTransformNodeModel, TRexIfcUI",
-      "Transform": {
-        "Right": "PositiveX",
-        "Up": "PositiveZ",
-        "Forward": "PositiveY",
-        "SourceCRS": null,
-        "Name": "RHS Z-Up"
-      },
-      "NodeType": "ExtensionNode",
-      "Id": "37da8f5f1239411f8cd5a82daf74a8d8",
-      "Inputs": [
-        {
-          "Id": "444e9ed2429541e0aee600dd6d56470e",
-          "Name": "crs",
-          "Description": "Source CRS",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "fc944a61d8714c57b6633b88acfa79d3",
-          "Name": "offset",
-          "Description": "Offset",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "b2cbad204b274af48437f7e72ddc8e28",
-          "Name": "crs",
-          "Description": "Target CRS",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Coordinate reference transform creation node used by build and export nodes."
-    },
-    {
       "ConcreteType": "TRex.Export.SceneExportNodeModel, TRexIfcUI",
       "Selected": {
         "ID": "fbx",
@@ -839,165 +472,551 @@
       ],
       "Replication": "Disabled",
       "Description": "Export scene via Assimp package. For more details see https://github.com/assimp/assimp."
+    },
+    {
+      "ConcreteType": "TRex.Export.SceneBuildSettingsNodeModel, TRexIfcUI",
+      "TransformationStrategy": 0,
+      "IdentificationStrategy": 0,
+      "PositioningStrategy": 0,
+      "NodeType": "ExtensionNode",
+      "Id": "6ff0ca4be777467d9043e070f1747153",
+      "Inputs": [
+        {
+          "Id": "bf7a33faedf348f49d95c68b8aee0afa",
+          "Name": "crs",
+          "Description": "Exported model CRS",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3f4fc770dc0c4839af0d2238545bf4fd",
+          "Name": "offset",
+          "Description": "Manual offset before exporting",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b26ba6c3a2a14439aa4c83e3fb867854",
+          "Name": "unitScale",
+          "Description": "Scaling units per Meter",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b21a0a71d4e64545836a5a0bcbd629eb",
+          "Name": "context",
+          "Description": "Provided representation model contexts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f9f54f28088490ead1d08b6c2cd93a6",
+          "Name": "settings",
+          "Description": "Scene build settings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Assembles all build settings for scene generation"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "TRex.Geom.XYZs.ByXYZ@double,double,double",
+      "Id": "fc918d857f0a4a06898940f384209aa5",
+      "Inputs": [
+        {
+          "Id": "5ffa36c3f6a24787b7e674768411115d",
+          "Name": "x",
+          "Description": "X\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e3790e7675434abca852eb0c0c00ff41",
+          "Name": "y",
+          "Description": "Y\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "403f583a9cc74272a9e880833e0cf380",
+          "Name": "z",
+          "Description": "Z\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1b14797f553d4b6fb9dd4996c3079079",
+          "Name": "var",
+          "Description": "A 3D point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): var"
+    },
+    {
+      "ConcreteType": "TRex.Export.UnitScaleNodeModel, TRexIfcUI",
+      "SelectedUnitScale": {
+        "UnitsPerMeter": 1.0,
+        "Name": "Meter",
+        "Reference": "m"
+      },
+      "NodeType": "ExtensionNode",
+      "Id": "bf8ac338d27c42a3864ee1944be6f389",
+      "Inputs": [
+        {
+          "Id": "c10843fe67fb401b995d566eaba22100",
+          "Name": "nested",
+          "Description": "Nest an existing model scale",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0708ace91ae491a935f6808914dc904",
+          "Name": "unitScale",
+          "Description": "Model units per meter",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Unit per meter creation node used by scene build and export."
+    },
+    {
+      "ConcreteType": "TRex.Export.SceneBuildNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "NodeType": "ExtensionNode",
+      "Id": "b2b5f350e0754264bbdd0682c8868aff",
+      "Inputs": [
+        {
+          "Id": "8de1ae89e4534eefb78ffdec785fa5f4",
+          "Name": "settings",
+          "Description": "Build settings",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ad0bf7c2dc04908bd71aef3bf664b28",
+          "Name": "ifcModel",
+          "Description": "IFC model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "86c5a68a532c4b7092f2670fe2aefd53",
+          "Name": "scene",
+          "Description": "Component scene",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Keine Beschreibung verfügbar"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "TRex.Store.IfcModel.GraphicalContexts",
+      "Id": "5018011b48f14019935261e3b20aaf19",
+      "Inputs": [
+        {
+          "Id": "9bcea4c095a24aeebf3eab9c643d8c10",
+          "Name": "ifcModel",
+          "Description": "TRex.Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fa7e110efd6848fdb94a6e8cf5bef0bb",
+          "Name": "string[]",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Graphical contexts\n\nIfcModel.GraphicalContexts ( ): string[]"
+    },
+    {
+      "ConcreteType": "TRex.Task.SelectingItemListNodeModel, TRexIfcUI",
+      "SelectedValue": [
+        "Body"
+      ],
+      "NodeType": "ExtensionNode",
+      "Id": "77ab86ab60674fcc8972df31ae5b2d90",
+      "Inputs": [
+        {
+          "Id": "daf72a296e9a4760a201ee4e59bf7faf",
+          "Name": "items",
+          "Description": "Provided candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6844df3e3b8646d695e8ad1f80b43724",
+          "Name": "selected",
+          "Description": "Selected candidates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select multiple items from a list of available items using its string representation."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-9.23;\n-2.75;\n-0.47;",
+      "Id": "3d66c164783948d0957caf923dce2ed4",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e3b26da73a2a4770b33fdf9f68d8c7ea",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a7e521ed5e7d4184969a0e040070b2f8",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2f7976df2e3148d5bd108ef55018a234",
+          "Name": "",
+          "Description": "Wert des Ausdrucks in Zeile 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code."
+    },
+    {
+      "ConcreteType": "TRex.Export.CRSTransformNodeModel, TRexIfcUI",
+      "Transform": {
+        "SourceCRS": null,
+        "Transform": "{ \"r\": { \"rx\": { \"x\": 1, \"y\": 0, \"z\": 0 }, \"ry\": { \"x\": 0, \"y\": 0, \"z\": 1 }, \"rz\": { \"x\": 0, \"y\": -1, \"z\": 0 } }, \"t\": { \"x\": 0, \"y\": 0, \"z\": 0 } }",
+        "Name": "RHS Y-Up"
+      },
+      "NodeType": "ExtensionNode",
+      "Id": "9e8be2266e304143b03c6d14c782fe32",
+      "Inputs": [
+        {
+          "Id": "535f2a9b4ada4e99938c32c35f22f4bc",
+          "Name": "crs",
+          "Description": "Source CRS",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f0b7b256b0d640c49aec0646223e9d9a",
+          "Name": "offset",
+          "Description": "Offset",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5286e8a8180d469db0af5b7fd9fdd516",
+          "Name": "crs",
+          "Description": "Target CRS",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Coordinate reference transform creation node used by build and export nodes."
+    },
+    {
+      "ConcreteType": "TRex.Export.CRSTransformNodeModel, TRexIfcUI",
+      "Transform": {
+        "SourceCRS": null,
+        "Transform": "{ \"r\": { \"rx\": { \"x\": 1, \"y\": 0, \"z\": 0 }, \"ry\": { \"x\": 0, \"y\": 1, \"z\": 0 }, \"rz\": { \"x\": 0, \"y\": 0, \"z\": 1 } }, \"t\": { \"x\": 0, \"y\": 0, \"z\": 0 } }",
+        "Name": "RHS Z-Up"
+      },
+      "NodeType": "ExtensionNode",
+      "Id": "43defcb30561472186caaf86d14452b6",
+      "Inputs": [
+        {
+          "Id": "c2cbc39bff99441fbef08173bf7ba35d",
+          "Name": "crs",
+          "Description": "Source CRS",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f541a6e51f79486786f469df3604ab4e",
+          "Name": "offset",
+          "Description": "Offset",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "51fd09d7f56444f39692ae82b63b2e72",
+          "Name": "crs",
+          "Description": "Target CRS",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Coordinate reference transform creation node used by build and export nodes."
     }
   ],
   "Connectors": [
     {
       "Start": "e11cb20b18c741029706e0f80f3116a8",
       "End": "d17e4fd337d84cfeadcf7f8e489a8901",
-      "Id": "8536827ec31b4c87a802926ba2f3bc2c"
+      "Id": "8536827ec31b4c87a802926ba2f3bc2c",
+      "IsHidden": "False"
     },
     {
       "Start": "a919f71e82df4facbd07d6569428837e",
       "End": "364afd0961c643f6992881394b33029a",
-      "Id": "14706be64a7c46d8aedf0d60a203b0dc"
+      "Id": "14706be64a7c46d8aedf0d60a203b0dc",
+      "IsHidden": "False"
     },
     {
       "Start": "2e233e6fdc864ae5b58b03b808e1b217",
       "End": "bdb0b11fe68b4480aa3fed5007627aea",
-      "Id": "98a45fd538ae449990a5f9669aca4859"
+      "Id": "98a45fd538ae449990a5f9669aca4859",
+      "IsHidden": "False"
     },
     {
       "Start": "d15556427185481e81904f4f89b1165c",
       "End": "d0f3cd9832f2418fabdcec432ad5171b",
-      "Id": "a2d2636b11c74da3ac10fc0edcc35cea"
-    },
-    {
-      "Start": "29c80788687e46169f2099fcc53bbcfc",
-      "End": "a0240b620f31401fab241da2616fcd5c",
-      "Id": "3fbf35d274804536afc760a57ebcb9ab"
-    },
-    {
-      "Start": "2cd778667070416c93417d54d46caaa7",
-      "End": "603606920ea844f5a8bd62bbf673d744",
-      "Id": "0c0688e06ddf4d7a9e4d3c4205057631"
-    },
-    {
-      "Start": "e28660441902458fbb6edfb39c2ab7aa",
-      "End": "1fdaef3caba04936ad714918b4ed6cdb",
-      "Id": "da6d512bd58a46ecaafad902b24e4bf8"
-    },
-    {
-      "Start": "f18d78828fdc4b4f832f3d87c8a6db47",
-      "End": "e3cae7d43aaf40839f2298e182e62bf9",
-      "Id": "1d5d97ba30334246990086d40b683b5d"
+      "Id": "a2d2636b11c74da3ac10fc0edcc35cea",
+      "IsHidden": "False"
     },
     {
       "Start": "91c576133c564c6dac4710c10223c4f1",
-      "End": "5d1094f3286b41efa33f6b6ed7277b0c",
-      "Id": "3324e0754a264a7aa1e2ff0676b79420"
+      "End": "6ad0bf7c2dc04908bd71aef3bf664b28",
+      "Id": "c429c97a6c3348d3bfe1f069c8cd5115",
+      "IsHidden": "False"
     },
     {
       "Start": "91c576133c564c6dac4710c10223c4f1",
-      "End": "55e3421fb8d742cea8bf16103ededea6",
-      "Id": "c429c97a6c3348d3bfe1f069c8cd5115"
+      "End": "9bcea4c095a24aeebf3eab9c643d8c10",
+      "Id": "3324e0754a264a7aa1e2ff0676b79420",
+      "IsHidden": "False"
     },
     {
       "Start": "91cf2935c6fe4de1ae8c47e052bc30db",
       "End": "be6ecb26f01e4ddc9b87d63b8b6a03bb",
-      "Id": "c72ae5d5fb384c289fedde7c3214210e"
-    },
-    {
-      "Start": "301d80089b8f4a4dbfbaeb21ef639fa4",
-      "End": "4453463ad5fe451da89b5478c4a3d517",
-      "Id": "b10331cf745443999e7d506be1179dbc"
-    },
-    {
-      "Start": "b0fa53a8d94d4adf9edbd4fc87fb39be",
-      "End": "582b110971034003ab8257bd3edebf29",
-      "Id": "b5ffd451943048579bf3afdc7450706a"
+      "Id": "c72ae5d5fb384c289fedde7c3214210e",
+      "IsHidden": "False"
     },
     {
       "Start": "70be6ce6112449668b9a20b740db4ce8",
       "End": "53d66bd845114ce9a73060f90cf6b3b4",
-      "Id": "609849bf94784b1f9bd2b3974449d36c"
+      "Id": "609849bf94784b1f9bd2b3974449d36c",
+      "IsHidden": "False"
     },
     {
       "Start": "b8cce0f7ab40497dacc2e6039f141230",
       "End": "eae555674e4f4e69b4b1234fe4d0d218",
-      "Id": "9bc1ad2d268841c5924a0f7e68654f0c"
+      "Id": "9bc1ad2d268841c5924a0f7e68654f0c",
+      "IsHidden": "False"
     },
     {
       "Start": "b8cce0f7ab40497dacc2e6039f141230",
       "End": "7426be2921ef45df97c179c2b410058e",
-      "Id": "bb7a99040b1e480ea628870985f287b8"
-    },
-    {
-      "Start": "4ef8ef01e03340428087aaabca7e1359",
-      "End": "4413da740c144326bcbc9ecbbecdb532",
-      "Id": "b508d4289d974581b71c7f6aabcee715"
-    },
-    {
-      "Start": "4ef8ef01e03340428087aaabca7e1359",
-      "End": "0b5d5cb2dd57419fa9085c1efa7af898",
-      "Id": "a0938a747a1345bc866f11c96806500e"
+      "Id": "bb7a99040b1e480ea628870985f287b8",
+      "IsHidden": "False"
     },
     {
       "Start": "9d42d45cf20d4bb382773b1b8a769c6c",
       "End": "dbc4b5a72650454483cdffc3eb13acfa",
-      "Id": "eed3e953e0444d0db38c7ce8af8db489"
-    },
-    {
-      "Start": "a21c0ac53ef742c9a28d911652a33bd6",
-      "End": "fc944a61d8714c57b6633b88acfa79d3",
-      "Id": "7de29e36268148ec9229004c798fe683"
+      "Id": "eed3e953e0444d0db38c7ce8af8db489",
+      "IsHidden": "False"
     },
     {
       "Start": "0bf3b2c0892c4873811dead79be6af24",
       "End": "47ec2faaaec7455d8e8fa896ffb72d54",
-      "Id": "257f0529e3c6418080651482b2c6d330"
-    },
-    {
-      "Start": "d14d457e4f4c4070affe8830432a63be",
-      "End": "dc40423a4d1b4ba4b886bb50a96eebf8",
-      "Id": "3179b8af09734d58970435e4239845ce"
-    },
-    {
-      "Start": "fb80386e633f4a3aaeff0a80c5e6767b",
-      "End": "24924971ddd74dabbeb26c2e15f87b5f",
-      "Id": "6c1cd178c67f48598a87069a1d370029"
-    },
-    {
-      "Start": "b2cbad204b274af48437f7e72ddc8e28",
-      "End": "73fec843f20745b390e1eb5050091c0c",
-      "Id": "b19bee6930dc4eb2822ed0c136bbac84"
-    },
-    {
-      "Start": "b2cbad204b274af48437f7e72ddc8e28",
-      "End": "5cf21f14b6234a21979e538128a68485",
-      "Id": "a6c9445d5b9d49e09a97b9184e94886f"
+      "Id": "257f0529e3c6418080651482b2c6d330",
+      "IsHidden": "False"
     },
     {
       "Start": "aa0aaa637ea54fa29c171fd211a642f6",
       "End": "263d30cc72d94958b50436d09f4cd41a",
-      "Id": "2ca251257a5e472a9f483dd7f7e2d187"
+      "Id": "2ca251257a5e472a9f483dd7f7e2d187",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4f9f54f28088490ead1d08b6c2cd93a6",
+      "End": "8de1ae89e4534eefb78ffdec785fa5f4",
+      "Id": "e536c6847ba7470b9053eed7dd74047a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0708ace91ae491a935f6808914dc904",
+      "End": "b26ba6c3a2a14439aa4c83e3fb867854",
+      "Id": "9225365ff11d4b669ef20a2b24a3b875",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f0708ace91ae491a935f6808914dc904",
+      "End": "4413da740c144326bcbc9ecbbecdb532",
+      "Id": "b508d4289d974581b71c7f6aabcee715",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "86c5a68a532c4b7092f2670fe2aefd53",
+      "End": "582b110971034003ab8257bd3edebf29",
+      "Id": "b5ffd451943048579bf3afdc7450706a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fa7e110efd6848fdb94a6e8cf5bef0bb",
+      "End": "daf72a296e9a4760a201ee4e59bf7faf",
+      "Id": "b10331cf745443999e7d506be1179dbc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6844df3e3b8646d695e8ad1f80b43724",
+      "End": "b21a0a71d4e64545836a5a0bcbd629eb",
+      "Id": "b31cf61825af4f95a4b575c99a112ec4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e3b26da73a2a4770b33fdf9f68d8c7ea",
+      "End": "5ffa36c3f6a24787b7e674768411115d",
+      "Id": "3fbf35d274804536afc760a57ebcb9ab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a7e521ed5e7d4184969a0e040070b2f8",
+      "End": "e3790e7675434abca852eb0c0c00ff41",
+      "Id": "0c0688e06ddf4d7a9e4d3c4205057631",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2f7976df2e3148d5bd108ef55018a234",
+      "End": "403f583a9cc74272a9e880833e0cf380",
+      "Id": "da6d512bd58a46ecaafad902b24e4bf8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5286e8a8180d469db0af5b7fd9fdd516",
+      "End": "24924971ddd74dabbeb26c2e15f87b5f",
+      "Id": "c95ccd0ff7f0477080c4bea33b11669c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "51fd09d7f56444f39692ae82b63b2e72",
+      "End": "bf7a33faedf348f49d95c68b8aee0afa",
+      "Id": "da76973eafbf4cafbd97af8b8f044a81",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "51fd09d7f56444f39692ae82b63b2e72",
+      "End": "535f2a9b4ada4e99938c32c35f22f4bc",
+      "Id": "89c1f6a1ca0d4415928d69b1cb690657",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
       "Name": "TRex",
-      "Version": "1.0.21239.39970",
+      "Version": "1.0.23107.65534",
       "ReferenceType": "Package",
       "Nodes": [
         "dd916e2863e54995b204e9437e1000be",
-        "77ab86ab60674fcc8972df31ae5b2d90",
         "97b4bedc9b4a45ec8361120f1bc4aa2f",
         "d94824827b14420f83f080f6a13642ec",
         "e95e2e21575c4db9908d3e43e14622b7",
-        "5018011b48f14019935261e3b20aaf19",
-        "b2b5f350e0754264bbdd0682c8868aff",
         "deee2aa7667c4bc7bcea285509013fbd",
         "1e766fffec7645c695e3282092a5d897",
-        "bf8ac338d27c42a3864ee1944be6f389",
         "d858c73d723f46dabd4ac44402f77793",
-        "fc918d857f0a4a06898940f384209aa5",
         "fd7467776f664c8ea879df93862cabd0",
         "c8e308a77d484e449865df9072aab0a1",
-        "286b48b4e60945ef9e5fca7b14304aa0",
-        "d45646ff55664f84a4597957560caf50",
-        "37da8f5f1239411f8cd5a82daf74a8d8",
-        "379a96ae78fd4f0bab0d505d44e67838"
+        "379a96ae78fd4f0bab0d505d44e67838",
+        "6ff0ca4be777467d9043e070f1747153",
+        "fc918d857f0a4a06898940f384209aa5",
+        "bf8ac338d27c42a3864ee1944be6f389",
+        "b2b5f350e0754264bbdd0682c8868aff",
+        "5018011b48f14019935261e3b20aaf19",
+        "77ab86ab60674fcc8972df31ae5b2d90",
+        "9e8be2266e304143b03c6d14c782fe32",
+        "43defcb30561472186caaf86d14452b6"
       ]
     }
   ],
@@ -1024,12 +1043,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.12.0.5650",
+      "Version": "2.17.0.3472",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Hintergrundvorschau",
+      "Name": "_Hintergrundvorschau",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -1040,371 +1059,425 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "File Logger",
+        "ShowGeometry": true,
         "Id": "dd916e2863e54995b204e9437e1000be",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 102.7170718084875,
-        "Y": 42.806459603284509
+        "X": -547.76447183318112,
+        "Y": 386.2098354725739
       },
       {
-        "ShowGeometry": true,
         "Name": "File Path",
+        "ShowGeometry": true,
         "Id": "c74b9643923945e0b6c6dfda574d2019",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -114.65564580826555,
-        "Y": 251.32229094199994
+        "X": -223.80810992978678,
+        "Y": 386.60064597368847
       },
       {
-        "ShowGeometry": true,
         "Name": "File Path",
+        "ShowGeometry": true,
         "Id": "daed6c03916046138fa732ea55c25b2d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -118.20380822988477,
-        "Y": 45.720242187944336
+        "X": -851.42607349000241,
+        "Y": 392.77394401098877
       },
       {
-        "ShowGeometry": true,
         "Name": "Directory Path",
+        "ShowGeometry": true,
         "Id": "20b1ab7fb95647cf8d9c573745345082",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2410.6547694028545,
-        "Y": 144.78286162642289
+        "X": 2425.4133647129011,
+        "Y": 368.31909379009562
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "3d66c164783948d0957caf923dce2ed4",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 882.55960952013493,
-        "Y": 101.26836098168894
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Select items from",
-        "Id": "77ab86ab60674fcc8972df31ae5b2d90",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 891.52980398390559,
-        "Y": 339.33645444994971
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Ifc Load",
+        "ShowGeometry": true,
         "Id": "97b4bedc9b4a45ec8361120f1bc4aa2f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 101.3545955646328,
-        "Y": 249.36227510643067
+        "X": 53.040897339029982,
+        "Y": 384.64063013811921
       },
       {
-        "ShowGeometry": true,
         "Name": "Log Filter",
+        "ShowGeometry": true,
         "Id": "d94824827b14420f83f080f6a13642ec",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4416.9324081023788,
-        "Y": -233.87607865196145
+        "X": 4416.7729540704568,
+        "Y": -257.52871394854918
       },
       {
-        "ShowGeometry": true,
         "Name": "Data Preview",
+        "ShowGeometry": true,
         "Id": "e95e2e21575c4db9908d3e43e14622b7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4730.0749128586722,
-        "Y": -234.0386549109038
+        "X": 4729.91545882675,
+        "Y": -257.69129020749153
       },
       {
-        "ShowGeometry": true,
-        "Name": "IfcModel.GraphicalContexts",
-        "Id": "5018011b48f14019935261e3b20aaf19",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 531.2597597432657,
-        "Y": 341.62188657728848
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Build scene",
-        "Id": "b2b5f350e0754264bbdd0682c8868aff",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1814.9451721282176,
-        "Y": 244.61040367753412
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Save scene",
+        "ShowGeometry": true,
         "Id": "deee2aa7667c4bc7bcea285509013fbd",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3747.7656701261076,
-        "Y": 121.67637874808838
+        "X": 3403.1600002189812,
+        "Y": 318.47966454616767
       },
       {
-        "ShowGeometry": true,
         "Name": "ComponentScene.RelocatePath",
+        "ShowGeometry": true,
         "Id": "1e766fffec7645c695e3282092a5d897",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2569.8686089856405,
-        "Y": 221.7238482658376
+        "X": 2723.2486983099648,
+        "Y": 207.51434869180429
       },
       {
-        "ShowGeometry": true,
         "Name": "Unit scale",
-        "Id": "bf8ac338d27c42a3864ee1944be6f389",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 883.82713823713993,
-        "Y": -68.458740874138982
-      },
-      {
         "ShowGeometry": true,
-        "Name": "Unit scale",
         "Id": "d858c73d723f46dabd4ac44402f77793",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3419.0150365057484,
-        "Y": -243.1216296971146
+        "X": 3410.0023993948926,
+        "Y": -172.83149576169433
       },
       {
-        "ShowGeometry": true,
-        "Name": "XYZs.ByXYZ",
-        "Id": "fc918d857f0a4a06898940f384209aa5",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1020.1195871840437,
-        "Y": 93.628464217039152
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Log Filter",
+        "ShowGeometry": true,
         "Id": "fd7467776f664c8ea879df93862cabd0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4415.4543042737587,
-        "Y": 161.35415154406508
+        "X": 3956.5555241291759,
+        "Y": 339.72013525512659
       },
       {
-        "ShowGeometry": true,
         "Name": "Data Preview",
+        "ShowGeometry": true,
         "Id": "c8e308a77d484e449865df9072aab0a1",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 4728.5968090300576,
-        "Y": 161.19157528512204
+        "X": 4269.6980288854747,
+        "Y": 339.55755899618356
       },
       {
-        "ShowGeometry": true,
-        "Name": "Build settings",
-        "Id": "286b48b4e60945ef9e5fca7b14304aa0",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1493.7344369245334,
-        "Y": -95.163153447691855
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "CRS transform",
-        "Id": "d45646ff55664f84a4597957560caf50",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 3419.1257222339091,
-        "Y": -108.38438926118243
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "CRS transform",
-        "Id": "37da8f5f1239411f8cd5a82daf74a8d8",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 1194.5980531298617,
-        "Y": 68.89696050676838
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Export scene (assimp)",
+        "ShowGeometry": true,
         "Id": "379a96ae78fd4f0bab0d505d44e67838",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 3754.4796742719536,
-        "Y": -245.14699845107742
+        "X": 3790.2285486645865,
+        "Y": -342.17965751679418
+      },
+      {
+        "Name": "Build settings",
+        "ShowGeometry": true,
+        "Id": "6ff0ca4be777467d9043e070f1747153",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1488.85165071411,
+        "Y": -33.158450735793053
+      },
+      {
+        "Name": "XYZs.ByXYZ",
+        "ShowGeometry": true,
+        "Id": "fc918d857f0a4a06898940f384209aa5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 674.0077034353,
+        "Y": 512.731006793534
+      },
+      {
+        "Name": "Unit scale",
+        "ShowGeometry": true,
+        "Id": "bf8ac338d27c42a3864ee1944be6f389",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1109.7179990794168,
+        "Y": -127.97313669804879
+      },
+      {
+        "Name": "Build scene",
+        "ShowGeometry": true,
+        "Id": "b2b5f350e0754264bbdd0682c8868aff",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1967.8719729319621,
+        "Y": 277.60908800668585
+      },
+      {
+        "Name": "IfcModel.GraphicalContexts",
+        "ShowGeometry": true,
+        "Id": "5018011b48f14019935261e3b20aaf19",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 459.670706068658,
+        "Y": 308.41597431836
+      },
+      {
+        "Name": "Select items from",
+        "ShowGeometry": true,
+        "Id": "77ab86ab60674fcc8972df31ae5b2d90",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 497.10422200955895,
+        "Y": 98.151787943202692
+      },
+      {
+        "Name": "Code Block",
+        "ShowGeometry": true,
+        "Id": "3d66c164783948d0957caf923dce2ed4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 472.81859181096206,
+        "Y": 535.840071699308
+      },
+      {
+        "Name": "CRS transform",
+        "ShowGeometry": true,
+        "Id": "9e8be2266e304143b03c6d14c782fe32",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 3417.915635243105,
+        "Y": -334.94159319539642
+      },
+      {
+        "Name": "CRS transform",
+        "ShowGeometry": true,
+        "Id": "43defcb30561472186caaf86d14452b6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1100.9718471840852,
+        "Y": 182.185876459072
       }
     ],
     "Annotations": [
       {
         "Id": "c7c34a252efe43229c4673ed568d5266",
         "Title": "File logger",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "dd916e2863e54995b204e9437e1000be",
           "daed6c03916046138fa732ea55c25b2d"
         ],
-        "Left": -128.20380822988477,
-        "Top": -10.393540396715494,
-        "Width": 463.32088003837225,
-        "Height": 176.2,
+        "HasNestedGroups": false,
+        "Left": -861.42607349000241,
+        "Top": 313.2098354725739,
+        "Width": 579.66160165682129,
+        "Height": 227.0,
         "FontSize": 36.0,
-        "InitialTop": 42.806459603284509,
-        "InitialHeight": 147.91378258465983,
-        "TextblockHeight": 43.2,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 386.2098354725739,
+        "InitialHeight": 151.56410853841487,
+        "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
       {
         "Id": "3142fb48674f416586414d18fd5be634",
         "Title": "Load IFC",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "c74b9643923945e0b6c6dfda574d2019",
           "97b4bedc9b4a45ec8361120f1bc4aa2f"
         ],
-        "Left": -124.65564580826555,
-        "Top": 196.16227510643068,
-        "Width": 584.81024137289842,
-        "Height": 231.39999999999998,
+        "HasNestedGroups": false,
+        "Left": -233.80810992978678,
+        "Top": 311.64063013811921,
+        "Width": 619.34900726881676,
+        "Height": 282.99999999999994,
         "FontSize": 36.0,
-        "InitialTop": 249.36227510643067,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 384.64063013811921,
         "InitialHeight": 146.96001583556927,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
       {
         "Id": "bc60d68521d24daab177e2c0f695e0e6",
         "Title": "Logging output",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "d94824827b14420f83f080f6a13642ec",
           "e95e2e21575c4db9908d3e43e14622b7"
         ],
-        "Left": 4406.9324081023788,
-        "Top": -287.23865491090379,
-        "Width": 699.542504756293,
-        "Height": 249.0,
+        "HasNestedGroups": false,
+        "Left": 4406.7729540704568,
+        "Top": -330.69129020749153,
+        "Width": 532.14250475629342,
+        "Height": 235.16257625894235,
         "FontSize": 36.0,
-        "InitialTop": -234.0386549109038,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": -257.69129020749153,
         "InitialHeight": 145.16257625894235,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.0,
         "Background": "#FFD8D8D8"
       },
       {
         "Id": "85526132dff248b895bbfcb3ed7caaf0",
         "Title": "Logging output",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "fd7467776f664c8ea879df93862cabd0",
           "c8e308a77d484e449865df9072aab0a1"
         ],
-        "Left": 4405.4543042737587,
-        "Top": 107.99157528512204,
-        "Width": 699.54250475629851,
-        "Height": 230.60000000000002,
+        "HasNestedGroups": false,
+        "Left": 3946.5555241291759,
+        "Top": 266.55755899618356,
+        "Width": 532.14250475629888,
+        "Height": 235.16257625894303,
         "FontSize": 36.0,
-        "InitialTop": 161.19157528512204,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 339.55755899618356,
         "InitialHeight": 145.16257625894303,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.0,
         "Background": "#FFD8D8D8"
-      },
-      {
-        "Id": "909234866b524f1e811209408a41df92",
-        "Title": "Build component interim scene",
-        "Nodes": [
-          "3d66c164783948d0957caf923dce2ed4",
-          "77ab86ab60674fcc8972df31ae5b2d90",
-          "b2b5f350e0754264bbdd0682c8868aff",
-          "bf8ac338d27c42a3864ee1944be6f389",
-          "fc918d857f0a4a06898940f384209aa5"
-        ],
-        "Left": 872.55960952013493,
-        "Top": -121.65874087413899,
-        "Width": 1404.3855626080826,
-        "Height": 617.59519532408865,
-        "FontSize": 36.0,
-        "InitialTop": -68.458740874138982,
-        "InitialHeight": 552.7951953240887,
-        "TextblockHeight": 43.2,
-        "Background": "#FFFFB8D8"
       },
       {
         "Id": "43b76a62344f4c2fbacf4abe1173e661",
         "Title": "Relocate output",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "20b1ab7fb95647cf8d9c573745345082",
           "1e766fffec7645c695e3282092a5d897"
         ],
-        "Left": 2400.6547694028545,
-        "Top": 91.582861626422883,
-        "Width": 511.213839582786,
-        "Height": 248.34098663941472,
+        "HasNestedGroups": false,
+        "Left": 2415.4133647129011,
+        "Top": 134.51434869180429,
+        "Width": 646.83533359706371,
+        "Height": 371.80474509829133,
         "FontSize": 36.0,
-        "InitialTop": 144.78286162642289,
-        "InitialHeight": 221.94098663941472,
-        "TextblockHeight": 43.2,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 207.51434869180429,
+        "InitialHeight": 305.80474509829133,
+        "TextblockHeight": 63.0,
         "Background": "#FFFFB8D8"
       },
       {
-        "Id": "3eba32acef844cb1b8a5062796349cbf",
-        "Title": "JSON dump",
+        "Id": "4624e30e285d407e9faed9b6127e0e0e",
+        "Title": "Build component interim scene",
+        "DescriptionText": "<Hier doppelklicken, um die Gruppenbeschreibung zu bearbeiten>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
-          "deee2aa7667c4bc7bcea285509013fbd"
+          "3d66c164783948d0957caf923dce2ed4",
+          "77ab86ab60674fcc8972df31ae5b2d90",
+          "5018011b48f14019935261e3b20aaf19",
+          "b2b5f350e0754264bbdd0682c8868aff",
+          "bf8ac338d27c42a3864ee1944be6f389",
+          "fc918d857f0a4a06898940f384209aa5",
+          "6ff0ca4be777467d9043e070f1747153",
+          "43defcb30561472186caaf86d14452b6"
         ],
-        "Left": 3737.7656701261076,
-        "Top": 68.476378748088379,
-        "Width": 479.19999999999982,
-        "Height": 263.4,
+        "HasNestedGroups": false,
+        "Left": 449.670706068658,
+        "Top": -200.97313669804879,
+        "Width": 1832.7012668633038,
+        "Height": 910.70414349158273,
         "FontSize": 36.0,
-        "InitialTop": 121.67637874808838,
-        "InitialHeight": 145.0,
-        "TextblockHeight": 43.2,
-        "Background": "#FFA4E1FF"
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": -127.97313669804879,
+        "InitialHeight": 808.8132083973569,
+        "TextblockHeight": 63.0,
+        "Background": "#FFFFB8D8"
       },
       {
-        "Id": "a4fb14dafe734bd5ae2fb5d49cf9fdf5",
+        "Id": "b83a866d717b4e8782b74b9656c4e26c",
+        "Title": "JSON Export",
+        "DescriptionText": "<Hier doppelklicken, um die Gruppenbeschreibung zu bearbeiten>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "deee2aa7667c4bc7bcea285509013fbd",
+          "85526132dff248b895bbfcb3ed7caaf0"
+        ],
+        "HasNestedGroups": true,
+        "Left": 3393.1600002189812,
+        "Top": 193.55755899618356,
+        "Width": 1095.5380286664936,
+        "Height": 367.92210554998411,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 266.55755899618356,
+        "InitialHeight": 190.16257625894303,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "966492b27f754316a9b8abc506156de1",
         "Title": "Export as FBX with Y axis up",
+        "DescriptionText": "<Hier doppelklicken, um die Gruppenbeschreibung zu bearbeiten>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "d858c73d723f46dabd4ac44402f77793",
-          "d45646ff55664f84a4597957560caf50",
-          "379a96ae78fd4f0bab0d505d44e67838"
+          "379a96ae78fd4f0bab0d505d44e67838",
+          "9e8be2266e304143b03c6d14c782fe32",
+          "bc60d68521d24daab177e2c0f695e0e6"
         ],
-        "Left": 3409.0150365057484,
-        "Top": -298.34699845107741,
-        "Width": 811.46463776620521,
-        "Height": 312.962609189895,
+        "HasNestedGroups": true,
+        "Left": 3400.0023993948926,
+        "Top": -415.17965751679418,
+        "Width": 1548.9130594318576,
+        "Height": 396.34816175509985,
         "FontSize": 36.0,
-        "InitialTop": -245.14699845107742,
-        "InitialHeight": 281.762609189895,
-        "TextblockHeight": 43.2,
-        "Background": "#FFA4E1FF"
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": -342.17965751679418,
+        "InitialHeight": 314.34816175509985,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
       }
     ],
-    "X": -984.26740979339434,
-    "Y": 179.97472679826484,
-    "Zoom": 0.43098859708220433
+    "X": -1681.3934688556351,
+    "Y": 413.27371148620716,
+    "Zoom": 0.7351689849886236
   }
 }

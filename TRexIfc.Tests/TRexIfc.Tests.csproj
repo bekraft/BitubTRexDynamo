@@ -6,7 +6,7 @@
     <AssemblyName>TRexIfc.Tests</AssemblyName>
     <Title>TRex Tests</Title>
     
-    <Configurations>Debug;Release;Dev;Test</Configurations>
+    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>  
 	</PropertyGroup>
@@ -42,7 +42,7 @@
       
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Dev\</OutputPath>
+    <OutputPath>bin\Test\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>

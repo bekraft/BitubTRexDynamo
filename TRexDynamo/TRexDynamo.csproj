@@ -6,7 +6,7 @@
     <Title>TRexDynamo</Title>
     <Description>Bitub TRex Dynamo Common Library</Description>
 
-    <Configurations>Debug;Release;Dev;Test</Configurations>
+    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
@@ -38,7 +38,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Dev\</OutputPath>
+    <OutputPath>bin\Test\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -70,7 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23104-Dev.39859" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
     <PackageReference Include="DynamoVisualProgramming.Core" Version="2.17.2.4605" />
     <PackageReference Include="GeoJSON" Version="2.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging">

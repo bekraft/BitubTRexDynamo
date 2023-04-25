@@ -228,81 +228,6 @@
       "Description": "Retrieve all messages of given type.\n\nIfcValidationResult.Messages (reportFilter: var): IfcValidationMessage[]"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
-      "Id": "b089acfe112a494e99d6bf445c6035ec",
-      "Inputs": [
-        {
-          "Id": "923aaafa9d614b22b99e5f5e958f2e27",
-          "Name": "filePath",
-          "Description": "Dateipfad der Microsoft Excel-Tabelle.\n\nstring",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "0fa5dcefeb924787b09bd15bf0d44dfe",
-          "Name": "sheetName",
-          "Description": "Name des Arbeitsblatts, in das Daten geschrieben werden sollen.\n\nstring",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "f15f382d36734c8089170976aef7ee31",
-          "Name": "startRow",
-          "Description": "Startzeile zum Schreiben von Daten. Geben Sie 0 für Zeile 1, 1 für Zeile 2 usw. ein.\n\nint",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "a3695fb31ab245b88f867fd3d4f7d962",
-          "Name": "startCol",
-          "Description": "Startspalte zum Schreiben von Daten. Geben Sie 0 für Spalte A, 1 für Spalte B usw. ein.\n\nint",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "a15fc46eccd344bdb66755c2df389a30",
-          "Name": "data",
-          "Description": "Die in die Tabelle zu schreibenden Daten.\n\nvar[][]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "81e3feb7d43446c9aa7e2449a4fbf4f9",
-          "Name": "overWrite",
-          "Description": "bool\nVorgabewert : false",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "ef58ae9e965b4c1184ed045fd227b166",
-          "Name": "data",
-          "Description": "Die in die Tabelle geschriebenen Daten.",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Schreibt Daten in eine Microsoft Excel-Tabelle. Die Daten werden nach Zeilen geschrieben, wobei Unterlisten in aufeinander folgende Zeilen geschrieben werden. Zeilen und Spalten sind nullindiziert. Beispiel: Der Wert an Position [0,0] in der Datenliste wird in Zelle A1 geschrieben. Nullwerte und leere Listen werden als leere Zellen in Excel geschrieben. Für diesen Block muss Microsoft Excel installiert sein.\n\nData.ExportExcel (filePath: string, sheetName: string, startRow: int, startCol: int, data: var[][], overWrite: bool = false): var[][]"
-    },
-    {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
       "HintPath": "Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
       "InputValue": "Out\\IfcLoad-CheckGuids-SaveReport.xlsx",
@@ -355,6 +280,7 @@
     {
       "ConcreteType": "TRex.Validation.IfcReportDomainComposingNodeModel, TRexIfcUI",
       "Selected": [
+        1,
         14
       ],
       "NodeType": "ExtensionNode",
@@ -602,103 +528,206 @@
       ],
       "Replication": "Auto",
       "Description": "Returns a table of duplicate úsages of IfcGUIDs by model source, index label and EXPRESS type.\n\nIfcGuidStore.ToDataOfDuplicateUsage ( ): var[][]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
+      "Id": "322da621ca584f8a99a23e1a772674ed",
+      "Inputs": [
+        {
+          "Id": "17bfd21e21ae429fb0162304b89d9555",
+          "Name": "filePath",
+          "Description": "Datei mit der Excel-Arbeitsmappe\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "479f80604b6d4c04a8a4dd3accc99481",
+          "Name": "sheetName",
+          "Description": "Name des Arbeitsblatts, das Daten enthält\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "55192253fd7d4751aa201a7dc0fd07a8",
+          "Name": "data",
+          "Description": "Die in die Tabelle zu schreibenden Daten\n\nvar[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "18ff2e4ecb6047978a3c119e27b4a1d9",
+          "Name": "startRow",
+          "Description": "Startzeile zum Schreiben von Daten. Geben Sie 0 für Zeile 1, 1 für Zeile 2 usw. ein.\n\nint\nVorgabewert : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9975d3d9a1a14bb4b5aeda3604771bb4",
+          "Name": "startColumn",
+          "Description": "Startspalte zum Schreiben von Daten. Geben Sie 0 für Spalte A, 1 für Spalte B usw. ein.\n\nint\nVorgabewert : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "13bb645a624d4b63907216076bc26ec9",
+          "Name": "overWrite",
+          "Description": "Löschen der Tabelle vor dem Schreiben ein/aus\n\nbool\nVorgabewert : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ecf95aaf8fe54702a6cfc776c1f05469",
+          "Name": "writeAsString",
+          "Description": "Umschalten, um zwischen dem Schreiben von Zellenwerten als Zeichenfolgen zu wechseln\n\nbool\nVorgabewert : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "34671bd0bac9466cb6485aa7695c1e05",
+          "Name": "bool",
+          "Description": "Boolescher Wert, der angibt, ob das Schreiben in eine Tabelle erfolgreich ist.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Schreibt Daten in eine Microsoft Excel-Tabelle mithilfe der Open XML-Norm. Daten werden zeilenweise geschrieben, und Unterlisten werden in aufeinander folgenden Zeilen geschrieben. Zeilen und Spalten sind nullindiziert. Beispiel: Der Wert in der Datenliste bei [0,0] wird in die Zelle A1 geschrieben. Nullwerte und leere Listen werden als leere Zellen geschrieben.\n\nData.OpenXMLExportExcel (filePath: string, sheetName: string, data: var[][], startRow: int = 0, startColumn: int = 0, overWrite: bool = false, writeAsString: bool = false): bool"
     }
   ],
   "Connectors": [
     {
       "Start": "8a03116c99fb42a485f0551c8c7063ef",
       "End": "bcfd861a408e4512b0d8052b14b44d48",
-      "Id": "116ce5d140e54240be064b2f12a6d43b"
+      "Id": "116ce5d140e54240be064b2f12a6d43b",
+      "IsHidden": "False"
     },
     {
       "Start": "23cc6cbb6fad4397848dfb7acc803a24",
       "End": "c089e9de245b4409a16b809a0e4b758f",
-      "Id": "fc1c842c71674af4bbdbbbeb043477d9"
+      "Id": "fc1c842c71674af4bbdbbbeb043477d9",
+      "IsHidden": "False"
     },
     {
       "Start": "719bf801dad84225ac97f33392d8cf10",
       "End": "cfd77c0766904825b0e3f8c017c23cf1",
-      "Id": "81b50f690f224d0a90142b88fe17e743"
+      "Id": "81b50f690f224d0a90142b88fe17e743",
+      "IsHidden": "False"
     },
     {
       "Start": "7da0215dec7b468a8d9c2ecd42f53689",
       "End": "3bab2b363c2942708db258e3a43f3c9b",
-      "Id": "350869b7063f45a5b0130d1e45f02f11"
+      "Id": "350869b7063f45a5b0130d1e45f02f11",
+      "IsHidden": "False"
     },
     {
       "Start": "27402c3d74d34a10aaefd239efd3dc77",
       "End": "af480e95b5d0414692ab1e8698d7f937",
-      "Id": "02f26e98b7854be1b97f358aeb5e708c"
+      "Id": "02f26e98b7854be1b97f358aeb5e708c",
+      "IsHidden": "False"
     },
     {
       "Start": "75e91aeb820d4e38adaf07e8a2724b79",
       "End": "581d23136aaa4622a44b52747b632a79",
-      "Id": "ece3bf1651b548d3b1dcab8d1a22f4a2"
+      "Id": "ece3bf1651b548d3b1dcab8d1a22f4a2",
+      "IsHidden": "False"
     },
     {
       "Start": "75e91aeb820d4e38adaf07e8a2724b79",
       "End": "26ba39bce68446f89695e8559f9997d7",
-      "Id": "1846fa40a38445f4bb7abf023ee4ed59"
+      "Id": "1846fa40a38445f4bb7abf023ee4ed59",
+      "IsHidden": "False"
     },
     {
       "Start": "4177bc3b969e4215a38e0ec7a67432d3",
       "End": "10f02c7a4cb04f108ec9af99089464c3",
-      "Id": "2a096ce68b95476388498a3f22df28ed"
+      "Id": "2a096ce68b95476388498a3f22df28ed",
+      "IsHidden": "False"
     },
     {
       "Start": "e05b9ccfba3b4dd3958f6f5e7e0fbd6f",
-      "End": "923aaafa9d614b22b99e5f5e958f2e27",
-      "Id": "8fc0592886ac4b229f80c433b128bd5e"
+      "End": "17bfd21e21ae429fb0162304b89d9555",
+      "Id": "063b8cb4f0024ef8844f001dd225d33a",
+      "IsHidden": "False"
     },
     {
       "Start": "f2f183b98c6f4bceb754ea96fbd61a9c",
-      "End": "f15f382d36734c8089170976aef7ee31",
-      "Id": "396dd8147edc475b844d78342a2d705b"
+      "End": "18ff2e4ecb6047978a3c119e27b4a1d9",
+      "Id": "f1e727e49a4d4c9cbf37544750491f5a",
+      "IsHidden": "False"
     },
     {
       "Start": "1d6747c5d6d04c26858ac5a061f7a18f",
-      "End": "a3695fb31ab245b88f867fd3d4f7d962",
-      "Id": "e67203e04ce8477e9bbf2cfa787dab7e"
+      "End": "9975d3d9a1a14bb4b5aeda3604771bb4",
+      "Id": "b4bd0171f2004bbcb0500debd4957d4b",
+      "IsHidden": "False"
     },
     {
       "Start": "c7d224cd8126482aa5f4baeb301435a5",
       "End": "bf263458de584fcf993835700f34e8e9",
-      "Id": "1dcea310297844908ff1e359c1576559"
+      "Id": "1dcea310297844908ff1e359c1576559",
+      "IsHidden": "False"
     },
     {
       "Start": "435ba8b1b4a445a1ba1dad035b152806",
       "End": "a20069f53c784e2d8be177b9dda77929",
-      "Id": "49ed5f6b20f34fc0988fb5e486817cbc"
+      "Id": "49ed5f6b20f34fc0988fb5e486817cbc",
+      "IsHidden": "False"
     },
     {
       "Start": "b7253df34b8b4aa2a65171b9f38476c3",
-      "End": "0fa5dcefeb924787b09bd15bf0d44dfe",
-      "Id": "39f37719af4d4825a47adcb8e605bf0c"
+      "End": "479f80604b6d4c04a8a4dd3accc99481",
+      "Id": "249984ecc54e4211b2dadcf6c17f3014",
+      "IsHidden": "False"
     },
     {
       "Start": "be90ac84f2ca4fbc941864bc4306f31f",
       "End": "2faf6ec1a2e74743bb3f875233e6145f",
-      "Id": "7e2a9dd03b1b490dbdf5bf75ccbf6ced"
+      "Id": "7e2a9dd03b1b490dbdf5bf75ccbf6ced",
+      "IsHidden": "False"
     },
     {
       "Start": "1319e3d049eb456ca89ef70d2afa9879",
-      "End": "a15fc46eccd344bdb66755c2df389a30",
-      "Id": "fac7f36b2ea740caaad0562d77daa9d3"
+      "End": "55192253fd7d4751aa201a7dc0fd07a8",
+      "Id": "a0ec9d39b8354beb852db583de54b686",
+      "IsHidden": "False"
     },
     {
       "Start": "2f7054df31354d05ae0be4e9beffd1da",
       "End": "159eb1d2424d40efb6b2f9c4fd046fb9",
-      "Id": "d11b916c97024313b94648a3d25f8e3e"
+      "Id": "d11b916c97024313b94648a3d25f8e3e",
+      "IsHidden": "False"
     },
     {
       "Start": "2f7054df31354d05ae0be4e9beffd1da",
       "End": "87e085d6289d41309c6a7dc6650ecec2",
-      "Id": "983bb02cfc80410dbf5d0bff39fe225c"
+      "Id": "983bb02cfc80410dbf5d0bff39fe225c",
+      "IsHidden": "False"
     },
     {
       "Start": "2f7054df31354d05ae0be4e9beffd1da",
       "End": "0c789f98e9db498b8d8361ab1b541fe8",
-      "Id": "3e4cf5e5d3594fc79925f8d5f89c2bab"
+      "Id": "3e4cf5e5d3594fc79925f8d5f89c2bab",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
@@ -720,16 +749,47 @@
         "3337f0eeef8f4846a62c807d7075a9e3",
         "05dc8827032f40b8b8ae17177fd8e4f5"
       ]
+    },
+    {
+      "Name": "IfcSampleHouse.ifc",
+      "ReferenceType": "External",
+      "Nodes": [
+        "5c2deddc90474d94a0c118efefed883c"
+      ]
+    },
+    {
+      "Name": "IfcLoad-CheckGuids-SaveReport.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "324afdf1e4c74e8aa2cdef6bc95ebca5"
+      ]
     }
   ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Eigenschaften",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "Keine",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.10.1.3976",
-      "RunType": "Automatic",
+      "Version": "2.16.0.2501",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -744,6 +804,7 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
         "Id": "5c2deddc90474d94a0c118efefed883c",
@@ -816,16 +877,6 @@
         "Y": 529.81408266257085
       },
       {
-        "Id": "b089acfe112a494e99d6bf445c6035ec",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Name": "Data.ExportExcel",
-        "ShowGeometry": true,
-        "Excluded": false,
-        "X": 2920.3628157415465,
-        "Y": 216.52068652458792
-      },
-      {
         "Id": "324afdf1e4c74e8aa2cdef6bc95ebca5",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -862,8 +913,8 @@
         "Name": "DateTime.Now",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": 2472.326786590248,
-        "Y": 24.432353427613236
+        "X": 2410.0676242559689,
+        "Y": -25.853893073150914
       },
       {
         "Id": "6f15389d20714127be97844bd664c9bc",
@@ -882,8 +933,8 @@
         "Name": "Code Block",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": 2366.7974655158209,
-        "Y": 115.7238827287174
+        "X": 2381.1649645160392,
+        "Y": 175.58846189629378
       },
       {
         "Id": "2e7e948e187748ac890a68ca3ae7a8ab",
@@ -902,8 +953,8 @@
         "Name": "IfcGuidStore.CountInstances",
         "ShowGeometry": true,
         "Excluded": false,
-        "X": 2357.6996921043133,
-        "Y": 871.709451785844
+        "X": 2349.4561274329367,
+        "Y": 791.33469623992039
       },
       {
         "Id": "859afc3699d144b9851082e1ff427d9e",
@@ -934,11 +985,21 @@
         "Excluded": false,
         "X": 2350.7797476463784,
         "Y": 1101.679811497992
+      },
+      {
+        "Id": "322da621ca584f8a99a23e1a772674ed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Data.OpenXMLExportExcel",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 3099.9099964567645,
+        "Y": 175.1738108455595
       }
     ],
     "Annotations": [],
-    "X": -418.19432457022015,
-    "Y": 11.337465357626542,
-    "Zoom": 0.55611075783487607
+    "X": -272.06813700793293,
+    "Y": 151.74878341591887,
+    "Zoom": 0.2962588358564342
   }
 }

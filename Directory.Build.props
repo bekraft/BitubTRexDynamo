@@ -23,6 +23,11 @@
     <BuildQualifier>-Dev</BuildQualifier>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'XbimDev'">
+    <DefineConstants>$(DefineConstants);Is_XbimDev</DefineConstants>
+    <BuildQualifier>-XbimDev</BuildQualifier>
+  </PropertyGroup>
+
   <PropertyGroup>
     <ReleaseVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</ReleaseVersion>
     <BuildVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</BuildVersion>

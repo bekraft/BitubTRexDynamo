@@ -11,7 +11,9 @@ using Autodesk.DesignScript.Runtime;
 using Microsoft.Extensions.Logging;
 
 using TRex.Log;
+#if Is_XbimDev
 using Xbim.Common.Configuration;
+#endif
 
 namespace TRex.Store
 {
@@ -41,7 +43,9 @@ namespace TRex.Store
 
         static IfcStore()
         {
+#if Is_XbimDev
             XbimServices.Current.ConfigureServices(s => s.AddXbimToolkit(opt => opt.AddHeuristicModel()));
+#endif
         }
 
         private IfcStore(Logger logger)
