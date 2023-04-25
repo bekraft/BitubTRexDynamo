@@ -19,6 +19,7 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'x64'
+  dynamoVersion: '2.17'
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     buildConfiguration: 'Test'
     buildQualifier: '-Test'
@@ -36,6 +37,10 @@ variables:
     buildQualifier: '-Debug'
 
 steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+  
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
@@ -61,7 +66,26 @@ steps:
     configuration: '$(buildConfiguration)'
     msbuildArgs: '-p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
     
-- task: VSTest@2
+- task: DotNetCoreCLI@2
+  condition: and(succeeded(), eq(variables.skipTests, 'false'))
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --arch $(buildPlatform)'
+    
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'DeployedPackages/$(dynamoVersion)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/TRex-$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond).zip'
+    replaceExistingArchive: true
+    verbose: true
+    
+- script: |
+    git tag $(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)
+    git push origin $(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)
+  workingDirectory: $(Build.SourcesDirectory)
+  displayName: Git Commit and Tag from pipeline
+  continueOnError: true
+  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
