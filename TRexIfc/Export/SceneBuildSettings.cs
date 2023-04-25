@@ -46,7 +46,8 @@ namespace TRex.Export
                 Transforming = SceneTransformationStrategy.Quaternion,
                 Positioning = ScenePositioningStrategy.NoCorrection,
                 UserModelCenter = new XYZ(),
-                CRS = Rotation.Identity,
+                Scale = XYZ.Ones,
+                CRS = Transform.Identity,
                 SelectedContext = contexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
                 ComponentIdentificationStrategy = SceneComponentIdentificationStrategy.UseGloballyUniqueID
             });
@@ -55,6 +56,7 @@ namespace TRex.Export
         [IsVisibleInDynamoLibrary(false)]
         public static SceneBuildSettings ByParameters(string transformationStrategy,
             string positioningStrategy,
+            XYZ userModelCenter,
             CRSTransform crs,
             UnitScale unitScale,
             string[] sceneContexts,
@@ -67,8 +69,9 @@ namespace TRex.Export
             {
                 Transforming = DynamicArgumentDelegation.TryCastEnumOrDefault<SceneTransformationStrategy>(transformationStrategy),
                 Positioning = DynamicArgumentDelegation.TryCastEnumOrDefault<ScenePositioningStrategy>(positioningStrategy),
-                UserModelCenter = crs.Transform.T,
-                CRS = crs.Transform.R * (unitScale?.UnitsPerMeter ?? 1),
+                UserModelCenter = userModelCenter,
+                CRS = crs.Transform,
+                Scale = XYZ.Ones * (unitScale?.UnitsPerMeter ?? 1),
                 SelectedContext = sceneContexts?.Select(c => new SceneContext { Name = c.ToQualifier() }).ToArray() ?? new SceneContext[] { },
                 ComponentIdentificationStrategy = DynamicArgumentDelegation.TryCastEnumOrDefault<SceneComponentIdentificationStrategy>(identificationStrategy)
             });

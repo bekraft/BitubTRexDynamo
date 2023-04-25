@@ -11,7 +11,7 @@
 
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Beta</Configurations>
+    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <LangVersion>8.0</LangVersion>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
@@ -27,14 +27,24 @@
     <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Beta|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Beta\</OutputPath>
+    <OutputPath>bin\Dev\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Beta\TRexIfcUI.xml</DocumentationFile>
+    <DocumentationFile>bin\Dev\TRexIfcUI.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Test\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Dev\TRexIfcUI.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -47,8 +57,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.22328-Beta.35842" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" PrivateAssets="all" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
   </ItemGroup>
 
   <ItemGroup>
@@ -77,16 +86,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Core">
-      <Version>2.16.0.2501</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary">
-      <Version>2.16.0.2501</Version>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary">
-      <Version>2.16.0.2501</Version>
-    </PackageReference>
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="2.17.2.4605" />
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="2.17.2.4605" />
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="2.17.2.4605" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
   </ItemGroup>
 
   <ItemGroup>

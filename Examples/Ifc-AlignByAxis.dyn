@@ -23,7 +23,7 @@
         {
           "Id": "eceba6d2c8374fe08828e0ad98de6f2a",
           "Name": "x",
-          "Description": "double",
+          "Description": "X\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -32,7 +32,7 @@
         {
           "Id": "88200fbe89d746e5883d21a040ec396e",
           "Name": "y",
-          "Description": "double",
+          "Description": "Y\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -41,7 +41,7 @@
         {
           "Id": "aa83a008e9eb4042ae7fdda3842c1736",
           "Name": "z",
-          "Description": "double",
+          "Description": "Z\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -52,7 +52,7 @@
         {
           "Id": "155e6038690b400db0ad3ee4b833f0da",
           "Name": "var",
-          "Description": "var",
+          "Description": "A 3D point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -60,7 +60,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): var"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -141,7 +141,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\Alignment-Full.xml",
+      "HintPath": "Examples\\Out\\Alignment-Full.xml",
       "InputValue": "Out\\Alignment-Full.xml",
       "NodeType": "ExtensionNode",
       "Id": "15892cf081a34faf884ea341573ee727",
@@ -162,7 +162,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out\\Ifc-AlignByAxis.log",
+      "HintPath": "Examples\\Out\\Ifc-AlignByAxis.log",
       "InputValue": "Out\\Ifc-AlignByAxis.log",
       "NodeType": "ExtensionNode",
       "Id": "9a59e502e87c42e8ba2635f348d60770",
@@ -183,7 +183,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Ifc4\\IfcSampleHouse.ifc",
+      "HintPath": "Examples\\Ifc4\\IfcSampleHouse.ifc",
       "InputValue": "Ifc4\\IfcSampleHouse.ifc",
       "NodeType": "ExtensionNode",
       "Id": "62cb103f98cc4f7e8f1a84abf8e94ec2",
@@ -539,7 +539,7 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Directory, CoreNodeModels",
-      "HintPath": "C:\\Workspace\\Git\\BitubTRexDynamo\\Examples\\Out",
+      "HintPath": "Examples\\Out",
       "InputValue": ".\\Out",
       "NodeType": "ExtensionNode",
       "Id": "ce193b7b5ba345b2a0005a4137a98d1e",
@@ -647,8 +647,8 @@
         },
         {
           "Id": "c206504892ac409cb8715b4f6b5da178",
-          "Name": "axisRefA",
-          "Description": "The orientation point of A (or undefined if simpliy shifted along X)\n\nvar",
+          "Name": "referenceA",
+          "Description": "The orientation point of A (or if undefined, simpliy shifted along X)\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -665,8 +665,8 @@
         },
         {
           "Id": "c431856d77324a329f2273d52e4866e6",
-          "Name": "axisRefB",
-          "Description": "The orientation point of B (or undefined if simpliy shifted along X)\n\nvar",
+          "Name": "referenceB",
+          "Description": "The orientation point of B (or if undefined, simpliy shifted along X)\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -685,7 +685,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "A 2-by-2 point alignment. Given an offset and orientation point of A and of B, an affine aligment will be computed. No scaling will be done. The total distance of offset and orientation point is normalized during calculations.\n\nAlignment.ByPointReference (offsetA: var, axisRefA: var, offsetB: var, axisRefB: var): Alignment"
+      "Description": "A 2-by-2 point alignment. Given an offset and orientation point of A and of B, an affine aligment will be computed. No scaling will be done. The total distance of offset and orientation point is normalized during calculations.\n\nAlignment.ByPointReference (offsetA: var, referenceA: var, offsetB: var, referenceB: var): Alignment"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -734,7 +734,7 @@
         {
           "Id": "8c16827108aa4c0c945145d811e3a15c",
           "Name": "x",
-          "Description": "double",
+          "Description": "X\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -743,7 +743,7 @@
         {
           "Id": "92c6ceecf0ff4ac396868209aad4eb65",
           "Name": "y",
-          "Description": "double",
+          "Description": "Y\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -752,7 +752,7 @@
         {
           "Id": "7eeece5c638643889e06039cc2809c47",
           "Name": "z",
-          "Description": "double",
+          "Description": "Z\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -763,7 +763,7 @@
         {
           "Id": "14bc9b18461b462e923c1a20d700e41c",
           "Name": "var",
-          "Description": "var",
+          "Description": "A 3D point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -771,7 +771,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): var"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -820,7 +820,7 @@
         {
           "Id": "6765cefb82254a00870df2593c814c3f",
           "Name": "x",
-          "Description": "double",
+          "Description": "X\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -829,7 +829,7 @@
         {
           "Id": "84703ec308d442dc8e770708fae642d6",
           "Name": "y",
-          "Description": "double",
+          "Description": "Y\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -838,7 +838,7 @@
         {
           "Id": "5a305bfae6294e73ba0838435443f880",
           "Name": "z",
-          "Description": "double",
+          "Description": "Z\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -849,7 +849,7 @@
         {
           "Id": "60f274cb8efc4e2985dd16a664c74044",
           "Name": "var",
-          "Description": "var",
+          "Description": "A 3D point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -857,7 +857,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): var"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -926,7 +926,7 @@
         {
           "Id": "6bdecd31f0154861abf92c323f5873f5",
           "Name": "x",
-          "Description": "double",
+          "Description": "X\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -935,7 +935,7 @@
         {
           "Id": "55995dfff6e04f9bb76c596c38655cd5",
           "Name": "y",
-          "Description": "double",
+          "Description": "Y\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -944,7 +944,7 @@
         {
           "Id": "39c08f0591d84989978308978303a31b",
           "Name": "z",
-          "Description": "double",
+          "Description": "Z\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -955,7 +955,7 @@
         {
           "Id": "4deb954d2b0842e7bedbb56e48e10998",
           "Name": "var",
-          "Description": "var",
+          "Description": "A 3D point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -963,186 +963,220 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "XYZs.ByXYZ (x: double, y: double, z: double): var"
+      "Description": "A new IFC cartesian point by given coordinates.\n\nXYZs.ByXYZ (x: double, y: double, z: double): var"
     }
   ],
   "Connectors": [
     {
       "Start": "155e6038690b400db0ad3ee4b833f0da",
       "End": "b4e17f1849194f5db73bb08a17728ed7",
-      "Id": "855480a622234039856a09b212bd57f9"
+      "Id": "855480a622234039856a09b212bd57f9",
+      "IsHidden": "False"
     },
     {
       "Start": "b980b1e786df44699e749df0ec425afa",
       "End": "8c16827108aa4c0c945145d811e3a15c",
-      "Id": "4f6309e429264ff7ad11b9cf5f4ea578"
+      "Id": "4f6309e429264ff7ad11b9cf5f4ea578",
+      "IsHidden": "False"
     },
     {
       "Start": "3b91a3bf97e0496e8bd6116eaf456b8b",
       "End": "92c6ceecf0ff4ac396868209aad4eb65",
-      "Id": "3f9454620ca54724a0baacb89d872ea5"
+      "Id": "3f9454620ca54724a0baacb89d872ea5",
+      "IsHidden": "False"
     },
     {
       "Start": "346f279e77fe4ae1a2ab4e127473465c",
       "End": "7eeece5c638643889e06039cc2809c47",
-      "Id": "3e77e0466dab46fe87f4c0bfb4da81c5"
+      "Id": "3e77e0466dab46fe87f4c0bfb4da81c5",
+      "IsHidden": "False"
     },
     {
       "Start": "8c0b9d4a1ea542718d09ee2805db8e9e",
       "End": "18b5477a199645bab37ce4d830630611",
-      "Id": "e4110d72f4f34aaeba13633d2b74b343"
+      "Id": "e4110d72f4f34aaeba13633d2b74b343",
+      "IsHidden": "False"
     },
     {
       "Start": "a6e3a28606b34dd6bc2d206ae30001c9",
       "End": "cb0cc6f67de24fd881a5ecdceb8d1ee2",
-      "Id": "895d6a0a929049eda441faa142aefe9d"
+      "Id": "895d6a0a929049eda441faa142aefe9d",
+      "IsHidden": "False"
     },
     {
       "Start": "fedd9a9171ea41d2ab4b591f1bccb231",
       "End": "d26677b076f34657af8bce5e18365393",
-      "Id": "ad6d9c6188b04f05a9bcfc7961053b23"
+      "Id": "ad6d9c6188b04f05a9bcfc7961053b23",
+      "IsHidden": "False"
     },
     {
       "Start": "6b1174d761fb426997371c93f45a9bc8",
       "End": "3f51233beae846e986e7f085284cdc5f",
-      "Id": "b67fcfd5881247289628edd1d964f5f0"
+      "Id": "b67fcfd5881247289628edd1d964f5f0",
+      "IsHidden": "False"
     },
     {
       "Start": "4a27383ca8644ed890b0c4f1621e12d8",
       "End": "edf84a8ebe18407eb7d267a8ad74c737",
-      "Id": "481fe835622e4a23a6326ccb4a4b5341"
+      "Id": "481fe835622e4a23a6326ccb4a4b5341",
+      "IsHidden": "False"
     },
     {
       "Start": "739fb85f04344423a42272b56c105cba",
       "End": "5ebc69476321465dbc3d7f8f8317f873",
-      "Id": "31ebf120766749a595296d056ab7d566"
+      "Id": "31ebf120766749a595296d056ab7d566",
+      "IsHidden": "False"
     },
     {
       "Start": "a3368b4e3259499a96f8f2b71df8a5f7",
       "End": "e69497d9b87f4bcd96f1dce1da2155ed",
-      "Id": "9e0b1f5bdb6e48b1b2be8b7c9204141d"
+      "Id": "9e0b1f5bdb6e48b1b2be8b7c9204141d",
+      "IsHidden": "False"
     },
     {
       "Start": "23a8da2a7d5841c9a5e87b070e936ba4",
       "End": "3dd8b089792e4bcb8ff6740ae039d1c3",
-      "Id": "5464db377fc34a13b7189b565fee3cd5"
+      "Id": "5464db377fc34a13b7189b565fee3cd5",
+      "IsHidden": "False"
     },
     {
       "Start": "4c5b77b4e5424775a649395291f3ce8a",
       "End": "61f3e65dc9744eaf9d126c8dc27eea40",
-      "Id": "7c6789c738bb4140b60b465217da8c9b"
+      "Id": "7c6789c738bb4140b60b465217da8c9b",
+      "IsHidden": "False"
     },
     {
       "Start": "f0bcb2fee9924ba9adcea2abde38e391",
       "End": "11f55503a86b453d827a18ce852b5523",
-      "Id": "80d522ac836d4e4ab6290607233db8ef"
+      "Id": "80d522ac836d4e4ab6290607233db8ef",
+      "IsHidden": "False"
     },
     {
       "Start": "f40028badca74f068f9f46f34ed6ed49",
       "End": "76d4d4aed0474414bc83537cbcf43ebd",
-      "Id": "39ed49ee98a4490d9ba5c9aca7dc01a4"
+      "Id": "39ed49ee98a4490d9ba5c9aca7dc01a4",
+      "IsHidden": "False"
     },
     {
       "Start": "f40028badca74f068f9f46f34ed6ed49",
       "End": "8c1ae79f3acf45298025ab38d9b05d13",
-      "Id": "b287203d74364695aeb5d6a1df2cf613"
+      "Id": "b287203d74364695aeb5d6a1df2cf613",
+      "IsHidden": "False"
     },
     {
       "Start": "8aa8e5e20f7746a5b93ee50e9cf1f9f6",
       "End": "d1b91d21847945c4b20fe71ec2a8063c",
-      "Id": "43bd45d12035487499f309f7fd29b882"
+      "Id": "43bd45d12035487499f309f7fd29b882",
+      "IsHidden": "False"
     },
     {
       "Start": "bc21318938c7439980004a4d9e544c58",
       "End": "4d2cc29e17b84e3bb8cf127e10437bdf",
-      "Id": "228a1202bfab4a97b89005949737b876"
+      "Id": "228a1202bfab4a97b89005949737b876",
+      "IsHidden": "False"
     },
     {
       "Start": "11d904d61e454b6eb5dc8a74a72ea8f8",
       "End": "fc67e730df7341b39d275a2d81b5dc82",
-      "Id": "7b7c24a066e64bdc81f16a35a9cd4578"
+      "Id": "7b7c24a066e64bdc81f16a35a9cd4578",
+      "IsHidden": "False"
     },
     {
       "Start": "83604731a1f741029eada5adbb6befd5",
       "End": "94cbfd99a44c43029fe427a58f306533",
-      "Id": "779ce55416c24179ac7987d0673cac14"
+      "Id": "779ce55416c24179ac7987d0673cac14",
+      "IsHidden": "False"
     },
     {
       "Start": "83604731a1f741029eada5adbb6befd5",
       "End": "88d95aaaa46b4d018b66fb27629b9a12",
-      "Id": "703a70d13eff4782aa6860297ba9b6d4"
+      "Id": "703a70d13eff4782aa6860297ba9b6d4",
+      "IsHidden": "False"
     },
     {
       "Start": "f6703433cc3d49eb9be41faff69072cd",
       "End": "6765cefb82254a00870df2593c814c3f",
-      "Id": "07d1c631be9e4f548ed7f29d4984a7f2"
+      "Id": "07d1c631be9e4f548ed7f29d4984a7f2",
+      "IsHidden": "False"
     },
     {
       "Start": "8134823a95c94cbea23e65d702b00282",
       "End": "84703ec308d442dc8e770708fae642d6",
-      "Id": "da720162224d4e14a62a1e4baf78926f"
+      "Id": "da720162224d4e14a62a1e4baf78926f",
+      "IsHidden": "False"
     },
     {
       "Start": "f185921db2354d339c7be43d69ed2a0f",
       "End": "5a305bfae6294e73ba0838435443f880",
-      "Id": "68df70432dac4861a0920e3da85fa7ea"
+      "Id": "68df70432dac4861a0920e3da85fa7ea",
+      "IsHidden": "False"
     },
     {
       "Start": "14bc9b18461b462e923c1a20d700e41c",
       "End": "c206504892ac409cb8715b4f6b5da178",
-      "Id": "0fd003caa7a84811ab9a6d8b2e78aec9"
+      "Id": "0fd003caa7a84811ab9a6d8b2e78aec9",
+      "IsHidden": "False"
     },
     {
       "Start": "8edc5cad27da460db9d8333e20b06164",
       "End": "eceba6d2c8374fe08828e0ad98de6f2a",
-      "Id": "7263b27696b0480e8c870e7d80c40f44"
+      "Id": "7263b27696b0480e8c870e7d80c40f44",
+      "IsHidden": "False"
     },
     {
       "Start": "65d9b2a97bb5405cbc578eafac38e70d",
       "End": "88200fbe89d746e5883d21a040ec396e",
-      "Id": "b7b8ce8ead2c4096b5adc92b821f0562"
+      "Id": "b7b8ce8ead2c4096b5adc92b821f0562",
+      "IsHidden": "False"
     },
     {
       "Start": "4f26ec5783ab42d68eb37bdf93f4fce0",
       "End": "aa83a008e9eb4042ae7fdda3842c1736",
-      "Id": "cdca654c3a2e44518698f7c5a73cab84"
+      "Id": "cdca654c3a2e44518698f7c5a73cab84",
+      "IsHidden": "False"
     },
     {
       "Start": "60f274cb8efc4e2985dd16a664c74044",
       "End": "7b8afa0b3488485e964315a1a4cda170",
-      "Id": "65a34ae6f73d459e9b7866860c579a26"
+      "Id": "65a34ae6f73d459e9b7866860c579a26",
+      "IsHidden": "False"
     },
     {
       "Start": "93c42cdb4bbe41849f6e30c88c72d675",
       "End": "cb0ba6c3994349118ad1364ab5116afb",
-      "Id": "e1b0e63fce8840108cffe894c91dd64b"
+      "Id": "e1b0e63fce8840108cffe894c91dd64b",
+      "IsHidden": "False"
     },
     {
       "Start": "deb0ea1b9a4948b7b32bf26f42a16b48",
       "End": "6bdecd31f0154861abf92c323f5873f5",
-      "Id": "a948c29c273f437ca8fa03d9543ff851"
+      "Id": "a948c29c273f437ca8fa03d9543ff851",
+      "IsHidden": "False"
     },
     {
       "Start": "90349211944a461db9058f6cb29552be",
       "End": "55995dfff6e04f9bb76c596c38655cd5",
-      "Id": "662517e49a9d45acaf97dd1def5edcb6"
+      "Id": "662517e49a9d45acaf97dd1def5edcb6",
+      "IsHidden": "False"
     },
     {
       "Start": "6bf1be4cde184651ab7c4bcb84016974",
       "End": "39c08f0591d84989978308978303a31b",
-      "Id": "3a8310e3275f4afb8c1e6a0e78dd0ed5"
+      "Id": "3a8310e3275f4afb8c1e6a0e78dd0ed5",
+      "IsHidden": "False"
     },
     {
       "Start": "4deb954d2b0842e7bedbb56e48e10998",
       "End": "c431856d77324a329f2273d52e4866e6",
-      "Id": "bf222046d19e4328812d896777aa9f06"
+      "Id": "bf222046d19e4328812d896777aa9f06",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [
     {
       "Name": "TRex",
-      "Version": "1.0.20304.44022",
+      "Version": "1.0.22356.32975",
       "ReferenceType": "Package",
       "Nodes": [
         "c9e4333a2ba44a76bf55918d219a0e6f",
@@ -1158,14 +1192,7 @@
         "07e23328fca04b5f8b0d86c508d5a655",
         "15f66807e475408d9daf48a6a8b2e48f",
         "4db58f5e5cd64e51ba6e69dfdbdc6927",
-        "769e9bec8a944369aabfd95cd4872e2d"
-      ]
-    },
-    {
-      "Name": "TRex",
-      "Version": "1.0.21239.39970",
-      "ReferenceType": "Package",
-      "Nodes": [
+        "769e9bec8a944369aabfd95cd4872e2d",
         "fec5129741d74ec3a21a259384da7bb6"
       ]
     }
@@ -1193,7 +1220,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.12.0.5650",
+      "Version": "2.16.0.2501",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -1209,140 +1236,141 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
         "Name": "XYZs.ByXYZ",
+        "ShowGeometry": true,
         "Id": "c9e4333a2ba44a76bf55918d219a0e6f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 184.06422152716073,
-        "Y": 48.042163699831974
+        "X": 186.64057809642145,
+        "Y": 41.601272276680334
       },
       {
-        "ShowGeometry": true,
         "Name": "X-axis source",
+        "ShowGeometry": true,
         "Id": "3ddde678659449ba8b1433efd1021a87",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -168.36748214589716,
-        "Y": 299.36021822406781
+        "X": -170.94383871515777,
+        "Y": 301.93657479332842
       },
       {
-        "ShowGeometry": true,
         "Name": "Alignment.SaveTo",
+        "ShowGeometry": true,
         "Id": "a615d33197c744f8a500127d78a4b4d4",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 401.40567791620151,
-        "Y": -219.57754354360054
+        "Y": -219.5775435436006
       },
       {
-        "ShowGeometry": true,
         "Name": "File Path",
+        "ShowGeometry": true,
         "Id": "15892cf081a34faf884ea341573ee727",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": -168.19995062582416,
-        "Y": -204.50564624060485
+        "Y": -204.5056462406049
       },
       {
-        "ShowGeometry": true,
         "Name": "File Path",
+        "ShowGeometry": true,
         "Id": "9a59e502e87c42e8ba2635f348d60770",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -169.81628012426137,
-        "Y": -412.5363381445967
+        "X": -314.76134597149672,
+        "Y": -497.84321754843916
       },
       {
-        "ShowGeometry": true,
         "Name": "File Path",
+        "ShowGeometry": true,
         "Id": "62cb103f98cc4f7e8f1a84abf8e94ec2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 348.218825473164,
-        "Y": -529.824858709138
+        "X": 331.25622637841468,
+        "Y": -569.40425659688754
       },
       {
-        "ShowGeometry": true,
         "Name": "File Logger",
+        "ShowGeometry": true,
         "Id": "2cac8a0f7e8346f391ae269ed9b75283",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 25.440807192575562,
-        "Y": -418.077790228028
+        "X": -70.50119460316057,
+        "Y": -495.84573670087036
       },
       {
-        "ShowGeometry": true,
         "Name": "Ifc Load",
+        "ShowGeometry": true,
         "Id": "8763f8100cd04a91b957f0d2b7029180",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 586.95197590711916,
-        "Y": -528.68489803967623
+        "X": 569.98937681236987,
+        "Y": -568.26429592742579
       },
       {
-        "ShowGeometry": true,
         "Name": "IfcAuthorMetadata.ByAuthor",
+        "ShowGeometry": true,
         "Id": "c8f5663e36a04f8b9506931c7a0fd465",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -20.835023711735857,
-        "Y": 644.05601836415462
+        "X": -11.927389124801493,
+        "Y": 742.03999882043172
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "7c5e46167bd0458e849b1260f5773e32",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -158.54518282673382,
-        "Y": 652.72287587976234
+        "X": -149.63754823979946,
+        "Y": 750.70685633603944
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "856110d361334d4d82488fc1dac36095",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 924.7525562821595,
-        "Y": -272.8473873934725
+        "Y": -229.49852304022312
       },
       {
-        "ShowGeometry": true,
         "Name": "Log Reason",
+        "ShowGeometry": true,
         "Id": "4db6ba8de50a434f9b1f78ebb1a983c3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 917.46175900676587,
-        "Y": -111.95889016659692
+        "Y": -68.610025813347534
       },
       {
-        "ShowGeometry": true,
         "Name": "Ifc Axis Alignment",
+        "ShowGeometry": true,
         "Id": "fd8437b921ce4617a4c461b3bceaec66",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 1175.70175430558,
-        "Y": -252.04263841695331
+        "Y": -208.69377406370393
       },
       {
-        "ShowGeometry": true,
         "Name": "Ifc Save",
+        "ShowGeometry": true,
         "Id": "ae7119a6033a495d96d0bea537606384",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1351,8 +1379,8 @@
         "Y": -113.4895933766594
       },
       {
-        "ShowGeometry": true,
         "Name": "IfcModel.RelocatePath",
+        "ShowGeometry": true,
         "Id": "02dcb5b405ed442981907e6554a064af",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1361,8 +1389,8 @@
         "Y": -117.04355274007906
       },
       {
-        "ShowGeometry": true,
         "Name": "Directory Path",
+        "ShowGeometry": true,
         "Id": "ce193b7b5ba345b2a0005a4137a98d1e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1371,8 +1399,8 @@
         "Y": -94.867221308277237
       },
       {
-        "ShowGeometry": true,
         "Name": "Log Filter",
+        "ShowGeometry": true,
         "Id": "94127fb0790d4490b2ef97acba756714",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1381,8 +1409,8 @@
         "Y": -428.03682132825844
       },
       {
-        "ShowGeometry": true,
         "Name": "Data Preview",
+        "ShowGeometry": true,
         "Id": "07e23328fca04b5f8b0d86c508d5a655",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1391,8 +1419,8 @@
         "Y": -431.73377521928643
       },
       {
-        "ShowGeometry": true,
         "Name": "Alignment.By2x2Reference",
+        "ShowGeometry": true,
         "Id": "15f66807e475408d9daf48a6a8b2e48f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -1401,166 +1429,195 @@
         "Y": 136.40563942047328
       },
       {
-        "ShowGeometry": true,
         "Name": "Current offset",
+        "ShowGeometry": true,
         "Id": "bd7f184ed56c494e9129604abd70aac0",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -169.76294537055469,
-        "Y": 33.734491482293663
+        "X": -180.06837164759725,
+        "Y": -6.1990353412464856
       },
       {
-        "ShowGeometry": true,
         "Name": "XYZs.ByXYZ",
+        "ShowGeometry": true,
         "Id": "4db58f5e5cd64e51ba6e69dfdbdc6927",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 184.15707939540118,
-        "Y": 196.42994178994985
+        "X": 191.88614910318313,
+        "Y": 241.51618175201128
       },
       {
-        "ShowGeometry": true,
         "Name": "Target offset",
+        "ShowGeometry": true,
         "Id": "52d3ac7fd4c4492783a3409cf3601637",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -167.2302289780672,
-        "Y": 171.56457899499384
+        "X": -176.24747697047951,
+        "Y": 140.64830016386605
       },
       {
-        "ShowGeometry": true,
         "Name": "XYZs.ByXYZ",
+        "ShowGeometry": true,
         "Id": "769e9bec8a944369aabfd95cd4872e2d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 187.35022745774938,
-        "Y": -111.84138352534933
+        "X": 179.62115774996744,
+        "Y": -158.21580177204112
       },
       {
-        "ShowGeometry": true,
         "Name": "Code Block",
+        "ShowGeometry": true,
         "Id": "44316deb232d411289eecc67899396b6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 2259.4529840609021,
-        "Y": 14.793464483499861
+        "X": 2257.0562924907008,
+        "Y": 60.330604317327584
       },
       {
-        "ShowGeometry": true,
         "Name": "X-axis target",
+        "ShowGeometry": true,
         "Id": "2abc900508314953b019fc024cfd612d",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -166.75619344708366,
-        "Y": 430.36286612739
+        "X": -171.908906585605,
+        "Y": 462.56732324314817
       },
       {
-        "ShowGeometry": true,
         "Name": "XYZs.ByXYZ",
+        "ShowGeometry": true,
         "Id": "fec5129741d74ec3a21a259384da7bb6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 186.21219708812663,
-        "Y": 367.24320901827275
+        "X": 191.36491022664785,
+        "Y": 430.36394496515879
       }
     ],
     "Annotations": [
       {
         "Id": "0efcbf2c3439450197f1f20213da57a3",
         "Title": "IfcOwnerHistory template",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "c8f5663e36a04f8b9506931c7a0fd465",
           "7c5e46167bd0458e849b1260f5773e32"
         ],
-        "Left": -168.54518282673382,
-        "Top": 590.85601836415458,
-        "Width": 488.91015911499795,
-        "Height": 171.40000000000009,
+        "HasNestedGroups": false,
+        "Left": -159.63754823979946,
+        "Top": 668.83999882043167,
+        "Width": 487.310159114998,
+        "Height": 235.40000000000009,
         "FontSize": 36.0,
-        "InitialTop": 644.05601836415462,
+        "InitialTop": 742.03999882043172,
         "InitialHeight": 153.66685751560772,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFA4E1FF"
       },
       {
         "Id": "8e2e5188245d455ebffd71dba27744a0",
         "Title": "Transform IFC model",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "856110d361334d4d82488fc1dac36095",
           "4db6ba8de50a434f9b1f78ebb1a983c3",
           "fd8437b921ce4617a4c461b3bceaec66"
         ],
+        "HasNestedGroups": false,
         "Left": 907.46175900676587,
-        "Top": -326.04738739347249,
-        "Width": 769.4399952988141,
-        "Height": 441.08849722687557,
+        "Top": -302.69852304022311,
+        "Width": 654.239995298814,
+        "Height": 491.48849722687555,
         "FontSize": 36.0,
-        "InitialTop": -272.8473873934725,
+        "InitialTop": -229.49852304022312,
         "InitialHeight": 305.88849722687559,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFD4B6DB"
       },
       {
         "Id": "3af724574e5745448b4b7df96232181d",
         "Title": "Logging output",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "94127fb0790d4490b2ef97acba756714",
           "07e23328fca04b5f8b0d86c508d5a655"
         ],
+        "HasNestedGroups": false,
         "Left": 1836.1530994957304,
-        "Top": -484.93377521928642,
-        "Width": 488.12201308856243,
-        "Height": 175.09695389102797,
+        "Top": -504.93377521928642,
+        "Width": 524.92201308856215,
+        "Height": 239.09695389102797,
         "FontSize": 36.0,
         "InitialTop": -431.73377521928643,
         "InitialHeight": 148.696953891028,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFA4E1FF"
       },
       {
         "Id": "d15faf19b6fa4dea8374a40b5808a6df",
         "Title": "Load IFC model",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "62cb103f98cc4f7e8f1a84abf8e94ec2",
           "8763f8100cd04a91b957f0d2b7029180"
         ],
-        "Left": 338.218825473164,
-        "Top": -583.024858709138,
-        "Width": 607.53315043395526,
-        "Height": 232.53996066946178,
+        "HasNestedGroups": false,
+        "Left": 321.25622637841468,
+        "Top": -642.60425659688758,
+        "Width": 581.93315043395512,
+        "Height": 282.1399606694618,
         "FontSize": 36.0,
-        "InitialTop": -529.824858709138,
+        "InitialTop": -569.40425659688754,
         "InitialHeight": 146.13996066946174,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFC1D676"
       },
       {
         "Id": "a579183ef5e541ddb31bf208aa130700",
         "Title": "File logger",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "9a59e502e87c42e8ba2635f348d60770",
           "2cac8a0f7e8346f391ae269ed9b75283"
         ],
-        "Left": -179.81628012426137,
-        "Top": -471.277790228028,
-        "Width": 437.65708731683696,
-        "Height": 176.2,
+        "HasNestedGroups": false,
+        "Left": -324.76134597149672,
+        "Top": -571.0432175484392,
+        "Width": 521.06015136833616,
+        "Height": 228.59748084756882,
         "FontSize": 36.0,
-        "InitialTop": -418.077790228028,
-        "InitialHeight": 150.5414520834313,
-        "TextblockHeight": 43.2,
+        "InitialTop": -497.84321754843916,
+        "InitialHeight": 146.9974808475688,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFC1D676"
       },
       {
         "Id": "8554693182304abeb008f3991c123018",
         "Title": "Offset shift and rotation by 45 degree",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "c9e4333a2ba44a76bf55918d219a0e6f",
           "3ddde678659449ba8b1433efd1021a87",
@@ -1574,38 +1631,44 @@
           "2abc900508314953b019fc024cfd612d",
           "fec5129741d74ec3a21a259384da7bb6"
         ],
-        "Left": -179.76294537055469,
-        "Top": -272.77754354360053,
-        "Width": 846.39933431409759,
-        "Height": 822.94040967099045,
+        "HasNestedGroups": false,
+        "Left": -190.06837164759725,
+        "Top": -292.77754354360059,
+        "Width": 894.30476059114,
+        "Height": 920.54148850875936,
         "FontSize": 36.0,
-        "InitialTop": -219.57754354360054,
+        "InitialTop": -219.5775435436006,
         "InitialHeight": 794.94040967099056,
-        "TextblockHeight": 43.2,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFA4E1FF"
       },
       {
         "Id": "c549ba696a3945efaedf71c06303a175",
         "Title": "Save new IFC model",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
         "Nodes": [
           "ae7119a6033a495d96d0bea537606384",
           "02dcb5b405ed442981907e6554a064af",
           "ce193b7b5ba345b2a0005a4137a98d1e",
           "44316deb232d411289eecc67899396b6"
         ],
+        "HasNestedGroups": false,
         "Left": 1834.0392298150682,
-        "Top": -170.24355274007905,
-        "Width": 969.40652087464969,
-        "Height": 277.63701722357894,
+        "Top": -190.24355274007905,
+        "Width": 947.0065208746496,
+        "Height": 381.57415705740664,
         "FontSize": 36.0,
         "InitialTop": -117.04355274007906,
-        "InitialHeight": 276.83701722357893,
-        "TextblockHeight": 43.2,
+        "InitialHeight": 322.37415705740665,
+        "TextblockHeight": 63.199999999999996,
         "Background": "#FFFFC999"
       }
     ],
-    "X": 425.54548384623968,
-    "Y": 159.74913699726943,
-    "Zoom": 0.81910584011410781
+    "X": 119.59038994357343,
+    "Y": 152.36731150710824,
+    "Zoom": 0.59138543858872561
   }
 }

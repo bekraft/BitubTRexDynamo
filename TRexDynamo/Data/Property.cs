@@ -47,8 +47,6 @@ namespace TRex.Data
             return Feature?.GetHashCode() ?? GetHashCode();
         }
 
-#pragma warning restore CS1591
-
         public string QualifiedName
         {
             get => Feature.Name.ToLabel(":");
@@ -67,7 +65,8 @@ namespace TRex.Data
         }
 
         #endregion
-
+#pragma warning restore CS1591
+        
         /// <summary>
         /// Returns an array of property name, type and values.
         /// </summary>
