@@ -1,6 +1,3 @@
-# .NET Desktop
-# Build and run tests for .NET Desktop or Windows classic desktop solutions.
-# Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
 
 trigger:
@@ -8,25 +5,49 @@ trigger:
    include:
      - dev
      - master
+     - xbim-dev
+     - feature/*
   paths:
     exclude:
       - .gitignore
       - README.md
-
+      - azure-pipelines.yml
+      
 pool:
   vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'x64'
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+  ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
+    buildConfiguration: 'Test'
+    buildQualifier: '-Test'
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'master') }}: 
     buildConfiguration: 'Release'
-  ${{ if eq(variables['Build.SourceBranchName'], 'dev') }}: 
-    buildConfiguration: 'Beta'
+    buildQualifier: ''
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'dev') }}: 
+    buildConfiguration: 'Dev'
+    buildQualifier: '-Dev'
+  ${{ elseif eq(variables['Build.SourceBranchName'], 'xbim-dev') }}:
+    buildConfiguration: 'XbimDev'
+    buildQualifier: '-XbimDev'
   ${{ else }}:
-    buildConfiguration: 'TestOnly'
+    buildConfiguration: 'Debug'
+    buildQualifier: '-Debug'
 
 steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      Write-Host "Retrieving stable build number"
+      $date=Get-Date
+      [int] $buildSecond=[int][Math]::Floor((([int]$date.Hour) * 3600 + ([int]$date.Minute) * 60 + ([int]$date.Second))/2)
+      [string] $buildDate=-join($(Get-Date -format yy), ([string]$date.DayOfYear).PadLeft(3,'0'))
+      Write-Host "##vso[task.setvariable variable=buildSecond]$buildSecond"
+      Write-Host "##vso[task.setvariable variable=buildDate]$buildDate"
+      Write-Host "##vso[build.updatebuildnumber]$buildDate.$buildSecond"
+      
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -38,7 +59,8 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
+    msbuildArgs: '-p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
+    
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
