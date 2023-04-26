@@ -74,6 +74,7 @@ steps:
     arguments: '--configuration $(buildConfiguration) --arch $(buildPlatform)'
     
 - task: ArchiveFiles@2
+  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
   inputs:
     rootFolderOrFile: 'DeployedPackages/$(dynamoVersion)'
     includeRootFolder: false
