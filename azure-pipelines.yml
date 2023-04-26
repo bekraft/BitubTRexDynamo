@@ -64,7 +64,7 @@ steps:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '-p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
+    msbuildArgs: '-p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
     
 - task: DotNetCoreCLI@2
   condition: and(succeeded(), eq(variables.skipTests, 'false'))
