@@ -1,9 +1,12 @@
 # Bitub TRex Dynamo Plugin
 
+![Build status](https://dev.azure.com/bitub/BitubTRexXbim/_apis/build/status/bekraft.BitubTRexDynamo?branchName=master&label=MASTER)
+![Build status](https://dev.azure.com/bitub/BitubTRexXbim/_apis/build/status/bekraft.BitubTRexDynamo?branchName=dev&label=DEV)
+
 TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
 Internally it's using i.e. [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
-Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo).
+Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo) and tested against 2.17.
 
 ## Installation of binary releases
 
