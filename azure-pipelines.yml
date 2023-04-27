@@ -73,7 +73,7 @@ steps:
     solution: 'TRexAssimp/*.*proj'
     msbuildArchitecture: 'x64'
     platform: '$(buildPlatform)'
-    configuration: '$(Configuration)'
+    configuration: '$(buildConfiguration)'
 
 - task: VSBuild@1
   inputs:
