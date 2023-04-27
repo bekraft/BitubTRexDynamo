@@ -61,6 +61,19 @@ steps:
     restoreSolution: '**/*.sln'
     feedsToUse: 'config'
     nugetConfigPath: 'nuget.config'
+    
+- task: DotNetCoreCLI@2
+  inputs:
+    command: build
+    projects: 'TRexDynamo/*.*proj'
+    arguments: '-p:Configuration=$(buildConfiguration) -p:Platform=$(buildPlatform) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
+
+- task: MSBuild@1
+  inputs:
+    solution: 'TRexAssimp/*.*proj'
+    msbuildArchitecture: 'x64'
+    platform: '$(buildPlatform)'
+    configuration: '$(Configuration)'
 
 - task: VSBuild@1
   inputs:
