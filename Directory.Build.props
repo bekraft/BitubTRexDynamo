@@ -9,24 +9,35 @@
     <BuildMinor>0</BuildMinor>
 
     <BuildRelease>$([System.DateTime]::Now.ToString("yy"))$([System.String]::Format("{0:000}",$([System.DateTime]::Now.DayOfYear)))</BuildRelease>
-    <DayOfMonth>$([MSBuild]::Multiply($([MSBuild]::Multiply($([System.DateTime]::Now.Day), 24)), 60))</DayOfMonth>
-    <HourOfDay>$([MSBuild]::Multiply($([System.DateTime]::Now.Hour), 60))</HourOfDay>
-    <Build>$([MSBuild]::Add($([MSBuild]::Add($([System.DateTime]::Now.Minute),$(HourOfDay))), $(DayOfMonth)))</Build>
+    <SecondsByMinute>$([MSBuild]::Multiply($([System.DateTime]::Now.Minute), 60))</SecondsByMinute>
+    <SecondsByHour>$([MSBuild]::Multiply($([System.DateTime]::Now.Hour), 3600))</SecondsByHour>
+    <SecondsByDay>$([MSBuild]::Add($([MSBuild]::Add($([System.DateTime]::Now.Second),$(SecondsByMinute))), $(SecondsByHour)))</SecondsByDay>
+    <Build>$([System.Math]::Floor($([MSBuild]::Divide($(SecondsByDay), 2))))</Build>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <BuildQualifier>-Alpha</BuildQualifier>
+    <BuildQualifier>-Debug</BuildQualifier>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Beta' ">
-    <BuildQualifier>-Beta</BuildQualifier>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Dev' ">
+    <BuildQualifier>-Dev</BuildQualifier>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'XbimDev'">
+    <DefineConstants>$(DefineConstants);Is_XbimDev</DefineConstants>
+    <BuildQualifier>-XbimDev</BuildQualifier>
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyVersionAttribute("$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)")];</AssemblyFileVersionAttribute>
-    <AssemblyVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</AssemblyVersion>
-    <FileVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</FileVersion>
-    <Version>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</Version>
+    <ReleaseVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease).$(Build)</ReleaseVersion>
+    <BuildVersion>$(BuildMajor).$(BuildMinor).$(BuildRelease)$(BuildQualifier).$(Build)</BuildVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <AssemblyFileVersionAttribute>[assembly:System.Reflection.AssemblyVersionAttribute("$(ReleaseVersion)")];</AssemblyFileVersionAttribute>
+    <AssemblyVersion>$(ReleaseVersion)</AssemblyVersion>
+    <FileVersion>$(ReleaseVersion)</FileVersion>
+    <Version>$(BuildVersion)</Version>
 
     <Authors>Bernold Kraft</Authors>
     <Company>Bitub</Company>
@@ -38,7 +49,7 @@
 
   <PropertyGroup>
     <DeployDynamoProjectName>TRex</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.12</DeployDynamoVersion>
+    <DeployDynamoVersion>2.17</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
   </PropertyGroup>

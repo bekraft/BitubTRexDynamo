@@ -6,9 +6,13 @@ using Autodesk.DesignScript.Runtime;
 
 namespace TRex.Config
 {
+#pragma warning disable CS1591
+    
     [IsVisibleInDynamoLibrary(false)]
     public class GlobalConfig
     {
         public string PropertyNameSeparator { get; set; } = "::";
     }
+    
+#pragma warning restore CS1591
 }

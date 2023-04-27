@@ -12,7 +12,6 @@ using Bitub.Dto.Spatial;
 
 using TRex.Internal;
 using TRex.Geom;
-using TRex.Data;
 
 using Bitub.Xbim.Ifc.Export;
 
@@ -47,7 +46,9 @@ namespace TRex.Export
         public SceneBuildSettingsNodeModel()
         {
             InPorts.Add(new PortModel(PortType.Input, this, 
-                new PortData("crs", "Model CRS")));
+                new PortData("crs", "Exported model CRS")));
+            InPorts.Add(new PortModel(PortType.Input, this, 
+                new PortData("offset", "Manual offset before exporting")));
             InPorts.Add(new PortModel(PortType.Input, this, 
                 new PortData("unitScale", "Scaling units per Meter", UnitScaleNodeModel.BuildUnitScaleNode(UnitScale.ByUnitsPerMeter(1.0f))))); 
             InPorts.Add(new PortModel(PortType.Input, this, 
@@ -61,10 +62,7 @@ namespace TRex.Export
 
         public SceneTransformationStrategy TransformationStrategy
         {
-            get 
-            {
-                return transformationStrategy;
-            }
+            get => transformationStrategy;
             set 
             {
                 transformationStrategy = value;
@@ -75,10 +73,7 @@ namespace TRex.Export
 
         public SceneComponentIdentificationStrategy IdentificationStrategy
         {
-            get
-            {
-                return identificationStrategy;
-            }
+            get => identificationStrategy;
             set
             {
                 identificationStrategy = value;
@@ -89,10 +84,7 @@ namespace TRex.Export
 
         public ScenePositioningStrategy PositioningStrategy
         {
-            get 
-            {
-                return positioningStrategy;
-            }
+            get => positioningStrategy;
             set 
             {
                 positioningStrategy = value;
@@ -110,7 +102,7 @@ namespace TRex.Export
                 {
                     switch (port.Index)
                     {
-                        default:
+                        case 3:
                             WarnForMissingInputs();
                             return BuildNullResult();
                     }
@@ -118,19 +110,20 @@ namespace TRex.Export
             }
 
             // Wrap single string into list
-            if (inputAstNodes[2] is StringNode)
+            if (inputAstNodes[3] is StringNode)
             {   // Rewrite input AST 
-                inputAstNodes[2] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[2] });
+                inputAstNodes[3] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[3] });
             }
 
             var astBuildSettings = AstFactory.BuildFunctionCall(
-                new Func<string, string, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
+                new Func<string, string, XYZ, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
                     BuildEnumNameNode(TransformationStrategy),
                     BuildEnumNameNode(PositioningStrategy),
-                    inputAstNodes[0],
                     inputAstNodes[1],
+                    inputAstNodes[0],
                     inputAstNodes[2],
+                    inputAstNodes[3],
                     BuildEnumNameNode(IdentificationStrategy)
                 });
 

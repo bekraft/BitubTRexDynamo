@@ -1,9 +1,12 @@
 # Bitub TRex Dynamo Plugin
 
+![Build status](https://dev.azure.com/bitub/BitubTRexXbim/_apis/build/status/bekraft.BitubTRexDynamo?branchName=master&label=MASTER)
+![Build status](https://dev.azure.com/bitub/BitubTRexXbim/_apis/build/status/bekraft.BitubTRexDynamo?branchName=dev&label=DEV)
+
 TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
 Internally it's using i.e. [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
-Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo).
+Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo) and tested against 2.17.
 
 ## Installation of binary releases
 
@@ -31,7 +34,7 @@ In general, the master branch is the best option to run your own build.
 Each build will generate a package under ```./DeployedPackages``` (see *DeployPath*).
 
    - *Debug* will run a debug build and copy plugin over to the predefined Dynamo solution directory.
-   - *Beta* will run a debug build
+   - *Dev* will run a debug build (without expecting an installation folder)
    - *Release* will run a release build with documentation extraction added (for Dynamo help)
 
 Currently only x64 is supported for Assimp and Xbim. 
