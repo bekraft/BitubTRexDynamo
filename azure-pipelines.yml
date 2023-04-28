@@ -19,7 +19,6 @@ pool:
 variables:
   solution: '**/*.sln'
   buildPlatform: 'x64'
-  dynamoVersion: '2.17'
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     buildConfiguration: 'Test'
     buildQualifier: '-Test'
@@ -74,6 +73,8 @@ steps:
     msbuildArchitecture: 'x64'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    msbuildArguments: '/r /t:build'
+    restoreNugetPackages: true
 
 - task: VSBuild@1
   inputs:
