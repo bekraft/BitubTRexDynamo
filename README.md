@@ -27,7 +27,7 @@ In general, the master branch is the best option to run your own build.
 ### Dependencies
 
    - Xbim 5.1+ via nuget.org
-   - Assimp 5.0+ (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
+   - Assimp 5.2+ (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
 
 ### Build configuration and impacts
 

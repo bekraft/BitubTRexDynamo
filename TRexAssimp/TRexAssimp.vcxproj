@@ -24,13 +24,16 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Bitub.Dto">
-      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\Bitub.Dto.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Configuration)')">..\TRexDynamo\bin\$(Configuration)\net48\Bitub.Dto.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Platform)')">..\TRexDynamo\bin\$(Platform)\$(Configuration)\net48\Bitub.Dto.dll</HintPath>
     </Reference>
     <Reference Include="Google.Protobuf">
-      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Configuration)')">..\TRexDynamo\bin\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Platform)')">..\TRexDynamo\bin\$(Platform)\$(Configuration)\net48\Google.Protobuf.dll</HintPath>
     </Reference>
     <Reference Include="TRexDynamo">
-      <HintPath>..\TRexDynamo\bin\$(Configuration)\net48\TRexDynamo.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Configuration)')">..\TRexDynamo\bin\$(Configuration)\net48\TRexDynamo.dll</HintPath>
+      <HintPath Condition="Exists('..\TRexDynamo\bin\$(Platform)')">..\TRexDynamo\bin\$(Platform)\$(Configuration)\net48\TRexDynamo.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
