@@ -65,7 +65,7 @@ steps:
   inputs:
     command: build
     projects: 'TRexDynamo/*.*proj'
-    arguments: '-p:Configuration=$(buildConfiguration) -p:Platform=$(buildPlatform) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
+    arguments: '-p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
 
 - task: MSBuild@1
   inputs:
