@@ -7,8 +7,8 @@
     <Title>TRex Tests</Title>
     
     <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
-    <LangVersion>8.0</LangVersion>
-    <Platforms>AnyCPU</Platforms>  
+    <Platforms>AnyCPU</Platforms>
+    <TargetFrameworks>net8.0</TargetFrameworks>
 	</PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -49,19 +49,13 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-    
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageReference Include="NUnit" Version="4.1.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
@@ -70,8 +64,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-XbimDev.32102" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Dev' Or '$(Configuration)' == 'Test'">
