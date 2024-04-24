@@ -6,19 +6,18 @@
 TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
 Internally it's using i.e. [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
-Currently supports [Dynamo 2.12+](https://github.com/DynamoDS/Dynamo) and tested against 2.17.
+Currently supports [Dynamo 3.1+](https://github.com/DynamoDS/Dynamo) and tested against 3.1.
 
 ## Installation of binary releases
 
-TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
-Install a recent version of [Dynamo](https://dynamobuilds.com) and extract the TRex release to the 
+Install a recent supported version of [Dynamo](https://dynamobuilds.com) and extract the TRex release to the 
 
 ```~/AppData/Roaming/Dynamo/Dynamo Core``` or ```~/AppData/Roaming/Dynamo/Dynamo Revit``` packages sub folder. Keep the entire
 package rooted by a single parent folder (i.e. TRex).
 
 ## Building from development/master branch
 
-The current implementation is under heavy development. It's not guranteed that the latest dev head will seemlessly
+The current implementation is under development. It's not guranteed that the latest dev head will seemlessly
 work and compile. If you like to build your own relase, check out the dev branch run restore packages in Visual Studio and
 run a clean build.
 
@@ -26,7 +25,7 @@ In general, the master branch is the best option to run your own build.
 
 ### Dependencies
 
-   - Xbim 5.1+ via nuget.org
+   - Xbim 6+ via nuget.org
    - Assimp 5.2+ (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
 
 ### Build configuration and impacts
