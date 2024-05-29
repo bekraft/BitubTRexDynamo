@@ -51,6 +51,7 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="3.1.0.4724" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
@@ -59,8 +60,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Debug.32102" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">
@@ -91,11 +92,11 @@
     </None>
   </ItemGroup>
   
-  <Target Name="DeployDependencies" AfterTargets="CopyXbimInteropFiles">
+  <Target Name="DeployDependencies" AfterTargets="AfterBuild">
     <Message Importance="High" Text="Deploy native dependencies to $(TargetDir)." />
     <ItemGroup>
-      <SourceDlls Include="$(SolutionDir)TRexAssimp\x64\$(Configuration)\assimp*.dll" />
-      <SourcePdbs Include="$(SolutionDir)TRexAssimp\x64\$(Configuration)\assimp*.pdb" />
+      <SourceDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll" />
+      <SourcePdbs Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.pdb" />
     </ItemGroup>
 
     <Message Importance="High" Text="Copying: @(SourceDlls) and @(SourceDlls) ..." />

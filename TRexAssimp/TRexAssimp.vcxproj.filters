@@ -42,4 +42,10 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="x64\assimp-vc143-mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="x64\assimp-vc143-mtd.dll" />
+  </ItemGroup>
 </Project>

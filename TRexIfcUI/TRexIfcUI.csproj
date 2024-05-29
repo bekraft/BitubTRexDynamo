@@ -15,6 +15,9 @@
     <Platforms>AnyCPU</Platforms>
     <TargetFrameworks>net8.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
+
+    <AssemblyName>TRexIfcUI</AssemblyName>
+    <RootNamespace>TRex</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -74,8 +77,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Debug.32102" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">
@@ -116,26 +119,31 @@
   </ItemGroup>
 
   <!-- Local deployment settings and artificact name pattern -->
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' != 'Debug'">
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
-    <AssemblyName>TRexIfcUI</AssemblyName>
-    <RootNamespace>TRex</RootNamespace>    
+  </PropertyGroup>
+
+  <!-- Deployment into Dynamo local path if on debug mode -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <DeployPath>$(DeployDynamoPath)\$(DeployDynamoProjectName)</DeployPath>
   </PropertyGroup>
 
   <Target Name="Clean deploy folder of Dynamo App" AfterTargets="Clean">
     <!-- Remove before copying -->
-    <Message Importance="High" Text="Removing contents from $(DeployPath)." />
+    <Message Importance="High" Text="==> Removing contents from $(DeployPath)." />    
     <RemoveDir Directories="$(DeployPath)" />
-    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Removing contents from $(DeployDynamoPath)\$(DeployDynamoProjectName)." />
-    <RemoveDir Condition="'$(Configuration)' == 'Debug'" Directories="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
   </Target>
 
   <!-- Deploy Dynamo App to DeployPath and if Debug also to DeployDynamoPath -->
   <Target Name="Deploy Dynamo App" AfterTargets="AfterBuild">
-    <Message Importance="High" Text="Starting deployment to Dynamo `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
+    
+    <Message Importance="High" Text="==> Starting deployment to Dynamo `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
+    
     <ItemGroup>
-      <DependencyDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll;$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
-      <SourceDlls Include="$(TargetDir)win10-x64\*.dll" />
+      <NativeDebugDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\*.dll" />
+      <NativeRuntimeDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll" />
+      <DependencyDlls Include="$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
+      <NativeDlls Include="$(TargetDir)win10-x64\*.dll" />
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
       <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
@@ -144,11 +152,17 @@
       <SourceDocs Include="$(SolutionDir)Documentations\*.md" />
     </ItemGroup>
 
-    <Message Importance="High" Text="==&gt; TRex / Xbim   : `@(SourceDlls)`" />
-    <Message Importance="High" Text="==&gt; Dependencies  : `@(DependencyDlls)`" />
-    <Message Importance="High" Text="==&gt; XMLs          : `@(SourceXmls)`" />
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+      <Message Importance="High" Text="==&gt; Debug Dlls    : `@(NativeDebugDlls)`" />
+      <Message Importance="High" Text="==&gt; TRex / Xbim   : `@(SourceDlls)`" />
+      <Message Importance="High" Text="==&gt; Dependencies  : `@(DependencyDlls)`" />
+      <Message Importance="High" Text="==&gt; XMLs          : `@(SourceXmls)`" />
+      <Message Importance="High" Text="==&gt; Native DLLs   : `@(NativeDlls)`" />
+    </ItemGroup>
 
-    <!-- Copying to deploy folder-->
+    <!-- Copying to deploy folder if in non-debug mode -->
+    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(NativeDebugDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy Condition="'$(Configuration)' != 'Debug'" SourceFiles="@(NativeRuntimeDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SystemDlls)" DestinationFolder="$(DeployPath)\bin\" />
@@ -156,21 +170,12 @@
     <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourceDocs)" DestinationFolder="$(DeployPath)\bin\" />
-
-    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg)&quot;" />
+    <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(DeployPath)\bin\win10-x64" />
     
-    <Message Importance="High" Text="Finalized deployment of `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
+    <!-- Set current version -->
+    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg) &quot;" />
     
-    <ItemGroup>
-      <DeployedBinaries Include="$(DeployPath)\**\*.dll;$(DeployPath)\**\*.pdb;$(DeployPath)\**\*.xml" />
-      <DeployedPackage Include="$(DeployPath)\pkg.json" />
-    </ItemGroup>    
-    
-    <!-- Copy to Dynamo app folder if Debug alpha  -->
-    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Starting deployment of `$(DeployDynamoProjectName)` to Dynamo App." />
-    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedPackage)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)" />
-    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(DeployedBinaries)" DestinationFolder="$(DeployDynamoPath)\$(DeployDynamoProjectName)\bin" />
-    <Message Condition="'$(Configuration)' == 'Debug'" Importance="High" Text="Deployed `$(DeployDynamoProjectName)` package to `$(DeployDynamoPath)`." />
+    <Message Importance="High" Text="==> Finalized deployment of `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
   </Target>
   
   <ItemGroup>

@@ -48,7 +48,7 @@ namespace TRex.UI.Customization
 
         protected DelegateBasedAsyncTask AsyncThenUI(DelegateBasedAsyncTask task, Action action)
         {
-            task.ThenSend((_) => action?.BeginInvoke(action.EndInvoke, null), syncContext);
+            task.ThenSend((_) => action?.Invoke(), syncContext);
             return task;
         }
 
@@ -69,7 +69,7 @@ namespace TRex.UI.Customization
 
         protected void DispatchUI(Action uiAction)
         {
-            nodeView?.Dispatcher.BeginInvoke(uiAction, DispatcherPriority.Background);
+            nodeView?.Dispatcher.InvokeAsync(uiAction, DispatcherPriority.Background);
         }
 
         protected EngineController ModelEngineController { get => viewModel.Model.EngineController; }

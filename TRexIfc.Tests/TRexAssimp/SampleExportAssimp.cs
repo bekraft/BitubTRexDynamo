@@ -33,12 +33,12 @@ namespace TRex.Tests.Export
             try
             {
                 var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "3ds");
-                Assert.IsNotNull(format3DS, "3DS export module exists");
+                Assert.That(format3DS, Is.Not.Null, "3DS export module exists");
 
                 var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByRighthandZUp(), format3DS.Extension, null);
                 var log = exported.GetActionLog();
-                Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
-                Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
+                Assert.That(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), Is.True, "No warnings");
+                Assert.That(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), Is.True, "Has been saved successfully");
             }
             catch(Exception e)
             {
@@ -52,12 +52,12 @@ namespace TRex.Tests.Export
             try
             {
                 var format3DS = ComponentScene.exportAsFormats.FirstOrDefault(f => f.ID == "fbx");
-                Assert.IsNotNull(format3DS, "FBX export module exists");
+                Assert.That(format3DS, Is.Not.Null, "FBX export module exists");
 
                 var exported = ComponentScene.Export(testScene, UnitScale.defined["m"], CRSTransform.ByRighthandZUp(), format3DS.Extension, null);
                 var log = exported.GetActionLog();
-                Assert.IsTrue(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), "No warnings");
-                Assert.IsTrue(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), "Has been saved successfully");
+                Assert.That(log.Select(l => l.Severity).All(s => LogSeverity.Info.IsAboveOrEqual(s)), Is.True, "No warnings");
+                Assert.That(log.Select(l => l.Reason).All(r => r.HasFlag(LogReason.Saved)), Is.True, "Has been saved successfully");
             }
             catch (Exception e)
             {

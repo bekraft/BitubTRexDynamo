@@ -34,6 +34,17 @@
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|AnyCPU'">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\XbimDev\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\XbimDev\TRexIfc.xml</DocumentationFile>
+  </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
@@ -66,8 +77,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.666-develop" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Debug.32102" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">

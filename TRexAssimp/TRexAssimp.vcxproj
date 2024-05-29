@@ -122,6 +122,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <VCToolsVersion>14.39.33519</VCToolsVersion>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -150,6 +151,7 @@
     <ReferencePath>$(ProjectDir)x64;$(VC_ReferencesPath_x64);</ReferencePath>
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
     <ManagedAssembly>true</ManagedAssembly>
