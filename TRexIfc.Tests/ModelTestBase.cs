@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using NUnit.Framework;
 
@@ -16,42 +12,42 @@ namespace TRex.Tests
 {
     public class ModelTestBase<T> : TestBase<T>
     {
-        protected readonly Logger testLogger;
+        protected readonly Logger TestLogger;
 
-        protected Func<Logger, IfcModel> testSimpleSolid = (testLogger) => IfcStore.ByIfcModelFile(
+        protected readonly Func<Logger, IfcModel> TestSimpleSolid = (testLogger) => IfcStore.ByIfcModelFile(
                 @$"{TestContext.CurrentContext.TestDirectory}\Resources\extruded-solid.ifc",
                 testLogger,
                 IfcTessellationPrefs.ByDefaults());
-        protected Func<Logger, IfcModel> testSampleHouse = (testLogger) => IfcStore.ByIfcModelFile(
+        protected readonly Func<Logger, IfcModel> TestSampleHouse = (testLogger) => IfcStore.ByIfcModelFile(
                 @$"{TestContext.CurrentContext.TestDirectory}\Resources\IfcSampleHouse.ifc",
                 testLogger,
                 IfcTessellationPrefs.ByDefaults());        
 
         protected ModelTestBase() : base()
         {
-            testLogger = Logger.ByLogFileName($"{typeof(T).Name}");
+            TestLogger = Logger.ByLogFileName($"{typeof(T).Name}.log");
         }
 
         protected SceneBuildSettings NewBuildSettings(XYZ offset)
         {
             var settings = SceneBuildSettings.ByContext("Body");
             settings.Preferences.UserModelCenter = offset;
-            settings.Preferences.Transforming = Bitub.Xbim.Ifc.Export.SceneTransformationStrategy.Quaternion;
-            settings.Preferences.Positioning = Bitub.Xbim.Ifc.Export.ScenePositioningStrategy.UserCorrection;
+            settings.Preferences.Transforming = Bitub.Xbim.Ifc.Tesselate.SceneTransformationStrategy.Quaternion;
+            settings.Preferences.Positioning = Bitub.Xbim.Ifc.Tesselate.ScenePositioningStrategy.UserCorrection;
             return settings;
         }
 
         protected ComponentScene BuildComponentSimpleScene(XYZ offset)
         {
             var settings = NewBuildSettings(offset);            
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, testSimpleSolid(testLogger));
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, TestSimpleSolid(TestLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 
         protected ComponentScene BuildComponentSampleScene(XYZ offset)
         {
             var settings = NewBuildSettings(offset);
-            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, testSampleHouse(testLogger));
+            var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, TestSampleHouse(TestLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 

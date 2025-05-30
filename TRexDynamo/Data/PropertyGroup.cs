@@ -40,7 +40,7 @@ namespace TRex.Data
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public virtual bool AddProperty(ELFeature featureConcept)
+        public virtual bool AddProperty(Feature featureConcept)
         {
             if (properties.ContainsKey(featureConcept.Name))
                 return false;
@@ -50,7 +50,7 @@ namespace TRex.Data
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public virtual bool RemoveProperty(ELFeature featureConcept)
+        public virtual bool RemoveProperty(Feature featureConcept)
         {
             return properties.Remove(featureConcept.Name);
         }

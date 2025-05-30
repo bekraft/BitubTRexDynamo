@@ -4,15 +4,13 @@ using System.Linq;
 using Bitub.Dto;    
 using Bitub.Dto.Scene;
 using Bitub.Dto.Spatial;
-
-using Bitub.Xbim.Ifc.Export;
-
-using Autodesk.DesignScript.Runtime;
+using Bitub.Xbim.Ifc.Tesselate;
 
 using TRex.Geom;
 using TRex.Log;
-using TRex.Data;
 using TRex.Internal;
+
+using Autodesk.DesignScript.Runtime;
 
 namespace TRex.Export
 {
@@ -25,23 +23,23 @@ namespace TRex.Export
 
         #region Internals
 
-        internal SceneBuildSettings() : this(new ExportPreferences())
+        internal SceneBuildSettings() : this(new ScenePreferences())
         { }
 
-        internal SceneBuildSettings(ExportPreferences preferences)
+        internal SceneBuildSettings(ScenePreferences preferences)
         {
             Preferences = preferences;
         }
 
         [IsVisibleInDynamoLibrary(false)]
-        public ExportPreferences Preferences { get; private set; }
+        public ScenePreferences Preferences { get; private set; }
 
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
         public static SceneBuildSettings ByContext(params string[] contexts)
         {
-            return new SceneBuildSettings(new ExportPreferences
+            return new SceneBuildSettings(new ScenePreferences
             {
                 Transforming = SceneTransformationStrategy.Quaternion,
                 Positioning = ScenePositioningStrategy.NoCorrection,
@@ -65,7 +63,7 @@ namespace TRex.Export
             if (string.IsNullOrEmpty(transformationStrategy) || string.IsNullOrEmpty(positioningStrategy) || string.IsNullOrEmpty(identificationStrategy))
                 throw new ArgumentNullException("transformationStrategy | positioningStrategy | identificationStrategy");
 
-            var settings = new SceneBuildSettings(new ExportPreferences
+            var settings = new SceneBuildSettings(new ScenePreferences
             {
                 Transforming = DynamicArgumentDelegation.TryCastEnumOrDefault<SceneTransformationStrategy>(transformationStrategy),
                 Positioning = DynamicArgumentDelegation.TryCastEnumOrDefault<ScenePositioningStrategy>(positioningStrategy),

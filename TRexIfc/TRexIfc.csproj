@@ -9,7 +9,7 @@
     <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug\TRexIfc.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
@@ -33,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|AnyCPU'">
@@ -44,6 +46,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\XbimDev\TRexIfc.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
@@ -55,6 +58,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -64,38 +68,22 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\TRexIfc.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.1.0.4724" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.1.0.4724" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.1.823-netcore" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25148-XbimDev.30312" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25148-XbimDev.30312" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Dev' Or '$(Configuration)' == 'Test'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\TRexAssimp\TRexAssimp.vcxproj" />
     <ProjectReference Include="..\TRexDynamo\TRexDynamo.csproj" />

@@ -13,7 +13,7 @@
 
     <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
     <Platforms>AnyCPU</Platforms>
-    <TargetFrameworks>net8.0-windows</TargetFrameworks>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
 
     <AssemblyName>TRexIfcUI</AssemblyName>
@@ -29,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\TRexIfcUI.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|AnyCPU'">
@@ -39,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Dev\TRexIfcUI.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
@@ -49,6 +51,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Dev\TRexIfcUI.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -58,6 +61,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\TRexIfcUI.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|AnyCPU'">
@@ -68,32 +72,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\XbimDev\TRexIfcUI.xml</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.1.0.4724" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.1.0.4724" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.1.0.4724" ExcludeAssets="Runtime"/>
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'XbimDev'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.0.0-dev" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.24115-XbimDev.20855" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Dev' Or '$(Configuration)' == 'Test'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(Configuration)' == 'Release'">
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="5.1.437" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.0.23114-Dev.29843" />
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25148-XbimDev.30312" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25148-XbimDev.30312" />
   </ItemGroup>
   
   <ItemGroup>
@@ -143,7 +130,7 @@
       <NativeDebugDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\*.dll" />
       <NativeRuntimeDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll" />
       <DependencyDlls Include="$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
-      <NativeDlls Include="$(TargetDir)win10-x64\*.dll" />
+      <NativeDlls Include="$(TargetDir)win-x64\*.dll" />
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
       <SystemDlls Include="$(TargetDir)System*.dll" />
       <SourcePdbs Include="$(TargetDir)*.pdb" />
@@ -173,7 +160,7 @@
     <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(DeployPath)\bin\win10-x64" />
     
     <!-- Set current version -->
-    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg) &quot;" />
+    <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg) &quot;" Condition="'$(Configuration)' != 'Debug'" />
     
     <Message Importance="High" Text="==> Finalized deployment of `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
   </Target>

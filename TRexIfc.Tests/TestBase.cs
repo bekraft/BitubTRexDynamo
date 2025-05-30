@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Microsoft.Extensions.Logging;
-
-using TRex.Internal;
+﻿using Xbim.Common.Configuration;
 
 namespace TRex.Tests
 {
     public abstract class TestBase<T>
     {
-        protected readonly ILogger logger = GlobalLogging.loggingFactory.CreateLogger<T>();
-
         protected TestBase()
-        { }
+        {
+            if (!XbimServices.Current.IsConfigured)
+            {
+                XbimServices.Current.ConfigureServices(opt => 
+                    opt.AddXbimToolkit(conf => 
+                        conf.AddGeometryServices()
+                    ));
+            }
+        }
     }
 }

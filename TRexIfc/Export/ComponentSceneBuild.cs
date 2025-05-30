@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Concurrent;
 
+using Bitub.Xbim.Ifc.Tesselate;
 using Bitub.Xbim.Ifc.Export;
-
-using Autodesk.DesignScript.Runtime;
 
 using TRex.Log;
 using TRex.Store;
 using TRex.Internal;
+
+using Autodesk.DesignScript.Runtime;
 
 using Microsoft.Extensions.Logging;
 
@@ -76,7 +76,7 @@ namespace TRex.Export
 
             ComponentScene componentScene = null;
             using (var monitor = sceneExport.CreateProgressMonitor(LogReason.Saved))
-            {                
+            {
                 try
                 {
                     using (var sceneBuildTask = sceneExport.Exporter.RunExport(model, monitor))

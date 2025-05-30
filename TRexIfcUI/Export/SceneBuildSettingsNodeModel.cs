@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
+
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
@@ -14,6 +14,7 @@ using TRex.Internal;
 using TRex.Geom;
 
 using Bitub.Xbim.Ifc.Export;
+using Bitub.Xbim.Ifc.Tesselate;
 
 namespace TRex.Export
 {
