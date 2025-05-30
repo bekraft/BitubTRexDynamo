@@ -79,8 +79,8 @@
     <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25148-XbimDev.30312" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25148-XbimDev.30312" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25150-XbimDev.27175" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25150-XbimDev.27175" />
   </ItemGroup>
   
   <ItemGroup>
@@ -157,7 +157,7 @@
     <Copy SourceFiles="@(SourcePkg)" DestinationFolder="$(DeployPath)" />
     <Copy SourceFiles="@(SourceXmls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourceDocs)" DestinationFolder="$(DeployPath)\bin\" />
-    <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(DeployPath)\bin\win10-x64" />
+    <Copy SourceFiles="@(NativeDlls)" DestinationFolder="$(DeployPath)\bin\win-x64" />
     
     <!-- Set current version -->
     <Exec Command="powershell &quot;((Get-Content -Path $(DeployPath)\@(SourcePkg)) -replace '1.0.0.0','$(FileVersion)') | Set-Content -Path $(DeployPath)\@(SourcePkg) &quot;" Condition="'$(Configuration)' != 'Debug'" />
