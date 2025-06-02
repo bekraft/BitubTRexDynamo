@@ -53,42 +53,29 @@ steps:
       Write-Host "##vso[build.updatebuildnumber]$buildDate.$buildSecond"
       
 - task: NuGetToolInstaller@1
-
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    feedsToUse: 'config'
-    nugetConfigPath: 'nuget.config'
-    
-- task: DotNetCoreCLI@2
-  inputs:
-    command: build
-    projects: 'TRexDynamo/*.*proj'
-    arguments: '-p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
-
+  
 - task: MSBuild@1
   inputs:
-    solution: 'TRexAssimp/*.*proj'
-    msbuildArchitecture: 'x64'
+    solution: '**/*.sln'
+    msbuildArchitecture: '$(buildPlatform)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArguments: '/r /t:build'
-    restoreNugetPackages: true
-
-- task: VSBuild@1
+    msbuildArguments: '-t:restore -p:Configuration=$(buildConfiguration)'
+    
+- task: MSBuild@1
   inputs:
-    solution: '$(solution)'
+    solution: '**/*.sln'
+    msbuildArchitecture: '$(buildPlatform)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArgs: '-p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
+    msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
     
 - task: DotNetCoreCLI@2
   condition: and(succeeded(), eq(variables.skipTests, 'false'))
   inputs:
     command: 'test'
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --arch $(buildPlatform)'
+    arguments: '-c $(buildConfiguration) -a $(buildPlatform)'
     
 - task: ArchiveFiles@2
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
