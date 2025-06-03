@@ -127,8 +127,7 @@
     <Message Importance="High" Text="==> Starting deployment to Dynamo `$(DeployDynamoProjectName)` package to `$(DeployPath)`." />
     
     <ItemGroup>
-      <NativeDebugDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\*.dll" />
-      <NativeRuntimeDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll" />
+      <NativeRuntimeDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\*.dll" />
       <DependencyDlls Include="$(TargetDir)Google*.dll;$(TargetDir)Microsoft*.dll;$(TargetDir)Serilog*.dll;$(TargetDir)SharpGLTF*.dll" />
       <NativeDlls Include="$(TargetDir)win-x64\*.dll" />
       <SourceDlls Include="$(TargetDir)Bitub*.dll;$(TargetDir)TRex*.dll;$(TargetDir)Xbim*.dll;$(TargetDir)Esent*.dll" />
@@ -148,8 +147,7 @@
     </ItemGroup>
 
     <!-- Copying to deploy folder if in non-debug mode -->
-    <Copy Condition="'$(Configuration)' == 'Debug'" SourceFiles="@(NativeDebugDlls)" DestinationFolder="$(DeployPath)\bin\" />
-    <Copy Condition="'$(Configuration)' != 'Debug'" SourceFiles="@(NativeRuntimeDlls)" DestinationFolder="$(DeployPath)\bin\" />
+    <Copy SourceFiles="@(NativeRuntimeDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(DependencyDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(DeployPath)\bin\" />
     <Copy SourceFiles="@(SystemDlls)" DestinationFolder="$(DeployPath)\bin\" />
