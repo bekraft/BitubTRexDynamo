@@ -234,7 +234,7 @@
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc143-mt.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
