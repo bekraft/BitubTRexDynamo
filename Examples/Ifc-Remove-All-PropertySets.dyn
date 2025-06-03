@@ -1,0 +1,535 @@
+{
+  "Uuid": "8facfd69-5dca-4a7a-a46c-25aace44c894",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TRex-Alle-PropertySets-löschen",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "TRex.Store.IfcLoadStoreNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "Id": "a5197ec9925847358e20f59c84b6ad8e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "509012eddb5a4976933d72e80ed13228",
+          "Name": "fileName",
+          "Description": "IFC file name and path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b08677670b34a4db560fd352f5dd7b5",
+          "Name": "logger",
+          "Description": "Optional logger instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6854d5e453a9435b8fb4394ec8170473",
+          "Name": "prefs",
+          "Description": "Tessellation preferences",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d6f2ca024ba3427f883c851f44a70705",
+          "Name": "ifcModel",
+          "Description": "IFC model instance",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "No description available"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "e4bb620a1ea8413ea63596a6c61801d0",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "71f843ae6361485ea10b23ed5d451112",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "Ifc4\\IfcSampleHouse.ifc",
+      "InputValue": "Ifc4\\IfcSampleHouse.ifc",
+    },
+    {
+      "ConcreteType": "TRex.Store.IfcAuthorMetadataNodeModel, TRexIfcUI",
+      "OrganisationId": "ILSE",
+      "OrganisationName": "INROS LACKNER SE",
+      "AuthorName": "",
+      "AuthorGivenName": "",
+      "OrganisationAddress": "Rosa-Luxemburg-Str. 16",
+      "Id": "3ea625e83e094d6cac4d5d1bbb40f80b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c1b02b80a5e14feea14bda05f1f9f8d4",
+          "Name": "authorMetadata",
+          "Description": "Author's metadata",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Configure authoring editor name and organisation details"
+    },
+    {
+      "ConcreteType": "TRex.Store.IfcSaveStoreNodeModel, TRexIfcUI",
+      "Selected": "ifc",
+      "IsCancelable": true,
+      "Id": "34c39afacc4640eaaee6015ea815d186",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "4bc26f08c0e44e2999c8bd85628ba6f4",
+          "Name": "ifcModel",
+          "Description": "Input model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6a5bd9ba75a743deb8726323537f0e3a",
+          "Name": "separator",
+          "Description": "If using canonical name, define the separator",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8fd20e6d832b474d8818374ddabeadb8",
+          "Name": "ifcModel",
+          "Description": "Saved model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Saves an IFC model to file by selected format extension."
+    },
+    {
+      "ConcreteType": "TRex.Task.IfcPSetRemovalTransformNodeModel, TRexIfcUI",
+      "IsCancelable": true,
+      "Id": "250cd93ea1104bcebcb4ddb84989b533",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "b7fcb06e5be54525bfd492d54149e5cc",
+          "Name": "excludeSets",
+          "Description": "List of property sets about to be removed",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "67077bb685d248efb65ad073fa615671",
+          "Name": "includeSets",
+          "Description": "List of property sets about to be kept exclusively",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0bd6d9e0da4546a0b727861468b0e196",
+          "Name": "caseSensitive",
+          "Description": "Enable case sensitive matching",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1a625c923c14491084f3ec31e220690d",
+          "Name": "authorMetadata",
+          "Description": "Credentials of authoring editor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f855bd7b0c8f47079b04bbcaac99e5a7",
+          "Name": "nameAddon",
+          "Description": "Fragment name of canonical full name",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aedc920b69e743d3965a59778835bb13",
+          "Name": "logFilter",
+          "Description": "Log reason type filtering",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f1d7d888149f46acbe280113a6e55de0",
+          "Name": "ifcModel",
+          "Description": "IFC input model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6516e8551aa94a159d556cd8f0e40b37",
+          "Name": "ifcModel",
+          "Description": "IFC output model",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Removal task which drops entire property sets by their name from input model."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0b07377a27214c48aa40c73058b6c480",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "fba46f4033b94cc09b8556f8bcb1e0ec",
+          "Name": "ifcModel",
+          "Description": "TRex.Store.IfcModel",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fc2d3439158143e288ce2b4649b84a2d",
+          "Name": "string[]",
+          "Description": "A list of property set names in use",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "TRex.Store.IfcModel.PropertySetNames",
+      "Replication": "Auto",
+      "Description": "Lists all property sets defined by elements by their name.\n\nIfcModel.PropertySetNames ( ): string[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "d880f14cc0ec41cca643b1ad945cfdb4",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "473316a2660e456db963b2f218fa1ab5",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"bereinigt\";"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "c228751cc62c4685bae9cb22879f4f35",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "be4f685e90ce41059d92d8a017828860",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "6dc00be4b6f44d7fa4d12bcfc6cf176d",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e676d2fde8b48539dbd404d2dee3b9f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"-\";"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d6f2ca024ba3427f883c851f44a70705",
+      "End": "fba46f4033b94cc09b8556f8bcb1e0ec",
+      "Id": "e3f058d005dc4668a876fb3c56d9c4ef",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d6f2ca024ba3427f883c851f44a70705",
+      "End": "f1d7d888149f46acbe280113a6e55de0",
+      "Id": "75fa52deb21f4c5285f91844b95fe77d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "71f843ae6361485ea10b23ed5d451112",
+      "End": "509012eddb5a4976933d72e80ed13228",
+      "Id": "6673d75dba3b4caaad0db21c73e255c5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c1b02b80a5e14feea14bda05f1f9f8d4",
+      "End": "1a625c923c14491084f3ec31e220690d",
+      "Id": "d746635f80a9414c9a86642963a1b7ec",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6516e8551aa94a159d556cd8f0e40b37",
+      "End": "4bc26f08c0e44e2999c8bd85628ba6f4",
+      "Id": "21d81bf12cc0412f87e0c778e47d056f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fc2d3439158143e288ce2b4649b84a2d",
+      "End": "b7fcb06e5be54525bfd492d54149e5cc",
+      "Id": "76c14ba50c9a453e8616a4e52b64d7ce",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "473316a2660e456db963b2f218fa1ab5",
+      "End": "f855bd7b0c8f47079b04bbcaac99e5a7",
+      "Id": "93f8ed3de12f4ca9a060e9e8389e3fd3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "be4f685e90ce41059d92d8a017828860",
+      "End": "0bd6d9e0da4546a0b727861468b0e196",
+      "Id": "9fb1fb4be3ca4507a99a17ae3ac8a1be",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e676d2fde8b48539dbd404d2dee3b9f",
+      "End": "6a5bd9ba75a743deb8726323537f0e3a",
+      "Id": "65c6976b0f41401ca8a4be157b5f342f",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TRex",
+      "Version": "1.1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "a5197ec9925847358e20f59c84b6ad8e",
+        "3ea625e83e094d6cac4d5d1bbb40f80b",
+        "34c39afacc4640eaaee6015ea815d186",
+        "250cd93ea1104bcebcb4ddb84989b533",
+        "0b07377a27214c48aa40c73058b6c480"
+      ]
+    },
+    {
+      "Name": "IfcSampleHouse.ifc",
+      "ReferenceType": "External",
+      "Nodes": [
+        "e4bb620a1ea8413ea63596a6c61801d0"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.5.8116",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "a5197ec9925847358e20f59c84b6ad8e",
+        "Name": "Ifc Load",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 578.04936427746566,
+        "Y": 104.75134671706309
+      },
+      {
+        "Id": "e4bb620a1ea8413ea63596a6c61801d0",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -133.29955573779182,
+        "Y": 106.84622589057986
+      },
+      {
+        "Id": "3ea625e83e094d6cac4d5d1bbb40f80b",
+        "Name": "Ifc AuthorMetadata",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1104.7843522931435,
+        "Y": 414.54457591963461
+      },
+      {
+        "Id": "34c39afacc4640eaaee6015ea815d186",
+        "Name": "Ifc Save",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2417.0432263848511,
+        "Y": 23.98179603067706
+      },
+      {
+        "Id": "250cd93ea1104bcebcb4ddb84989b533",
+        "Name": "Ifc PropertySet Filter",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1617.74150402514,
+        "Y": 25.471174701748623
+      },
+      {
+        "Id": "0b07377a27214c48aa40c73058b6c480",
+        "Name": "IfcModel.PropertySetNames",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1173.1637750902862,
+        "Y": -195.70376803162162
+      },
+      {
+        "Id": "d880f14cc0ec41cca643b1ad945cfdb4",
+        "Name": "Datei-Suffix",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1284.8341942738211,
+        "Y": 39.138733944282876
+      },
+      {
+        "Id": "c228751cc62c4685bae9cb22879f4f35",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1289.3428293067973,
+        "Y": 187.34518422745583
+      },
+      {
+        "Id": "6dc00be4b6f44d7fa4d12bcfc6cf176d",
+        "Name": "Trennzeichen",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2202.2205331771838,
+        "Y": -107.70593718686658
+      }
+    ],
+    "Annotations": [],
+    "X": -669.89939035143607,
+    "Y": 321.58442823646584,
+    "Zoom": 1.0065043104810649
+  }
+}

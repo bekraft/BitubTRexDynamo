@@ -734,7 +734,7 @@
   "NodeLibraryDependencies": [
     {
       "Name": "TRexIfc",
-      "Version": "0.1.0.0",
+      "Version": "1.1.0.0",
       "ReferenceType": "Package",
       "Nodes": [
         "c33a47d291204c3486c281cb081766ce",
