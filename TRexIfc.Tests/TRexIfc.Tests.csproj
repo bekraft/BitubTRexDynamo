@@ -59,7 +59,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
     <PackageReference Include="NUnit" Version="4.3.2" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.1.823-netcore" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.1.836-netcore" />
   </ItemGroup>
   
   <ItemGroup>
