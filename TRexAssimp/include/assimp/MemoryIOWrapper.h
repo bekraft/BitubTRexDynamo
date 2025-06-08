@@ -2,7 +2,7 @@
 Open Asset Import Library (assimp)
 ----------------------------------------------------------------------
 
-Copyright (c) 2006-2022, assimp team
+Copyright (c) 2006-2025, assimp team
 
 All rights reserved.
 
@@ -55,7 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <stdint.h>
 
-namespace Assimp    {
+namespace Assimp {
 
 #define AI_MEMORYIO_MAGIC_FILENAME "$$$___magic___$$$"
 #define AI_MEMORYIO_MAGIC_FILENAME_LENGTH 17
@@ -65,8 +65,8 @@ namespace Assimp    {
 // ----------------------------------------------------------------------------------
 class MemoryIOStream : public IOStream {
 public:
-    MemoryIOStream (const uint8_t* buff, size_t len, bool own = false) : 
-            buffer (buff), 
+    MemoryIOStream (const uint8_t* buff, size_t len, bool own = false) :
+            buffer (buff),
             length(len),
             pos(static_cast<size_t>(0)),
             own(own) {
@@ -145,12 +145,11 @@ public:
     }
 
     /// @brief Destructor.
-    ~MemoryIOSystem() = default;
+    ~MemoryIOSystem() override = default;
 
     // -------------------------------------------------------------------
     /// @brief Tests for the existence of a file at the given path.
     bool Exists(const char* pFile) const override {
-        printf("Exists\n");
         if (0 == strncmp( pFile, AI_MEMORYIO_MAGIC_FILENAME, AI_MEMORYIO_MAGIC_FILENAME_LENGTH ) ) {
             return true;
         }
@@ -191,7 +190,7 @@ public:
     bool ComparePaths(const char* one, const char* second) const override {
         return existing_io ? existing_io->ComparePaths(one, second) : false;
     }
-    
+
     /// @brief Will push the directory.
     bool PushDirectory( const std::string &path ) override {
         return existing_io ? existing_io->PushDirectory(path) : false;
@@ -217,7 +216,7 @@ public:
     bool CreateDirectory( const std::string &path ) override {
         return existing_io ? existing_io->CreateDirectory(path) : false;
     }
-    
+
     /// @brief Will change the directory.
     bool ChangeDirectory( const std::string &path ) override {
         return existing_io ? existing_io->ChangeDirectory(path) : false;
