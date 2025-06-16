@@ -70,7 +70,7 @@ steps:
     msbuildArchitecture: '$(buildPlatform)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
+    msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
         
 - task: ArchiveFiles@2
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
