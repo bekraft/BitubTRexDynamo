@@ -73,7 +73,7 @@ steps:
     msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildMajor=$(majorVersion) -p:BuildMinor=$(minorVersion) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
         
 - task: ArchiveFiles@2
-  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
+  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
   inputs:
     rootFolderOrFile: 'DeployedPackages/$(dynamoVersion)'
     includeRootFolder: false
