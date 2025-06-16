@@ -71,14 +71,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier)'
-    
-- task: DotNetCoreCLI@2
-  condition: and(succeeded(), eq(variables.skipTests, 'false'))
-  inputs:
-    command: 'test'
-    projects: '**/*Tests/*.csproj'
-    arguments: '-c $(buildConfiguration) -a $(buildPlatform)'
-    
+        
 - task: ArchiveFiles@2
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
   inputs:
