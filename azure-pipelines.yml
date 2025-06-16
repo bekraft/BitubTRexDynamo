@@ -18,7 +18,7 @@ pool:
 
 variables:
   solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  buildPlatform: 'AnyCPU'
   ${{ if eq(variables['Build.Reason'], 'PullRequest') }}:
     buildConfiguration: 'Test'
     buildQualifier: '-Test'
