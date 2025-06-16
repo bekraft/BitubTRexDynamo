@@ -86,6 +86,8 @@ steps:
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
   inputs:
     gitHubConnection: bekraft
+    tagSource: 'userSpecifiedTag'
+    
     title: 'TRex-$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)'
     tag: '$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)'
     assets: '$(Build.ArtifactStagingDirectory)/TRex-$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond).zip'
