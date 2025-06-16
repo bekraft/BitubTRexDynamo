@@ -86,16 +86,19 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <AssimpLibraryNames Include="assimp-vc143-mt;draco"/>
-  </ItemGroup>
+  <PropertyGroup>
+    <TRexAssimpDeployDir>$(SolutionDir)TRexAssimp\x64</TRexAssimpDeployDir>
+  </PropertyGroup>
 
   <Target Name="DeployDependencies" AfterTargets="AfterBuild">
     <Message Importance="High" Text="Deploying native dependencies to $(TargetDir)." />
     
-    <ItemGroup>
-      <SourceDlls Include="@(AssimpLibraryNames->'$(SolutionDir)TRexAssimp\x64\%(FileName).dll')" />
-      <SourcePdbs Include="@(AssimpLibraryNames->'$(SolutionDir)TRexAssimp\x64\%(FileName).pdb')" />
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+      <SourceDlls Include="$(TRexAssimpDeployDir)\assimp-vc143-mtd.dll;$(TRexAssimpDeployDir)\dracod.dll" />
+      <SourcePdbs Include="$(TRexAssimpDeployDir)\assimp-vc143-mtd.pdb;$(TRexAssimpDeployDir)\dracod.pdb" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' != 'Debug'">
+      <SourceDlls Include="$(TRexAssimpDeployDir)\assimp-vc143-mt.dll;$(TRexAssimpDeployDir)\draco.dll" />
     </ItemGroup>
     
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(TargetDir)" />
