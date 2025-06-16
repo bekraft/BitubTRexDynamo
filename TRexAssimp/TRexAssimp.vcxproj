@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -22,6 +23,7 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  
   <ItemGroup>
     <Reference Include="Bitub.Dto">
       <HintPath Condition="Exists('..\TRexDynamo\bin\$(Configuration)')">..\TRexDynamo\bin\$(Configuration)\$(TargetFramework)\Bitub.Dto.dll</HintPath>
@@ -48,42 +50,28 @@
     <ClInclude Include="TRexAssimpImport.h" />
     <ClInclude Include="TRexAssimpPreferences.h" />
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
+  
+  <ItemGroup>
+    <AssimpLinkLibrary Include="assimp-vc143-mt"/>
+    <AssimpRuntimeLibrary Include="assimp-vc143-mt;draco"/>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
-    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
-    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <CopyFileToFolders Include="x64\assimp-vc143-mtd.dll">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
-    <CopyFileToFolders Include="x64\assimp-vc143-mt.dll">
-      <DeploymentContent>false</DeploymentContent>
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' != 'Debug|x64'">
-    <Library Include="x64\assimp-vc143-mt.lib" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <Library Include="x64\assimp-vc143-mtd.lib" />
-  </ItemGroup>
+
+  <Target Name="BuildLibAndDllNames" AfterTargets="ComputeCLGeneratedLinkInputs">
+    <ItemGroup>
+      <AssimpLinkLibs Include="@(AssimpLinkLibrary->'x64\%(FileName)$(AssimpLibFlag).lib')"/>
+      <AssimpRuntimeDlls Include="@(AssimpRuntimeLibrary->'x64\%(FileName)$(AssimpLibFlag).dll')"/>
+      <Link>
+        <AdditionalDependencies>@(AssimpLinkLibrary->'%(FileName)$(AssimpLibFlag).lib');%(Link.AdditionalDependencies)</AdditionalDependencies>
+      </Link>
+    </ItemGroup>
+    <Message Text="Linking Assimp libraries: @(AssimpLinkLibs)" Importance="high"/>
+  </Target>
+  
+  <Target Name="CopyAssimpDlls" AfterTargets="Build">
+    <Copy SourceFiles="@(AssimpRuntimeDlls)" DestinationFolder="$(OutDir)" />
+    <Message Text="Copying @(AssimpRuntimeDlls) to $(OutDir)." Importance="high"/>
+  </Target>
+  
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{11691d5b-f39e-418e-8d40-58adb4ff4c1a}</ProjectGuid>
@@ -92,35 +80,48 @@
     <CLRSupport>NetCore</CLRSupport>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
+  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <AssimpLibFlag>d</AssimpLibFlag>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <AssimpLibFlag/>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <AssimpLibFlag/>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <AssimpLibFlag/>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <AssimpLibFlag/>
   </PropertyGroup>
+  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -140,7 +141,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  
   <PropertyGroup Label="UserMacros" />
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ManagedAssembly>true</ManagedAssembly>
     <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
@@ -148,6 +151,7 @@
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
     <ManagedAssembly>true</ManagedAssembly>
@@ -156,6 +160,7 @@
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
     <ManagedAssembly>true</ManagedAssembly>
@@ -164,6 +169,7 @@
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ManagedAssembly>true</ManagedAssembly>
@@ -172,6 +178,7 @@
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
     <ManagedAssembly>true</ManagedAssembly>
@@ -180,11 +187,11 @@
     <LibraryPath>$(ProjectDir)x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
     <ClCompile>
@@ -195,9 +202,6 @@
   </ItemDefinitionGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Link>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -206,9 +210,6 @@
   </ItemDefinitionGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dev|x64'">
-    <Link>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -217,9 +218,6 @@
   </ItemDefinitionGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test|x64'">
-    <Link>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -228,9 +226,6 @@
   </ItemDefinitionGroup>
   
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
-    <Link>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -239,6 +234,7 @@
   </ItemDefinitionGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

@@ -51,6 +51,16 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\XbimDev\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.DynamoServices" Version="3.5.1.8731" />
@@ -63,6 +73,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <ProjectReference Include="..\TRexAssimp\TRexAssimp.vcxproj" />
     <ProjectReference Include="..\TRexIfc\TRexIfc.csproj" />
   </ItemGroup>
   
@@ -74,16 +85,19 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <AssimpLibraryNames Include="assimp-vc143-mt;draco"/>
+  </ItemGroup>
+
   <Target Name="DeployDependencies" AfterTargets="AfterBuild">
-    <Message Importance="High" Text="Deploy native dependencies to $(TargetDir)." />
+    <Message Importance="High" Text="Deploying native dependencies to $(TargetDir)." />
+    
     <ItemGroup>
-      <SourceDlls Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.dll" />
-      <SourcePdbs Include="$(SolutionDir)TRexAssimp\bin\x64\$(Configuration)\assimp*.pdb" />
+      <SourceDlls Include="@(AssimpLibraryNames->'$(SolutionDir)TRexAssimp\x64\%(FileName).dll')" />
+      <SourcePdbs Include="@(AssimpLibraryNames->'$(SolutionDir)TRexAssimp\x64\%(FileName).pdb')" />
     </ItemGroup>
-
-    <Message Importance="High" Text="Copying: @(SourceDlls) and @(SourceDlls) ..." />
-
+    
     <Copy SourceFiles="@(SourceDlls)" DestinationFolder="$(TargetDir)" />
     <Copy SourceFiles="@(SourcePdbs)" DestinationFolder="$(TargetDir)" />
   </Target>

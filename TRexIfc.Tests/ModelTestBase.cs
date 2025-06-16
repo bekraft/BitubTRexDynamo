@@ -12,8 +12,6 @@ namespace TRex.Tests
 {
     public class ModelTestBase<T> : TestBase<T>
     {
-        protected readonly Logger TestLogger;
-
         protected readonly Func<Logger, IfcModel> TestSimpleSolid = (testLogger) => IfcStore.ByIfcModelFile(
                 @$"{TestContext.CurrentContext.TestDirectory}\Resources\extruded-solid.ifc",
                 testLogger,
@@ -25,7 +23,6 @@ namespace TRex.Tests
 
         protected ModelTestBase() : base()
         {
-            TestLogger = Logger.ByLogFileName($"{typeof(T).Name}.log");
         }
 
         protected SceneBuildSettings NewBuildSettings(XYZ offset)
@@ -37,14 +34,14 @@ namespace TRex.Tests
             return settings;
         }
 
-        protected ComponentScene BuildComponentSimpleScene(XYZ offset)
+        protected ComponentScene BuildComponentSimpleSolidScene(XYZ offset)
         {
             var settings = NewBuildSettings(offset);            
             var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, TestSimpleSolid(TestLogger));
             return ComponentSceneBuild.RunBuildComponentScene(sceneBuild);
         }
 
-        protected ComponentScene BuildComponentSampleScene(XYZ offset)
+        protected ComponentScene BuildComponentSampleHouseScene(XYZ offset)
         {
             var settings = NewBuildSettings(offset);
             var sceneBuild = ComponentSceneBuild.BySettingsAndModel(settings, TestSampleHouse(TestLogger));
