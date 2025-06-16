@@ -51,25 +51,28 @@
     <ClInclude Include="TRexAssimpPreferences.h" />
   </ItemGroup>
   
-  <ItemGroup>
-    <AssimpLinkLibrary Include="assimp-vc143-mt"/>
-    <AssimpRuntimeLibrary Include="assimp-vc143-mt;draco"/>
+  <ItemGroup Condition="'$(Configuration)'!='Debug'">
+    <AssimpLinkLibrary Include="x64\assimp-vc143-mt.lib"/>
+    <AssimpRuntimeLibrary Include="x64\assimp-vc143-mt.dll;x64\draco.dll"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)'=='Debug'">
+    <AssimpLinkLibrary Include="x64\assimp-vc143-mtd.lib"/>
+    <AssimpRuntimeLibrary Include="x64\assimp-vc143-mtd.dll;x64\dracod.dll"/>
   </ItemGroup>
 
   <Target Name="BuildLibAndDllNames" AfterTargets="ComputeCLGeneratedLinkInputs">
     <ItemGroup>
-      <AssimpLinkLibs Include="@(AssimpLinkLibrary->'x64\%(FileName)$(AssimpLibFlag).lib')"/>
-      <AssimpRuntimeDlls Include="@(AssimpRuntimeLibrary->'x64\%(FileName)$(AssimpLibFlag).dll')"/>
       <Link>
-        <AdditionalDependencies>@(AssimpLinkLibrary->'%(FileName)$(AssimpLibFlag).lib');%(Link.AdditionalDependencies)</AdditionalDependencies>
+        <AdditionalDependencies>@(AssimpLinkLibrary);%(Link.AdditionalDependencies)</AdditionalDependencies>
       </Link>
     </ItemGroup>
-    <Message Text="Linking Assimp libraries: @(AssimpLinkLibs)" Importance="high"/>
+    <Message Text="Linking Assimp libraries: @(AssimpLinkLibrary)" Importance="high"/>
   </Target>
   
   <Target Name="CopyAssimpDlls" AfterTargets="Build">
-    <Copy SourceFiles="@(AssimpRuntimeDlls)" DestinationFolder="$(OutDir)" />
-    <Message Text="Copying @(AssimpRuntimeDlls) to $(OutDir)." Importance="high"/>
+    <Copy SourceFiles="@(AssimpRuntimeLibrary)" DestinationFolder="$(OutDir)" />
+    <Message Text="Copying @(AssimpRuntimeLibrary) to $(OutDir)." Importance="high"/>
   </Target>
   
   <PropertyGroup Label="Globals">
