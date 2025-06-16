@@ -70,7 +70,7 @@ steps:
     msbuildArchitecture: '$(buildPlatform)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
+    msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildMajor=$(majorVersion) -p:BuildMinor=$(minorVersion) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
         
 - task: ArchiveFiles@2
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'), eq(variables.archivePackage, 'true'))
@@ -82,10 +82,11 @@ steps:
     replaceExistingArchive: true
     verbose: true
     
-- script: |
-    git tag $(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)
-    git push origin $(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)
-  workingDirectory: $(Build.SourcesDirectory)
-  displayName: Git Commit and Tag from pipeline
-  continueOnError: true
+- task: GitHubRelease@1
   condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
+  inputs:
+    gitHubConnection: OAuth
+    title: 'TRex-$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)'
+    tag: '$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond)'
+    assets: '$(Build.ArtifactStagingDirectory)/TRex-$(majorVersion).$(minorVersion).$(buildDate)$(buildQualifier).$(buildSecond).zip'
+    
