@@ -78,11 +78,11 @@ namespace TRex.Export
             }
             catch (ArgumentNullException ane)
             {
-                GlobalLogging.log.Warning("Not allowed {0}: {1}", format, ane.Message);
+                GlobalLogging.Log.Warning("Not allowed {0}: {1}", format, ane.Message);
             }
             catch (Exception e)
             {
-                GlobalLogging.log.Warning("Unable to parse '{0}' as format: {1}", format, e.Message);
+                GlobalLogging.Log.Warning("Unable to parse '{0}' as format: {1}", format, e.Message);
             }
             return null;
         }

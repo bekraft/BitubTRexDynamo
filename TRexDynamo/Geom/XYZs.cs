@@ -77,7 +77,7 @@ namespace TRex.Geom
             }
             catch(Exception e)
             {
-                GlobalLogging.log.Error(e, "Point class hasn't been found. Maybe a library reference is missing.");
+                GlobalLogging.Log.Error(e, "Point class hasn't been found. Maybe a library reference is missing.");
                 throw new ArgumentException(e.Message);
             }
         }

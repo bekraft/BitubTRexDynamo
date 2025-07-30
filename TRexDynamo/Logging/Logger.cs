@@ -18,10 +18,10 @@ namespace TRex.Log
 
         #region Internals
 
-        internal string MessageTemplate { get; set; } =         
+        private string MessageTemplate { get; set; } =         
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId} '{ThreadName}'){NewLine}{Exception}";
 
-        internal Logger()
+        private Logger()
         {
             LoggerFactory = new LoggerFactory();
         }
@@ -68,7 +68,7 @@ namespace TRex.Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        internal static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
+        private static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
         {
             var instance = new Logger();
             
@@ -164,7 +164,7 @@ namespace TRex.Log
             {
                 throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
             }
-            return Logger.ByLogFileName(fileName, new LoggingLevelSwitch(level));
+            return ByLogFileName(fileName, new LoggingLevelSwitch(level));
         }
     }
 }

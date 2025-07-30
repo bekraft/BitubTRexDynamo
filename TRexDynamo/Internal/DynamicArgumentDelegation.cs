@@ -17,7 +17,7 @@ namespace TRex.Internal
 
         #region Internals
 
-        private static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<DynamicArgumentDelegation>();
+        private static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<DynamicArgumentDelegation>();
 
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 

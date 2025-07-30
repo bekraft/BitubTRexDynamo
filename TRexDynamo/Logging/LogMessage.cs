@@ -20,7 +20,7 @@ namespace TRex.Log
 
         #region Internals
 
-        private static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<LogMessage>();
+        private static readonly ILogger log = GlobalLogging.LoggingFactory.CreateLogger<LogMessage>();
 
         private readonly long timeStamp;
         private string messageTemplate;

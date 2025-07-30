@@ -1,19 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
 
 using Bitub.Dto;
 
 using Xbim.Common;
-using Xbim.Ifc;
 
 using Autodesk.DesignScript.Runtime;
-using Microsoft.Extensions.Logging;
-
+using Bitub.Xbim.Ifc;
+using TRex.Internal;
 using TRex.Log;
-#if Is_XbimDev
-using Xbim.Common.Configuration;
-#endif
 
 namespace TRex.Store
 {
@@ -26,7 +21,7 @@ namespace TRex.Store
         /// <summary>
         /// Available IFC physical file format extensions.
         /// </summary>
-        public static string[] Extensions = new string[] { "ifc", "ifczip", "ifcxml" };
+        public static readonly string[] Extensions = new string[] { "ifc", "ifczip", "ifcxml" };
 
         // Disable comment warning
 #pragma warning disable CS1591
@@ -34,18 +29,18 @@ namespace TRex.Store
         #region Internals
 
         // The model producer hook 
-        internal Func<IModel> Producer { get; private set; }
+        private Func<IModel> _modelSupplier;
 
         #region Private internals
 
-        private WeakReference<IModel> reference;
-        private readonly object monitor = new object();        
+        private WeakReference<IModel> _reference;
+        private readonly object _monitor = new object();        
 
         static IfcStore()
         {
-#if Is_XbimDev
-            XbimServices.Current.ConfigureServices(s => s.AddXbimToolkit(opt => opt.AddHeuristicModel()));
-#endif
+            XbimOcctExtensions.UseHeuristicStoreType = true;
+            //XbimOcctExtensions.LoggerFactory = GlobalLogging.LoggingFactory;
+            XbimOcctExtensions.ConfigureGeometryServiceWinOs();
         }
 
         private IfcStore(Logger logger)
@@ -80,21 +75,16 @@ namespace TRex.Store
             }
             return null;
         }
-
-        private static void InitLogging(Logger logInstance)
-        {
-            XbimLogging.LoggerFactory = logInstance?.LoggerFactory ?? new LoggerFactory();
-        }
-
+        
         #endregion
 
-        internal protected IModel TryGetXbimModel
+        protected internal IModel TryGetXbimModel
         {
             get {
                 lock (this)
                 {
                     IModel model = null;
-                    if (reference?.TryGetTarget(out model) ?? false)
+                    if (_reference?.TryGetTarget(out model) ?? false)
                         return model;
                     else
                         return null;
@@ -102,33 +92,32 @@ namespace TRex.Store
             }
         }
 
-        internal protected IModel XbimModel
+        protected internal IModel XbimModel
         {
             get {
-                lock (monitor)
+                lock (_monitor)
                 {
-                    IModel model = null;
-                    if (reference?.TryGetTarget(out model) ?? false)
-                        return model;
+                    if (_reference?.TryGetTarget(out var thisModel) ?? false)
+                        return thisModel;
                     
-                    model = Producer?.Invoke();
-                    reference = new WeakReference<IModel>(model);
+                    thisModel = _modelSupplier?.Invoke();
+                    _reference = new WeakReference<IModel>(thisModel);
 
-                    return model;
+                    return thisModel;
                 }
             }
             private set {
-                lock (monitor)
+                lock (_monitor)
                 {
                     if (null != value)
                     {
-                        reference = new WeakReference<IModel>(value);
-                        Producer = () => value;
+                        _reference = new WeakReference<IModel>(value);
+                        _modelSupplier = () => value;
                     }
                     else
                     {
-                        reference = null;
-                        Producer = () => null;
+                        _reference = null;
+                        _modelSupplier = () => null;
                     }
                 }
             }
@@ -159,14 +148,12 @@ namespace TRex.Store
         {
             if (string.IsNullOrEmpty(fileName))
                 throw new ArgumentNullException(nameof(fileName));
-
-            InitLogging(logger);
-
+            
             var qualifier = ProgressingModelTask<IfcModel>.BuildQualifierByFilePathName(fileName);
-            IfcModel ifcModel;
-            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(
+                    qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out var ifcModel))
             {
-                ifcModel.Store.Producer = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
+                ifcModel.Store._modelSupplier = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
                 tessellationPrefs?.ApplyToModel(ifcModel);
             }
 
@@ -193,8 +180,8 @@ namespace TRex.Store
         /// <returns></returns>
         public static IfcModel ByXbimModel(IModel model, Qualifier qualifier, Logger logger)
         {
-            IfcModel ifcModel;
-            ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(model, logger), qualifier), out ifcModel);
+            ModelCache.Instance.TryGetOrCreateModel(
+                qualifier, q => new IfcModel(new IfcStore(model, logger), qualifier), out var ifcModel);
             return ifcModel;
         }
 
@@ -207,15 +194,14 @@ namespace TRex.Store
         /// <returns>A new <see cref="IfcModel"/> with transform delegate</returns>
         internal static IfcModel ByTransform(IfcModel source, Func<IModel, IfcModel, IModel> transform, string canoncialName)
         {
-            IfcModel ifcModel;
-
             if (string.IsNullOrWhiteSpace(canoncialName))
                 canoncialName = DateTime.Now.Ticks.ToString();
 
             var qualifier = ProgressingModelTask<IfcModel>.BuildCanonicalQualifier(source.Qualifier, canoncialName);
-            if (!ModelCache.Instance.TryGetOrCreateModel(qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out ifcModel))
+            if (!ModelCache.Instance.TryGetOrCreateModel(
+                    qualifier, q => new IfcModel(new IfcStore(source.Store.Logger), qualifier), out var ifcModel))
             {
-                ifcModel.Store.Producer = () =>
+                ifcModel.Store._modelSupplier = () =>
                 {
                     if (source.IsCanceled)
                     {

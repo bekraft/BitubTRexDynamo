@@ -10,10 +10,8 @@ using Xbim.Common;
 using Xbim.Ifc;
 using Xbim.Ifc4.Interfaces;
 
-using Bitub.Xbim.Ifc;
 using Bitub.Dto;
 
-using TRex.Internal;
 using TRex.Log;
 
 namespace TRex.Store
@@ -27,26 +25,26 @@ namespace TRex.Store
 
         #region Internals
 
-        internal protected IfcModel(IfcModel ifcModel)
+        private IfcModel(IfcModel ifcModel)
             : base(ifcModel.Qualifier, ifcModel.Logger)
         {
             Store = ifcModel.Store;
             ifcModel.ShareActionLog(this);
         }
 
-        internal protected IfcModel(IfcStore store, Qualifier qualifier) 
+        protected internal IfcModel(IfcStore store, Qualifier qualifier) 
             : base(qualifier, store.Logger)
         {
             Store = store;                        
         }
 
-        internal protected IfcModel(IfcModel ifcModel, Qualifier qualifier)
+        private IfcModel(IfcModel ifcModel, Qualifier qualifier)
             : this(ifcModel.Store, qualifier)
         {
             ifcModel.ShareActionLog(this);
         }
 
-        internal protected IfcModel(IfcStore store) 
+        protected internal IfcModel(IfcStore store) 
             : base(System.Guid.NewGuid().ToQualifier(), store.Logger)
         {
             Store = store;
@@ -57,7 +55,7 @@ namespace TRex.Store
             return new IfcModel(this, qualifier);
         }
 
-        internal void NotifySaveProgressChanged(int percentage, object stateObject)
+        private void NotifySaveProgressChanged(int percentage, object stateObject)
         {
             NotifyOnProgressChanged(LogReason.Saved, percentage, stateObject);
         }
@@ -84,17 +82,17 @@ namespace TRex.Store
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// Returns file name.
         /// </summary>
         public new string FileName => base.FileName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// Returns path name.
         /// </summary>
         public new string PathName => base.PathName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// Return extension.
         /// </summary>
         public new string FormatExtension => base.FormatExtension;
 
@@ -173,7 +171,6 @@ namespace TRex.Store
 
             Logger logger = inModel.Store.Logger;
             IfcModel outModel;
-            string filePathName;
             try
             {
                 var internalModel = inModel.XbimModel;
@@ -181,7 +178,7 @@ namespace TRex.Store
                     throw new ArgumentNullException("No internal model");
 
                 outModel = inModel.ChangeFormat(extension);
-                filePathName = outModel.GetFilePathName(separator, true);
+                var filePathName = outModel.GetFilePathName(separator, true);
 
                 using (var fileStream = File.Create(filePathName))
                 {
@@ -251,7 +248,7 @@ namespace TRex.Store
         /// <returns>A list of property set names in use</returns>
         public string[] QuantitySetNames() => XbimModel?.Instances
             .OfType<IIfcQuantitySet>()
-            .Where(e => e.DefinesType.Count() == 0)
+            .Where(e => !e.DefinesType.Any())
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();
@@ -262,7 +259,7 @@ namespace TRex.Store
         /// <returns>A list of property set names in use</returns>
         public string[] PropertySetNames() => XbimModel?.Instances
             .OfType<IIfcPropertySet>()
-            .Where(e => e.DefinesType.Count() == 0)
+            .Where(e => !e.DefinesType.Any())
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();
@@ -273,7 +270,7 @@ namespace TRex.Store
         /// <returns>A list of property set names in use</returns>
         public string[] PropertySetNamesOnTypes() => XbimModel?.Instances
             .OfType<IIfcPropertySet>()
-            .Where(e => e.DefinesType.Count() > 0)
+            .Where(e => e.DefinesType.Any())
             .Select(e => e.Name?.ToString())
             .Distinct()
             .ToArray();

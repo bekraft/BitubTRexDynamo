@@ -21,14 +21,14 @@ namespace TRex.Internal
         /// <summary>
         /// Global logging factory.
         /// </summary>
-        public static readonly ILoggerFactory loggingFactory;
+        public static readonly ILoggerFactory LoggingFactory;
 
         /// <summary>
         /// Singleton logging instance.
         /// </summary>
-        public static readonly Serilog.ILogger log;
+        public static readonly Serilog.ILogger Log;
 
-        private const string messageTemplate =
+        private const string MessageTemplate =
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId} '{ThreadName}'){NewLine}{Exception}";
 
         // TODO Flush / close when exiting
@@ -39,7 +39,7 @@ namespace TRex.Internal
             var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var ownVersion = typeof(GlobalLogging).Assembly.GetName().Version;
             var dynamoVersion = typeof(IsVisibleInDynamoLibraryAttribute).Assembly.GetName().Version;
-            log = new LoggerConfiguration()
+            Log = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(new LoggingLevelSwitch(Serilog.Events.LogEventLevel.Debug))
                 /*.WriteTo.Async(a => a.File(
                     $"{userProfile}\\TRexIfc-{ownVersion.Major}.{ownVersion.Minor}_Dynamo-{dynamoVersion.Major}.{dynamoVersion.Minor}_.log",
@@ -51,16 +51,16 @@ namespace TRex.Internal
                     buffered: false,
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
-                    outputTemplate: messageTemplate) 
+                    outputTemplate: MessageTemplate) 
                 .Enrich.WithThreadId()
                 .Enrich.WithThreadName()
                 .Enrich.FromLogContext()
                 .CreateLogger();
             
-            loggingFactory = new LoggerFactory().AddSerilog(log, true);
-            Serilog.Log.Logger = log;
+            LoggingFactory = new LoggerFactory().AddSerilog(Log, true);
+            Serilog.Log.Logger = Log;
 
-            log.Information($"Started TRexIfc-{ownVersion} on Dynamo-{dynamoVersion} host at {DateTime.Now}.");
+            Log.Information($"Started TRexIfc-{ownVersion} on Dynamo-{dynamoVersion} host at {DateTime.Now}.");
         }
     }
 }

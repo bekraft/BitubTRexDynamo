@@ -33,7 +33,7 @@ namespace TRex.Task
             TransformActionResult.Added
         };
 
-        private static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcTransform>();
+        private static readonly ILogger log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
 
         private readonly IModelTransform transformDelegate;
 

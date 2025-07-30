@@ -19,12 +19,12 @@ namespace TRex.Store
 
         #region Internals
 
-        private static ModelCache instance;
-        private Dictionary<Type, Dictionary<Qualifier, object>> cache;
+        private static ModelCache _instance;
+        private readonly Dictionary<Type, Dictionary<Qualifier, object>> _cache;
 
         private ModelCache()
         {
-            cache = new Dictionary<Type, Dictionary<Qualifier, object>>();
+            _cache = new Dictionary<Type, Dictionary<Qualifier, object>>();
         }        
 
         #endregion
@@ -33,15 +33,14 @@ namespace TRex.Store
         {
             get {
                 lock (typeof(ModelCache))
-                    return instance ?? (instance = new ModelCache());
+                    return _instance ??= new ModelCache();
             }
         }
 
         private Dictionary<Qualifier, object> GetOrCreateModelCache<TModel>()
         {
-            Dictionary<Qualifier, object> modelCache;
-            if (!cache.TryGetValue(typeof(TModel), out modelCache))
-                cache.Add(typeof(TModel), modelCache = new Dictionary<Qualifier, object>());
+            if (!_cache.TryGetValue(typeof(TModel), out var modelCache))
+                _cache.Add(typeof(TModel), modelCache = new Dictionary<Qualifier, object>());
             return modelCache;
         }
 
@@ -50,15 +49,14 @@ namespace TRex.Store
             lock (this)
             {
                 var modelCache = GetOrCreateModelCache<TModel>();
-                object cachedModel;
-                if (!modelCache.TryGetValue(qualifier, out cachedModel))
+                if (!modelCache.TryGetValue(qualifier, out var cachedModel))
                 {
                     model = default(TModel);
                     return false;
                 }
                 else
                 {
-                    GlobalLogging.log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
+                    GlobalLogging.Log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
                     model = (TModel)cachedModel;
                     return true;
                 }
@@ -71,18 +69,17 @@ namespace TRex.Store
             lock (this)
             {
                 var modelCache = GetOrCreateModelCache<TModel>();
-                object cachedModel;
-                if (!modelCache.TryGetValue(qualifier, out cachedModel))
+                if (!modelCache.TryGetValue(qualifier, out var cachedModel))
                 {
                     modelCache.Add(qualifier, cachedModel = modelProducer(qualifier));
                     model = (TModel)cachedModel;
 
-                    GlobalLogging.log.Information("Registered new {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);                    
+                    GlobalLogging.Log.Information("Registered new {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);                    
                     return false;
                 }
                 else
                 {
-                    GlobalLogging.log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
+                    GlobalLogging.Log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
                     model = (TModel)cachedModel;
                     return true;
                 }                
@@ -93,7 +90,7 @@ namespace TRex.Store
         {
             lock (this)
             {
-                GlobalLogging.log.Information("Dropping {1} model '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
+                GlobalLogging.Log.Information("Dropping {1} model '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
                 var modelCache = GetOrCreateModelCache<TModel>();
                 modelCache.Remove(qualifier);
             }
@@ -103,8 +100,8 @@ namespace TRex.Store
         {
             lock (this)
             {
-                GlobalLogging.log.Information("Clearing model cache completely.");
-                cache.Clear();
+                GlobalLogging.Log.Information("Clearing model cache completely.");
+                _cache.Clear();
             }
         }
 
@@ -112,8 +109,8 @@ namespace TRex.Store
         {
             lock (this)
             {
-                GlobalLogging.log.Information("Clearing {0} models from cache.", typeof(TModel).Name);
-                cache.Remove(typeof(TModel));
+                GlobalLogging.Log.Information("Clearing {0} models from cache.", typeof(TModel).Name);
+                _cache.Remove(typeof(TModel));
             }
         }
 
