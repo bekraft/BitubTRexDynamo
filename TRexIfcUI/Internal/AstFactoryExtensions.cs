@@ -18,7 +18,7 @@ namespace TRex.Internal
         [IsVisibleInDynamoLibrary(false)]
         public static string[] ToQualifiedMethodName(this Type t, string methodName)
         {
-            return new string[] { t.FullName, methodName };
+            return new string[] { t.FullName ?? "", methodName };
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -33,7 +33,7 @@ namespace TRex.Internal
                             new List<AssociativeNode>()
                             {
                                 AstFactory.BuildExprList(
-                                    funcQualifier.Select(n => AstFactory.BuildStringNode(n)).Cast<AssociativeNode>().ToList())
+                                    funcQualifier.Select(AstFactory.BuildStringNode).Cast<AssociativeNode>().ToList())
                             }),
                         taskProgressingNode
                 });

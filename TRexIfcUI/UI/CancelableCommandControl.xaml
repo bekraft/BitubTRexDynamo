@@ -35,7 +35,8 @@
                 VerticalContentAlignment="Center"/>
 
         <Label x:Name="ProgressState"
-               Grid.Row="0"
+               Grid.Row="0" 
+               Grid.Column="0"
                FontSize="8"
                Margin="5,5,5,5"
                HorizontalContentAlignment="Center"
@@ -66,7 +67,8 @@
                     CanUserResizeColumns="True"
                     CanUserAddRows="False"
                     SelectionUnit="FullRow"
-                    HorizontalGridLinesBrush="AliceBlue"
+                    Background="AliceBlue"
+                    HorizontalGridLinesBrush="DarkGray"
                     GridLinesVisibility="Horizontal"
                     HeadersVisibility="Column">
 

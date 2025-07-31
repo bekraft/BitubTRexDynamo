@@ -33,19 +33,19 @@ namespace TRex.Task
             TransformActionResult.Added
         };
 
-        private static readonly ILogger log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
+        private static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<IfcTransform>();
 
-        private readonly IModelTransform transformDelegate;
+        private readonly IModelTransform TransformDelegate;
 
-        internal int TimeOutMillis { get; set; } = -1;
+        private int TimeOutMillis { get; set; } = -1;
 
-        internal CancellationTokenSource CancellationSource { get; private set; }
+        private CancellationTokenSource? CancellationSource { get; set; }
 
-        internal string Mark { get; set; } = $"{DateTime.Now.Ticks}";
+        private string Mark { get; set; } = $"{DateTime.Now.Ticks}";
 
-        internal IfcTransform(IModelTransform transform)
+        private IfcTransform(IModelTransform transform)
         {
-            transformDelegate = transform;
+            TransformDelegate = transform;
         }
 
         private static LogReason TransformActionToActionType(TransformActionResult a)
@@ -66,19 +66,20 @@ namespace TRex.Task
             }
         }
 
-        private static IEnumerable<LogMessage> TransformLogToMessage(string storeName, IEnumerable<TransformLogEntry> logEntries, LogReason filter = LogReason.Any)
+        private static IEnumerable<LogMessage> TransformLogToMessage(string storeName, 
+            IEnumerable<TransformLogEntry> logEntries, LogReason filter = LogReason.Any)
         {
             foreach (var entry in logEntries)
             {
-                var action = TransformActionToActionType(entry.performed);
+                var action = TransformActionToActionType(entry.Performed);
                 if (LogReason.None != (filter & action))
                 {
                     yield return LogMessage.BySeverityAndMessage(
                         storeName,
                         LogSeverity.Info,
                         action, "#{0} {1}",
-                        entry.handle.EntityLabel.ToString() ?? "(not set)",
-                        entry.handle.EntityExpressType.Name ?? "(type unknown)");
+                        entry.Handle.EntityLabel.ToString() ?? "(not set)",
+                        entry.Handle.EntityExpressType.Name ?? "(type unknown)");
                 }
             }
         }
@@ -86,7 +87,7 @@ namespace TRex.Task
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public static IfcModel BySourceAndTransform(IfcModel source, IfcTransform transform, string nameAddon, object objFilterMask)
+        public static IfcModel? BySourceAndTransform(IfcModel? source, IfcTransform? transform, string? nameAddon, object objFilterMask)
         {
             if (null == source)
                 throw new ArgumentNullException(nameof(source));
@@ -103,14 +104,14 @@ namespace TRex.Task
 
             return IfcStore.ByTransform(source, (model, node) =>
             {
-                log.LogInformation("Starting '{1}' ({0}) on {2} ...", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
+                Log.LogInformation("Starting '{Code}' ({Name}) on {NodeName} ...", node.GetHashCode(), transform.TransformDelegate.Name, node.Name);
                 try
                 {
-                    using (var task = transform.transformDelegate.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
+                    using (var task = transform.TransformDelegate.Run(model, node.CreateProgressMonitor(LogReason.Transformed)))
                     {
                         task.Wait(transform.TimeOutMillis, transform.CancellationSource.Token);
 
-                        log.LogInformation("Finalized '{1}' ({0}) on {2}.", node.GetHashCode(), transform.transformDelegate.Name, node.Name);
+                        Log.LogInformation("Finalized '{Code}' ({Name}) on {NodeName}.", node.GetHashCode(), transform.TransformDelegate.Name, node.Name);
 
                         if (task.IsCompleted)
                         {
@@ -122,7 +123,7 @@ namespace TRex.Task
                                 switch (result.ResultCode)
                                 {
                                     case TransformResult.Code.Finished:
-                                        var name = $"{transform.transformDelegate.Name}({node.Name})";
+                                        var name = $"{transform.TransformDelegate.Name}({node.Name})";
                                         node.OnActionLogged(TransformLogToMessage(name, result.Log, filterMask).ToArray());                                   
                                         return result.Target;
                                     case TransformResult.Code.Canceled:
@@ -149,7 +150,7 @@ namespace TRex.Task
                 } 
                 catch(Exception thrownOnExec)
                 {
-                    log.LogError("{0} '{1}'\n{2}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
+                    Log.LogError("{Exception} '{Message}'\n{StackTrace}", thrownOnExec, thrownOnExec.Message, thrownOnExec.StackTrace);
                     throw new Exception("Exception while executing task");
                 }
             }, nameAddon);
@@ -158,7 +159,7 @@ namespace TRex.Task
         [IsVisibleInDynamoLibrary(false)]
         public override string ToString()
         {
-            return transformDelegate?.Name ?? "Anonymous IfcTransform";
+            return TransformDelegate?.Name ?? "Anonymous IfcTransform";
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -178,9 +179,8 @@ namespace TRex.Task
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewTransformPlacementRequest(Logger logInstance, IfcAuthorMetadata newMetadata, Alignment alignment, object placementStrategy)
         {
-            ModelPlacementStrategy strategy = default(ModelPlacementStrategy);
-            if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out strategy))
-                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(ModelPlacementStrategy), strategy);
+            if (!DynamicArgumentDelegation.TryCastEnum(placementStrategy, out ModelPlacementStrategy strategy))
+                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", placementStrategy, nameof(ModelPlacementStrategy), strategy);
 
             return new IfcTransform(new ModelPlacementTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {
@@ -193,9 +193,8 @@ namespace TRex.Task
         [IsVisibleInDynamoLibrary(false)]
         public static IfcTransform NewRepresentationRefactorTransform(Logger logInstance, IfcAuthorMetadata newMetadata, string[] contexts, object refactorStrategy)
         {
-            ProductRefactorStrategy strategy = default(ProductRefactorStrategy);
-            if (!DynamicArgumentDelegation.TryCastEnum(refactorStrategy, out strategy))
-                log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRefactorStrategy), strategy);
+            if (!DynamicArgumentDelegation.TryCastEnum(refactorStrategy, out ProductRefactorStrategy strategy))
+                Log.LogWarning("Unable to cast '{0}' to type {1}. Using '{2}'.", refactorStrategy, nameof(ProductRefactorStrategy), strategy);
 
             return new IfcTransform(new ProductRepresentationRefactorTransform(logInstance?.LoggerFactory, defaultLogFilter)
             {

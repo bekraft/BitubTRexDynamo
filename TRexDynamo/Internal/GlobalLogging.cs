@@ -39,6 +39,7 @@ namespace TRex.Internal
             var userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             var ownVersion = typeof(GlobalLogging).Assembly.GetName().Version;
             var dynamoVersion = typeof(IsVisibleInDynamoLibraryAttribute).Assembly.GetName().Version;
+            
             Log = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(new LoggingLevelSwitch(Serilog.Events.LogEventLevel.Debug))
                 /*.WriteTo.Async(a => a.File(

@@ -110,9 +110,9 @@ namespace TRex.Internal
             return key;
         }
 
-        private static T Get<T>(Qualifier qualifier)
+        private static T? Get<T>(Qualifier qualifier) where T : class
         {
-            object f = null;
+            object? f = null;
             switch(qualifier?.GuidOrNameCase ?? Qualifier.GuidOrNameOneofCase.None)
             {
                 case Qualifier.GuidOrNameOneofCase.Anonymous:
@@ -128,7 +128,7 @@ namespace TRex.Internal
                     break;
             }
 
-            return (T)f;
+            return f as T;
         }
 
         private static R InternallyCall<T1, R>(Qualifier qualifier, T1 arg1)

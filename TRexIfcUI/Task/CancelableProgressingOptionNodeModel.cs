@@ -19,7 +19,7 @@ namespace TRex.Task
 
         #region Internals
 
-        protected TOption option;        
+        protected TOption? _selectedOption;        
 
         protected CancelableProgressingOptionNodeModel() : base()
         {
@@ -59,14 +59,12 @@ namespace TRex.Task
         /// Reflects and changes the current option.
         /// </summary>
         [JsonProperty]
-        public TOption Selected
+        public TOption? Selected
         {
-            get {
-                return option;
-            }
+            get => _selectedOption;
             set {
                 var found = Options.FirstOrDefault(o => o?.Equals(value) ?? false);
-                option = found ?? value;
+                _selectedOption = found ?? value;
                 RaisePropertyChanged(nameof(Selected));
                 OnNodeModified(true);
             }

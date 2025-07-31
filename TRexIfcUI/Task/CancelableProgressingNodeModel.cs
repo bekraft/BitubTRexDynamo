@@ -49,17 +49,14 @@ namespace TRex.Task
             DynamicDelegation.Put<ProgressingTask, ProgressingTask>(ProgressingTaskMethodName, ConsumeAstProgressingTask);
         }
 
-        internal protected string[] ProgressingTaskMethodName
-        {
-            get => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
-        }
+        protected internal string[] ProgressingTaskMethodName => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
 
         [JsonIgnore]
         internal LogReason LogReasonMask { get; set; } = LogReason.Any;
 
-        internal void OnTaskProgessEnded(object sender, NodeProgressEndEventArgs args = null)
+        internal void OnTaskProgessEnded(object sender, NodeProgressEndEventArgs? args = null)
         {
-            if (LogReason.None != (LogReasonMask & args.Reason))
+            if (LogReason.None != (LogReasonMask & args?.Reason))
             {
                 if (sender is ProgressingTask task)
                 {
@@ -78,7 +75,7 @@ namespace TRex.Task
                     ProgressState = args.State?.ToString() ?? args.TaskName;
                     TaskName = args.TaskName;
 
-                    if (null != args.InternalState)
+                    if (null != args?.InternalState)
                     {
                         if (_isCanceled && !args.InternalState.IsAboutCancelling)
                             args.InternalState.MarkCancelling();

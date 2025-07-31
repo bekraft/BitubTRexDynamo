@@ -2,8 +2,6 @@
 
 using TRex.Task;
 
-using TRex.Log;
-
 namespace TRex.UI.Customization
 {
     // Disable comment warning

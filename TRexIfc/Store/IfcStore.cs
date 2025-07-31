@@ -29,32 +29,31 @@ namespace TRex.Store
         #region Internals
 
         // The model producer hook 
-        private Func<IModel> _modelSupplier;
+        private Func<IModel?>? _modelSupplier;
 
         #region Private internals
 
-        private WeakReference<IModel> _reference;
+        private WeakReference<IModel>? _reference;
         private readonly object _monitor = new object();        
 
         static IfcStore()
         {
             XbimOcctExtensions.UseHeuristicStoreType = true;
-            //XbimOcctExtensions.LoggerFactory = GlobalLogging.LoggingFactory;
             XbimOcctExtensions.ConfigureGeometryServiceWinOs();
         }
 
-        private IfcStore(Logger logger)
+        private IfcStore(Logger? logger)
         {
             Logger = logger;
         }
 
-        private IfcStore(IModel model, Logger logger)
+        private IfcStore(IModel? model, Logger? logger)
         {
             XbimModel = model;
             Logger = logger;
         }
 
-        private static IModel LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName)
+        private static IModel? LoadFromFile(IfcModel theModel, IfcTessellationPrefs prefs, string filePathName)
         {
             var logger = theModel.Store.Logger;
             logger?.LogInfo("Start loading file '{0}'.", filePathName);
@@ -78,13 +77,12 @@ namespace TRex.Store
         
         #endregion
 
-        protected internal IModel TryGetXbimModel
+        protected internal IModel? TryGetXbimModel
         {
             get {
                 lock (this)
                 {
-                    IModel model = null;
-                    if (_reference?.TryGetTarget(out model) ?? false)
+                    if (_reference?.TryGetTarget(out IModel? model) ?? false)
                         return model;
                     else
                         return null;
@@ -92,7 +90,7 @@ namespace TRex.Store
             }
         }
 
-        protected internal IModel XbimModel
+        protected internal IModel? XbimModel
         {
             get {
                 lock (_monitor)
@@ -101,8 +99,9 @@ namespace TRex.Store
                         return thisModel;
                     
                     thisModel = _modelSupplier?.Invoke();
-                    _reference = new WeakReference<IModel>(thisModel);
-
+                    if (null != thisModel)
+                        _reference = new WeakReference<IModel>(thisModel);
+                   
                     return thisModel;
                 }
             }
@@ -130,7 +129,7 @@ namespace TRex.Store
         /// <summary>
         /// The logger instance (or null if there is no).
         /// </summary>
-        public Logger Logger { get; set; }
+        public Logger? Logger { get; init; }
 
         /// <summary>
         /// Gets the time stamp.
@@ -192,7 +191,7 @@ namespace TRex.Store
         /// <param name="transform">A transform expecting an <see cref="IModel"/> and a <see cref="IfcModel"/> to associate the result to.</param>
         /// <param name="canoncialName">The canonical fragment</param>
         /// <returns>A new <see cref="IfcModel"/> with transform delegate</returns>
-        internal static IfcModel ByTransform(IfcModel source, Func<IModel, IfcModel, IModel> transform, string canoncialName)
+        internal static IfcModel? ByTransform(IfcModel source, Func<IModel, IfcModel, IModel>? transform, string? canoncialName)
         {
             if (string.IsNullOrWhiteSpace(canoncialName))
                 canoncialName = DateTime.Now.Ticks.ToString();
