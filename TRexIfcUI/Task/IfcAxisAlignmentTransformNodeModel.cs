@@ -55,7 +55,7 @@ namespace TRex.Task
             LogReasonMask = LogReason.Changed;
         }
 
-        private IDictionary<string, ModelPlacementStrategy> PlacementOptions = new Dictionary<string, ModelPlacementStrategy>()
+        private readonly IDictionary<string, ModelPlacementStrategy> PlacementOptions = new Dictionary<string, ModelPlacementStrategy>()
         {
             { "Change existing placements", ModelPlacementStrategy.ChangeRootPlacements },
             { "Insert new root placement", ModelPlacementStrategy.NewRootPlacement }
@@ -106,7 +106,7 @@ namespace TRex.Task
 
             // Create transformation delegate
             var astCreateTransformDelegate = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
+                new Func<IfcModel, IfcTransform, string, object, IfcModel?>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() 
                 { 
                     inputAst[4], 

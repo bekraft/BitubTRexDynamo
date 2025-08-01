@@ -21,7 +21,7 @@ namespace TRex.Internal
         protected BaseNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         { }
 
-        protected bool IsAcceptableWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode[] runtimeDefaultParams)
+        protected bool IsAcceptableWithRuntimeDefaults(List<AssociativeNode> inputAstNodes, params AssociativeNode?[] runtimeDefaultParams)
         {
             if (IsPartiallyApplied)
             {
@@ -32,7 +32,7 @@ namespace TRex.Internal
                         if (null == runtimeDefaultParams[port.Index])
                             return false;
                         else
-                            inputAstNodes[port.Index] = runtimeDefaultParams[port.Index];
+                            inputAstNodes[port.Index] = runtimeDefaultParams[port.Index]!;
                     }
                 }
             }
@@ -62,22 +62,23 @@ namespace TRex.Internal
                 return expectedStringNode;
         }
 
+        protected string[] GetOpenPortNames(bool withDefaults = false)
+        {
+            return InPorts
+                .Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue))
+                .Select(p => p.Name)
+                .ToArray();
+        }
+
         protected void WarnForMissingInputs(bool withDefaults = false)
         {
-            Warning(string.Format("Missing connected ports ({0})", 
-                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
+            Warning($"Missing connected ports ({string.Join(", ", GetOpenPortNames(withDefaults))})");
         }
-
-        protected void ErrorForMissingInputs(bool withDefaults = false)
-        {
-            Error(string.Format("Missing connected ports ({0})",
-                string.Join(", ", InPorts.Where(p => !p.IsConnected && (withDefaults || !p.UsingDefaultValue)).Select(p => p.Name))));
-        }
-
+        
         protected static AssociativeNode MapEnum(Enum value)
         {
             return AstFactory.BuildFunctionCall(
-                new Func<string, string, object>(DynamicArgumentDelegation.TryParseEnum),
+                new Func<string, string, object?>(DynamicArgumentDelegation.TryParseEnum),
                 new List<AssociativeNode>() 
                 { 
                     AstFactory.BuildStringNode(value.GetType().FullName), 
@@ -88,7 +89,7 @@ namespace TRex.Internal
         protected static AssociativeNode CacheObjects(params object[] args)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object[]>(DynamicArgumentDelegation.GetArgs),
+                        new Func<string, object[]?>(DynamicArgumentDelegation.GetArgs),
                         new List<AssociativeNode>() 
                         { 
                             AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(args)) 
@@ -98,7 +99,7 @@ namespace TRex.Internal
         protected static AssociativeNode CacheObject(object arg)
         {
             return AstFactory.BuildFunctionCall(
-                        new Func<string, object>(DynamicArgumentDelegation.GetArg),
+                        new Func<string, object?>(DynamicArgumentDelegation.GetArg),
                         new List<AssociativeNode>() 
                         { 
                             AstFactory.BuildStringNode(DynamicArgumentDelegation.PutArguments(arg)) 

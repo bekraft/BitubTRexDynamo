@@ -68,7 +68,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25212-XbimDev.19483" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25213-XbimDev.27003" />
   </ItemGroup>
   
   <ItemGroup>

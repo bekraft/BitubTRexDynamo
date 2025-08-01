@@ -13,7 +13,6 @@ using Bitub.Dto.Spatial;
 using TRex.Internal;
 using TRex.Geom;
 
-using Bitub.Xbim.Ifc.Export;
 using Bitub.Xbim.Ifc.Tesselate;
 
 namespace TRex.Export
@@ -24,8 +23,8 @@ namespace TRex.Export
     [NodeName("Build settings")]
     [NodeDescription("Assembles all build settings for scene generation")]
     [NodeCategory("TRex.Export")]
-    [InPortTypes(new string[] { nameof(CRSTransform), nameof(UnitScale), nameof(String)})]
-    [OutPortTypes(new string[] { nameof(SceneBuildSettings) })]
+    [InPortTypes(nameof(CRSTransform), nameof(UnitScale), nameof(String))]
+    [OutPortTypes(nameof(SceneBuildSettings))]
     [IsDesignScriptCompatible]
     public class SceneBuildSettingsNodeModel : BaseNodeModel
     {
