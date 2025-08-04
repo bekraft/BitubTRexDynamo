@@ -4,9 +4,9 @@ namespace TRex.UI
 {
 #pragma warning disable CS1591
 
-    public partial class CRSTransformControl : UserControl
+    public partial class MapConversionControl : UserControl
     {
-        public CRSTransformControl()
+        public MapConversionControl()
         {
             InitializeComponent();
         }

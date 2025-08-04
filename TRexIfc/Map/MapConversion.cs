@@ -1,11 +1,11 @@
 ﻿using System;
 using Autodesk.DesignScript.Runtime;
+
 using Bitub.Dto;
 using Bitub.Dto.Scene;
 using Bitub.Dto.Spatial;
 using Bitub.Xbim.Ifc.Transform;
-using DSCore.CurveMapper;
-using Google.Protobuf.WellKnownTypes;
+
 using Xbim.Ifc4.Interfaces;
 using Enum = System.Enum;
 

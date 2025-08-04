@@ -5,19 +5,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
+             xmlns:map="clr-namespace:TRex.Map"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="180">
+             d:DesignHeight="200" d:DesignWidth="120" d:DataContext="{d:DesignInstance map:MapConversionModel}" d:Background="Black">
+    
+    <!--
+    <d:DesignerProperties.DesignStyle>
+        <Style TargetType="UserControl">
+            <Setter Property="Background" Value="Black" />
+            <Setter Property="Height" Value="500" />
+            <Setter Property="Width" Value="500" />
+        </Style>
+    </d:DesignerProperties.DesignStyle>
+    -->
         
-    <Grid MinHeight="50" MinWidth="150" Margin="3,3,3,3">
+    <Grid MinHeight="100" MinWidth="120" Margin="3,3,3,3">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
@@ -28,39 +42,40 @@
                Content="EPSG ID"
                Margin="2"/>
         
-        <TextBox Grid.Row="0"
-                 Grid.Column="1"
+        <TextBox Grid.Row="1"
+                 Grid.Column="0"
                  Margin="2"
                  TextWrapping="NoWrap"
-                 Text="{Binding Path=CrsPrefs.Name}"/>
+                 Text="{Binding Path=NameOfProjectedCRS, Mode=TwoWay}"/>
         
-        <Label Grid.Row="1" 
+        <Label Grid.Row="2" 
                Grid.Column="0" 
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Left"
                Content="Geodetic datum"
                Margin="2"/>
         
-        <TextBox Grid.Row="1"
-                 Grid.Column="1"
+        <TextBox Grid.Row="3"
+                 Grid.Column="0"
                  Margin="2"
                  TextWrapping="NoWrap"
-                 Text="{Binding Path=CrsPrefs.VerticalDatum}"/>
+                 Text="{Binding Path=GeodeticDatumOfProjectedCRS, Mode=TwoWay}"/>
         
-        <!--<ComboBox x:Name="CRSTransformComboBox" 
-                  Grid.Row="0" 
-                  Grid.Column="1"
+        <Label Grid.Row="4" 
+               Grid.Column="0" 
+               VerticalContentAlignment="Center"
+               HorizontalContentAlignment="Left"
+               Content="Length unit"
+               Margin="2"/>
+        
+        <ComboBox x:Name="CRSTransformComboBox" 
+                  Grid.Row="5" 
+                  Grid.Column="0"
+                  Margin="2"
                   VerticalAlignment="Center"
-                  SelectedItem="{Binding Path=Transform}"
-                  ItemsSource="{Binding Path=ItemsTransform}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name, Mode=OneWay}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>-->
+                  SelectedItem="{Binding Path=MapUnitNameOfProjectedCRS, Mode=TwoWay}"
+                  ItemsSource="{Binding Path=MapUnitNames}">
+        </ComboBox>
 
     </Grid>
 </UserControl>

@@ -7,113 +7,110 @@ using Autodesk.DesignScript.Runtime;
 
 using TRex.Internal;
 
-namespace TRex.Store
+namespace TRex.Store;
+
+/// <summary>
+/// A common model cache.
+/// </summary>
+[IsVisibleInDynamoLibrary(false)]
+public sealed class ModelCache
 {
-    /// <summary>
-    /// A common model cache.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public sealed class ModelCache
+    #region Internals
+    
+    private readonly Dictionary<Type, Dictionary<Qualifier, object>> _cache;
+
+    private ModelCache()
     {
-#pragma warning disable CS1591
+        _cache = new Dictionary<Type, Dictionary<Qualifier, object>>();
+    }
 
-        #region Internals
+    static ModelCache()
+    {
+        Instance = new ModelCache();
+    }
 
-        private static ModelCache _instance;
-        private readonly Dictionary<Type, Dictionary<Qualifier, object>> _cache;
+    #endregion
+    
+    public static readonly ModelCache Instance;
 
-        private ModelCache()
+    private Dictionary<Qualifier, object> GetOrCreateModelCache<TModel>()
+    {
+        if (!_cache.TryGetValue(typeof(TModel), out var modelCache))
+            _cache.Add(typeof(TModel), modelCache = new Dictionary<Qualifier, object>());
+        return modelCache;
+    }
+
+    public bool TryGetModel<TModel>(Qualifier qualifier, out TModel? model)
+    {
+        lock (this)
         {
-            _cache = new Dictionary<Type, Dictionary<Qualifier, object>>();
-        }        
-
-        #endregion
-
-        public static ModelCache Instance
-        {
-            get {
-                lock (typeof(ModelCache))
-                    return _instance ??= new ModelCache();
-            }
-        }
-
-        private Dictionary<Qualifier, object> GetOrCreateModelCache<TModel>()
-        {
-            if (!_cache.TryGetValue(typeof(TModel), out var modelCache))
-                _cache.Add(typeof(TModel), modelCache = new Dictionary<Qualifier, object>());
-            return modelCache;
-        }
-
-        public bool TryGetModel<TModel>(Qualifier qualifier, out TModel model)
-        {
-            lock (this)
+            var modelCache = GetOrCreateModelCache<TModel>();
+            if (!modelCache.TryGetValue(qualifier, out var cachedModel))
             {
-                var modelCache = GetOrCreateModelCache<TModel>();
-                if (!modelCache.TryGetValue(qualifier, out var cachedModel))
-                {
-                    model = default(TModel);
-                    return false;
-                }
-                else
-                {
-                    GlobalLogging.Log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
-                    model = (TModel)cachedModel;
-                    return true;
-                }
+                model = default(TModel);
+                return false;
             }
-
-        }
-
-        public bool TryGetOrCreateModel<TModel>(Qualifier qualifier, Func<Qualifier, TModel> modelProducer, out TModel model)
-        {
-            lock (this)
+            else
             {
-                var modelCache = GetOrCreateModelCache<TModel>();
-                if (!modelCache.TryGetValue(qualifier, out var cachedModel))
-                {
-                    modelCache.Add(qualifier, cachedModel = modelProducer(qualifier));
-                    model = (TModel)cachedModel;
-
-                    GlobalLogging.Log.Information("Registered new {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);                    
-                    return false;
-                }
-                else
-                {
-                    GlobalLogging.Log.Information("Reusing existing {1} model qualifier '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
-                    model = (TModel)cachedModel;
-                    return true;
-                }                
+                GlobalLogging.Instance.Log.Information("Reusing existing {1} model qualifier '{0}'.", 
+                    qualifier.ToLabel("|"), typeof(TModel).Name);
+                model = (TModel)cachedModel;
+                return true;
             }
         }
 
-        public void DropModel<TModel>(Qualifier qualifier)
+    }
+
+    public bool TryGetOrCreateModel<TModel>(Qualifier qualifier, Func<Qualifier, TModel> modelProducer, out TModel? model)
+    {
+        lock (this)
         {
-            lock (this)
+            var modelCache = GetOrCreateModelCache<TModel>();
+            if (!modelCache.TryGetValue(qualifier, out var cachedModel))
             {
-                GlobalLogging.Log.Information("Dropping {1} model '{0}'.", qualifier.ToLabel("|"), typeof(TModel).Name);
-                var modelCache = GetOrCreateModelCache<TModel>();
-                modelCache.Remove(qualifier);
-            }
-        }
+                modelCache.Add(qualifier, cachedModel = modelProducer(qualifier));
+                model = (TModel)cachedModel;
 
-        public void ClearCompleteCache()
+                GlobalLogging.Instance.Log.Information("Registered new {1} model qualifier '{0}'.", 
+                    qualifier.ToLabel("|"), typeof(TModel).Name);                    
+                return false;
+            }
+            else
+            {
+                GlobalLogging.Instance.Log.Information("Reusing existing {1} model qualifier '{0}'.", 
+                    qualifier.ToLabel("|"), typeof(TModel).Name);
+                model = (TModel)cachedModel;
+                return true;
+            }                
+        }
+    }
+
+    public void DropModel<TModel>(Qualifier qualifier)
+    {
+        lock (this)
         {
-            lock (this)
-            {
-                GlobalLogging.Log.Information("Clearing model cache completely.");
-                _cache.Clear();
-            }
+            GlobalLogging.Instance.Log.Information("Dropping {1} model '{0}'.", 
+                qualifier.ToLabel("|"), typeof(TModel).Name);
+            var modelCache = GetOrCreateModelCache<TModel>();
+            modelCache.Remove(qualifier);
         }
+    }
 
-        public void ClearModelCache<TModel>()
+    public void ClearCompleteCache()
+    {
+        lock (this)
         {
-            lock (this)
-            {
-                GlobalLogging.Log.Information("Clearing {0} models from cache.", typeof(TModel).Name);
-                _cache.Remove(typeof(TModel));
-            }
+            GlobalLogging.Instance.Log.Information("Clearing model cache completely.");
+            _cache.Clear();
         }
+    }
 
-#pragma warning restore CS1591
+    public void ClearModelCache<TModel>()
+    {
+        lock (this)
+        {
+            GlobalLogging.Instance.Log.Information("Clearing {0} models from cache.", typeof(TModel).Name);
+            _cache.Remove(typeof(TModel));
+        }
     }
 }

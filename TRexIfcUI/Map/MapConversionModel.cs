@@ -26,15 +26,6 @@ namespace TRex.Map;
 [IsDesignScriptCompatible]
 public class MapConversionModel : NodeModel
 {
-    private string? nameOfProjectedCrs;
-    private string? descriptionOfProjectedCrs;
-    private string? geodeticDatumOfProjectedCrs;
-    private string? verticalDatumOfProjectedCrs;
-    private string? mapProjectionOfProjectedCrs;
-    private string? mapZoneOfProjectedCrs;
-    private IfcSIUnitName mapUnitNameOfProjectedCrs = IfcSIUnitName.METRE;
-    private double? scaleOfConversion;
-    private bool useLocalOffsetConversion = false;
 
 #pragma warning disable CS1591
     
@@ -45,8 +36,16 @@ public class MapConversionModel : NodeModel
         : base(inPorts, outPorts)
     {
     }
-
-    List<IfcSIUnitName> MapUnitNames => Enum.GetValues<IfcSIUnitName>().ToList();
+    
+    private string? _nameOfProjectedCrs;
+    private string? _descriptionOfProjectedCrs;
+    private string? _geodeticDatumOfProjectedCrs;
+    private string? _verticalDatumOfProjectedCrs;
+    private string? _mapProjectionOfProjectedCrs;
+    private string? _mapZoneOfProjectedCrs;
+    private IfcSIUnitName _mapUnitNameOfProjectedCrs = IfcSIUnitName.METRE;
+    private double? _scaleOfConversion;
+    private bool _useLocalOffsetConversion = false;
     
     #endregion
     
@@ -56,110 +55,112 @@ public class MapConversionModel : NodeModel
     public MapConversionModel() : base()
     {
         OutPorts.Add(
-            new PortModel(PortType.Output, this, new PortData("mapConversion", "Map conversion data")));
+            new PortModel(PortType.Output, this, new PortData("data", "Map conversion data")));
         InPorts.Add(
-            new PortModel(PortType.Input, this, new PortData("offsetOnMap", "Offset on map")));
+            new PortModel(PortType.Input, this, new PortData("offset", "Offset and height on map")));
         InPorts.Add(
-            new PortModel(PortType.Input, this, new PortData("xAxisOnMap", "X axis on map")));
+            new PortModel(PortType.Input, this, new PortData("xAxis", "X axis on map")));
         
         RegisterAllPorts();
     }
+    
+    public List<string> MapUnitNames => Enum.GetNames<IfcSIUnitName>().ToList();
 
     public string? NameOfProjectedCRS
     {
-        get => nameOfProjectedCrs;
+        get => _nameOfProjectedCrs;
         set
         {
-            if (value == nameOfProjectedCrs) return;
-            nameOfProjectedCrs = value;
+            if (value == _nameOfProjectedCrs) return;
+            _nameOfProjectedCrs = value;
             RaisePropertyChanged(nameof(NameOfProjectedCRS));
         }
     }
 
     public string? DescriptionOfProjectedCRS
     {
-        get => descriptionOfProjectedCrs;
+        get => _descriptionOfProjectedCrs;
         set
         {
-            if (value == descriptionOfProjectedCrs) return;
-            descriptionOfProjectedCrs = value;
+            if (value == _descriptionOfProjectedCrs) return;
+            _descriptionOfProjectedCrs = value;
             RaisePropertyChanged(nameof(DescriptionOfProjectedCRS));
         }
     }
 
     public string? GeodeticDatumOfProjectedCRS
     {
-        get => geodeticDatumOfProjectedCrs;
+        get => _geodeticDatumOfProjectedCrs;
         set
         {
-            if (value == geodeticDatumOfProjectedCrs) return;
-            geodeticDatumOfProjectedCrs = value;
+            if (value == _geodeticDatumOfProjectedCrs) return;
+            _geodeticDatumOfProjectedCrs = value;
             RaisePropertyChanged(nameof(GeodeticDatumOfProjectedCRS));
         }
     }
 
     public string? VerticalDatumOfProjectedCRS
     {
-        get => verticalDatumOfProjectedCrs;
+        get => _verticalDatumOfProjectedCrs;
         set
         {
-            if (value == verticalDatumOfProjectedCrs) return;
-            verticalDatumOfProjectedCrs = value;
+            if (value == _verticalDatumOfProjectedCrs) return;
+            _verticalDatumOfProjectedCrs = value;
             RaisePropertyChanged(nameof(VerticalDatumOfProjectedCRS));
         }
     }
 
     public string? MapProjectionOfProjectedCRS
     {
-        get => mapProjectionOfProjectedCrs;
+        get => _mapProjectionOfProjectedCrs;
         set
         {
-            if (value == mapProjectionOfProjectedCrs) return;
-            mapProjectionOfProjectedCrs = value;
+            if (value == _mapProjectionOfProjectedCrs) return;
+            _mapProjectionOfProjectedCrs = value;
             RaisePropertyChanged(nameof(MapProjectionOfProjectedCRS));
         }
     }
 
     public string? MapZoneOfProjectedCRS
     {
-        get => mapZoneOfProjectedCrs;
+        get => _mapZoneOfProjectedCrs;
         set
         {
-            if (value == mapZoneOfProjectedCrs) return;
-            mapZoneOfProjectedCrs = value;
+            if (value == _mapZoneOfProjectedCrs) return;
+            _mapZoneOfProjectedCrs = value;
             RaisePropertyChanged(nameof(MapZoneOfProjectedCRS));
         }
     }
 
     public IfcSIUnitName MapUnitNameOfProjectedCRS
     {
-        get => mapUnitNameOfProjectedCrs;
+        get => _mapUnitNameOfProjectedCrs;
         set
         {
-            if (value == mapUnitNameOfProjectedCrs) return;
-            mapUnitNameOfProjectedCrs = value;
+            if (value == _mapUnitNameOfProjectedCrs) return;
+            _mapUnitNameOfProjectedCrs = value;
             RaisePropertyChanged(nameof(MapUnitNameOfProjectedCRS));
         }
     }
 
     public double? ScaleOfConversion
     {
-        get => scaleOfConversion;
+        get => _scaleOfConversion;
         set
         {
-            if (Nullable.Equals(value, scaleOfConversion)) return;
-            scaleOfConversion = value;
+            if (Nullable.Equals(value, _scaleOfConversion)) return;
+            _scaleOfConversion = value;
             RaisePropertyChanged(nameof(ScaleOfConversion));
         }
     }
 
     public bool UseLocalOffsetConversion
     {
-        get => useLocalOffsetConversion;
+        get => _useLocalOffsetConversion;
         set
         {
-            if (value == useLocalOffsetConversion) return;
-            useLocalOffsetConversion = value;
+            if (value == _useLocalOffsetConversion) return;
+            _useLocalOffsetConversion = value;
             RaisePropertyChanged(nameof(UseLocalOffsetConversion));
         }
     }
