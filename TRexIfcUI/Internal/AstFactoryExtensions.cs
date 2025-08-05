@@ -7,9 +7,6 @@ using ProtoCore.AST.AssociativeAST;
 
 using Bitub.Dto;
 
-// Disable comment warning
-#pragma warning disable CS1591
-
 namespace TRex.Internal;
 
 [IsVisibleInDynamoLibrary(false)]
@@ -45,6 +42,10 @@ public static class AstFactoryExtensions
         var serialized = Enum.GetName(typeof(T), n);            
         return AstFactory.BuildStringNode(serialized ?? n.ToString());
     }
-}
 
-#pragma warning restore CS1591
+    [IsVisibleInDynamoLibrary(false)]
+    public static AssociativeNode ToStringNode(this string? str)
+    {
+        return null != str ? AstFactory.BuildStringNode(str) : AstFactory.BuildNullNode();
+    }
+}

@@ -34,17 +34,22 @@ public sealed class MapConversion
     /// <param name="crsName">A name of map conversion</param>
     /// <param name="crsDatum">A geodetic datum</param>
     /// <param name="crsMapProjection">Map projection identifier (i.e. UTM)</param>
-    /// <param name="ifcSIUnit">An Ifc SI unit name (i.e. METRE).</param>
+    /// <param name="ifcSIPrefixLabel">An Ifc SI prefix name (default null).</param>
     /// <returns></returns>
     [IsVisibleInDynamoLibrary(false)]
     public static MapConversion NewMapConversion(string crsName, 
         string crsDatum, 
         string crsMapProjection,
-        string ifcSIUnit)
+        string? ifcSIPrefixLabel = null)
     {
-        if (!Enum.TryParse<IfcSIUnitName>(ifcSIUnit, out var ifcSIUnitName))
+        IfcSIPrefix? ifcSIPrefix = null;
+        if (!Enum.TryParse<IfcSIPrefix>(ifcSIPrefixLabel, out var ifcSIPrefixParsed))
         {
-            ifcSIUnitName = IfcSIUnitName.METRE;
+            ifcSIPrefix = null;
+        }
+        else
+        {
+            ifcSIPrefix = ifcSIPrefixParsed;
         }
         
         return new MapConversion()
@@ -55,7 +60,11 @@ public sealed class MapConversion
                 crsDatum, 
                 null, 
                 crsMapProjection,
-                null, XYZ.Zero, new UV(), null, ifcSIUnitName), 
+                null, 
+                XYZ.Zero, 
+                new UV(), 
+                1.0, 
+                ifcSIPrefix), 
             Prefs = new MapConversionPrefs(
                 false, 
                 new Qualifier[]{})
@@ -104,7 +113,7 @@ public sealed class MapConversion
     /// <returns>A new map conversion preference</returns>
     [IsVisibleInDynamoLibrary(false)]
     public static MapConversion Append(MapConversion mapConversion, 
-        XYZ offsetAndHeight, UV mapXAxis, Double scale, bool useLocalOffset)
+        XYZ? offsetAndHeight, UV? mapXAxis, Double? scale, bool useLocalOffset)
     {
         return new MapConversion()
         {

@@ -22,12 +22,19 @@ namespace TRex.Map;
 [NodeDescription("Map conversion preferences")]
 [NodeCategory("TRex.Map")]
 [OutPortTypes(nameof(MapConversion))]    
-[InPortTypes(nameof(XYZ), nameof(UV))]
+[InPortTypes(nameof(XYZ), nameof(UV), nameof(Double))]
 [IsDesignScriptCompatible]
 public class MapConversionModel : NodeModel
 {
-
-#pragma warning disable CS1591
+    public record MapUnitScale(IfcSIPrefix? Prefix, string UnitPrefixName);
+    
+    public IReadOnlyCollection<MapUnitScale> MapUnitScales => Array.AsReadOnly(new[]
+    {
+        new MapUnitScale(null, "Meter"),
+        new MapUnitScale(IfcSIPrefix.KILO, "Kilometer"),
+        new MapUnitScale(IfcSIPrefix.CENTI, "Centimeter"),
+        new MapUnitScale(IfcSIPrefix.MILLI, "Millimeter"),
+    });
     
     #region Internals
     
@@ -43,8 +50,7 @@ public class MapConversionModel : NodeModel
     private string? _verticalDatumOfProjectedCrs;
     private string? _mapProjectionOfProjectedCrs;
     private string? _mapZoneOfProjectedCrs;
-    private IfcSIUnitName _mapUnitNameOfProjectedCrs = IfcSIUnitName.METRE;
-    private double? _scaleOfConversion;
+    private MapUnitScale? _mapUnitPrefixOfProjectedCrs;
     private bool _useLocalOffsetConversion = false;
     
     #endregion
@@ -60,11 +66,12 @@ public class MapConversionModel : NodeModel
             new PortModel(PortType.Input, this, new PortData("offset", "Offset and height on map")));
         InPorts.Add(
             new PortModel(PortType.Input, this, new PortData("xAxis", "X axis on map")));
-        
+        InPorts.Add(
+            new PortModel(PortType.Input, this, new PortData("scale", "Scale on map")));
+
+        _mapUnitPrefixOfProjectedCrs = MapUnitScales.First();
         RegisterAllPorts();
     }
-    
-    public List<string> MapUnitNames => Enum.GetNames<IfcSIUnitName>().ToList();
 
     public string? NameOfProjectedCRS
     {
@@ -132,25 +139,14 @@ public class MapConversionModel : NodeModel
         }
     }
 
-    public IfcSIUnitName MapUnitNameOfProjectedCRS
+    public MapUnitScale? MapUnitPrefixOfProjectedCRS
     {
-        get => _mapUnitNameOfProjectedCrs;
+        get => _mapUnitPrefixOfProjectedCrs;
         set
         {
-            if (value == _mapUnitNameOfProjectedCrs) return;
-            _mapUnitNameOfProjectedCrs = value;
-            RaisePropertyChanged(nameof(MapUnitNameOfProjectedCRS));
-        }
-    }
-
-    public double? ScaleOfConversion
-    {
-        get => _scaleOfConversion;
-        set
-        {
-            if (Nullable.Equals(value, _scaleOfConversion)) return;
-            _scaleOfConversion = value;
-            RaisePropertyChanged(nameof(ScaleOfConversion));
+            if (value == _mapUnitPrefixOfProjectedCrs) return;
+            _mapUnitPrefixOfProjectedCrs = value;
+            RaisePropertyChanged(nameof(MapUnitPrefixOfProjectedCRS));
         }
     }
 
@@ -186,10 +182,6 @@ public class MapConversionModel : NodeModel
     public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
     {
         ClearErrorsAndWarnings();
-        if (IsPartiallyApplied)
-        {
-            return BuildNullAssignment();
-        }
 
         if (!IsValid)
         {
@@ -201,10 +193,10 @@ public class MapConversionModel : NodeModel
             new Func<string, string, string, string, MapConversion>(MapConversion.NewMapConversion),
             new List<AssociativeNode>()
             {
-                AstFactory.BuildStringNode(NameOfProjectedCRS),
-                AstFactory.BuildStringNode(GeodeticDatumOfProjectedCRS),
-                AstFactory.BuildStringNode(MapProjectionOfProjectedCRS),
-                MapUnitNameOfProjectedCRS.ToEnumNameNode()
+                AstFactory.BuildPrimitiveNodeFromObject(NameOfProjectedCRS),
+                AstFactory.BuildPrimitiveNodeFromObject(GeodeticDatumOfProjectedCRS),
+                AstFactory.BuildPrimitiveNodeFromObject(MapProjectionOfProjectedCRS),
+                MapUnitPrefixOfProjectedCRS?.Prefix?.ToEnumNameNode() ?? AstFactory.BuildNullNode(),
             }
         );
         
@@ -213,26 +205,24 @@ public class MapConversionModel : NodeModel
             new List<AssociativeNode>()
             {
                 n1,
-                AstFactory.BuildStringNode(DescriptionOfProjectedCRS),
-                AstFactory.BuildStringNode(VerticalDatumOfProjectedCRS),
-                AstFactory.BuildStringNode(MapZoneOfProjectedCRS)
+                AstFactory.BuildPrimitiveNodeFromObject(DescriptionOfProjectedCRS),
+                AstFactory.BuildPrimitiveNodeFromObject(VerticalDatumOfProjectedCRS),
+                AstFactory.BuildPrimitiveNodeFromObject(MapZoneOfProjectedCRS)
             }
         );
         
         var n3 = AstFactory.BuildFunctionCall(
-            new Func<MapConversion, XYZ, UV, Double, bool, MapConversion>(MapConversion.Append),
+            new Func<MapConversion, XYZ?, UV?, Double?, bool, MapConversion>(MapConversion.Append),
             new List<AssociativeNode>()
             {
                 n2,
                 inputAstNodes[0],
                 inputAstNodes[1],
-                AstFactory.BuildDoubleNode(ScaleOfConversion ?? 1.0),
+                inputAstNodes[2],
                 AstFactory.BuildBooleanNode(UseLocalOffsetConversion)
             }
         );
 
         return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), n3) };
     }
-    
-#pragma warning restore CS1591
 }

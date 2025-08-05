@@ -83,8 +83,8 @@
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.1.847-netcore" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25213-XbimDev.27003" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25213-XbimDev.27003" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25217-XbimDev.25224" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25217-XbimDev.25224" />
   </ItemGroup>
   
   <ItemGroup>

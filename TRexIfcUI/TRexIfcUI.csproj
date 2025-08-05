@@ -82,8 +82,8 @@
     <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25213-XbimDev.27003" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25213-XbimDev.27003" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25217-XbimDev.25224" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25217-XbimDev.25224" />
   </ItemGroup>
   
   <ItemGroup>
@@ -91,21 +91,6 @@
       <Project>{2bc161c5-e9f1-4b41-ba92-6dc3d502b00c}</Project>
       <Name>TRexIfc</Name>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="UI\CRSTransformControl.xaml.cs">
-      <DependentUpon>CRSTransformControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UI\SceneBuildSettingsControl.xaml.cs">
-      <DependentUpon>SceneBuildSettingsControl.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <!-- Local deployment settings and artificact name pattern -->
@@ -168,14 +153,6 @@
   
   <ItemGroup>
     <_ResxFiles Remove="Properties\Resources.resx" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Page Update="UI\MapConversionControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <XamlRuntime>Wpf</XamlRuntime>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
 
 </Project>
