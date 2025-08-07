@@ -38,11 +38,15 @@ namespace TRex.Store
         /// </summary>
         public IfcLoadStoreNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logger", "Optional logger instance")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("prefs", "Tessellation preferences")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("logger", "Optional logger instance")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("prefs", "Tessellation preferences")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC model instance")));
+            OutPorts.Add(
+                new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC model instance")));
             
             RegisterAllPorts();
 

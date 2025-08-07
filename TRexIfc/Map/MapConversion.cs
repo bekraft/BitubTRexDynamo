@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto;
@@ -110,10 +111,11 @@ public sealed class MapConversion
     /// <param name="mapXAxis">Projected map X-axis as 2d vector</param>
     /// <param name="scale">A scale (default 1 if not set)</param>
     /// <param name="useLocalOffset">Whether to use local root offset as projected CRS embedding offset</param>
+    /// <param name="contexts">Representation contexts</param>
     /// <returns>A new map conversion preference</returns>
     [IsVisibleInDynamoLibrary(false)]
     public static MapConversion Append(MapConversion mapConversion, 
-        XYZ? offsetAndHeight, UV? mapXAxis, Double? scale, bool useLocalOffset)
+        XYZ? offsetAndHeight, UV? mapXAxis, double? scale, bool? useLocalOffset, string[]? contexts)
     {
         return new MapConversion()
         {
@@ -130,7 +132,7 @@ public sealed class MapConversion
                 null),
             Prefs = mapConversion.Prefs?.MergeNonNullTo(
                 useLocalOffset,
-                null) ?? new MapConversionPrefs(useLocalOffset, new Qualifier[]{})
+                contexts?.Select(c => c.ToQualifier()).ToArray())
         };
     }
 

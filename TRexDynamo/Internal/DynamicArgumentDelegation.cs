@@ -124,7 +124,7 @@ namespace TRex.Internal
             {
                 if (null != serializedEnum)
                     Log.Warning("Parsing/casting of '{SerializedEnum}' (type '{Type}') to type '{Name}' failed.",
-                        serializedEnum, serializedEnum.GetType().Name, member.GetType().Name);
+                        serializedEnum, serializedEnum.GetType().Name, member?.GetType().Name);
                 isCasted = false;
             }
 
@@ -189,21 +189,28 @@ namespace TRex.Internal
         /// <param name="typeName">The type name</param>
         /// <param name="serializedEnum">The serialized enum</param>
         /// <returns>Enum instance, if succeeded or null</returns>
-        public static object? TryParseEnum(string typeName, string serializedEnum)
+        public static object? TryParseEnum(string typeName, string? serializedEnum)
         {
-            try
+            if (null == serializedEnum)
             {
-                var assemblyName = RootNamespaceAssemblyResolver.FirstOrDefault(r => typeName.StartsWith(r.Key)).Value;
-                var extendedTypeName = null != assemblyName ? $"{typeName}, {assemblyName}" : typeName;
-
-                var type = Type.GetType(extendedTypeName, true, true);
-                return Enum.Parse(type!, serializedEnum);
-            }
-            catch (Exception e)
-            {
-                Log.Error("Parsing '{SerializedEnum}' to type '{TypeName}' failed with exception: {Message}", 
-                    serializedEnum, typeName, e.Message);
                 return null;
+            }
+            else
+            {
+                try
+                {
+                    var assemblyName = RootNamespaceAssemblyResolver.FirstOrDefault(r => typeName.StartsWith(r.Key)).Value;
+                    var extendedTypeName = null != assemblyName ? $"{typeName}, {assemblyName}" : typeName;
+
+                    var type = Type.GetType(extendedTypeName, true, true);
+                    return Enum.Parse(type!, serializedEnum);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Parsing '{SerializedEnum}' to type '{TypeName}' failed with exception: {Message}", 
+                        serializedEnum, typeName, e.Message);
+                    return null;
+                }   
             }
         }
 

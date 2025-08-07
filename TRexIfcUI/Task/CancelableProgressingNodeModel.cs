@@ -49,12 +49,12 @@ namespace TRex.Task
             DynamicDelegation.Put<ProgressingTask, ProgressingTask>(ProgressingTaskMethodName, ConsumeAstProgressingTask);
         }
 
-        protected internal string[] ProgressingTaskMethodName => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
+        protected string[] ProgressingTaskMethodName => GetType().ToQualifiedMethodName(nameof(ConsumeAstProgressingTask));
 
         [JsonIgnore]
         internal LogReason LogReasonMask { get; set; } = LogReason.Any;
 
-        internal void OnTaskProgessEnded(object sender, NodeProgressEndEventArgs? args = null)
+        internal void OnTaskProgessEnded(object? sender, NodeProgressEndEventArgs? args = null)
         {
             if (LogReason.None != (LogReasonMask & args?.Reason))
             {
@@ -65,7 +65,7 @@ namespace TRex.Task
             }
         }
 
-        internal void OnTaskProgressChanged(object sender, NodeProgressEventArgs args)
+        internal void OnTaskProgressChanged(object? sender, NodeProgressEventArgs args)
         {
             if (LogReason.None != (LogReasonMask & args.Reason))
             {
@@ -151,7 +151,7 @@ namespace TRex.Task
             return taskInfo != null;
         }
 
-        public virtual ProgressingTask ConsumeAstProgressingTask(ProgressingTask task)
+        public ProgressingTask? ConsumeAstProgressingTask(ProgressingTask? task)
         {
             if (null != task)
             {
@@ -164,7 +164,7 @@ namespace TRex.Task
 
         protected virtual void BeforeBuildOutputAst()
         {
-            ClearErrorsAndWarnings();
+            //ClearErrorsAndWarnings();
             ClearActiveTaskList();
             ResetState();
         }

@@ -108,13 +108,7 @@ namespace TRex.Export
                     }
                 }
             }
-
-            // Wrap single string into list
-            if (inputAstNodes[3] is StringNode)
-            {   // Rewrite input AST 
-                inputAstNodes[3] = AstFactory.BuildExprList(new List<AssociativeNode>() { inputAstNodes[3] });
-            }
-
+            
             var astBuildSettings = AstFactory.BuildFunctionCall(
                 new Func<string, string, XYZ, CRSTransform, UnitScale, string[], string, SceneBuildSettings>(SceneBuildSettings.ByParameters),                
                 new List<AssociativeNode>() {
@@ -123,7 +117,7 @@ namespace TRex.Export
                     inputAstNodes[1],
                     inputAstNodes[0],
                     inputAstNodes[2],
-                    inputAstNodes[3],
+                    NestingStringArray(inputAstNodes[3]),
                     BuildEnumNameNode(IdentificationStrategy)
                 });
 

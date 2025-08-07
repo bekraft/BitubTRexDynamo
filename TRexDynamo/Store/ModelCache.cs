@@ -71,14 +71,14 @@ public sealed class ModelCache
                 modelCache.Add(qualifier, cachedModel = modelProducer(qualifier));
                 model = (TModel)cachedModel;
 
-                GlobalLogging.Instance.Log.Information("Registered new {1} model qualifier '{0}'.", 
-                    qualifier.ToLabel("|"), typeof(TModel).Name);                    
+                GlobalLogging.Instance.Log.Information("Registered new {TypeName} model qualifier '{Qualifier}'.", 
+                    typeof(TModel).Name, qualifier.ToLabel("|"));                    
                 return false;
             }
             else
             {
-                GlobalLogging.Instance.Log.Information("Reusing existing {1} model qualifier '{0}'.", 
-                    qualifier.ToLabel("|"), typeof(TModel).Name);
+                GlobalLogging.Instance.Log.Information("Reusing existing {TypeName} model qualifier '{Qualifier}'.", 
+                    typeof(TModel).Name, qualifier.ToLabel("|"));
                 model = (TModel)cachedModel;
                 return true;
             }                
@@ -89,8 +89,8 @@ public sealed class ModelCache
     {
         lock (this)
         {
-            GlobalLogging.Instance.Log.Information("Dropping {1} model '{0}'.", 
-                qualifier.ToLabel("|"), typeof(TModel).Name);
+            GlobalLogging.Instance.Log.Information("Dropping {TypeName} model '{Qualifier}'.", 
+                typeof(TModel).Name, qualifier.ToLabel("|"));
             var modelCache = GetOrCreateModelCache<TModel>();
             modelCache.Remove(qualifier);
         }

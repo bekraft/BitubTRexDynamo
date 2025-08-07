@@ -94,7 +94,7 @@ namespace TRex.Task
 
             // Get transform request
             var astCreateTransform = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
+                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewPlacementTransform),
                 new List<AssociativeNode>() 
                 { 
                     astGetLogger, 

@@ -48,4 +48,17 @@ public static class AstFactoryExtensions
     {
         return null != str ? AstFactory.BuildStringNode(str) : AstFactory.BuildNullNode();
     }
+    
+    [IsVisibleInDynamoLibrary(false)]
+    public static IEnumerable<AssociativeNode> BuildNullAssignment<TModel>(this TModel model, params int[] outportIndexes) where TModel : BaseNodeModel
+    {
+        var appliedOutportIndexes = outportIndexes;
+        if (appliedOutportIndexes.Length == 0)
+            appliedOutportIndexes = new[] { 0 };
+
+        return appliedOutportIndexes
+            .Select(p =>
+                AstFactory.BuildAssignment(model.GetAstIdentifierForOutputIndex(p), AstFactory.BuildNullNode()))
+            .ToArray();
+    }
 }

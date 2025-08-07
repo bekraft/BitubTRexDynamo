@@ -21,10 +21,9 @@ namespace TRex.Map;
 [NodeName("Ifc Map Conversion")]
 [NodeDescription("Map conversion preferences")]
 [NodeCategory("TRex.Map")]
-[OutPortTypes(nameof(MapConversion))]    
-[InPortTypes(nameof(XYZ), nameof(UV), nameof(Double))]
+[OutPortTypes(nameof(MapConversion))]
 [IsDesignScriptCompatible]
-public class MapConversionModel : NodeModel
+public class MapConversionModel : BaseNodeModel
 {
     public record MapUnitScale(IfcSIPrefix? Prefix, string UnitPrefixName);
     
@@ -61,14 +60,8 @@ public class MapConversionModel : NodeModel
     public MapConversionModel() : base()
     {
         OutPorts.Add(
-            new PortModel(PortType.Output, this, new PortData("data", "Map conversion data")));
-        InPorts.Add(
-            new PortModel(PortType.Input, this, new PortData("offset", "Offset and height on map")));
-        InPorts.Add(
-            new PortModel(PortType.Input, this, new PortData("xAxis", "X axis on map")));
-        InPorts.Add(
-            new PortModel(PortType.Input, this, new PortData("scale", "Scale on map")));
-
+            new PortModel(PortType.Output, this, new PortData("convPrefs", "Map conversion preferences")));
+        
         _mapUnitPrefixOfProjectedCrs = MapUnitScales.First();
         RegisterAllPorts();
     }
@@ -168,11 +161,6 @@ public class MapConversionModel : NodeModel
     private bool IsValid => !string.IsNullOrWhiteSpace(NameOfProjectedCRS)
                             && !string.IsNullOrWhiteSpace(GeodeticDatumOfProjectedCRS)
                             && !string.IsNullOrWhiteSpace(MapProjectionOfProjectedCRS);
-
-    private IEnumerable<AssociativeNode> BuildNullAssignment()
-    {
-        return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
-    }
     
     /// <summary>
     /// <inheritdoc cref="NodeModel.BuildOutputAst"/>
@@ -186,7 +174,7 @@ public class MapConversionModel : NodeModel
         if (!IsValid)
         {
             Warning($"Some values are missing. At least a name, a geodetic datum and a projection have to be set.");
-            return BuildNullAssignment();
+            return BuildNullResult();
         }
 
         var n1 = AstFactory.BuildFunctionCall(
@@ -212,14 +200,15 @@ public class MapConversionModel : NodeModel
         );
         
         var n3 = AstFactory.BuildFunctionCall(
-            new Func<MapConversion, XYZ?, UV?, Double?, bool, MapConversion>(MapConversion.Append),
+            new Func<MapConversion, XYZ?, UV?, Double?, bool?, string[]?, MapConversion>(MapConversion.Append),
             new List<AssociativeNode>()
             {
                 n2,
-                inputAstNodes[0],
-                inputAstNodes[1],
-                inputAstNodes[2],
-                AstFactory.BuildBooleanNode(UseLocalOffsetConversion)
+                AstFactory.BuildNullNode(),
+                AstFactory.BuildNullNode(),
+                AstFactory.BuildNullNode(),
+                AstFactory.BuildBooleanNode(UseLocalOffsetConversion),
+                AstFactory.BuildNullNode()
             }
         );
 
