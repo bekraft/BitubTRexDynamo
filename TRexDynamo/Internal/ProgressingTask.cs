@@ -265,7 +265,7 @@ namespace TRex.Internal
         /// <param name="nodeProgressing">The progressing node</param>
         /// <returns>An array of recent messages</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing)
+        public static LogMessage[]? GetActionLog(ProgressingTask nodeProgressing)
         {
             return nodeProgressing?.GetActionLog();
         }

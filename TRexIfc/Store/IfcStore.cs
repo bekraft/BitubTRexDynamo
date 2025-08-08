@@ -140,7 +140,7 @@ public class IfcStore
     /// <param name="logger">The logger instance</param>   
     /// <param name="tessellationPrefs">Tessellation preferences</param>
     /// <returns>This instance</returns>
-    public static IfcModel ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs)
+    public static IfcModel? ByIfcModelFile(string fileName, Logger logger, IfcTessellationPrefs tessellationPrefs)
     {
         if (string.IsNullOrEmpty(fileName))
             throw new ArgumentNullException(nameof(fileName));
@@ -149,8 +149,11 @@ public class IfcStore
         if (!ModelCache.Instance.TryGetOrCreateModel(
                 qualifier, q => new IfcModel(new IfcStore(logger), qualifier), out var ifcModel))
         {
-            ifcModel.Store._modelSupplier = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
-            tessellationPrefs?.ApplyToModel(ifcModel);
+            if (null != ifcModel)
+            {
+                ifcModel.Store._modelSupplier = () => LoadFromFile(ifcModel, tessellationPrefs, fileName);
+                tessellationPrefs?.ApplyToModel(ifcModel);
+            }
         }
 
         return ifcModel;

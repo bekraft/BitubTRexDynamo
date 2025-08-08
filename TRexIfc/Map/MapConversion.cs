@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Dto;
@@ -66,9 +65,7 @@ public sealed class MapConversion
                 new UV(), 
                 1.0, 
                 ifcSIPrefix), 
-            Prefs = new MapConversionPrefs(
-                false, 
-                new Qualifier[]{})
+            Prefs = new MapConversionPrefs(false,[],[])
         };
     }
     
@@ -132,7 +129,8 @@ public sealed class MapConversion
                 null),
             Prefs = mapConversion.Prefs?.MergeNonNullTo(
                 useLocalOffset,
-                contexts?.Select(c => c.ToQualifier()).ToArray())
+                contexts?.Select(c => c.ToQualifier()).ToArray(),
+                [ "Model".ToQualifier() ])
         };
     }
 

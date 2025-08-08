@@ -5,16 +5,12 @@ namespace TRex.Geom;
 
 public sealed class UVs
 {
-#pragma warning disable CS1591
-
     #region Internals
     
     private UVs()
     { }
 
     #endregion
-
-#pragma warning restore CS1591
 
     /// <summary>
     /// A unit vector (1,0).
@@ -37,12 +33,22 @@ public sealed class UVs
     }
 
     /// <summary>
-    /// Circular unit coordinates given an angle from right hand X-axis CCW.
+    /// Circular unit coordinates given an angle as DEG from right hand X-axis CCW.
     /// </summary>
     /// <param name="angle">The angle as DEG value.</param>
     /// <returns>The circular coordinates yielding a unit vector</returns>
     public static UV ByDEG(float angle)
     {
-        return new UV() {  U = MathF.Cos(angle / 180), V = MathF.Sin(angle / 180) };
+        return new UV() {  U = MathF.Cos(angle / 180 * MathF.PI), V = MathF.Sin(angle / 180 * MathF.PI) };
+    }
+
+    /// <summary>
+    /// Circular unit coordinates given an angle as radians from right hand X-axis CCW.
+    /// </summary>
+    /// <param name="rad">The angle as radian measure</param>
+    /// <returns>The circular coordinates yielding a unit vector</returns>
+    public static UV ByRAD(float rad)
+    {
+        return new UV() {  U = MathF.Cos(rad), V = MathF.Sin(rad) };
     }
 }
