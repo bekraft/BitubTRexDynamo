@@ -7,69 +7,61 @@ using Dynamo.Graph.Nodes;
 
 using Newtonsoft.Json;
 
-namespace TRex.Task
+namespace TRex.Task;
+
+/// <summary>
+/// Cancelable progress option node model template-
+/// </summary>
+public abstract class CancelableProgressingOptionNodeModel<TOption> : CancelableProgressingNodeModel
 {
-    /// <summary>
-    /// Cancelable progress option node model template-
-    /// </summary>
-    public abstract class CancelableProgressingOptionNodeModel<TOption> : CancelableProgressingNodeModel
+    #region Internals
+
+    private TOption? _selectedOption;        
+
+    protected CancelableProgressingOptionNodeModel() : base()
     {
+        ResetState();
+        Options = new ObservableCollection<TOption>(GetInitialOptions());
+    }
 
-#pragma warning disable CS1591
+    protected CancelableProgressingOptionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+    {
+        ResetState();
+        Options = new ObservableCollection<TOption>(GetInitialOptions());
+    }
 
-        #region Internals
+    protected abstract IEnumerable<TOption> GetInitialOptions();
 
-        protected TOption option;        
-
-        protected CancelableProgressingOptionNodeModel() : base()
+    protected bool IsNotNullSelected()
+    {
+        if (null == Selected)
         {
-            ResetState();
-            Options = new ObservableCollection<TOption>(GetInitialOptions());
+            Warning($"{typeof(TOption).Name} must not be null.");
+            return false;
         }
+        return true;
+    }
 
-        protected CancelableProgressingOptionNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
-            ResetState();
-            Options = new ObservableCollection<TOption>(GetInitialOptions());
-        }
+    #endregion
+    
+    /// <summary>
+    /// Reflects the available options.
+    /// </summary>
+    [JsonIgnore]
+    public ICollection<TOption> Options { get; private set; }
 
-        protected abstract IEnumerable<TOption> GetInitialOptions();
-
-        protected bool IsNotNullSelected()
-        {
-            if (null == Selected)
-            {
-                Warning($"{typeof(TOption).Name} must not be null.");
-                return false;
-            }
-            return true;
-        }
-
-        #endregion
-
-#pragma warning restore CS1591
-
-        /// <summary>
-        /// Reflects the available options.
-        /// </summary>
-        [JsonIgnore]
-        public ICollection<TOption> Options { get; private set; }
-
-        /// <summary>
-        /// Reflects and changes the current option.
-        /// </summary>
-        [JsonProperty]
-        public TOption Selected
-        {
-            get {
-                return option;
-            }
-            set {
-                var found = Options.FirstOrDefault(o => o?.Equals(value) ?? false);
-                option = found ?? value;
-                RaisePropertyChanged(nameof(Selected));
-                OnNodeModified(true);
-            }
+    /// <summary>
+    /// Reflects and changes the current option.
+    /// </summary>
+    [JsonProperty]
+    public TOption? Selected
+    {
+        get => _selectedOption;
+        set {
+            var found = Options.FirstOrDefault(o => o?.Equals(value) ?? false);
+            _selectedOption = found ?? value;
+            RaisePropertyChanged(nameof(Selected));
+            OnNodeModified(true);
         }
     }
 }

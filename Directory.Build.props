@@ -8,7 +8,7 @@
     <BuildMajor>1</BuildMajor>
     <BuildMinor>1</BuildMinor>
 
-    <LangVersion>10.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 

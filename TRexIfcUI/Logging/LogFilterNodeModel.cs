@@ -131,7 +131,7 @@ namespace TRex.Log
                 new Func<LogSeverity, object, ProgressingTask, long, LogMessage[]>(LogMessage.FilterBySeverity),
                 new List<AssociativeNode>()
                 {
-                    MapEnum(LogMinSeverity),
+                    MapEnumIntoNode(LogMinSeverity),
                     inputAstNodes[1],
                     inputAstNodes[0].ToDynamicTaskProgressingFunc(RegisterOnActionLogChangedName),
                     AstFactory.BuildIntNode((long)LogCount)

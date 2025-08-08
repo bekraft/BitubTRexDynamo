@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Autodesk.DesignScript.Runtime;
-using System.Data;
 
 using TRex.Internal;
 
@@ -20,30 +19,21 @@ namespace TRex.Log
 
         #region Internals
 
-        private static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<LogMessage>();
+        private static readonly ILogger Log = GlobalLogging.LoggingFactory.CreateLogger<LogMessage>();
 
-        private readonly long timeStamp;
-        private string messageTemplate;
-        private object[] args;
+        private readonly long _timeStamp;
+        private readonly string _messageTemplate;
+        private readonly object[] _args;
 
-        internal LogMessage()
-        {
-            timeStamp = DateTime.Now.ToBinary();
-        }
-
-        internal LogMessage(string source, LogSeverity severity, LogReason reason, string template, params object[] args) : this()
+        internal LogMessage(string source, LogSeverity severity, LogReason reason, string template, params object[] args)
         {
             Source = source;
             Severity = severity;
             Reason = reason;
 
-            messageTemplate = template;
-            this.args = args;
-        }
-
-        internal string MessageTemplate 
-        { 
-            get => messageTemplate; 
+            _timeStamp = DateTime.Now.ToBinary();
+            _messageTemplate = template;
+            _args = args;
         }
 
         internal void PropagateToLog(ILogger logger)
@@ -89,9 +79,16 @@ namespace TRex.Log
         #endregion
 
         [IsVisibleInDynamoLibrary(false)]
-        public int CompareTo(LogMessage other)
+        public int CompareTo(LogMessage? other)
         {
-            return -(int)(timeStamp - other.timeStamp);
+            if (other != null)
+            {
+                return -(int)(_timeStamp - other._timeStamp);
+            }
+            else
+            {
+                return 1;   
+            }
         }
 
         [IsVisibleInDynamoLibrary(false)]
@@ -108,7 +105,7 @@ namespace TRex.Log
 
         public override string ToString()
         {
-            return string.Format($"{messageTemplate} ({Severity}, {Reason} @ '{Source}')", args);
+            return string.Format($"{_messageTemplate} ({Severity}, {Reason} @ '{Source}')", _args);
         }
 
 #pragma warning restore CS1591
@@ -131,12 +128,12 @@ namespace TRex.Log
         /// <summary>
         /// The final message.
         /// </summary>
-        public string Message { get => string.Format(messageTemplate, args); }
+        public string Message => string.Format(_messageTemplate, _args);
 
         /// <summary>
         /// The time stamp.
         /// </summary>
-        public DateTime TimeStamp { get => DateTime.FromBinary(timeStamp); }
+        public DateTime TimeStamp => DateTime.FromBinary(_timeStamp);
 
         /// <summary>
         /// Splits the log message into severity, action and message.
@@ -206,7 +203,7 @@ namespace TRex.Log
         /// <returns>An array of array of messages</returns>
         public static LogMessage[][] GroupByMessageType(LogMessage[] messages)
         {
-            var groups = messages.GroupBy(m => m.MessageTemplate).ToArray();
+            var groups = messages.GroupBy(m => m._messageTemplate).ToArray();
             return groups.Select(g => g.ToArray()).ToArray();
         }
 

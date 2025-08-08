@@ -225,7 +225,7 @@ namespace TRex.Internal
         /// Gets or creates a new progress monitor.
         /// </summary>
         /// <returns>A cancelable progress monitor reporting to this node model</returns>
-        internal protected CancelableProgressing CreateProgressMonitor(LogReason logReason)
+        protected internal CancelableProgressing CreateProgressMonitor(LogReason logReason)
         {
             var cp = new CancelableProgressing(true);
             if (!progressMonitor.TryAdd(cp.State, cp))
@@ -265,7 +265,7 @@ namespace TRex.Internal
         /// <param name="nodeProgressing">The progressing node</param>
         /// <returns>An array of recent messages</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static LogMessage[] GetActionLog(ProgressingTask nodeProgressing)
+        public static LogMessage[]? GetActionLog(ProgressingTask nodeProgressing)
         {
             return nodeProgressing?.GetActionLog();
         }

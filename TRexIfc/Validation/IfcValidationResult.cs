@@ -14,7 +14,7 @@ namespace TRex.Validation
     {
         #region Internals
 
-        internal static readonly ILogger log = GlobalLogging.loggingFactory.CreateLogger<IfcValidationResult>();
+        internal static readonly ILogger log = GlobalLogging.LoggingFactory.CreateLogger<IfcValidationResult>();
 
         /// <summary>
         /// Validation messages as enumerable.

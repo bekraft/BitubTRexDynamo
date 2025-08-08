@@ -3,21 +3,20 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
-using Microsoft.Extensions.Logging;
-
 using Autodesk.DesignScript.Runtime;
+using Serilog.Core;
 
 namespace TRex.Internal
 {
+    
+#pragma warning disable CS1591
+
     [IsVisibleInDynamoLibrary(false)]
     public sealed class DynamicArgumentDelegation
     {
-
-#pragma warning disable CS1591
-
         #region Internals
 
-        private static readonly ILogger Log = GlobalLogging.loggingFactory.CreateLogger<DynamicArgumentDelegation>();
+        private static readonly Logger Log = GlobalLogging.Instance.Log;
 
         private static readonly ConcurrentDictionary<string, object[]> ArgumentCache = new ConcurrentDictionary<string, object[]>();
 
@@ -27,8 +26,8 @@ namespace TRex.Internal
         {
             RootNamespaceAssemblyResolver = new Dictionary<string, string>()
             {
-                { "Bitub.Xbim.Ifc", typeof(Bitub.Xbim.Ifc.IfcAuthoringMetadata).Assembly.FullName }, // Example class name
-                { "Bitub.Dto", typeof(Bitub.Dto.ILogging).Assembly.FullName }  // Example class name
+                { "Bitub.Xbim.Ifc", typeof(Bitub.Xbim.Ifc.IfcAuthoringMetadata).Assembly.FullName! }, // Example class name
+                { "Bitub.Dto", typeof(Bitub.Dto.ILogging).Assembly.FullName! }  // Example class name
             };
         }
 
@@ -53,29 +52,28 @@ namespace TRex.Internal
             return guid;
         }
 
-        public static object[] GetArgs(string guid)
+        public static object[]? GetArgs(string guid)
         {
             if (Guid.Empty.ToString().Equals(guid))
                 return Array.Empty<object>();
 
-            object[] args = null;
-            if (!ArgumentCache.TryRemove(guid, out args))
-                Log.LogWarning("Argument ID '{0}' not found.", guid);
+            if (!ArgumentCache.TryRemove(guid, out var args))
+                Log.Warning("Argument ID '{Guid}' not found.", guid);
             return args;
         }
 
-        public static object GetArg(string guid)
+        public static object? GetArg(string guid)
         {
             return GetArg<object>(guid);
         }
 
-        public static T GetArg<T>(string guid)
+        public static T? GetArg<T>(string guid)
         {
             var args = GetArgs(guid);
-            return args.Length > 0 ? (T)args[0] : default(T);
+            return (args?.Length ?? 0) > 0 ? (T?)args[0] : default(T);
         }
 
-        public static Tuple<T1, T2, T3> GetArgs<T1, T2, T3>(string guid)
+        public static Tuple<T1, T2, T3>? GetArgs<T1, T2, T3>(string guid)
         {
             var args = GetArgs(guid);
             if (null != args)
@@ -90,13 +88,14 @@ namespace TRex.Internal
         /// </summary>
         /// <typeparam name="T">The type of enum</typeparam>
         /// <param name="serializedEnum">The serialized representation</param>
+        /// <param name="defaultValue">The default value</param>
         /// <returns>The enum or a default</returns>
-        public static T TryCastEnumOrDefault<T>(object serializedEnum, T defaultValue = default(T)) where T : Enum
+        public static T? TryCastEnumOrDefault<T>(object serializedEnum, T? defaultValue = default(T)) where T : Enum
         {
-            T enumMember = defaultValue;
-            if (!TryCastEnum(serializedEnum, out enumMember))
+            if (!TryCastEnum(serializedEnum, out T? enumMember))
             {
-                Log.LogWarning("Unable to cast serialized enum '{0}' to type '{1}'. Using default '{2}'.", serializedEnum, nameof(T), enumMember);
+                Log.Warning("Unable to cast serialized enum '{SerializedEnum}' to type '{Type}'. Using default '{Member}'.", 
+                    serializedEnum, nameof(T), enumMember);
                 enumMember = defaultValue;
             }
             return enumMember;
@@ -109,7 +108,7 @@ namespace TRex.Internal
         /// <param name="serializedEnum">The serialized representation</param>
         /// <param name="member">The enum member, if there's a reference</param>
         /// <returns>True, if cast succeeded</returns>
-        public static bool TryCastEnum<T>(object serializedEnum, out T member) where T : Enum
+        public static bool TryCastEnum<T>(object? serializedEnum, out T? member) where T : Enum
         {
             member = default(T);
             bool isCasted = true;
@@ -124,7 +123,8 @@ namespace TRex.Internal
             else
             {
                 if (null != serializedEnum)
-                    Log.LogWarning($"Parsing/casting of '{serializedEnum}' (type '{serializedEnum.GetType().Name}') to type '{member.GetType().Name}' failed.");
+                    Log.Warning("Parsing/casting of '{SerializedEnum}' (type '{Type}') to type '{Name}' failed.",
+                        serializedEnum, serializedEnum.GetType().Name, member?.GetType().Name);
                 isCasted = false;
             }
 
@@ -137,13 +137,13 @@ namespace TRex.Internal
         /// <param name="dataArray">The data</param>
         /// <param name="takeCount">The limiting count</param>
         /// <returns>An enumerable of same length of property values</returns>
-        public static object[][] DecomposeArray(List<object> dataArray, int takeCount = int.MaxValue)
+        public static object?[][] DecomposeArray(List<object> dataArray, int takeCount = int.MaxValue)
         {
             return Flatten(dataArray).Take(takeCount).Select(DecomposeObject).ToArray();
         }
 
         // Single decomposition
-        private static object[] DecomposeObject(object data)
+        private static object?[] DecomposeObject(object? data)
         {
             var props = data?.GetType().GetProperties();
             if (props?.Length > 0)
@@ -153,20 +153,20 @@ namespace TRex.Internal
                     {
                         var obj = p.GetValue(data);
                         if (!p.PropertyType.IsPrimitive)
-                            return obj.ToString();
+                            return obj?.ToString();
                         else
                             return obj;
                     })
                     .ToArray();
             else
-                return new object[] { data?.ToString() };
+                return new object?[] { data?.ToString() };
         }
 
         // Flatten nested data
         private static object[] Flatten(object data)
         {
             if (data is IEnumerable<object> outer)
-                return outer.SelectMany(o => Flatten(o)).ToArray();
+                return outer.SelectMany(Flatten).ToArray();
             else
                 return new[] { data };
         }
@@ -177,7 +177,7 @@ namespace TRex.Internal
         /// <param name="data">The data</param>
         /// <param name="takeCount">The limiting count</param>
         /// <returns>An enumerable of same length of property values</returns>
-        public static object[][] Decompose(object data, int takeCount = int.MaxValue)
+        public static object?[][] Decompose(object data, int takeCount = int.MaxValue)
         {
             return Flatten(data).Take(takeCount).Select(DecomposeObject).ToArray();
         }
@@ -189,20 +189,28 @@ namespace TRex.Internal
         /// <param name="typeName">The type name</param>
         /// <param name="serializedEnum">The serialized enum</param>
         /// <returns>Enum instance, if succeeded or null</returns>
-        public static object TryParseEnum(string typeName, string serializedEnum)
+        public static object? TryParseEnum(string typeName, string? serializedEnum)
         {
-            try
+            if (null == serializedEnum)
             {
-                var assemblyName = RootNamespaceAssemblyResolver.FirstOrDefault(r => typeName.StartsWith(r.Key)).Value;
-                var extendedTypeName = null != assemblyName ? $"{typeName}, {assemblyName}" : typeName;
-
-                var type = Type.GetType(extendedTypeName, true, true);
-                return Enum.Parse(type, serializedEnum);
-            }
-            catch (Exception e)
-            {
-                Log.LogError($"Parsing '{serializedEnum}' to type '{typeName}' failed with exception: {e.Message}");
                 return null;
+            }
+            else
+            {
+                try
+                {
+                    var assemblyName = RootNamespaceAssemblyResolver.FirstOrDefault(r => typeName.StartsWith(r.Key)).Value;
+                    var extendedTypeName = null != assemblyName ? $"{typeName}, {assemblyName}" : typeName;
+
+                    var type = Type.GetType(extendedTypeName, true, true);
+                    return Enum.Parse(type!, serializedEnum);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("Parsing '{SerializedEnum}' to type '{TypeName}' failed with exception: {Message}", 
+                        serializedEnum, typeName, e.Message);
+                    return null;
+                }   
             }
         }
 
@@ -213,7 +221,7 @@ namespace TRex.Internal
         /// <param name="selected">Selection</param>
         /// <param name="ignoreCase">Whether to ignore case</param>
         /// <returns>A filtered array</returns>
-        public static object[] ExludeBySerializationValue(object[] values, string[] selected, bool ignoreCase)
+        public static object[] ExludeBySerializationValue(object[]? values, string[]? selected, bool ignoreCase)
         {
             if (null == selected || null == values)
                 return values ?? new object[] { };
@@ -229,7 +237,7 @@ namespace TRex.Internal
         /// <param name="selected">Selection</param>
         /// <param name="ignoreCase">Whether to ignore case</param>
         /// <returns>A filtered array</returns>
-        public static object[] FilterBySerializationValue(object[] values, string[] selected, bool ignoreCase)
+        public static object[] FilterBySerializationValue(object[]? values, string[]? selected, bool ignoreCase)
         {
             if (null == selected || null == values)
                 return new object[] { };

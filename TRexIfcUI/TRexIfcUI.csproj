@@ -18,6 +18,9 @@
 
     <AssemblyName>TRexIfcUI</AssemblyName>
     <RootNamespace>TRex</RootNamespace>
+    <Nullable>enable</Nullable>
+    
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -79,8 +82,8 @@
     <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25155-XbimDev.17328" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25155-XbimDev.17328" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25220-XbimDev.23359" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25220-XbimDev.23348" />
   </ItemGroup>
   
   <ItemGroup>
@@ -88,21 +91,6 @@
       <Project>{2bc161c5-e9f1-4b41-ba92-6dc3d502b00c}</Project>
       <Name>TRexIfc</Name>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Update="UI\FilterMatchTypeControl.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <Compile Update="UI\CRSTransformControl.xaml.cs">
-      <DependentUpon>CRSTransformControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="UI\SceneBuildSettingsControl.xaml.cs">
-      <DependentUpon>SceneBuildSettingsControl.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <!-- Local deployment settings and artificact name pattern -->

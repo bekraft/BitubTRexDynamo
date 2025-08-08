@@ -10,6 +10,9 @@
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -67,7 +70,7 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25155-XbimDev.17328" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25220-XbimDev.23359" />
   </ItemGroup>
   
   <ItemGroup>
