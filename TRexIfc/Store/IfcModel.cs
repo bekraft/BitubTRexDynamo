@@ -156,13 +156,13 @@ public class IfcModel : ProgressingModelTask<IfcModel>
     /// </summary>
     /// <param name="inModel">The IFC model to be saved</param>
     /// <param name="extension">The format extension to use</param>
-    /// <param name="separator">The separator between name fragments</param>
+    /// <param name="separator">The separator between name fragment (default '_').</param>
     /// <returns>A log message</returns>
     [IsVisibleInDynamoLibrary(false)]
-    public static IfcModel SaveAs(IfcModel inModel, string extension, string separator)
+    public static IfcModel SaveAs(IfcModel? inModel, string extension, string? separator = "_")
     {
         if (null == inModel)
-            throw new ArgumentNullException("ifcModel");
+            throw new ArgumentNullException("inModel");
 
         Logger? logger = inModel.Store.Logger;
         IfcModel outModel;
@@ -170,10 +170,10 @@ public class IfcModel : ProgressingModelTask<IfcModel>
         {
             var internalModel = inModel.XbimModel;
             if (null == internalModel)
-                throw new ArgumentNullException("No internal model");
+                throw new NotSupportedException("Not supported ifcModel");
 
             outModel = inModel.ChangeFormat(extension);
-            var filePathName = outModel.GetFilePathName(separator, true);
+            var filePathName = outModel.GetFilePathName(separator ?? "_", true);
 
             using (var fileStream = File.Create(filePathName))
             {

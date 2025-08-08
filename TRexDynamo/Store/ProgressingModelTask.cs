@@ -36,7 +36,7 @@ public abstract class ProgressingModelTask<TModel> : ProgressingTask
 
     #region Pure internal helpers
 
-    internal string GetFilePathName(string canonicalSep = "-", bool withExtension = true)
+    internal string GetFilePathName(string canonicalSep = "_", bool withExtension = true)
     {
         return GetFilePathName(Qualifier, canonicalSep, withExtension);
     }
