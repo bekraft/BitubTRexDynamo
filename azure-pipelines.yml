@@ -28,9 +28,6 @@ variables:
   ${{ elseif eq(variables['Build.SourceBranchName'], 'dev') }}: 
     buildConfiguration: 'Dev'
     buildQualifier: '-Dev'
-  ${{ elseif eq(variables['Build.SourceBranchName'], 'xbim-dev') }}:
-    buildConfiguration: 'XbimDev'
-    buildQualifier: '-XbimDev'
   ${{ else }}:
     buildConfiguration: 'Test'
     buildQualifier: '-Test'

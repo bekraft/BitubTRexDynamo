@@ -6,7 +6,7 @@
     <Title>TRexDynamo</Title>
     <Description>Bitub TRex Dynamo Common Library</Description>
 
-    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
@@ -63,14 +63,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
     <PackageReference Include="GeoJSON" Version="2.3.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25220-XbimDev.23359" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.2.26001-Dev.33117" />
   </ItemGroup>
   
   <ItemGroup>

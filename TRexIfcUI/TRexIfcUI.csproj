@@ -11,7 +11,7 @@
 
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
     <Platforms>AnyCPU</Platforms>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
@@ -67,23 +67,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|AnyCPU'">
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\XbimDev\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\XbimDev\TRexIfcUI.xml</DocumentationFile>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25220-XbimDev.23359" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25220-XbimDev.23348" />
+    <PackageReference Include="DynamoVisualProgramming.Core" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.2.26001-Dev.33117" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.2.26001-Dev.33117" />
   </ItemGroup>
   
   <ItemGroup>
