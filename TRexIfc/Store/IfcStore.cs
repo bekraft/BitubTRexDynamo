@@ -8,7 +8,7 @@ using Xbim.Common;
 using Autodesk.DesignScript.Runtime;
 
 using Bitub.Xbim.Ifc;
-using ProtoCore.AST.ImperativeAST;
+
 using TRex.Internal;
 using TRex.Log;
 

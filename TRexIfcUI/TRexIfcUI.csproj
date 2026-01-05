@@ -71,8 +71,8 @@
     <PackageReference Include="DynamoVisualProgramming.Core" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.WpfUILibrary" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
     <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.2.26001-Dev.33117" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.2.26001-Dev.33117" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.2.26002.30136" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.2.26002.30126" />
   </ItemGroup>
   
   <ItemGroup>
