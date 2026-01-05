@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="120">
+             d:DesignHeight="60" d:DesignWidth="120"
+             Background="Transparent">
 
     <Grid Margin="3,3,3,3" MinWidth="100">
         <Grid.RowDefinitions>
@@ -21,10 +22,13 @@
                 Grid.Row="0" Grid.Column="1"
                 Maximum="{Binding MaxCount, Mode=TwoWay}"
                 Minimum="{Binding MinCount, Mode=TwoWay}"/>
+        
         <Label Content="{Binding Count, Mode=OneWay}" 
                FontSize="8" 
                MinWidth="25"
-               Grid.Row="0" Grid.Column="0"/>
+               Grid.Row="0" 
+               Grid.Column="0"
+               Foreground="WhiteSmoke"/>
         
         <ScrollViewer VerticalScrollBarVisibility="Auto" 
                       Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="120">
+             d:DesignHeight="60" d:DesignWidth="120"
+             Background="Transparent">
 
     <Grid x:Name="MainGrid" MinHeight="50" MinWidth="100">
         <Grid.RowDefinitions>

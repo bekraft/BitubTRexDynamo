@@ -7,7 +7,8 @@
              xmlns:serilog="clr-namespace:Serilog.Events;assembly=Serilog"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="165">
+             d:DesignHeight="100" d:DesignWidth="165"
+             Background="Transparent">
         
     <Grid x:Name="MainGrid" MinHeight="100" MinWidth="165">
         <Grid.RowDefinitions>

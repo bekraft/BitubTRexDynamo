@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" 
+             Background="Transparent">
     
     <Grid x:Name="MetadataGrid" Margin="5,5,5,5" MinWidth="200" Height="Auto">
 
@@ -23,18 +24,24 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" FontSize="8" Content="Name (empty for anonymous)"/>
+            <Label Grid.Row="0" 
+                   FontSize="8" 
+                   Content="Name (empty for anonymous)"
+                   Foreground="WhiteSmoke"/>
             <TextBox Grid.Row="1"
-                        VerticalAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Height="23" 
-                        Margin="2,2,2,2" 
-                        TextWrapping="Wrap"                           
-                        Width="Auto"
-                        FontSize="10"
-                        Text="{Binding Path=AuthorName}"/>
+                     VerticalAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     Height="23" 
+                     Margin="2,2,2,2" 
+                     TextWrapping="Wrap"                           
+                     Width="Auto"
+                     FontSize="10"
+                     Text="{Binding Path=AuthorName}"/>
 
-            <Label Grid.Row="2" FontSize="8" Content="Given name (empty for anonymous)"/>
+            <Label Grid.Row="2" 
+                   FontSize="8"
+                   Foreground="WhiteSmoke"
+                   Content="Given name (empty for anonymous)"/>
             <TextBox Grid.Row="3"
                         VerticalAlignment="Center"
                         VerticalContentAlignment="Center"
