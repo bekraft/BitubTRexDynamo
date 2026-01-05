@@ -20,12 +20,12 @@ namespace TRex.Data
 
         #region Internals
 
-        internal Property(ELFeature featureConcept)
+        internal Property(Feature featureConcept)
         {
             Feature = featureConcept;
         }
 
-        internal ELFeature Feature { get; private set; }
+        internal Feature Feature { get; private set; }
 
         public override string ToString()
         {

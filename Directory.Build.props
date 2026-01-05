@@ -3,10 +3,14 @@
 
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 
     <BuildMajor>1</BuildMajor>
-    <BuildMinor>0</BuildMinor>
+    <BuildMinor>2</BuildMinor>
+
+    <LangVersion>12.0</LangVersion>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 
     <BuildRelease>$([System.DateTime]::Now.ToString("yy"))$([System.String]::Format("{0:000}",$([System.DateTime]::Now.DayOfYear)))</BuildRelease>
     <SecondsByMinute>$([MSBuild]::Multiply($([System.DateTime]::Now.Minute), 60))</SecondsByMinute>
@@ -20,12 +24,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Dev' ">
+    <DefineConstants>$(DefineConstants);Is_Dev</DefineConstants>
     <BuildQualifier>-Dev</BuildQualifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'XbimDev'">
-    <DefineConstants>$(DefineConstants);Is_XbimDev</DefineConstants>
-    <BuildQualifier>-XbimDev</BuildQualifier>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -44,12 +44,11 @@
     <Copyright>Bernold Kraft</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://www.github.com/bekraft/BitubTRex</PackageProjectUrl>
-    <TargetFrameworks>net48</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <DeployDynamoProjectName>TRex</DeployDynamoProjectName>
-    <DeployDynamoVersion>2.17</DeployDynamoVersion>
+    <DeployDynamoVersion>3.6</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
   </PropertyGroup>

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
              mc:Ignorable="d" 
-             d:DesignHeight="45" d:DesignWidth="160">
+             d:DesignHeight="45" d:DesignWidth="160"
+             Background="Transparent">
     <Grid MinHeight="45" MinWidth="160">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -35,7 +36,8 @@
                 VerticalContentAlignment="Center"/>
 
         <Label x:Name="ProgressState"
-               Grid.Row="0"
+               Grid.Row="0" 
+               Grid.Column="0"
                FontSize="8"
                Margin="5,5,5,5"
                HorizontalContentAlignment="Center"
@@ -52,7 +54,8 @@
                HorizontalContentAlignment="Left"
                VerticalContentAlignment="Center"
                VerticalAlignment="Center"               
-               Content="{Binding TaskName, Mode=OneWay}"/>
+               Content="{Binding TaskName, Mode=OneWay}"
+               Foreground="WhiteSmoke"/>
 
         <DataGrid x:Name="TaskList"
                     FontSize="8pt"
@@ -66,7 +69,8 @@
                     CanUserResizeColumns="True"
                     CanUserAddRows="False"
                     SelectionUnit="FullRow"
-                    HorizontalGridLinesBrush="AliceBlue"
+                    Background="AliceBlue"
+                    HorizontalGridLinesBrush="DarkGray"
                     GridLinesVisibility="Horizontal"
                     HeadersVisibility="Column">
 

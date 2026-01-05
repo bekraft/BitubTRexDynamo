@@ -1176,7 +1176,7 @@
   "NodeLibraryDependencies": [
     {
       "Name": "TRex",
-      "Version": "1.0.22356.32975",
+      "Version": "1.1.0.0",
       "ReferenceType": "Package",
       "Nodes": [
         "c9e4333a2ba44a76bf55918d219a0e6f",

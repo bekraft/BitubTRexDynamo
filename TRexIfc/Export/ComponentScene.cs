@@ -4,7 +4,6 @@ using System.Linq;
 
 using Bitub.Dto;
 
-using Autodesk.DesignScript.Runtime;
 using Google.Protobuf;
 
 using TRex.Log;

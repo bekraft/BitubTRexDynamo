@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
@@ -56,7 +55,7 @@ namespace TRex.Task
             LogReasonMask = LogReason.Changed;
         }
 
-        private IDictionary<string, ModelPlacementStrategy> PlacementOptions = new Dictionary<string, ModelPlacementStrategy>()
+        private readonly IDictionary<string, ModelPlacementStrategy> PlacementOptions = new Dictionary<string, ModelPlacementStrategy>()
         {
             { "Change existing placements", ModelPlacementStrategy.ChangeRootPlacements },
             { "Insert new root placement", ModelPlacementStrategy.NewRootPlacement }
@@ -95,7 +94,7 @@ namespace TRex.Task
 
             // Get transform request
             var astCreateTransform = AstFactory.BuildFunctionCall(
-                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewTransformPlacementRequest),
+                new Func<Logger, IfcAuthorMetadata, Alignment, object, IfcTransform>(IfcTransform.NewPlacementTransform),
                 new List<AssociativeNode>() 
                 { 
                     astGetLogger, 
@@ -107,7 +106,7 @@ namespace TRex.Task
 
             // Create transformation delegate
             var astCreateTransformDelegate = AstFactory.BuildFunctionCall(
-                new Func<IfcModel, IfcTransform, string, object, IfcModel>(IfcTransform.BySourceAndTransform),
+                new Func<IfcModel, IfcTransform, string, object, IfcModel?>(IfcTransform.BySourceAndTransform),
                 new List<AssociativeNode>() 
                 { 
                     inputAst[4], 

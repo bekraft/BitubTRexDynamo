@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 
 using Dynamo.Graph.Nodes;
-using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 
 using Newtonsoft.Json;
@@ -41,11 +38,15 @@ namespace TRex.Store
         /// </summary>
         public IfcLoadStoreNodeModel()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("logger", "Optional logger instance")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("prefs", "Tessellation preferences")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("fileName", "IFC file name and path")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("logger", "Optional logger instance")));
+            InPorts.Add(
+                new PortModel(PortType.Input, this, new PortData("prefs", "Tessellation preferences")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC model instance")));
+            OutPorts.Add(
+                new PortModel(PortType.Output, this, new PortData("ifcModel", "IFC model instance")));
             
             RegisterAllPorts();
 

@@ -7,7 +7,8 @@
              xmlns:bitub_dto_concept="clr-namespace:Bitub.Dto.Concept;assembly=Bitub.Dto"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="30" d:DesignWidth="150">
+             d:DesignHeight="30" d:DesignWidth="150"
+             Background="Transparent">
     
     <UserControl.Resources>
         <ObjectDataProvider x:Key="FilterMatchTypeEnum"
