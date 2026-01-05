@@ -7,7 +7,8 @@
              xmlns:bitubifcexport="clr-namespace:Bitub.Xbim.Ifc.Tesselate;assembly=Bitub.Xbim.Ifc"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="300">
+             d:DesignHeight="150" d:DesignWidth="300"
+             Background="Transparent">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ScenePositioningStrategy"
@@ -39,7 +40,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Header="Additional settings" x:Name="MetadataGroup" Grid.Row="0" BorderBrush="Black">
+        <GroupBox Header="Additional settings" 
+                  x:Name="MetadataGroup" 
+                  Grid.Row="0" 
+                  BorderBrush="Black"
+                  Foreground="WhiteSmoke">
+            
             <Grid x:Name="MetadataGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -51,7 +57,10 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" FontSize="8" Content="Position strategy"/>
+                <Label Grid.Row="0" 
+                       FontSize="8" 
+                       Content="Position strategy"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="PositioningStrategyComboBox"
                           VerticalAlignment="Center"
@@ -59,7 +68,10 @@
                           ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
                           SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}"/>
 
-                <Label Grid.Row="2" FontSize="8" Content="Transformation strategy"/>
+                <Label Grid.Row="2" 
+                       FontSize="8" 
+                       Content="Transformation strategy"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="TransformationStrategyComboBox"
                           VerticalAlignment="Center"
@@ -67,7 +79,10 @@
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
                           SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}"/>
 
-                <Label Grid.Row="4" FontSize="8" Content="Object identification"/>
+                <Label Grid.Row="4" 
+                       FontSize="8" 
+                       Content="Object identification"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="ComponentIdentificationComboBox"
                           VerticalAlignment="Center"

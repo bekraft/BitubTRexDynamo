@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 
     <BuildMajor>1</BuildMajor>
-    <BuildMinor>1</BuildMinor>
+    <BuildMinor>2</BuildMinor>
 
     <LangVersion>12.0</LangVersion>
     <EnableDynamicLoading>true</EnableDynamicLoading>
@@ -24,12 +24,8 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Dev' ">
+    <DefineConstants>$(DefineConstants);Is_Dev</DefineConstants>
     <BuildQualifier>-Dev</BuildQualifier>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'XbimDev'">
-    <DefineConstants>$(DefineConstants);Is_XbimDev</DefineConstants>
-    <BuildQualifier>-XbimDev</BuildQualifier>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -52,7 +48,7 @@
 
   <PropertyGroup>
     <DeployDynamoProjectName>TRex</DeployDynamoProjectName>
-    <DeployDynamoVersion>3.5</DeployDynamoVersion>
+    <DeployDynamoVersion>3.6</DeployDynamoVersion>
     <DeployDynamoPath>$(AppData)\Dynamo\Dynamo Core\$(DeployDynamoVersion)\packages</DeployDynamoPath>
     <DeployPath>..\DeployedPackages\$(DeployDynamoVersion)\$(DeployDynamoProjectName)-$(Version)</DeployPath>
   </PropertyGroup>

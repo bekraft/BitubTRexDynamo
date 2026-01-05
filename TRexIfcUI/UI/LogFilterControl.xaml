@@ -7,7 +7,8 @@
              xmlns:trex="clr-namespace:TRex.Log;assembly=TRexDynamo"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="120">
+             d:DesignHeight="60" d:DesignWidth="120"
+             Background="Transparent">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="LogLevelEnum"
@@ -39,7 +40,11 @@
                 Maximum="500"
                 Interval="10"
                 Minimum="10"/>
-        <Label Content="{Binding LogCount}" FontSize="8" Grid.Row="1" Grid.Column="0"/>
+        <Label Content="{Binding LogCount}" 
+               FontSize="8" 
+               Grid.Row="1" 
+               Grid.Column="0"
+               Foreground="WhiteSmoke"/>
         
     </Grid>
 </UserControl>

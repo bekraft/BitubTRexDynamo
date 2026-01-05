@@ -28,9 +28,6 @@ variables:
   ${{ elseif eq(variables['Build.SourceBranchName'], 'dev') }}: 
     buildConfiguration: 'Dev'
     buildQualifier: '-Dev'
-  ${{ elseif eq(variables['Build.SourceBranchName'], 'xbim-dev') }}:
-    buildConfiguration: 'XbimDev'
-    buildQualifier: '-XbimDev'
   ${{ else }}:
     buildConfiguration: 'Test'
     buildQualifier: '-Test'
@@ -73,7 +70,7 @@ steps:
     msbuildArguments: '-t:build -p:Configuration=$(buildConfiguration) -p:BuildMajor=$(majorVersion) -p:BuildMinor=$(minorVersion) -p:BuildRelease=$(buildDate) -p:Build=$(buildSecond) -p:BuildQualifier=$(buildQualifier) -p:DeployDynamoVersion=$(dynamoVersion)'
         
 - task: ArchiveFiles@2
-  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
+  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev'))
   inputs:
     rootFolderOrFile: 'DeployedPackages/$(dynamoVersion)'
     includeRootFolder: false
@@ -83,7 +80,7 @@ steps:
     verbose: true
     
 - task: GitHubRelease@1
-  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev', 'XbimDev'))
+  condition: and(succeeded(), in(variables.buildConfiguration, 'Release', 'Dev'))
   inputs:
     gitHubConnection: bekraft
     tagSource: 'userSpecifiedTag'

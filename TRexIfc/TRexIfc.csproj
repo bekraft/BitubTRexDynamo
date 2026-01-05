@@ -6,7 +6,7 @@
     <Title>TRexIfc</Title>
     <Description>Bitub TRex Dynamo Library, IFC utilities and transformation toolsets</Description>
 
-    <Configurations>Debug;Release;Dev;Test;XbimDev</Configurations>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
     <Platforms>AnyCPU</Platforms>
     <RootNamespace>TRex</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
@@ -39,18 +39,6 @@
     <DocumentationFile>bin\Dev\TRexIfc.xml</DocumentationFile>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='XbimDev|AnyCPU'">
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\XbimDev\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\XbimDev\TRexIfc.xml</DocumentationFile>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test|AnyCPU'">
     <DebugSymbols>false</DebugSymbols>
@@ -75,16 +63,16 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.5.1.8731" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.DynamoCoreNodes" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.ZeroTouchLibrary" Version="3.6.1.9956" ExcludeAssets="Runtime"/>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
     <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.1.847-netcore" />
-    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.1.25220-XbimDev.23359" />
-    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.1.25220-XbimDev.23348" />
+    <PackageReference Include="Xbim.Geometry.Engine.Interop" Version="6.3.873-netcore" />
+    <PackageReference Include="Bitub.Xbim.Ifc" Version="1.2.26002.30136" />
+    <PackageReference Include="Bitub.Xbim.Ifc.Occt" Version="1.2.26002.30126" />
   </ItemGroup>
   
   <ItemGroup>
