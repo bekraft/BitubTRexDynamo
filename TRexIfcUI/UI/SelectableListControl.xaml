@@ -27,7 +27,7 @@
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True" >
                             <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="Background" Value="Azure" />
+                            <Setter Property="Background" Value="AliceBlue" />
                             <Setter Property="Foreground" Value="Black" />
                         </Trigger>
                     </Style.Triggers>

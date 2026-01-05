@@ -33,7 +33,14 @@
                   Grid.Row="0" Grid.Column="0"
                   VerticalAlignment="Center"
                   SelectedItem="{Binding Path=LogEventLevel}"
-                  ItemsSource="{Binding Source={StaticResource LogLevelEnum}}"/>
+                  ItemsSource="{Binding Source={StaticResource LogLevelEnum}}">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
     </Grid>
 </UserControl>

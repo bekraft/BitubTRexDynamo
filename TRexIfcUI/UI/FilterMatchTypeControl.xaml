@@ -33,7 +33,14 @@
                   Grid.Row="0" Grid.Column="0"
                   VerticalAlignment="Center"
                   SelectedItem="{Binding Path=MatchType}"
-                  ItemsSource="{Binding Source={StaticResource FilterMatchTypeEnum}}"/>
+                  ItemsSource="{Binding Source={StaticResource FilterMatchTypeEnum}}">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
     </Grid>
 </UserControl>

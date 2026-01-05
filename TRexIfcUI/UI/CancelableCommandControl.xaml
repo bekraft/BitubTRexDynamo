@@ -73,6 +73,13 @@
                     HorizontalGridLinesBrush="DarkGray"
                     GridLinesVisibility="Horizontal"
                     HeadersVisibility="Column">
+            
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="AliceBlue" />
+                    <Setter Property="Foreground" Value="CornflowerBlue" />
+                </Style>
+            </DataGrid.RowStyle>
 
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="ElapsedSpan"

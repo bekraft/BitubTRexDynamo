@@ -66,7 +66,14 @@
                           VerticalAlignment="Center"
                           Grid.Row="1"
                           ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
-                          SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
 
                 <Label Grid.Row="2" 
                        FontSize="8" 
@@ -77,7 +84,14 @@
                           VerticalAlignment="Center"
                           Grid.Row="3"
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
-                          SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
 
                 <Label Grid.Row="4" 
                        FontSize="8" 
@@ -88,7 +102,14 @@
                           VerticalAlignment="Center"
                           Grid.Row="5"
                           ItemsSource="{Binding Source={StaticResource SceneComponentIdentificationStrategy}}"
-                          SelectedItem="{Binding Path=IdentificationStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=IdentificationStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
             </Grid>
         </GroupBox>
     </Grid>

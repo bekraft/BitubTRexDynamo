@@ -31,9 +31,18 @@
         </Grid.ColumnDefinitions>
 
         <ComboBox x:Name="SeverityLevelComboBox" 
-                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                  Grid.Column="0" 
+                  Grid.ColumnSpan="2" 
+                  Grid.Row="0"
                   ItemsSource="{Binding Source={StaticResource LogLevelEnum}}"
-                  SelectedItem="{Binding LogMinSeverity, Mode=TwoWay}"/>
+                  SelectedItem="{Binding LogMinSeverity, Mode=TwoWay}">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
         <Slider Value="{Binding LogCount, Mode=TwoWay}" 
                 Grid.Row="1" Grid.Column="1"
