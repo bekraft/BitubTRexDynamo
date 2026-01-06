@@ -7,11 +7,11 @@
 TRex is collection of utility libraries of model transformation and deployment tasks in the AEC domain. 
 Internally it's using i.e. [Xbim libraries](https://github.com/xBimTeam) to read, transform and write IFC model files.
 
-Currently, ONLY supports [Dynamo 3.5+](https://github.com/DynamoDS/Dynamo) and tested against 3.5.1.
+Supports [Dynamo 3.5+](https://github.com/DynamoDS/Dynamo) and tested against 3.6.1.
 
 ## Installation of binary releases
 
-Install a recent supported version of [Dynamo](https://dynamobuilds.com) and extract the TRex release to the 
+Install a recently supported version of [Dynamo](https://dynamobuilds.com) and extract the TRex release to the 
 
 ```~/AppData/Roaming/Dynamo/Dynamo Core``` or ```~/AppData/Roaming/Dynamo/Dynamo Revit``` packages sub folder. Keep the entire
 package rooted by a single parent folder (i.e. TRex).
@@ -27,18 +27,17 @@ In general, the master branch is the best option to run your own build.
 ### Dependencies
 
    - Xbim 6+ via nuget.org (netcore)
-   - Assimp 6.0.1 (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
+   - Assimp 6.0.2 (release binary embedded with headers, otherwise get from https://github.com/assimp/assimp/tree/master)
 
 ### Build configuration and impacts
 
 Each build will generate a package under ```./DeployedPackages``` (see *DeployPath*).
 
-   - *Debug* will run a debug build and copy plugin over to the predefined Dynamo solution directory.
-   - ~~*Dev* will run a dev build (without expecting an installation folder). Targets Xbim release binaries (5.1).~~
-   - *Release* will run a release build with documentation extraction added (for Dynamo help). Targets Xbim release binaries (5.1).
-   - *XbimDev* will build the current development build. Targets Xbim Dev (Netcore) release.
+   - *Debug* will run a debug build and copy plugin over to the predefined Dynamo solution directory defined by property `DeployDynamoPath`. 
+   - *Release* will run a release build with documentation extraction added (for Dynamo help). Targets Xbim netcore release binaries (6+).
+   - *Dev* will build the next development build. Targets Xbim 6+ (Netcore) release.
 
-Currently only x64 is supported for Assimp and Xbim. 
+Only x64 is supported for Assimp and Xbim. 
 If you like to generate x86 native libraries feel free to modify the [build configuration](Directory.Build.props).
 
 ## Licenses in use
