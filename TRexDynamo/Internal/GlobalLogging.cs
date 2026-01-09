@@ -98,7 +98,8 @@ public sealed class GlobalLogging : IDisposable
         Instance = new GlobalLogging(userProfile, trexVersion, dynamoVersion);
         Serilog.Log.Logger = Instance.Log;
 
-        Instance.Log.Information($"Started DynamoTRex {trexVersion} on Dynamo {dynamoVersion} at {DateTime.Now}.");
+        Instance.Log.Information("Started DynamoTRex {TREXVersion} on Dynamo {DynamoVersion} at {DateTime}.", 
+            trexVersion, dynamoVersion, DateTime.Now);
     }
     
     /// <summary>
@@ -106,8 +107,9 @@ public sealed class GlobalLogging : IDisposable
     /// </summary>
     public void Dispose()
     {
-        Serilog.Log.Information("Stopping DynamoTRex {Version} on Dynamo {DynamoVersion} at {DateTime.Now}.", 
+        Serilog.Log.Information("Stopping DynamoTRex {Version} on Dynamo {DynamoVersion} at {DateTimeNow}.", 
             Version, DynamoVersion, DateTime.Now);
         Serilog.Log.CloseAndFlush();
+        GC.SuppressFinalize(this);
     }
 }
