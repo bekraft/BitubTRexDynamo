@@ -37,7 +37,7 @@ public class IfcStore
 
     static IfcStore()
     {
-        XbimOcctExtensions.UseHeuristicStoreType = true;
+        XbimOcctExtensions.UseHeuristicStoreType = false;
         XbimOcctExtensions.ConfigureGeometryServiceWinOs();
     }
 
