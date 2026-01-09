@@ -1,0 +1,17 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="msbuild build dev" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="$date=Get-Date; $build=[int][Math]::Floor((([int]$date.Hour) * 3600 + ([int]$date.Minute) * 60 + ([int]$date.Second))/2); dotnet msbuild BitubTRexDynamo.sln /p:configuration=&quot;Dev&quot; /p:platform=&quot;x64&quot; /p:Build=&quot;$build&quot; /t:&quot;clean;build&quot;" />
+    <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
+    <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+    <option name="INTERPRETER_PATH" value="" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTE_IN_TERMINAL" value="true" />
+    <option name="EXECUTE_SCRIPT_FILE" value="false" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

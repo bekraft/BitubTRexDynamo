@@ -41,7 +41,7 @@ namespace TRex.Task
             InPorts.Add(
                 new PortModel(PortType.Input, this, new PortData("nameAddon", "Fragment name of canonical full name", AstFactory.BuildNullNode())));
             InPorts.Add(
-                new PortModel(PortType.Input, this, new PortData("logFilter", "Log reason type filtering", MapEnum(LogReason.Any))));
+                new PortModel(PortType.Input, this, new PortData("logFilter", "Log reason type filtering", MapEnumIntoNode(LogReason.Any))));
             InPorts.Add(
                 new PortModel(PortType.Input, this, new PortData("ifcModel", "IFC input model")));
 

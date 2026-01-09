@@ -1,18 +1,9 @@
-﻿using Dynamo.Controls;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Connectors;
+﻿using TRex.Export;
 
-using System.Linq;
+namespace TRex.UI.Customization;
 
-using TRex.Export;
-
-namespace TRex.UI.Customization
+public class SceneExportNodeCustomization : CancelableOptionCommandCustomization<SceneExportNodeModel, Format>
 {
-#pragma warning disable CS1591
-    public class SceneExportNodeCustomization : CancelableOptionCommandCustomization<SceneExportNodeModel, Format>
-    {
-        public SceneExportNodeCustomization() : base(ProgressOnPortType.OutPorts)
-        { }
-    }
-#pragma warning restore CS1591
+    public SceneExportNodeCustomization() : base(ProgressOnPortType.OutPorts)
+    { }
 }

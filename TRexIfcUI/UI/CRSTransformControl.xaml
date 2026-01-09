@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:TRex.UI"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="160">
+             d:DesignHeight="60" d:DesignWidth="160"
+             Background="Transparent">
         
     <Grid MinHeight="50" MinWidth="150" Margin="3,3,3,3">
         <Grid.RowDefinitions>
@@ -23,7 +24,8 @@
         <Label Grid.Row="0" Grid.Column="0" 
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Left"
-               Content="Model CRS transform"/>
+               Content="Model CRS transform"
+               Foreground="WhiteSmoke"/>
         <ComboBox x:Name="CRSTransformComboBox" 
                   Grid.Row="1" Grid.Column="0"
                   VerticalAlignment="Center"
@@ -32,10 +34,16 @@
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name, Mode=OneTime}"/>
+                        <TextBlock Text="{Binding Name, Mode=OneWay}" />
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
         </ComboBox>
 
     </Grid>

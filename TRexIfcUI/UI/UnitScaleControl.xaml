@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:TRex.UI"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="150">
+             d:DesignHeight="150" d:DesignWidth="150"
+             Background="Transparent">
         
     <Grid MinHeight="50" MinWidth="100" Margin="3,3,3,3">
         <Grid.RowDefinitions>
@@ -16,14 +17,18 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" 
+        <Label Grid.Row="0" 
+               Grid.Column="0" 
                VerticalContentAlignment="Center"
                HorizontalContentAlignment="Left"
-               Content="Model unit scale"/>
+               Content="Model unit scale"
+               Foreground="WhiteSmoke"/>
+        
         <ComboBox x:Name="UnitScaleComboBox" 
                   Grid.Row="1" Grid.Column="0"
                   VerticalAlignment="Center"
@@ -41,6 +46,12 @@
                     </StackPanel>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
         </ComboBox>
     </Grid>
 </UserControl>

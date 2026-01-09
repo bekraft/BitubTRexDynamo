@@ -12,7 +12,7 @@ aiColor3D TRexAssimp::TRexAssimp::AIColor3D(Color^ color, float% alpha)
 }
 
 // Adapts a rotation transform to a matrix 3x3
-aiMatrix3x3 TRexAssimp::TRexAssimp::AIMatrix3(Rotation^ r)
+aiMatrix3x3 TRexAssimp::TRexAssimp::AIMatrix3(M33^ r)
 {
     return aiMatrix3x3(
         r->Rx->X, r->Rx->Y, r->Rx->Z,
@@ -45,6 +45,12 @@ aiMatrix4x4 TRexAssimp::TRexAssimp::AIMatrix4(Transform^ t)
     }
 }
 
+// Adapts a CRS transform by its global transform
+aiMatrix4x4 TRexAssimp::TRexAssimp::AIMatrix4(CRSTransform^ crs)
+{
+    return AIMatrix4(crs->GlobalTransform);
+}
+
 // Adapts a simple XYZ vector
 aiVector3D TRexAssimp::TRexAssimp::AIVector3D(XYZ^ xyz)
 {
@@ -52,7 +58,7 @@ aiVector3D TRexAssimp::TRexAssimp::AIVector3D(XYZ^ xyz)
 }
 
 // Adapts a quaternion 
-aiQuaternion TRexAssimp::TRexAssimp::AIQuaternion(Quaternion^ q)
+aiQuaternion TRexAssimp::TRexAssimp::AIQuaternion(Quat^ q)
 {
     aiQuaternion quat;
     quat.x = q->X;

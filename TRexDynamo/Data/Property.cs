@@ -20,12 +20,12 @@ namespace TRex.Data
 
         #region Internals
 
-        internal Property(ELFeature featureConcept)
+        internal Property(Feature featureConcept)
         {
             Feature = featureConcept;
         }
 
-        internal ELFeature Feature { get; private set; }
+        internal Feature Feature { get; private set; }
 
         public override string ToString()
         {
@@ -47,8 +47,6 @@ namespace TRex.Data
             return Feature?.GetHashCode() ?? GetHashCode();
         }
 
-#pragma warning restore CS1591
-
         public string QualifiedName
         {
             get => Feature.Name.ToLabel(":");
@@ -67,7 +65,8 @@ namespace TRex.Data
         }
 
         #endregion
-
+#pragma warning restore CS1591
+        
         /// <summary>
         /// Returns an array of property name, type and values.
         /// </summary>

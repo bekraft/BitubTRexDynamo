@@ -24,19 +24,18 @@ namespace TRexAssimp
 		TRexAssimpPreferences^ preferences;
 
 	public:
-		TRexAssimpExport();
 		TRexAssimpExport(TRexAssimpPreferences^ p);
 
 		virtual ~TRexAssimpExport();
 		!TRexAssimpExport();
 
-		property array<Format^>^ Formats { array<Format^>^ get(); }
+		static array<Format^>^ GetDefaultFormats();
 		property String^ StatusMessage { String^ get() { return statusMessage; } }
 		bool ExportTo(ComponentScene^ componentScene, String^ filePathName, Format^ format);
 
 	private:
-		array<Format^>^ GetAvailableFormats(
-			Assimp::Exporter* exporter);
+		static array<Format^>^ GetAvailableFormats(
+			const Assimp::Exporter* exporter);
 
 		const uint GetOrCreateNodeAndParent(
 			Component^ c, 
@@ -83,7 +82,7 @@ namespace TRexAssimp
 		template<typename T>
 		T* push_to(const std::vector<T>& v, uint& size_variable)
 		{
-			size_variable = (uint)v.size();
+			size_variable = static_cast<uint>(v.size());
 			if (0 < size_variable)
 			{
 				T* buffer = new T[size_variable];

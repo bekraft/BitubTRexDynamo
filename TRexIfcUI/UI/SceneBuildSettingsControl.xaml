@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TRex.UI"
-             xmlns:bitubifcexport="clr-namespace:Bitub.Xbim.Ifc.Export;assembly=Bitub.Xbim.Ifc"
+             xmlns:bitubifcexport="clr-namespace:Bitub.Xbim.Ifc.Tesselate;assembly=Bitub.Xbim.Ifc"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"             
              mc:Ignorable="d" 
-             d:DesignHeight="150" d:DesignWidth="300">
+             d:DesignHeight="150" d:DesignWidth="300"
+             Background="Transparent">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ScenePositioningStrategy"
@@ -39,7 +40,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Header="Additional settings" x:Name="MetadataGroup" Grid.Row="0" BorderBrush="Black">
+        <GroupBox Header="Additional settings" 
+                  x:Name="MetadataGroup" 
+                  Grid.Row="0" 
+                  BorderBrush="Black"
+                  Foreground="WhiteSmoke">
+            
             <Grid x:Name="MetadataGrid">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -51,29 +57,59 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" FontSize="8" Content="Position strategy"/>
+                <Label Grid.Row="0" 
+                       FontSize="8" 
+                       Content="Position strategy"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="PositioningStrategyComboBox"
                           VerticalAlignment="Center"
                           Grid.Row="1"
                           ItemsSource="{Binding Source={StaticResource ScenePositioningStrategy}}"
-                          SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=PositioningStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
 
-                <Label Grid.Row="2" FontSize="8" Content="Transformation strategy"/>
+                <Label Grid.Row="2" 
+                       FontSize="8" 
+                       Content="Transformation strategy"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="TransformationStrategyComboBox"
                           VerticalAlignment="Center"
                           Grid.Row="3"
                           ItemsSource="{Binding Source={StaticResource SceneTransformationStrategy}}"
-                          SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=TransformationStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
 
-                <Label Grid.Row="4" FontSize="8" Content="Object identification"/>
+                <Label Grid.Row="4" 
+                       FontSize="8" 
+                       Content="Object identification"
+                       Foreground="WhiteSmoke"/>
 
                 <ComboBox x:Name="ComponentIdentificationComboBox"
                           VerticalAlignment="Center"
                           Grid.Row="5"
                           ItemsSource="{Binding Source={StaticResource SceneComponentIdentificationStrategy}}"
-                          SelectedItem="{Binding Path=IdentificationStrategy, Mode=TwoWay}"/>
+                          SelectedItem="{Binding Path=IdentificationStrategy, Mode=TwoWay}">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="Background" Value="AliceBlue"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
             </Grid>
         </GroupBox>
     </Grid>

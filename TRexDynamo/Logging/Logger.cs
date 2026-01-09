@@ -2,8 +2,6 @@
 
 using Microsoft.Extensions.Logging;
 
-using Dynamo.Graph.Nodes;
-
 using Serilog;
 using Serilog.Core;
 
@@ -20,19 +18,22 @@ namespace TRex.Log
 
         #region Internals
 
-        internal string MessageTemplate { get; set; } =         
+        private static readonly string MessageTemplate =         
             "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj} ({ThreadId} '{ThreadName}'){NewLine}{Exception}";
 
-        internal Logger()
+        private Logger(Serilog.ILogger logger)
         {
             LoggerFactory = new LoggerFactory();
+            LoggerFactory.AddSerilog(logger, true);
+            DefaultLog = logger.ForContext<Logger>();
+            DefaultLog.Information("Logging started.");
         }
 
         /// <summary>
         /// Logger factory
         /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public ILoggerFactory LoggerFactory { get; private set; }
+        public ILoggerFactory LoggerFactory { get; }
 
         /// <summary>
         /// The default log.
@@ -40,22 +41,26 @@ namespace TRex.Log
         [IsVisibleInDynamoLibrary(false)]
         public Serilog.ILogger DefaultLog { get; private set; }
 
-        internal void LogInfo(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogInfo(string message, params object[] args)
         {
             DefaultLog.Information(message, args);
         }
 
-        internal void LogWarning(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogWarning(string message, params object[] args)
         {
             DefaultLog.Warning(message, args);
         }
 
-        internal void LogError(string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogError(string message, params object[] args)
         {
             DefaultLog.Error(message, args);
         }
 
-        internal void LogError(Exception e, string message, params object[] args)
+        [IsVisibleInDynamoLibrary(false)]
+        public void LogError(Exception e, string message, params object[] args)
         {
             DefaultLog.Error(e, message, args);
         }
@@ -66,10 +71,8 @@ namespace TRex.Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        internal static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
+        private static Logger ByLogFileName(string fileName, LoggingLevelSwitch levelSwitch)
         {
-            var instance = new Logger();
-            
             var logger = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .WriteTo.File(
@@ -77,18 +80,13 @@ namespace TRex.Log
                     buffered: false,
                     rollingInterval: RollingInterval.Day, 
                     rollOnFileSizeLimit: true, 
-                    outputTemplate: instance.MessageTemplate)
+                    outputTemplate: MessageTemplate)
                 .Enrich.WithThreadId()
                 .Enrich.WithThreadName()
                 .Enrich.FromLogContext()
                 .CreateLogger();
-
-            instance.LoggerFactory.AddSerilog(logger, true);
-            instance.DefaultLog = logger.ForContext<Logger>();
-
-            instance.DefaultLog.Information("Logger has been triggered by new run request.");
-
-            return instance;
+            
+            return new Logger(logger);
         }
 
         /// <summary>
@@ -97,29 +95,24 @@ namespace TRex.Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        internal static Logger ByLogAsyncFileName(string fileName, LoggingLevelSwitch levelSwitch)
+        private static Logger ByLogAsyncFileName(string fileName, LoggingLevelSwitch levelSwitch)
         {
-            var instance = new Logger();
-
             var logger = new LoggerConfiguration()
                 .MinimumLevel.ControlledBy(levelSwitch)
                 .WriteTo.Async(a => a.File(
                     fileName,
                     rollingInterval: RollingInterval.Day,
                     rollOnFileSizeLimit: true,
-                    outputTemplate: instance.MessageTemplate))
+                    outputTemplate: MessageTemplate))
                 .Enrich.WithThreadId()
                 .Enrich.WithThreadName()
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
-            instance.LoggerFactory.AddSerilog(logger, true);
-            instance.DefaultLog = logger.ForContext<Logger>();
-
-            instance.DefaultLog.Information("Logger has been triggered by new run request.");            
-
-            return instance;
+            return new Logger(logger);
         }
+        
+        #endregion
 
         /// <summary>
         /// New logging instance writing by async background thread to file.
@@ -127,7 +120,7 @@ namespace TRex.Log
         /// <param name="fileName">The file name to write to</param>
         /// <param name="levelSwitch">The minimum level switch</param>
         /// <returns>The bound logger instance</returns>
-        internal static Logger ByLogAsyncFileName(string fileName, string levelSwitch = "Debug")
+        public static Logger ByLogAsyncFileName(string fileName, string levelSwitch = "Debug")
         {
             Serilog.Events.LogEventLevel level;
             try
@@ -138,13 +131,9 @@ namespace TRex.Log
             {
                 throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
             }
-            return Logger.ByLogAsyncFileName(fileName, new LoggingLevelSwitch(level));
+            return ByLogAsyncFileName(fileName, new LoggingLevelSwitch(level));
         }
-
-        #endregion
-
-#pragma warning restore CS1591
-
+        
         /// <summary>
         /// New logging instance.
         /// </summary>
@@ -162,7 +151,10 @@ namespace TRex.Log
             {
                 throw new ArgumentException($"Accepting one of ({string.Join(",", Enum.GetNames(typeof(Serilog.Events.LogEventLevel)))})", e);
             }
-            return Logger.ByLogFileName(fileName, new LoggingLevelSwitch(level));
+            return ByLogFileName(fileName, new LoggingLevelSwitch(level));
         }
     }
+    
+#pragma warning restore CS1591
+
 }

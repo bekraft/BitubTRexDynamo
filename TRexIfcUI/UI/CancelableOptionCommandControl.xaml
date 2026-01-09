@@ -7,7 +7,8 @@
              xmlns:serilog="clr-namespace:Serilog.Events;assembly=Serilog"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="165">
+             d:DesignHeight="100" d:DesignWidth="165"
+             Background="Transparent">
         
     <Grid x:Name="MainGrid" MinHeight="100" MinWidth="165">
         <Grid.RowDefinitions>
@@ -21,14 +22,22 @@
 
         <local:CancelableCommandControl x:Name="ProgressCommandControl"
                                         Grid.Row="0"
-                                        VerticalAlignment="Center"
+                                        VerticalAlignment="Center"  
                                         HorizontalAlignment="Stretch"/>
 
         <ComboBox x:Name="OptionComboBox" 
                   Grid.Row="1"
                   Margin="5,5,5,5"
                   SelectedItem="{Binding Path=Selected}"
-                  ItemsSource="{Binding Path=Options}"/>
+                  ItemsSource="{Binding Path=Options}"
+                  Background="AliceBlue">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
     </Grid>
 </UserControl>

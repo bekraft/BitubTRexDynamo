@@ -21,7 +21,7 @@ namespace TRex.Geom
         [IsVisibleInDynamoLibrary(false)]
         public IfcAxisAlignment TheAxisAlignment { get; private set; }
 
-        internal Alignment(IfcAxisAlignment axisAlignment)
+        private Alignment(IfcAxisAlignment axisAlignment)
         {
             TheAxisAlignment = axisAlignment;
         }

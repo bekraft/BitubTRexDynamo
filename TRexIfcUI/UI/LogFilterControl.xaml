@@ -7,7 +7,8 @@
              xmlns:trex="clr-namespace:TRex.Log;assembly=TRexDynamo"
              xmlns:mscore="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="120">
+             d:DesignHeight="60" d:DesignWidth="120"
+             Background="Transparent">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="LogLevelEnum"
@@ -30,16 +31,29 @@
         </Grid.ColumnDefinitions>
 
         <ComboBox x:Name="SeverityLevelComboBox" 
-                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0"
+                  Grid.Column="0" 
+                  Grid.ColumnSpan="2" 
+                  Grid.Row="0"
                   ItemsSource="{Binding Source={StaticResource LogLevelEnum}}"
-                  SelectedItem="{Binding LogMinSeverity, Mode=TwoWay}"/>
+                  SelectedItem="{Binding LogMinSeverity, Mode=TwoWay}">
+            <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                    <Setter Property="Background" Value="AliceBlue"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
         <Slider Value="{Binding LogCount, Mode=TwoWay}" 
                 Grid.Row="1" Grid.Column="1"
                 Maximum="500"
                 Interval="10"
                 Minimum="10"/>
-        <Label Content="{Binding LogCount}" FontSize="8" Grid.Row="1" Grid.Column="0"/>
+        <Label Content="{Binding LogCount}" 
+               FontSize="8" 
+               Grid.Row="1" 
+               Grid.Column="0"
+               Foreground="WhiteSmoke"/>
         
     </Grid>
 </UserControl>

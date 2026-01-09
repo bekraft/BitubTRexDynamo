@@ -1,34 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 using Bitub.Dto.Scene;
 using Bitub.Dto.Spatial;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 using Autodesk.DesignScript.Runtime;
 
-using TRex.Export;
-using System.Runtime.Serialization;
+using Google.Protobuf;
 
 namespace TRex.Geom
 {
-    /// <summary>
-    /// Global reference axis identifiers.
-    /// </summary>
-    [IsVisibleInDynamoLibrary(false)]
-    public enum GlobalReferenceAxis
-    {
-        NegativeX = -1,
-        NegativeY = -2,
-        NegativeZ = -3,
-
-        PositiveX = 1,
-        PositiveY = 2,
-        PositiveZ = 3    
-    }
 
     /// <summary>
     /// Coordinate reference transform which binds globally defined view directions and offset shift.
@@ -37,24 +20,12 @@ namespace TRex.Geom
     public sealed class CRSTransform
     {
         #region Internals
-
-        private Transform global = new Transform 
-        { 
-            R = Rotation.Identity, 
-            T = XYZ.Zero
-        };
-
-        [JsonProperty("Right"), JsonConverter(typeof(StringEnumConverter))]
-        private GlobalReferenceAxis right = GlobalReferenceAxis.PositiveX;
-        [JsonProperty("Up"), JsonConverter(typeof(StringEnumConverter))]
-        private GlobalReferenceAxis up = GlobalReferenceAxis.PositiveZ;
-        [JsonProperty("Forward"), JsonConverter(typeof(StringEnumConverter))]
-        private GlobalReferenceAxis forward = GlobalReferenceAxis.PositiveY;
+        
         [JsonProperty("SourceCRS")]
-        private CRSTransform sourceTransform = null;
+        private CRSTransform parent = null;
 
         /// <summary>
-        /// New RHS with Z up.
+        /// New default RHS with Z up.
         /// </summary>
         /// <param name="name"></param>
         private CRSTransform(string name)
@@ -62,85 +33,42 @@ namespace TRex.Geom
             Name = name;
         }
 
+        /// <summary>
+        /// New clone from another CRS.
+        /// </summary>
+        /// <param name="toCopy"></param>
         private CRSTransform(CRSTransform toCopy)
         {
             Name = toCopy.Name;
-            sourceTransform = toCopy.sourceTransform;
-
-            right = toCopy.right;
-            up = toCopy.up;
-            forward = toCopy.forward;
-
-            global = new Transform(toCopy.global);
+            parent = toCopy.parent;
+            Transform = new Transform(toCopy.Transform);
         }
 
-        private CRSTransform(CRSTransform source, string name)
+        /// <summary>
+        /// New default CRS with a source parent CRS upstream.
+        /// </summary>
+        /// <param name="parent">Parent CRS</param>
+        /// <param name="name">Name of new CRS</param>
+        private CRSTransform(CRSTransform parent, string name)
         {
             Name = name;
-            sourceTransform = source;
-
-            if (null != source)
-            {
-                right = source.right;
-                up = source.up;
-                forward = source.forward;
-
-                global = new Transform(source.Transform);
-            }
+            this.parent = parent;
         }
 
         /// <summary>
-        /// Sets the mapping vector to transform.
+        /// Produces or sets the transform serialized data (JSON object).
         /// </summary>
-        /// <param name="targetCRS">The target vector (this transform)</param>
-        /// <param name="sourceCRS">The source vector (refererring transform)</param>
-        private void SetReferenceVector(GlobalReferenceAxis targetCRS, GlobalReferenceAxis? sourceCRS)
-        {
-            switch (Math.Abs((int)targetCRS))
-            {
-                case 1:
-                    global.R.Rx = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveX).Scale(Math.Sign((int)targetCRS));
-                    break;
-                case 2:
-                    global.R.Ry = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveY).Scale(Math.Sign((int)targetCRS));
-                    break;
-                case 3:
-                    global.R.Rz = GetUnitAxis(sourceCRS ?? GlobalReferenceAxis.PositiveZ).Scale(Math.Sign((int)targetCRS));
-                    break;
-            }
-        }
-
-        #endregion
-
-        [OnDeserialized, IsVisibleInDynamoLibrary(false)]
-        public void OnDeserialized(StreamingContext sc)
-        {
-            SetReferenceVector(right, sourceTransform?.right);
-            SetReferenceVector(up, sourceTransform?.up);
-            SetReferenceVector(forward, sourceTransform?.forward);
-        }
-
-        /// <summary>
-        /// Get the unit axis vector according to given global reference axis.
-        /// </summary>
-        /// <param name="referenceAxis">The global reference</param>
-        /// <returns>A unit vector</returns>
+        [JsonProperty("Transform")]
         [IsVisibleInDynamoLibrary(false)]
-        public static XYZ GetUnitAxis(GlobalReferenceAxis referenceAxis)
+        public string Serialized
         {
-            int axis = (int)referenceAxis;
-            switch (Math.Abs(axis))
-            {
-                case 1:
-                    return new XYZ(Math.Sign(axis), 0, 0);
-                case 2:
-                    return new XYZ(0, Math.Sign(axis), 0);
-                case 3:
-                    return new XYZ(0, 0, Math.Sign(axis));
-            }
-            throw new NotSupportedException();
+            get => new JsonFormatter(JsonFormatter.Settings.Default.WithFormatDefaultValues(true)).Format(Transform);
+            set => Transform = JsonParser.Default.Parse<Transform>(value);
         }
-
+        
+        #endregion
+        
+        
         /// <summary>
         /// New RHS CRS with Z-axis pointing upwards.
         /// </summary>
@@ -149,208 +77,186 @@ namespace TRex.Geom
         public CRSTransform()
         { }
 
+        /// <summary>
+        /// Name of CRS.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         [JsonProperty]
         public string Name { get; set; }
 
+        /// <summary>
+        /// Local transform of CRS.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public Transform Transform
-        {
-            get => new Transform(global);
-        }
+        public Transform Transform { get; set; } = Bitub.Dto.Scene.Transform.Identity;
 
+        /// <summary>
+        /// Returns the global accumulated transform. If no parent exists or identity, it will return
+        /// the same as <see cref="Transform"/>.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
-        public bool IsGloballyValid
+        public Transform GlobalTransform => ReverseTransforms()
+            .Reverse()
+            .Aggregate((t0, t1) => t0.Apply(t1));
+        
+        private IEnumerable<Transform> ReverseTransforms()
         {
-            get => (new[] { Right, Up, Forward }.Distinct().Count() == 3);
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public GlobalReferenceAxis Right
-        {
-            get
+            var crs = this;
+            do
             {
-                return right;
-            }
-            private set
-            {
-                right = value;
-                SetReferenceVector(right, sourceTransform?.right);
-            }
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public GlobalReferenceAxis Up
-        {
-            get
-            {
-                return up;
-            }
-            private set
-            {
-                up = value;
-                SetReferenceVector(up, sourceTransform?.up);
-            }
-        }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public GlobalReferenceAxis Forward
-        {
-            get
-            {
-                return forward;
-            }
-            private set
-            {
-                forward = value;
-                SetReferenceVector(forward, sourceTransform?.forward);
-            }
+                yield return crs.Transform;
+            } 
+            while (null != (crs = crs.parent));
         }
 
         /// <summary>
-        /// New CRS as transform based on default RHS Z-Up source transform.
+        /// New CRS as transform by given data.
         /// </summary>
+        /// <param name="parent">The source transform</param>
         /// <param name="name">Name</param>
-        /// <param name="right">Right orientation</param>
-        /// <param name="up">Up orientation</param>
-        /// <param name="forward">Forward orientation</param>
+        /// <param name="serialized">The serialized data.</param>
         /// <returns>A transform</returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static CRSTransform ByData(string name, CRSTransform source, string right, string up, string forward)
+        public static CRSTransform ByData(CRSTransform parent, string name, string serialized)
         {
-            return new CRSTransform(source, name)
+            return new CRSTransform(parent, name)
             {
-                Right = (GlobalReferenceAxis)Enum.Parse(typeof(GlobalReferenceAxis), right),
-                Up = (GlobalReferenceAxis)Enum.Parse(typeof(GlobalReferenceAxis), up),
-                Forward = (GlobalReferenceAxis)Enum.Parse(typeof(GlobalReferenceAxis), forward)
+                Serialized = serialized
             }; 
         }
-
-        [IsVisibleInDynamoLibrary(false)]
-        public static CRSTransform ByData(string name, CRSTransform source, GlobalReferenceAxis right, GlobalReferenceAxis up, GlobalReferenceAxis forward)
-        {
-            return new CRSTransform(source, name)
-            {
-                Right = right,
-                Up = up,
-                Forward = forward
-            };
-        }
+        
 
         /// <summary>
         /// Clones transform having an offset to the existing translation part.
         /// </summary>
         /// <param name="offset">The addon offset.</param>
-        /// <param name="crs">The transform to be offseted</param>
+        /// <param name="crs">The transform to be offset</param>
         /// <returns>New transform with same name</returns>
         public static CRSTransform ByOffsetTo(CRSTransform crs, XYZ offset)
         {
-            CRSTransform newCrs = null;
             if (null != offset)
             {
-                newCrs = new CRSTransform(crs);
-                newCrs.global.T = crs.global.T.Add(offset);
-            }
-            else
-            {
-                newCrs = crs;
+                return new CRSTransform(crs)
+                {
+                    Transform = 
+                    {
+                        T = crs.Transform.T.Add(offset)
+                    }
+                };
             }
             return crs;
         }
 
         /// <summary>
-        /// Default RHS coordinate reference.
+        /// Mirror X axis.
         /// </summary>
-        /// <returns>A standard CRS with Z-up right handed.</returns>        
-        public static CRSTransform ByRighthandZUp()
+        /// <param name="sourceTransform">The source transform</param>
+        /// <returns>New transform</returns>
+        public static CRSTransform ByMirrorX(CRSTransform sourceTransform = null)
         {
-            return new CRSTransform("RHS Z-Up");
+            return new CRSTransform(sourceTransform, "Mirror X")
+            {
+                Transform = Transform.MirrorX
+            };
+        }
+
+        /// <summary>
+        /// Mirror Y axis.
+        /// </summary>
+        /// <param name="sourceTransform">The source transform</param>
+        /// <returns>New transform</returns>
+        public static CRSTransform ByMirrorY(CRSTransform sourceTransform = null)
+        {
+            return new CRSTransform(sourceTransform, "Mirror Y")
+            {
+                Transform = Transform.MirrorY
+            };
+        }
+        
+        /// <summary>
+        /// Mirror Z axis.
+        /// </summary>
+        /// <param name="sourceTransform">The source transform</param>
+        /// <returns>New transform</returns>
+        public static CRSTransform ByMirrorZ(CRSTransform sourceTransform = null)
+        {
+            return new CRSTransform(sourceTransform, "Mirror Z")
+            {
+                Transform = Transform.MirrorZ
+            };
         }
 
         /// <summary>
         /// RHS with Z-up based on top of another transformation.
         /// </summary>
-        /// <param name="sourceTransform">The source</param>
         /// <returns>A standard CRS with Z-up right handed.</returns>
-        public static CRSTransform ByRighthandZUp(CRSTransform sourceTransform)
+        public static CRSTransform ByRighthandZUp()
         {
-            return new CRSTransform(sourceTransform, "RHS Z-Up")
+            return new CRSTransform("RHS Z-Up")
             {
-                Right = GlobalReferenceAxis.PositiveX,
-                Up = GlobalReferenceAxis.PositiveZ,
-                Forward = GlobalReferenceAxis.PositiveY
+                Transform = Transform.RighthandZup
             };
         }
 
         /// <summary>
         /// RHS with Y-up based on top of another transformation.
         /// </summary>
-        /// <param name="sourceTransform">The source</param>
         /// <returns>A standard CRS with Y-up right handed.</returns>
-        public static CRSTransform ByRighthandYUp(CRSTransform sourceTransform)
+        public static CRSTransform ByRighthandYUp()
         {
-            return new CRSTransform(sourceTransform, "RHS Y-Up")
+            return new CRSTransform("RHS Y-Up")
             {
-                Right = GlobalReferenceAxis.PositiveX,
-                Up = GlobalReferenceAxis.PositiveY,
-                Forward = GlobalReferenceAxis.NegativeZ
+                Transform = Transform.RighthandYup
             };
         }
 
         /// <summary>
         /// LHS with Y-up based on top of another transformation.
         /// </summary>
-        /// <param name="sourceTransform">The source</param>
         /// <returns>A CRS with Y-up left handed.</returns>
-        public static CRSTransform ByLefthandYUp(CRSTransform sourceTransform)
+        public static CRSTransform ByLefthandYUp()
         {
-            return new CRSTransform(sourceTransform, "LHS Y-Up")
+            return new CRSTransform("LHS Y-Up")
             {
-                Right = GlobalReferenceAxis.PositiveX,
-                Up = GlobalReferenceAxis.PositiveY,
-                Forward = GlobalReferenceAxis.PositiveZ
+                Transform = Transform.LefthandYup
             };
         }
 
         /// <summary>
         /// LHS with Z-up based on top of another transformation.
         /// </summary>
-        /// <param name="sourceTransform">The source</param>
         /// <returns>A CRS with Z-up left handed.</returns>
-        public static CRSTransform ByLefthandZUp(CRSTransform sourceTransform)
+        public static CRSTransform ByLefthandZUp()
         {
             return new CRSTransform("LHS Z-Up")
             {
-                Right = GlobalReferenceAxis.PositiveX,
-                Up = GlobalReferenceAxis.PositiveZ,
-                Forward = GlobalReferenceAxis.NegativeY
+                Transform = Transform.LefthandZup
             };
         }
 
+        /// <summary>
+        /// Name representation.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            var axes = new[] { Right, Up, Forward }.Distinct();
-            return $"{Name ?? "Anonymous"}({string.Join("|", axes.Select(a => a.ToString()))})";
+            return $"{Name ?? "Anonymous"}";
         }
 
         public override bool Equals(object obj)
         {
             return obj is CRSTransform transform &&
-                   EqualityComparer<CRSTransform>.Default.Equals(sourceTransform, transform.sourceTransform) &&
+                   EqualityComparer<CRSTransform>.Default.Equals(parent, transform.parent) &&
                    Name == transform.Name &&
-                   Right == transform.Right &&
-                   Up == transform.Up &&
-                   Forward == transform.Forward;
+                   Transform == transform.Transform;
         }
 
         public override int GetHashCode()
         {
-            int hashCode = -1324038637;
-            hashCode = hashCode * -1521134295 + EqualityComparer<CRSTransform>.Default.GetHashCode(sourceTransform);
+            var hashCode = -1324038637;
+            hashCode = hashCode * -1521134295 + EqualityComparer<CRSTransform>.Default.GetHashCode(parent);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + Right.GetHashCode();
-            hashCode = hashCode * -1521134295 + Up.GetHashCode();
-            hashCode = hashCode * -1521134295 + Forward.GetHashCode();
+            hashCode = hashCode * -1521134295 + Transform.GetHashCode();
             return hashCode;
         }
     }

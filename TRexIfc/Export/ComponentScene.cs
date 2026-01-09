@@ -4,7 +4,6 @@ using System.Linq;
 
 using Bitub.Dto;
 
-using Autodesk.DesignScript.Runtime;
 using Google.Protobuf;
 
 using TRex.Log;
@@ -21,7 +20,7 @@ namespace TRex.Export
         /// <summary>
         /// Allowed extensions for <see cref="Save(ComponentScene, string, string)"/>.
         /// </summary>
-        public readonly static Format[] saveAsFormats = new Format[]
+        public static readonly Format[] saveAsFormats = new Format[]
         {
             new Format("json", "json", "JSON Text"),
             new Format("scene", "scene", "Binary File")
@@ -30,7 +29,7 @@ namespace TRex.Export
         /// <summary>
         /// Allowed extensions for <see cref="Export(ComponentScene, UnitScale, CRSTransform, string, string)"/>.
         /// </summary>
-        public readonly static Format[] exportAsFormats;
+        public static readonly Format[] exportAsFormats;
 
 #pragma warning disable CS1591
 
@@ -50,7 +49,7 @@ namespace TRex.Export
 
         static ComponentScene()
         {
-            exportAsFormats = new TRexAssimp.TRexAssimpExport().Formats;
+            exportAsFormats = TRexAssimp.TRexAssimpExport.GetDefaultFormats();
         }
 
         protected override ComponentScene RequalifyModel(Qualifier qualifier)
@@ -63,22 +62,22 @@ namespace TRex.Export
         #endregion
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.Format" />
         /// </summary>
         public new string FileName => base.FileName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.PathName"/>
         /// </summary>
         public new string PathName => base.PathName;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.FormatExtension"/>
         /// </summary>
         public new string FormatExtension => base.FormatExtension;
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.CanonicalFileName"/>
         /// </summary>
         public new string CanonicalFileName(string seperator = "-")
         {
@@ -86,7 +85,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.CanonicalName"/>
         /// </summary>
         public new string CanonicalName(string seperator = "-")
         {
@@ -94,7 +93,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RelocatePath"/>
         /// </summary>
         public new ComponentScene RelocatePath(string newPathName)
         {
@@ -102,7 +101,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.Rename"/>
         /// </summary>
         public new ComponentScene Rename(string fileNameWithoutExt)
         {
@@ -110,7 +109,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RenameWithReplacePattern" />
         /// </summary>
         public new ComponentScene RenameWithReplacePattern(string replacePattern, string replaceWith)
         {
@@ -118,7 +117,7 @@ namespace TRex.Export
         }
 
         /// <summary>
-        /// <inheritdoc/>
+        /// <inheritdoc cref="ProgressingModelTask{TModel}.RenameWithSuffix" />
         /// </summary>
         public new ComponentScene RenameWithSuffix(string fragment)
         {
@@ -222,7 +221,7 @@ namespace TRex.Export
             {
                 try
                 {
-                    var exp = new TRexAssimp.TRexAssimpExport(new TRexAssimp.TRexAssimpPreferences(transform, unitScale));
+                    var exp = new TRexAssimp.TRexAssimpExport(new TRexAssimp.TRexAssimpPreferences(scene.Logger, transform, unitScale));
                     monitor.NotifyProgressEstimateUpdate(1);
                     monitor.NotifyOnProgressChange(0, "Start exporting");
 
